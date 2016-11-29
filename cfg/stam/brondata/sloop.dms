@@ -1,0 +1,80 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door brondata.dms                              //
+//       In deze configuratiefile wordt de utiliteit brondata geconfigureerd.           //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container Sloop
+{
+	container CaseData: expr = "BronData/Uitleg";
+	
+	container WoningResterendTiffs := 
+		for_each_ndva(CaseData/SZW/HasMutations ? CaseData/SZW/Name : ''
+			, Geography/rdc_100lu, float32
+			, CaseData/UitlegFolder+'/'+CaseData/SZW/period_name+'/Wonen/Resterend/'
+			+ CaseData/SZW/wonen_wlo_filename+ '.tif'
+		);
+
+	container WoningResterendFactors :=
+		for_each_nedv(  CaseData/SZW/HasMutations ? CaseData/SZW/Name : ''
+			, 'Float64(WoningResterendTiffs/'+CaseData/SZW/Name+')'
+			, Geography/rdc_100lu, Float64
+		);
+
+	container UtilDeltaFactorTiffs :=
+		for_each_ndva(  CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0  ? CaseData/SZU/Name : ''
+			, Geography/rdc_100lu, Float32
+			, CaseData/UitlegFolder+'/'+CaseData/SZU/period_name+'/Util/Resterend/'
+			+ CaseData/SZU/wlo_filename_uitleg + '.tif'
+		);
+
+	container UtilResterendFactors :=
+		for_each_nedv(  CaseData/SZU/HasMutations ? CaseData/SZU/Name : ''
+			, CaseData/SZU/Zichtjaar_jaar > 2010w && strlen(CaseData/SZU/wlo_filename_uitleg) > 0  ? 'median(0.0, Float64(UtilDeltaFactorTiffs/'+CaseData/SZU/Name +'), 1.0)' : 'const(1.0, Geography/rdc_100lu)'
+			, Geography/rdc_100lu, float64
+		);
+
+	container Totalen {
+		attribute<float32> WoningResterend (CaseData/SZW) := ='union_data(CaseData/SZW,'+AsItemList(CaseData/SZW/HasMutations ? 'sum(WoningResteredTiffs/' +CaseData/SZW/Name+')' : '0f / 0f')+')';
+		attribute<string>  ScenYearTypeW (CaseData/SZW) := CaseData/SZW/Name;		
+		attribute<float32> UtilDeltaFactorSum(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'sum(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';
+		attribute<float32> UtilDeltaFactorMean(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'mean(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';
+		attribute<string>  ScenYearTypeU (CaseData/SZU) := CaseData/SZU/Name;		
+	}
+
+	container GlTbResterendFactors;
+}

@@ -1,0 +1,545 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container InputOutputTempl: IsTemplate = "True", using = "Classifications"
+{
+	// begin case param
+	unit<uint32>               RapportageRegio;
+	parameter<String>          ReportRegioNaam; //: Expr = "'NL'";
+	parameter<RapportageRegio> RapportageRegio_sel;
+	container                  Flow;
+	// end case param
+	
+	unit<uint32> PlanRegio := RunImpl/PlanRegio;
+	
+	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
+	
+	attribute<RapportageRegio> PlanRegioRapportageRegio_rel(PlanRegio): Expr = "='PlanRegio/'+RapportageRegio/RegioNaam + '_rel'";
+	attribute<Float64> PlanRegioInRapportageFactor(PlanRegio): Expr = "Float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel)";
+	
+	container CaseData
+	{
+		container EP: Descr = "EnergieProducent"
+		{
+			container Bijstook 
+			{
+				attribute<Eur_Yr> Km_Gas           (PlanRegio) := EndState/KostenBaten/KostenD/Km_Verbruik;
+				attribute<Eur_Yr> Kj_CO2Heffing    (PlanRegio) := EndState/KostenBaten/kostenD/Bijstook/Vj_Bijstook * VestaRunData/prijzen/AardGas/Bijstook/KGJ_CO2Heffing;
+				attribute<Eur_Yr> Kj_EnergieHeffing(PlanRegio) := EndState/KostenBaten/kostenD/Bijstook/Vj_Bijstook * VestaRunData/prijzen/AardGas/Bijstook/KGJ_EnergieHeffing;
+			}
+		}
+
+		template BebouwingsComponentTempl
+		{
+			container EindgebruikerComponent;
+			container AllocatieResultaatComponent:= EindgebruikerComponent/AllocatieResultaatComponent;
+			container VestaRunDataComponent      := EindgebruikerComponent/VestaRunDataComponent;
+			
+			unit<uint32>               BebouwingsObject:         = AllocatieResultaatComponent/BebouwingsObject;
+			attribute<PlanRegio>       BebouwingscomponentPlanRegio_rel       (BebouwingsObject):= ='VestaRunDataComponent/Bebouwing/'+UserInput/PlanRegioNaam+'_rel';
+			attribute<RapportageRegio> BebouwingsComponentRapportageRegio_rel (BebouwingsObject):= PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
+			attribute<Float64> RapportageFactor(BebouwingsObject):= Float64(BebouwingsComponentRapportageRegio_rel == RapportageRegio_sel);
+			
+			parameter<Eur>    Ki_GebouwVerbetering := sum(RapportageFactor * VestaRunDataComponent/Kosten/Ki_GebouwVerbetering);
+			parameter<Eur>    Ki_LokaleOpwekking30 := sum(RapportageFactor * VestaRunDataComponent/Kosten/Ki_LokaleOpwekking30);
+			parameter<Eur>    Ki_LokaleOpwekking15 := sum(RapportageFactor * VestaRunDataComponent/Kosten/Ki_LokaleOpwekking15);
+			parameter<Eur_Yr> Kj_GebouwVerbetering := Ki_GebouwVerbetering * EindGebruikerComponent/NCW30/AnnualisationFactor;
+			parameter<Eur_Yr> Km_GebouwVerbetering := Ki_GebouwVerbetering * NCW/mr30/AnnualisationFactor;
+			parameter<Eur_Yr> Km_LokaleOpwekking   := 
+				Ki_LokaleOpwekking30 * NCW/mr30/AnnualisationFactor + 
+				Ki_LokaleOpwekking15 * NCW/mr15/AnnualisationFactor ;
+			parameter<Eur_yr> Kj_LokaleOpwekking   := 
+				Ki_LokaleOpwekking30 * EindGebruikerComponent/NCW30/AnnualisationFactor +
+				Ki_LokaleOpwekking15 * EindGebruikerComponent/NCW15/AnnualisationFactor ;
+			
+			parameter<Eur_Yr> Kj_Gas_ex  := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/AardGas/Vraag_ex      );
+			parameter<Eur_Yr> Kj_Gas_m   := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/AardGas/Vraag_m       );
+			parameter<Eur_Yr> Kj_Gas_CO2 := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/AardGas/CO2Heffing    );
+			parameter<Eur_Yr> Kj_Gas_EH  := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/AardGas/EnergieHeffing);
+			parameter<Eur_Yr> Kj_Gas     := Kj_Gas_m - Kj_Gas_CO2;
+			parameter<Eur_Yr> Kj_AanslDifG:= Kj_Gas_ex - (Kj_Gas_m + Kj_Gas_EH);
+			
+			parameter<Eur_Yr> Kj_Elek_ex := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/Elektriciteit/Vraag_ex      );
+			parameter<Eur_Yr> Kj_Elek_m  := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/Elektriciteit/Vraag_m       );
+			parameter<Eur_Yr> Kj_Elek_CO2:= sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/Elektriciteit/CO2Heffing    );
+			parameter<Eur_Yr> Kj_Elek_EH := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/Elektriciteit/EnergieHeffing);
+			parameter<Eur_Yr> Kj_Elek    := Kj_Elek_m - Kj_Elek_CO2;
+			parameter<Eur_Yr> Kj_AanslDifE:= Kj_Elek_ex - (Kj_Elek_m + Kj_Elek_EH);
+			parameter<Eur_Yr> Kj_AanslDif:= Kj_AanslDifG + Kj_AanslDifE;
+			
+
+			parameter<Eur_Yr> Km_RestWarmte:= sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/RestWarmte/Vraag_m);
+			parameter<Eur_Yr> Km_GeoThermie:= sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/GeoThermie/Vraag_m);
+			parameter<Eur_Yr> Km_WKO       := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/WKO/Vraag_m       );
+			parameter<Eur_Yr> Km_WijkWKK   := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/WijkWKK/Vraag_m   );
+			parameter<Eur_Yr> Km_BioWKK    := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/BioWKK/Vraag_m   );
+			
+			parameter<Eur_Yr> Kj_RestWarmte_ex:= sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/RestWarmte/Vraag_ex);
+			parameter<Eur_Yr> Kj_GeoThermie_ex:= sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/GeoThermie/Vraag_ex);
+			parameter<Eur_Yr> Kj_WKO_ex       := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/WKO/Vraag_ex       );
+			parameter<Eur_Yr> Kj_WijkWKK_ex   := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/WijkWKK/Vraag_ex   );
+			parameter<Eur_Yr> Kj_BioWKK_ex    := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/gebouwen/BioWKK/Vraag_ex       );
+			
+			parameter<Eur_Yr> Kj_Onderhoud     := sum(PlanRegioInRapportageFactor * (EindgebruikerComponent/Kj_Onderh_excl + EindgebruikerComponent/Kj_Admin_excl));
+			parameter<Eur_Yr> Om_Comfort       := sum(PlanRegioInRapportageFactor * EindgebruikerComponent/Om_Comfort);
+			parameter<Eur_Yr> Kj_CO2           := Kj_Gas_CO2 + Kj_Elek_CO2;
+			parameter<Eur_Yr> Kj_EnergieHeffing:= Kj_Gas_EH  + Kj_Elek_EH;
+			
+			parameter<Eur_Yr> Oj_Subsidie := sum(PlanRegioInRapportageFactor*EindgebruikerComponent/Oj_Subsidie);
+			parameter<Eur_Yr> Om_Subsidie := sum(PlanRegioInRapportageFactor*EindgebruikerComponent/Om_Subsidie);
+			
+			parameter<Eur_Yr> RisicoPremie:= (
+				  (Kj_LokaleOpwekking - Km_LokaleOpwekking) 
+				+ (Kj_RestWarmte_ex - Km_RestWarmte)
+				+ (Kj_GeoThermie_ex - Km_GeoThermie)
+				+ (Kj_WKO_ex        - Km_WKO)
+				+ (Kj_WijkWKK_ex    - Km_WijkWKK)
+				+ (Kj_BioWKK_ex     - Km_BioWKK)
+				+ Kj_AanslDif
+				) * EindgebruikerComponent/BTW_Factor
+				+ (Kj_GebouwVerbetering - Km_GebouwVerbetering) * EindgebruikerComponent/BTW_Factor_gv
+				- (Oj_Subsidie      - Om_Subsidie);
+
+			parameter<Eur_Yr> YCF_R0 := Km_GebouwVerbetering;
+			parameter<Eur_Yr> YCF_R1 := Km_LokaleOpwekking ;
+			parameter<Eur_Yr> YCF_R2 := Kj_Gas             ;
+			parameter<Eur_Yr> YCF_R3 := Kj_Elek            ;
+			parameter<Eur_Yr> YCF_R4 := Km_RestWarmte      ;
+			parameter<Eur_Yr> YCF_R5 := Km_GeoThermie      ;
+			parameter<Eur_Yr> YCF_R6 := Km_WKO             ;
+			parameter<Eur_Yr> YCF_R7 := Km_WijkWKK         ;
+			parameter<Eur_Yr> YCF_R8 := Km_BioWKK          ;
+			parameter<Eur_Yr> YCF_R9 := Kj_Onderhoud - Om_Comfort;
+			parameter<Eur_Yr> YCF_R10:= Kj_CO2             ;
+			parameter<Eur_Yr> YCF_R11:= Kj_EnergieHeffing  - Om_Subsidie;
+			parameter<Eur_Yr> YCF_R12:= 
+				(EindgebruikerComponent/BTW_Factor    - 1.0) * (YCF_R1 + Kj_Gas_m + Kj_Elek_m + Kj_EnergieHeffing + YCF_R4 + YCF_R5 + YCF_R6 + YCF_R7 + YCF_R8 + Kj_Onderhoud)
+			+	(EindgebruikerComponent/BTW_Factor_gv - 1.0) * YCF_R0;
+			parameter<Eur_Yr> YCF_R13:= RisicoPremie;
+			
+			parameter<kton_yr> CO2_R0 := 0[kton_yr];
+			parameter<kton_yr> CO2_R1 := 0[kton_yr];
+			parameter<kton_yr> CO2_R2 := EFL_R2 * VestaRunData/prijzen/AardGas/CO2_GJ;
+			parameter<kton_yr> CO2_R3 := EFL_R3 * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+			parameter<kton_yr> CO2_R4 := CO2Flow/Input[value(4, Classifications/KostenSoort)] * MakeDefined(EFL_R4 / EnergyFlow/Totaal[value(4, Classifications/KostenSoort)], Float64(0));
+			parameter<kton_yr> CO2_R5 := CO2Flow/Input[value(5, Classifications/KostenSoort)] * MakeDefined(EFL_R5 / EnergyFlow/Totaal[value(5, Classifications/KostenSoort)], Float64(0));
+			parameter<kton_yr> CO2_R6 := CO2Flow/Input[value(6, Classifications/KostenSoort)] * MakeDefined(EFL_R6 / EnergyFlow/Totaal[value(6, Classifications/KostenSoort)], Float64(0));
+			parameter<kton_yr> CO2_R7 := CO2Flow/Input[value(7, Classifications/KostenSoort)] * MakeDefined(EFL_R7 / EnergyFlow/Totaal[value(7, Classifications/KostenSoort)], Float64(0));
+			parameter<kton_yr> CO2_R8 := CO2Flow/Input[value(8, Classifications/KostenSoort)] * MakeDefined(EFL_R8 / EnergyFlow/Totaal[value(8, Classifications/KostenSoort)], Float64(0));
+			parameter<kton_yr> CO2_R9 := 0[kton_yr];
+			parameter<kton_yr> CO2_R10:= 0[kton_yr];
+			parameter<kton_yr> CO2_R11:= 0[kton_yr];
+			parameter<kton_yr> CO2_R12:= 0[kton_yr];
+			parameter<kton_yr> CO2_R13:= 0[kton_yr];
+			
+			parameter<PJ_Yr> EFL_R0 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R1_Boiler := sum(RapportageFactor * VestaRunDataComponent/Opwekking/ZonneBoiler) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R1_PV     := sum(RapportageFactor * VestaRunDataComponent/Opwekking/Zon_PV     ) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R1 := EFL_R1_Boiler + EFL_R1_PV;
+			parameter<PJ_Yr> EFL_R2 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/AardGas   ) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R3 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/Elektriciteit) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R4 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/RestWarmte) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R5 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/GeoThermie) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R6 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/WKO       ) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R7 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/WijkWKK   ) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R8 := sum(RapportageFactor * AllocatieResultaatComponent/MeterVraag/BioWKK    ) / 1000000[GJ / PJ];
+			parameter<PJ_Yr> EFL_R9 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R10:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R11:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R12:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R13:= 0[PJ_Yr];
+		}
+		
+		container Woning:      = BebouwingsComponentTempl(Eindgebruiker/Woning);
+		container UitlegWoning:= BebouwingsComponentTempl(Eindgebruiker/UitlegWoning);
+		container Utiliteit:   = BebouwingsComponentTempl(Eindgebruiker/Utiliteit);
+		container UitlegUtil:  = BebouwingsComponentTempl(Eindgebruiker/UitlegUtil);
+		container GlasTuinbouw:= BebouwingsComponentTempl(Eindgebruiker/GlasTuinbouw);
+		container UitlegGlTb:  = BebouwingsComponentTempl(Eindgebruiker/UitlegGlTb);
+		
+		template WarmteOptieTempl
+		{
+			container AanbodOptieContainer;
+			parameter<Classifications/AanbodOptie> AanbodOptie;
+			
+			container Stock := EndState/Stock;
+			container Flow  := EndState/Flow;
+			attribute<Float64> Aandeel(PlanRegio) := PlanRegioInRapportageFactor * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == AanbodOptie);
+			
+			
+			parameter<Eur_Yr> YCF_R0 := sum(Aandeel * Stock/Ki_Totaal) * NCW/mr28/AnnualisationFactor;
+			parameter<Eur_Yr> YCF_R1 := sum(Aandeel *Flow/Km_ow_verbruik);
+			parameter<Eur_Yr> YCF_R2 := sum(Aandeel * EP/Bijstook/Km_Gas) - YCF_R10;
+			parameter<Eur_Yr> YCF_R3 := sum(Aandeel * AanbodoptieContainer/Ke_Totaal); // commodity prijs van gebruikte elektriciteit
+			parameter<Eur_Yr> YCF_R4 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R5 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R6 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R7 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R8 := 0[EUR_Yr];
+
+			parameter<Eur_Yr> Km_Total := sum(Aandeel * Flow/Km_Total);
+			parameter<Eur_Yr> YCF_R9 := Km_Total - (YCF_R0 + YCF_R1 + YCF_R2 + YCF_R3 + YCF_R10);
+				
+			parameter<Eur_Yr> YCF_R10:= sum(Aandeel * EP/Bijstook/Kj_CO2Heffing      ); // @@@ Niet meegenomen de CO2 in GebiedsAllocatie/RestWarmte/CO2 in KG van de restwarmtebron, want tegen welk tarief?
+			parameter<Eur_Yr> YCF_R11:= sum(Aandeel * EP/Bijstook/Kj_EnergieHeffing  );
+			parameter<Eur_Yr> YCF_R12:= sum(Aandeel * EndState/Flow/Kj_Precario);
+			
+			parameter<Eur_Yr> Kj_KL := sum(Aandeel * (Flow/Kj_KL - Flow/Oj_subsidie));
+			parameter<Eur_Yr> Oj_wd_Aansluitbijdrage := sum(Aandeel * Stock/Oi_wd_Aansluitbijdrage) * NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor;
+			
+			parameter<Eur_Yr> Km_KL := sum(Aandeel * (Flow/Km_KL - Flow/Om_subsidie));
+			parameter<Eur_Yr> Om_wd_Aansluitbijdrage := sum(Aandeel * Stock/Oi_wd_Aansluitbijdrage) * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor;
+			
+			parameter<Eur_Yr> YCF_R13 := (Kj_KL - Oj_wd_Aansluitbijdrage) - (Km_KL - Om_wd_Aansluitbijdrage);
+			
+			parameter<kton_yr> CO2_R0 := 0[kton_yr];
+			parameter<kton_yr> CO2_R1 := sum(Aandeel * AanbodOptieContainer/CO2_Primair ) / 1000000 [ kg / kton ] - CO2_R3;
+			parameter<kton_yr> CO2_R2 := sum(Aandeel * AanbodOptieContainer/KostenBaten/CO2_BijstookD )  / 1000000[ kg / kton ];
+			parameter<kton_yr> CO2_R3 := sum(Aandeel * AanbodOptieContainer/CO2_e) / 1000000 [ kg / kton ];
+			parameter<kton_yr> CO2_R4 := 0[kton_yr];
+			parameter<kton_yr> CO2_R5 := 0[kton_yr];
+			parameter<kton_yr> CO2_R6 := 0[kton_yr];
+			parameter<kton_yr> CO2_R7 := 0[kton_yr];
+			parameter<kton_yr> CO2_R8 := 0[kton_yr];
+			parameter<kton_yr> CO2_R9 := 0[kton_yr];
+			parameter<kton_yr> CO2_R10:= 0[kton_yr];
+			parameter<kton_yr> CO2_R11:= 0[kton_yr];
+			parameter<kton_yr> CO2_R12:= 0[kton_yr];
+			parameter<kton_yr> CO2_R13:= 0[kton_yr];
+			
+			parameter<PJ_Yr> EFL_R0 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R1 := sum(Aandeel * AanbodOptieContainer/KostenBaten/Vj_WarmtePrimairD   / 1000000[ GJ / PJ ])- EFL_R3;
+			parameter<PJ_Yr> EFL_R2 := sum(Aandeel * AanbodOptieContainer/KostenBaten/KostenD/Bijstook/Vj_Bijstook / 1000000[ GJ / PJ ]);
+			parameter<PJ_Yr> EFL_R3 := sum(Aandeel * AanbodoptieContainer/GJe_Totaal) / 1000000[ GJ / PJ];
+			parameter<PJ_Yr> EFL_R4 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R5 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R6 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R7 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R8 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R9 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R10:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R11:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R12:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R13:= 0[PJ_Yr];
+		}
+		
+		template  WkoOptieTempl
+		{
+			container AanbodOptieContainer:= EndState/WKO;
+			
+			parameter<Eur> Oi_Aansl:= ='add('+AsItemList('sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Oi_Aansl/'+Classifications/WkoComponent/name+')')+')';
+			
+			parameter<Eur_Yr> YCF_R0 := sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Ki_Totaal) * NCW/mr28/AnnualisationFactor;
+			parameter<Eur_Yr> YCF_R1 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R2 := 0[EUR_Yr]; // GAS: geen bijstook voor WKO
+			parameter<Eur_Yr> YCF_R3 := sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Km_ow_e) - YCF_R10; // commodity prijs van gebruikte elektriciteit
+			parameter<Eur_Yr> YCF_R4 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R5 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R6 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R7 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R8 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R9 := sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Km_Totaal) - (YCF_R3 + YCF_R10); // Km_Totaal is incl elektriciteit (maatschappelijk) en de CO2 heffing daarvan (R9)
+			parameter<Eur_Yr> YCF_R10:= sum(PlanRegioInRapportageFactor * AanbodoptieContainer/KCO2_ow_e);    // CO2: geen bijstook voor WKO, wel elektricieitsinkoop
+			parameter<Eur_Yr> YCF_R11:= sum(PlanRegioInRapportageFactor * AanbodoptieContainer/KEH_ow_e);     // EH:  geen bijstook voor WKO, wel elektricieitsinkoop
+			parameter<Eur_Yr> YCF_R12:= sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Kj_wd_pr);
+			parameter<Eur_Yr> YCF_R13:= 
+				  sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Ki_ow_Netto) * (NCW/ow28/AnnualisationFactor - NCW/mr28/AnnualisationFactor)
+				+ sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Ki_wd_Netto) * (NCW/wd28/AnnualisationFactor - NCW/mr28/AnnualisationFactor)
+				+ sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Ki_id_Netto) * (NCW/id28/AnnualisationFactor - NCW/mr28/AnnualisationFactor)
+				+ sum(PlanRegioInRapportageFactor * AanbodoptieContainer/Ki_ge_Netto) * (NCW/bw28/AnnualisationFactor - NCW/mr28/AnnualisationFactor)
+				- Oi_Aansl * (NCW/id28/StartDiscountFactor* NCW/id28/AnnualisationFactor - NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor);
+			
+			parameter<kton_yr> CO2_R0 := 0[kton_yr];
+			parameter<kton_yr> CO2_R1 := 0[kton_yr];
+			parameter<kton_yr> CO2_R2 := 0[kton_yr];
+			parameter<kton_yr> CO2_R3 := EFL_R3 * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+			parameter<kton_yr> CO2_R4 := 0[kton_yr];
+			parameter<kton_yr> CO2_R5 := 0[kton_yr];
+			parameter<kton_yr> CO2_R6 := 0[kton_yr];
+			parameter<kton_yr> CO2_R7 := 0[kton_yr];
+			parameter<kton_yr> CO2_R8 := 0[kton_yr];
+			parameter<kton_yr> CO2_R9 := 0[kton_yr];
+			parameter<kton_yr> CO2_R10:= 0[kton_yr];
+			parameter<kton_yr> CO2_R11:= 0[kton_yr];
+			parameter<kton_yr> CO2_R12:= 0[kton_yr];
+			parameter<kton_yr> CO2_R13:= 0[kton_yr];
+			
+			parameter<PJ_Yr> EFL_R0 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R1 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R2 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R3 := sum(PlanRegioInRapportageFactor * AanbodoptieContainer/GJe_Totaal) / 1000000[ GJ / PJ];
+			parameter<PJ_Yr> EFL_R4 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R5 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R6 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R7 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R8 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R9 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R10:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R11:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R12:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R13:= 0[PJ_Yr];
+		}
+
+		container NulOptie
+		{
+			parameter<Eur_Yr> YCF_R0 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R1 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R2 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R3 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R4 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R5 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R6 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R7 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R8 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R9 := 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R10:= 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R11:= 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R12:= 0[EUR_Yr];
+			parameter<Eur_Yr> YCF_R13:= 0[EUR_Yr];
+			
+			parameter<kton_yr> CO2_R0 := 0[kton_yr];
+			parameter<kton_yr> CO2_R1 := 0[kton_yr];
+			parameter<kton_yr> CO2_R2 := 0[kton_yr];
+			parameter<kton_yr> CO2_R3 := 0[kton_yr];
+			parameter<kton_yr> CO2_R4 := 0[kton_yr];
+			parameter<kton_yr> CO2_R5 := 0[kton_yr];
+			parameter<kton_yr> CO2_R6 := 0[kton_yr];
+			parameter<kton_yr> CO2_R7 := 0[kton_yr];
+			parameter<kton_yr> CO2_R8 := 0[kton_yr];
+			parameter<kton_yr> CO2_R9 := 0[kton_yr];
+			parameter<kton_yr> CO2_R10:= 0[kton_yr];
+			parameter<kton_yr> CO2_R11:= 0[kton_yr];
+			parameter<kton_yr> CO2_R12:= 0[kton_yr];
+			parameter<kton_yr> CO2_R13:= 0[kton_yr];
+			
+			parameter<PJ_Yr> EFL_R0 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R1 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R2 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R3 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R4 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R5 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R6 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R7 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R8 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R9 := 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R10:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R11:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R12:= 0[PJ_Yr];
+			parameter<PJ_Yr> EFL_R13:= 0[PJ_Yr];
+		}
+		
+		container RestWarmte:= =IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, Voorkeuren/WarmteOpties/AanbodOptie)) ? 'WarmteOptieTempl(GebiedsAllocatie/RestWarmte, Classifications/AanbodOptie/V/RestWarmte)' : 'NulOptie';
+		container GeoThermie:= =IsDefined(rlookup(Classifications/AanbodOptie/V/GeoThermie, Voorkeuren/WarmteOpties/AanbodOptie)) ? 'WarmteOptieTempl(GebiedsAllocatie/GeoThermie, Classifications/AanbodOptie/V/GeoThermie)' : 'NulOptie';
+		container WKO       := =IsDefined(rlookup(Classifications/AanbodOptie/V/WKO       , Voorkeuren/WarmteOpties/AanbodOptie)) ? 'WkoOptieTempl()': 'NulOptie';
+		container WijkWKK   := =IsDefined(rlookup(Classifications/AanbodOptie/V/WijkWKK   , Voorkeuren/WarmteOpties/AanbodOptie)) ? 'WarmteOptieTempl(GebiedsAllocatie/WijkWKK/impl, Classifications/AanbodOptie/V/WijkWKK)' : 'NulOptie';
+		container BioWKK    := =IsDefined(rlookup(Classifications/AanbodOptie/V/BioWKK    , Voorkeuren/WarmteOpties/AanbodOptie)) ? 'WarmteOptieTempl(GebiedsAllocatie/BioWKK/impl , Classifications/AanbodOptie/V/BioWKK )' : 'NulOptie';
+		
+		container Subsidie  := NulOptie
+		{
+			attribute<EUR_Yr> Om_subsidie(PlanRegio) := EndState/Flow/Om_subsidie;
+			attribute<Classifications/AanbodOptie> AanbodOptie_rel(PlanRegio) := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
+			parameter<Eur_Yr> YCF_R2 := sum(PlanRegioInRapportageFactor * netwerk/aardgas/Kj_Netto);
+			parameter<Eur_Yr> YCF_R3 := sum(PlanRegioInRapportageFactor * netwerk/elektriciteit/Kj_Netto);
+			parameter<Eur_Yr> YCF_R4 := sum(PlanRegioInRapportageFactor * Float64(AanbodOptie_rel == Classifications/AanbodOptie/V/RestWarmte) * Om_subsidie);
+			parameter<Eur_Yr> YCF_R5 := sum(PlanRegioInRapportageFactor * Float64(AanbodOptie_rel == Classifications/AanbodOptie/V/GeoThermie) * Om_subsidie);
+			parameter<Eur_Yr> YCF_R6 := =IsDefined(rlookup(Classifications/AanbodOptie/V/WKO , Voorkeuren/WarmteOpties/AanbodOptie)) ? 
+				'sum(PlanRegioInRapportageFactor * EndState/WKO/Sme)' : '0[EUR_Yr]';
+			parameter<Eur_Yr> YCF_R7 := sum(PlanRegioInRapportageFactor * Float64(AanbodOptie_rel == Classifications/AanbodOptie/V/WijkWKK   ) * Om_subsidie);
+			parameter<Eur_Yr> YCF_R8 := sum(PlanRegioInRapportageFactor * Float64(AanbodOptie_rel == Classifications/AanbodOptie/V/BioWKK    ) * Om_subsidie);
+		}
+	}
+	container CostsFlow := for_each_nedv(KostenPlaats/Name,
+		'=''union_data(KostenSoort, ''+AsItemList('+Quote('CaseData/'+KostenPlaats/Name+'/YCF_')+'+KostenSoort/Name)+'') / 1000000[ EUR / mEur ]''', 
+		KostenSoort, mEur_Yr)
+	{
+		attribute<String>  Afnemer(KostenSoort): Expr = "KostenSoort/Label";
+		
+		attribute<mEur_Yr> Oj_Totaal   (KostenSoort) := ='add('+AsItemList(KostenPlaats/Name)+')';
+		attribute<mEur_Yr> Kj_Totaal   (KostenSoort) := union_data(KostenSoort, 0[mEUR_Yr], 0[mEUR_Yr],0[mEUR_Yr], 0[mEUR_Yr], sum(RestWarmte), Sum(GeoThermie), Sum(WKO), Sum(WijkWKK), Sum(BioWKK), 0[mEUR_Yr], 0[mEUR_Yr], Sum(Subsidie), 0[mEUR_Yr], 0[mEUR_Yr]);
+		attribute<mEur_Yr> Oj_Netto    (KostenSoort) := Oj_Totaal - Kj_Totaal;
+	}
+	container CostsFlowCsv := 
+		Rapportage/WriteToCSV(
+			 CostsFlow
+			,KostenSoort
+			,'Afnemer;Oj_Totaal;Kj_Totaal;Oj_Netto;' + AsList(KostenPlaats/Name, ';')
+			,ReportFolder+'/CostsFlow.csv'
+		);
+
+	container CostsFlowChecks: Descr = "Controles op waarden van CostsFlow, tbv TechnischeValidatie"
+	{
+		parameter<mEur_Yr> Km_Totaal  := sum(CostsFlow/Oj_Totaal * Float64(KostenSoort/IsMaatschappelijk));
+		parameter<mEur_Yr> Km_Verschil:= Km_Totaal - sum(PlanRegioInRapportageFactor * Maatschappelijk/Km_Totaal) / 1000000[ EUR / mEur ];
+		
+		parameter<mEur_Yr> Oj_Netto:= sum(CostsFlow/Oj_Netto * Float64(not(KostenSoort/IsMaatschappelijk)));
+		
+		parameter<mEur_Yr> Kj_Eindgebruikers:= sum(CostsFlow/Woning + CostsFlow/UitlegWoning + CostsFlow/Utiliteit + CostsFlow/UitlegUtil + CostsFlow/GlasTuinbouw + CostsFlow/UitlegGlTb);
+		
+		parameter<mEur_Yr> Kj_Verschil:= Kj_Eindgebruikers - (Km_Totaal + Oj_Netto); // internal consistency
+		
+		container EindgebruikerVerschil:= for_each_nedv(BebouwingsComponent/Name, 
+			replace('sum(CostsFlow/@BC@) - (sum(PlanRegioInRapportageFactor * Eindgebruiker/@BC@/Kw_Totaal_incl) - CaseData/@BC@/Om_Comfort) / 1000000[ EUR / mEur ]',
+				'@BC@', BebouwingsComponent/Name)
+			, void, mEur_Yr);
+		container ProducentVerschil
+		{
+			parameter<mEur_Yr> RestWarmte:= CostsFlow/Oj_Netto[value(4, KostenSoort)] - sum(PlanRegioInRapportageFactor * EnergieProducent/CashFlow/RestWarmte) / 1000000[ EUR / mEur ];
+			parameter<mEur_Yr> GeoThermie:= CostsFlow/Oj_Netto[value(5, KostenSoort)] - sum(PlanRegioInRapportageFactor * EnergieProducent/CashFlow/GeoThermie) / 1000000[ EUR / mEur ];
+			parameter<mEur_Yr> WKO       := CostsFlow/Oj_Netto[value(6, KostenSoort)] - sum(PlanRegioInRapportageFactor * EnergieProducent/CashFlow/WKO       ) / 1000000[ EUR / mEur ];
+			parameter<mEur_Yr> WijkWKK   := CostsFlow/Oj_Netto[value(7, KostenSoort)] - sum(PlanRegioInRapportageFactor * EnergieProducent/CashFlow/WijkWKK   ) / 1000000[ EUR / mEur ];
+			parameter<mEur_Yr> BioWKK    := CostsFlow/Oj_Netto[value(8, KostenSoort)] - sum(PlanRegioInRapportageFactor * EnergieProducent/CashFlow/BioWKK    ) / 1000000[ EUR / mEur ];
+		}
+		container FlowCheck
+		{
+			parameter<mEur_Yr> Restwarmte       := MakeDefined(rjoin('Restwarmte',            Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> Geothermie       := MakeDefined(rjoin('GeoThermie',            Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> WKO              := MakeDefined(rjoin('WKO',                   Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> WijkWKK          := MakeDefined(rjoin('WijkWKK',               Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> BioWKK           := MakeDefined(rjoin('BioWKK',                Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> PrimairTransport := MakeDefined(rjoin('PrimairTransporteur',   Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> Wijkdistributie  := MakeDefined(rjoin('WijkDistributeur',      Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> InpandigeDistr   := MakeDefined(rjoin('InpandigeDistributeur', Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			parameter<mEur_Yr> BalanceTotal     := sum(Flow/mut_overview);
+			
+			parameter<bool> IsOK := 
+					Abs(Restwarmte      ) < MaxMarge
+				&&	Abs(Geothermie      ) < MaxMarge
+				&&	Abs(WKO             ) < MaxMarge
+				&&	Abs(WijkWKK         ) < MaxMarge
+				&&	Abs(BioWKK          ) < MaxMarge
+				&&	Abs(PrimairTransport) < MaxMarge
+				&&	Abs(Wijkdistributie ) < MaxMarge
+				&&	Abs(BalanceTotal    ) < MaxMarge
+			;
+		}
+		container FlowVerschil
+		{
+			parameter<mEur_Yr> GebiedsOpties1 := 
+				CostsFlow/Oj_Netto[value(4, KostenSoort)] +
+				CostsFlow/Oj_Netto[value(5, KostenSoort)] +
+				CostsFlow/Oj_Netto[value(6, KostenSoort)] +
+				CostsFlow/Oj_Netto[value(7, KostenSoort)] +
+				CostsFlow/Oj_Netto[value(8, KostenSoort)];
+				
+			parameter<mEur_Yr> GebiedsOpties2   := MakeDefined(rjoin('Leverancier' , Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
+			
+			parameter<mEur_Yr> CostFlowOverheid := 
+				CostsFlow/Oj_Netto[value(11,kostenSoort)] + // EnergieHeffing - Subsidies
+				CostsFlow/Oj_Netto[value(12,kostenSoort)] ; // BTW + Precario
+				
+			
+			container BC := for_each_nedv(Classifications/BebouwingsComponent/Name,
+				replace(
+					' rjoin('+Quote('@BC@_Gebruiker')+', Flow/impl/active_actor/label, Flow/mut_overview)'
+					'+rjoin('+Quote('@BC@_Eigenaar' )+', Flow/impl/active_actor/label, Flow/mut_overview)'
+					'+sum(CostsFlow/@BC@)'
+				,	'@BC@', Classifications/BebouwingsComponent/Name)
+			,	void, mEur_Yr
+			)
+			{
+				parameter<bool> IsOK :=  ='and('+AsItemList('abs('+Classifications/BebouwingsComponent/Name+') < MaxMarge')+')';
+			}
+			parameter<bool> FlowMaatschappelijkOK := abs(Km_Totaal        - Flow/MaatschappelijkEindtotaal) < MaxMarge;
+			parameter<bool> FlowOverheidOK        := abs(CostFlowOverheid - Flow/OverheidEindtotaal       ) < MaxMarge;
+			parameter<bool> FlowGebiedsOptiesOK   := Abs(GebiedsOpties1   - GebiedsOpties2                ) < MaxMarge;
+			
+			parameter<bool> IsOK := FlowCheck/IsOK
+				&&	FlowMaatschappelijkOK
+				&&	FlowOverheidOK
+				&&	FlowGebiedsOptiesOK
+				&&	BC/IsOK
+			;
+		}
+		
+		parameter<mEur_yr> MaxMarge: [ 0.001 ]; // See issue 739
+		parameter<Bool> IsOK:= FlowVerschil/IsOK &&
+			(Abs(Km_Verschil) < MaxMarge) && 
+			(Abs(Kj_Verschil) < MaxMarge) && 
+			(Abs(EindgebruikerVerschil/Woning      ) < MaxMarge) &&  // allow for some extra slack on the positive side to accept some missing PC6 demand in the PC4 aggregation (6x)
+			(Abs(EindgebruikerVerschil/UitlegWoning) < MaxMarge) && 
+			(Abs(EindgebruikerVerschil/Utiliteit   ) < MaxMarge) && 
+			(Abs(EindgebruikerVerschil/UitlegUtil  ) < MaxMarge) && 
+			(Abs(EindgebruikerVerschil/GlasTuinbouw) < MaxMarge) && 
+			(Abs(EindgebruikerVerschil/UitlegGlTb  ) < MaxMarge) && 
+			(Abs(ProducentVerschil/RestWarmte) < MaxMarge) && 
+			(Abs(ProducentVerschil/GeoThermie) < MaxMarge) && 
+			(Abs(ProducentVerschil/WKO       ) < MaxMarge) && 
+			(Abs(ProducentVerschil/WijkWKK   ) < MaxMarge) && 
+			(Abs(ProducentVerschil/BioWKK       ) < MaxMarge);
+	}
+	container EnergyFlow:= for_each_nedv(KostenPlaats/Name, 
+		'=''union_data(KostenSoort, ''+AsItemList('+Quote('CaseData/'+KostenPlaats/Name+'/EFL_')+'+KostenSoort/Name)+'')''', 
+		KostenSoort, PJ_Yr)
+	{
+		attribute<String>  Afnemer (KostenSoort):= KostenSoort/Label;
+		attribute<PJ_Yr>   Totaal(KostenSoort):= Woning + UitlegWoning + Utiliteit + UitlegUtil + GlasTuinbouw + UitlegGlTb + RestWarmte + GeoThermie + WKO + WijkWKK + BioWKK + Subsidie;
+		attribute<PJ_Yr>   Input (KostenSoort):= union_data(KostenSoort, 0[PJ_Yr], 0[PJ_Yr], 0[PJ_Yr], 0[PJ_Yr], sum(RestWarmte), Sum(GeoThermie), Sum(WKO), Sum(WijkWKK), Sum(BioWKK), 0[PJ_Yr], 0[PJ_Yr], Sum(Subsidie), 0[PJ_Yr], 0[PJ_Yr]);
+		attribute<PJ_Yr>   Netto (KostenSoort):= Totaal - Input;
+	}
+	container EnergyFlowCsv:= 
+		Rapportage/WriteToCSV(
+			 EnergyFlow
+			,KostenSoort
+			,'Afnemer;Totaal;Input;Netto;' + AsList(KostenPlaats/Name, ';')
+			,ReportFolder+'/EnergyFlow.csv'
+		);
+		
+	container CO2Flow:= for_each_nedv(KostenPlaats/Name, 
+		'=''union_data(KostenSoort, ''+AsItemList('+Quote('CaseData/'+KostenPlaats/Name+'/CO2_')+'+KostenSoort/Name)+'')''', 
+		KostenSoort, kton_Yr)
+	{
+		attribute<String>  Afnemer(KostenSoort):= KostenSoort/Label;
+		attribute<kton_Yr> Totaal(KostenSoort):= Woning + UitlegWoning + Utiliteit + UitlegUtil + GlasTuinbouw + UitlegGlTb + RestWarmte + GeoThermie + WKO + WijkWKK + BioWKK + Subsidie;
+		attribute<kton_Yr> Input (KostenSoort):= union_data(KostenSoort, 0[kton_Yr], 0[kton_Yr], 0[kton_Yr], 0[kton_Yr], sum(RestWarmte), Sum(GeoThermie), Sum(WKO), Sum(WijkWKK), Sum(BioWKK), 0[kton_Yr], 0[kton_Yr], Sum(Subsidie), 0[kton_Yr], 0[kton_Yr]);
+		attribute<kton_Yr> Netto (KostenSoort):= Totaal - Input;
+	}
+	container Co2FlowCsv := 
+		Rapportage/WriteToCSV(
+			 Co2Flow
+			,KostenSoort
+			,'Afnemer;Totaal;Input;Netto;' + AsList(KostenPlaats/Name, ';')
+			,ReportFolder+'/Co2Flow.csv'
+		);
+
+	container CO2FlowChecks
+	{
+		parameter<kTon_yr> TableTotal := sum(Co2Flow/Netto);
+		parameter<kTon_yr> IndicatorTotal := sum(PlanRegioInRapportageFactor * Co2/Totaal)  / 1000000[kg / kton];
+		parameter<Bool> IsOK := abs(TableTotal - IndicatorTotal) < 1[kton];
+	}
+	parameter<Bool> TechnischeValidatie := CostsFlowChecks/IsOK && CO2FlowChecks/IsOK;
+
+	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "CostsFlowCsv/result;EnergyFlowCsv/result;Co2FlowCsv/result"
+	, IntegrityCheck = "TechnischeValidatie" // Zet deze regel uit om in Batch de technische validatie over te slaan.
+	;
+}

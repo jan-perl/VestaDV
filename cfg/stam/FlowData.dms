@@ -1,0 +1,869 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden de brondata geconfigureerd.                    //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container FlowData: Using = "Units;Geography", KeepData = "True"
+{
+	unit<uint32> Kostensoort : nrofrows = 27
+	{
+		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
+			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
+			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
+			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
+			'KL_p', 'KL_e', 
+			'EmissieRechten', 'BTW', 'Precario', 'EnergieHeffing', 'Subsidie' //5
+		];
+		attribute<bool> IsMaatschappelijkeKosten: [ true, false, false, true, true,  //5
+			true, true, true, true, true, //5
+			true, true, true, true, true, //5
+			false, false, false, false, //4
+			false, false,
+			true, false, false, false, false
+		];
+		attribute<bool> IsOverheid : [ false, true, true, false, false, // 5
+			false, false, false, false, false, // 5
+			false, false, false, false, false, // 5
+			false, false, false, false, // 4
+			false, false, 
+			false, true, true, true, true
+		];
+	}
+	unit<uint32> BC := range(uint32, 0, #Classifications/BebouwingsComponent)
+	{
+		attribute<string> name      := union_data(., Classifications/BebouwingsComponent/name);
+		attribute<string> entity    := 'VestaRunData/'+name+'/BebouwingsObject';
+		attribute<bool  > draagtBTW := union_data(., Classifications/BebouwingsComponent/DraagtBTW);
+		attribute<bool  > kanWKO    := union_data(., Classifications/BebouwingsComponent/KanWKO);
+		container V := for_each_nedv(name, string(ID(.))+'[..]', void, .);
+	}
+	
+	unit<uint32> mutatieSchema: nrofrows = 142
+	{
+		
+		parameter<uint32> nrAttr := 6;
+		unit<UInt32> Elements := Range(uint32, 0, nrAttr * #.)
+		{
+			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
+			
+			// Annualisation Factors
+			parameter<string> AF28_OW := 'NCW/ow28/AnnualisationFactor'; 
+			parameter<string> AF28_PT := 'NCW/pt28/AnnualisationFactor'; 
+			parameter<string> AF28_WD := 'NCW/wd28/AnnualisationFactor'; 
+			parameter<string> AF28_ID := 'NCW/id28/AnnualisationFactor'; 
+			parameter<string> AF28_MR := 'NCW/mr28/AnnualisationFactor';
+			parameter<string> AF28_BW := 'NCW/bw28/AnnualisationFactor';
+			parameter<string> AF15_GE := 'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor';
+			parameter<string> AF30_GE := 'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor';
+			parameter<string> AF15_MR := 'NCW/mr15/AnnualisationFactor';
+			parameter<string> AF30_MR := 'NCW/mr30/AnnualisationFactor';
+			parameter<string> AFAB_ID := 'NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor'; 
+			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
+			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
+			parameter<string> AFAB_GE := 'VestaRunData/@BC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@BC@/NcwRefs/_28/AnnualisationFactor';
+			parameter<string> ROSEL := 'Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
+			parameter<string> VAT_F := '(UserInput/VAT / 100[Percent])';
+			parameter<string> VAT_R := '(1.0+iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT / 100[Percent], 0.0))';
+			attribute<String> Text := union_data(.,
+				// name //leverancier //afnemer  
+					// item 
+					// factor 
+					//left-entity-rel // right-entity-rel
+					
+		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
+				'maatschappelijk', 'AardGas', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/AardGas/maatschappelijk',
+					'', 
+					PRR
+			,	'AardGas' , 'EnergieHeffing', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/AardGas/EnergieHeffing',
+					'',
+					PRR
+					
+			,	'CO2@BC@' , 'EmissieRechten', 'AardGas', 
+					'AllocatieResultaat/@BC@/AardGas/CO2Heffing',
+					'',
+					PRR
+					
+			,	'Aardgas', 'BTW', '@BTW@/Gebruiker',
+					'AllocatieResultaat/@BTW@/AardGas/eindgebruik_ex * '+VAT_F, 
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+			
+			,	'Netkosten_@BC@', 'GasNet', 'AardGas', 
+					'AllocatieResultaat/@BC@/AardGas/netwerk',
+					'', 
+					PRR
+			,	'Vastrecht', 'GasNet', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/AardGas/Vastrecht',
+					'', 
+					PRR
+			,	'VastrechtGasNet', 'BTW', '@BTW@/Gebruiker',
+					'AllocatieResultaat/@BTW@/AardGas/VastRecht * '+VAT_F,
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+			
+			,	'AardGas', 'KL_e', '@BC@/Eigenaar',
+					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
+					'', 
+					''
+			,	'Aansluitbijdrage_@BC@', 'GasNet', 'KL_e',
+					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_m',
+					'', 
+					''
+			,	'Aansluitbijdrage_AardGas@BTW@', 'BTW', 'KL_e',
+					'indicatoren/Eindgebruiker/@BTW@/gebouwen/AardGas/Aansl_m * '+VAT_F,
+					'',
+					''
+					
+			,	'maatschappelijk', 'Elektriciteit', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/Elektriciteit/maatschappelijk',
+					'', 
+					PRR
+			,	'Elektriciteit', 'EnergieHeffing', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/Elektriciteit/EnergieHeffing', 
+					'', 
+					PRR
+					
+			,	'CO2@BC@', 'EmissieRechten', 'Elektriciteit', 
+					'AllocatieResultaat/@BC@/Elektriciteit/CO2Heffing', 
+					'', 
+					PRR
+					
+			,	'Elektriciteit', 'BTW', '@BTW@/Gebruiker',
+					'AllocatieResultaat/@BTW@/Elektriciteit/eindgebruik_ex * '+VAT_F,
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+					
+			,	'Netkosten@BC@', 'ElektriciteitsNet', 'Elektriciteit', 
+					'AllocatieResultaat/@BC@/Elektriciteit/netwerk',
+					'', 
+					PRR
+			,	'Vastrecht', 'ElektriciteitsNet', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/Elektriciteit/Vastrecht',
+					'', 
+					PRR
+			,	'VastrechtElektriciteitsNet', 'BTW', '@BTW@/Gebruiker',
+					'AllocatieResultaat/@BTW@/Elektriciteit/VastRecht * '+VAT_F,
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+			,	'Elektriciteit', 'KL_e', '@BC@/Eigenaar',
+					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
+					'', 
+					''
+			,	'Aansluitbijdrage@BC@', 'ElektriciteitsNet', 'KL_e',
+					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_m',
+					'', 
+					''
+			,	'ElektriciteitAansluitbijdrage@BTW@', 'BTW', 'KL_e',
+					'indicatoren/Eindgebruiker/@BTW@/gebouwen/Elektriciteit/Aansl_m * '+VAT_F,
+					'',
+					''
+			
+			,	'kapitaallasten', 'Netwerk', 'GasNet',
+					'indicatoren/netwerk/aardgas/kapitaallasten',
+					'', 
+					''
+			,	'verwijderkosten', 'Netwerk', 'GasNet',
+					'indicatoren/netwerk/aardgas/verwijderkosten',
+					'', 
+					''
+			,	'', 'Onderhoud', 'GasNet',
+					'indicatoren/netwerk/aardgas/onderhoud',
+					'', 
+					''
+					
+			,	'kapitaallasten', 'Netwerk', 'ElektriciteitsNet',
+					'indicatoren/netwerk/elektriciteit/kapitaallasten',
+					'', 
+					''
+					
+			,	'netverzwaring', 'Netwerk', 'ElektriciteitsNet',
+					'indicatoren/netwerk/elektriciteit/netverzwaring',
+					'', 
+					''
+					
+			,	'', 'Onderhoud', 'ElektriciteitsNet',
+					'indicatoren/netwerk/elektriciteit/onderhoud',
+					'', 
+					''
+					
+		// ===== Lokale opwekking: eigenaar investeringen
+			,	'ZonneBoiler', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_ZonneBoiler * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					PRR
+					
+			,	'Zon_PV', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_Zon_PV * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					PRR
+					
+			,	'mWKK', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_mWKK * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					PRR
+					
+			,	'eWP', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_eWP * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					PRR
+					
+			,	'EWV', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_EWV * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					PRR
+					
+			,	'hWP', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_hWP * '+ VAT_R,
+					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					PRR
+					
+			,	'@BC@30j', 'LokaleOpwekking', 'KL_e', 
+					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking30',
+					'NCW/mr30/AnnualisationFactor',
+					PRR
+					
+			,	'@BTW@30j', 'BTW', 'KL_e', 
+					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking30 * '+VAT_F,
+					'NCW/mr30/AnnualisationFactor',
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+			,	'@BC@15j', 'LokaleOpwekking', 'KL_e', 
+					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking15',
+					'NCW/mr15/AnnualisationFactor',
+					PRR
+			,	'@BTW@15j', 'BTW', 'KL_e', 
+					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking15 * '+VAT_F,
+					'NCW/mr15/AnnualisationFactor',
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+			,	'LokaleOpwekking', 'Onderhoud', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking * VestaRunData/Onderhoud/Rj_LokaleOpwekking',
+					'',
+					PRR
+					
+			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
+					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking * VestaRunData/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
+					'',
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+		// ===== Gebouwverbeteringen
+			,	'Gebouwverbetering', 'KL_e', '@BC@/Eigenaar', 
+					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT_gv / 100[Percent], 0.0))',
+					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					PRR
+					
+			,	'Gebouwverbetering@BC@', 'Gebouw', 'KL_e', 
+					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering',
+					'NCW/mr30/AnnualisationFactor',
+					PRR
+					
+			,	'Gebouwverbetering@BTW@', 'BTW', 'KL_e', 
+					'VestaRunData/@BTW@/kosten/Ki_GebouwVerbetering * (UserInput/VAT_gv / 100[Percent])',
+					'NCW/mr30/AnnualisationFactor',
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+		// ===== split incentive
+			,	'VergoedingLabelSprong', '@BC@/Eigenaar', '@BC@/Gebruiker',
+					'VestaRunData/@BC@/kosten/Kj_gv_incentive * VestaRunData/@BC@/BTW_Factor',
+					'',
+					PRR
+			,	'VergoedingZonPV', '@BC@/Eigenaar', '@BC@/Gebruiker',
+					'VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV * VestaRunData/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_ex[AllocatieResultaat/@BC@/Elektriciteit/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor',
+					'',
+					PRR
+					
+			,	'VergoedingZonneBoiler', '@BC@/Eigenaar', '@BC@/Gebruiker',
+					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler * VestaRunData/@BC@/PrijzenAardgas/KGJ_eindgebruik_ex[AllocatieResultaat/@BC@/AardGas/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
+					'',
+					PRR
+		
+		// ===== subsidie
+			,	'LokaleOpwekking', '@BC@/Eigenaar', 'Subsidie',
+					'VestaRunData/@BC@/sprongen/subsidie/EEA',
+					'',
+					PRR
+			,	'EIA30', '@BC@/Eigenaar', 'KL_e',
+					'VestaRunData/@BC@/sprongen/subsidie/EIA30',
+					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					PRR
+					
+			,	'EIA30@BC@', 'KL_e', 'Subsidie',
+					'VestaRunData/@BC@/sprongen/subsidie/EIA30',
+					'NCW/mr30/AnnualisationFactor',
+					PRR
+					
+			,	'EIA15', '@BC@/Eigenaar', 'KL_e',
+					'VestaRunData/@BC@/sprongen/subsidie/EIA15',
+					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					PRR
+					
+			,	'EIA15@BC@', 'KL_e', 'Subsidie',
+					'VestaRunData/@BC@/sprongen/subsidie/EIA15',
+					'NCW/mr15/AnnualisationFactor',
+					PRR
+					
+			
+		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
+			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
+					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@ * '+VAT_R,
+					AFAB_GE, 
+					PRR
+					
+			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
+					'VestaRunData/@BTW@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BTW@/Aandelen/@RO@ * '+VAT_F,
+					AFAB_MR,
+					'VestaRunData/@BTW@/PlanRegio_rel'
+					
+			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
+					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
+					AFAB_MR, 
+					PRR
+					
+			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
+					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
+					AFAB_WD, 
+					PRR
+					
+		// ===== vergoedingen van vastrecht en warmte aan leveranciers
+			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
+					'VestaRunData/@BC@/Opbrengsten/VastrechtBijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@', 
+					'', 
+					PRR
+					
+			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
+					'VestaRunData/@BTW@/Opbrengsten/VastrechtBijdrageD * AllocatieResultaat/@BTW@/Aandelen/@RO@ * '+VAT_F,
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+			
+			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
+					'VestaRunData/@BC@/WarmteVraagD/Verbruik * AllocatieResultaat/@BC@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
+					'', 
+					PRR
+			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
+					'VestaRunData/@BTW@/WarmteVraagD/Verbruik * AllocatieResultaat/@BTW@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
+					'', 
+					'VestaRunData/@BTW@/PlanRegio_rel'
+			
+		// ===== Eigenaar kosten
+			,	'projectmanagement', 'KL_e', 'Woning/Eigenaar',
+					'EndState/Stock/Ki_ge_pm',
+					AF28_BW,
+					''
+					
+			,	'ongeriefsvergoeding', 'KL_e', 'Woning/Eigenaar',
+					'EndState/Stock/Ki_ge_ov',
+					AF28_BW,
+					''
+				
+			,	'projectmanagemente', 'Admin', 'KL_e',
+					'EndState/Stock/Ki_ge_pm',
+					AF28_MR,
+					''
+					
+			,	'ongeriefsvergoeding', 'Comfort', 'KL_e',
+					'EndState/Stock/Ki_ge_ov',
+					AF28_MR, 
+					''
+					
+			,	'EIA', 'Woning/Eigenaar', 'KL_e',
+					'EndState/Stock/Oi_ge_subsidie',
+					AF28_BW,
+					''
+					
+			,	'ge_EIA', 'KL_e', 'Subsidie',
+					'EndState/Stock/Oi_ge_subsidie',
+					AF28_MR,
+					''
+					
+			,	'EEA', 'Woning/Eigenaar', 'Subsidie',
+					'EndState/Flow/Oe_ge_subsidie',
+					'',
+					''
+					
+		// ===== huuurkorting
+			,	'HuurVerlaging', 'Comfort', 'Woning/Eigenaar', 
+					'EndState/Flow/Kj_ge_hv',
+					'',
+					''
+					
+		// ===== Inpandige Distributie kosten
+			,	'@RO@', 'KL_p', 'InpandigeDistributeur', 
+					'EndState/Stock/Ki_id * '+ROSEL, 
+					AF28_ID, 
+					''
+					
+			,	'@RO@', 'InpandigeDistributie', 'KL_p', 
+					'EndState/Stock/Ki_id * '+ROSEL, 
+					AF28_MR, 
+					''
+					
+			,	'@RO@_EIA', 'InpandigeDistributeur', 'KL_p',
+					'EndState/Stock/Oi_id_subsidie * '+ROSEL,
+					AF28_ID,
+					''
+					
+			,	'@RO@_EIA_id', 'KL_p', 'Subsidie',
+					'EndState/Stock/Oi_id_subsidie * '+ROSEL,
+					AF28_MR,
+					''
+					
+			,	'@RO@_EEA', 'InpandigeDistributeur', 'Subsidie',
+					'EndState/flow/Oe_id_subsidie * '+ROSEL,
+					'',
+					''
+					
+			,	'@RO@', 'Onderhoud', 'InpandigeDistributeur', 
+					'EndState/flow/Kj_id_onderhoud *'+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+		// ===== WijkDistributie kosten
+			,	'@RO@', 'KL_p', 'WijkDistributeur', 
+					'EndState/Stock/Ki_wd * '+ROSEL, 
+					AF28_WD, 
+					''
+					
+			,	'@RO@', 'WijkDistributie', 'KL_p', 
+					'EndState/Stock/Ki_wd * '+ROSEL, 
+					AF28_MR, 
+					''
+					
+			,	'@RO@_EIA', 'WijkDistributeur', 'KL_p',
+					'EndState/Stock/Oi_wd_subsidie * '+ROSEL,
+					AF28_WD,
+					''
+					
+			,	'@RO@_EIA_wd', 'KL_p', 'Subsidie',
+					'EndState/Stock/Oi_wd_subsidie * '+ROSEL,
+					AF28_MR,
+					''
+					
+			,	'@RO@_EEA', 'WijkDistributeur', 'Subsidie',
+					'EndState/Flow/Oe_wd_subsidie * '+ROSEL,
+					'',
+					''
+					
+			,	'@RO@', 'Onderhoud', 'WijkDistributeur', 
+					'EndState/Flow/Kj_wd_onderhoud *'+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'@RO@', 'Admin', 'WijkDistributeur', 
+					'EndState/Flow/Kj_wd_admin * '+ROSEL, 
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'@RO@', 'Precario', 'WijkDistributeur', 
+					'EndState/Flow/Kj_wd_precario * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'@RO@_bijstook', 'AardGas', 'WijkDistributeur', 
+					'EndState/Flow/Km_wd_verbruik * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+			// TODO: 'bijstookCO2', 'EmissieRechten', 'AardGas', 
+				
+			,	'@RO@_bijstook', 'EnergieHeffing', 'WijkDistributeur', 
+					'(EndState/Flow/Kj_wd_verbruik - EndState/Flow/Km_wd_verbruik) * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+		// ===== PRIMAIR TRANSPORT
+			,	'@RO@', 'KL_p', 'PrimairTransporteur', 
+					'EndState/Stock/Ki_pt * '+ROSEL, 
+					AF28_PT, 
+					''
+					
+			,	'@RO@', 'PrimairTransport', 'KL_p', 
+					'EndState/Stock/Ki_pt * '+ROSEL, 
+					AF28_MR, 
+					''
+					
+			,	'@RO@_EIA', 'PrimairTransporteur', 'KL_p',
+					'EndState/Stock/Oi_pt_subsidie * '+ROSEL,
+					AF28_PT,
+					''
+					
+			,	'@RO@_EIA_pt', 'KL_p', 'Subsidie',
+					'EndState/Stock/Oi_pt_subsidie * '+ROSEL,
+					AF28_MR,
+					''
+					
+			,	'@RO@_EEA', 'PrimairTransporteur', 'Subsidie',
+					'EndState/Flow/Oe_pt_subsidie * '+ROSEL,
+					'',
+					''
+					
+			,	'@RO@', 'Onderhoud', 'PrimairTransporteur', 
+					'EndState/Flow/Kj_pt_onderhoud * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'@RO@', 'Admin', 'PrimairTransporteur', 
+					'EndState/Flow/Kj_pt_admin * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'@RO@', 'Precario', 'PrimairTransporteur', 
+					'EndState/Flow/Kj_pt_precario * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+		// ===== OPWEKKING
+			,	'@RO@', 'KL_p', '@RO@', 
+					'EndState/Stock/Ki_ow * '+ROSEL, 
+					AF28_OW, 
+					''
+					
+			,	'@RO@', 'Opwekking', 'KL_p', 
+					'EndState/Stock/Ki_ow * '+ROSEL, 
+					AF28_MR, 
+					''
+					
+			,	'@RO@_EIA', '@RO@', 'KL_p',
+					'EndState/Stock/Oi_ow_subsidie * '+ROSEL,
+					AF28_WD,
+					''
+					
+			,	'@RO@_EIA_ov', 'KL_p', 'Subsidie',
+					'EndState/Stock/Oi_ow_subsidie * '+ROSEL,
+					AF28_MR,
+					''
+					
+			,	'@RO@_EEA', '@RO@', 'Subsidie',
+					'EndState/Flow/Oe_ow_subsidie *'+ROSEL,
+					'',
+					''
+					
+			,	'', 'Onderhoud', '@RO@', 
+					'EndState/Flow/Kj_ow_onderhoud * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'', 'Admin', '@RO@', 
+					'EndState/Flow/Kj_ow_admin * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'Commodity', 'WarmteInkoop', '@RO@', 
+					'EndState/Flow/Km_ow_verbruik * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+			,	'Opwekking', 'EnergieHeffing', '@RO@', 
+					'(EndState/Flow/Kj_ow_verbruik - EndState/Flow/Km_ow_verbruik) * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+					
+					
+				// TODO: CO2 heffing van gasinkoop tbv bijstook apart boeken.
+				
+//				,	'warmte_pt_@RO@', 'PrimairTransporteur', 'WijkDistributeur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
+//				,	'warmte_ow_@RO@', '@RO@',             'PrimairTransporteur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
+//				,	'Km_Opwekking', 'LokaleOpwekking', 'KL_e',   'VestaRunData/@BC@/kosten/Ki_totaal',AF15_m, PRR, PRR
+//				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'VestaRunData/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
+				
+
+		// ===== LEVERANCIER
+			,	'Verrekening', 'Woning/Eigenaar', 'Leverancier',
+					'EndState/Flow/Kj_ge_Netto', 
+					'', 
+					''
+			,	'Verrekening', 'InpandigeDistributeur', 'Leverancier',
+					'EndState/Flow/Kj_id_netto',
+					'', 
+					''
+			,	'Verrekening', 'WijkDistributeur', 'Leverancier',
+					'EndState/Flow/Kj_wd_netto',
+					'', 
+					''
+			,	'Verrekening', 'PrimairTransporteur', 'Leverancier',
+					'EndState/Flow/Kj_pt_netto',
+					'', 
+					''
+			,	'Verrekening', '@RO@', 'Leverancier',
+					'EndState/Flow/Kj_ow_netto * '+ROSEL,
+					'', 
+					''
+			,	'@RO@', 'Admin', 'Leverancier', 
+					'EndState/Flow/Kj_lv_admin * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+		// ===== WKO
+		// ===== WKO vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
+			,	'Aansluitbijdrage_@CO@', 'KL_e', '@WKOC@/Eigenaar',
+					'EndState/@CO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], UserInput/VAT / 100[Percent], 0.0))', 
+					'VestaRunData/@WKOC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
+					''
+					
+			,	'Aansluitbijdrage_@CO@_@BTW@', 'BTW', 'KL_e',
+					'EndState/@CO@/Oi_Aansl/@BTW@ * '+VAT_F,
+					AFAB_MR,
+					''
+					
+			,	'Aansluitbijdrage_@CO@_@WKOC@', 'KL_p', 'KL_e',
+					'EndState/@CO@/Oi_Aansl/@WKOC@', 
+					AFAB_MR, 
+					''
+					
+			,	'Aansluitbijdrage_@CO@_@WKOC@', 'Leverancier', 'KL_p',
+					'EndState/@CO@/Oi_Aansl/@WKOC@', 
+					AFAB_ID, 
+					''
+					
+		// ===== WKO vergoedingen van vastrecht en warmte aan leveranciers
+			,	'Verbruik_@CO@', 'Leverancier', '@WKOC@/Gebruiker',
+					'EndState/@CO@/Oj_verbruik/@WKOC@', // Vastrecht, warmte, en koude
+					'', 
+					''
+					
+			,	'Verbruik_@CO@', 'BTW', '@BTW@/Gebruiker',
+					'EndState/@CO@/Oj_verbruik/@BTW@ * ' + VAT_F,
+					'', 
+					''
+			
+			,	'Koude_@CO@', '@WKOC@/Gebruiker', 'Comfort',
+					'EndState/@CO@/Om_comfort/@WKOC@', // Vastrecht, warmte, en koude
+					'', 
+					''
+		// ===== WKO Eigenaar kosten
+ 			,	'projectmanagement_@CO@', 'KL_e', 'Woning/Eigenaar',
+					'EndState/@CO@/Ki_ge_pm', 
+					AF28_BW,
+					''
+					
+			,	'ongeriefsvergoeding_@CO@', 'KL_e', 'Woning/Eigenaar',
+					'EndState/@CO@/Ki_ge_ov', 
+					AF28_BW,
+					''
+				
+			,	'projectmanagement_@CO@', 'Admin', 'KL_e',
+					'EndState/@CO@/Ki_ge_pm', 
+					AF28_MR,
+					''
+					
+			,	'ongeriefsvergoeding_@CO@', 'Comfort', 'KL_e',
+					'EndState/@CO@/Ki_ge_ov',
+					AF28_MR, 
+					''
+					
+			,	'EIA_@CO@', 'Woning/Eigenaar', 'KL_e',
+					'EndState/@CO@/Si_ge',
+					AF28_BW,
+					''
+					
+			,	'EIA_@CO@', 'KL_e', 'Subsidie',
+					'EndState/@CO@/Si_ge',
+					AF28_MR,
+					''
+					
+			,	'EEA_@CO@', 'Woning/Eigenaar', 'Subsidie',
+					'EndState/@CO@/Se_ge',
+					'',
+					''
+// 					
+		// ===== WKO huuurkorting
+// 			,	'HuurVerlaging_@CO@', 'Comfort', 'Woning/Eigenaar', 
+// 					'EndState/@CO@/Kj_ge_hv',
+// 					'',
+// 					''
+					
+		// ===== WKO Inpandige Distributie kosten
+			,	'@CO@', 'KL_p', 'InpandigeDistributeur', 
+					'EndState/@CO@/Ki_id', 
+					AF28_ID, 
+					''
+					
+			,	'@CO@', 'InpandigeDistributie', 'KL_p', 
+					'EndState/@CO@/Ki_id', 
+					AF28_MR, 
+					''
+					
+			,	'@CO@_EIA', 'InpandigeDistributeur', 'KL_p',
+					'EndState/@CO@/Si_id', 
+					AF28_ID,
+					''
+					
+			,	'@CO@_EIA_id', 'KL_p', 'Subsidie',
+					'EndState/@CO@/Si_id', 
+					AF28_MR,
+					''
+					
+			,	'@CO@_EEA', 'InpandigeDistributeur', 'Subsidie',
+					'EndState/@CO@/Se_id', 
+					'',
+					''
+					
+// 			,	'@CO@', 'Onderhoud', 'InpandigeDistributeur', 
+// 					'EndState/@CO@/Kj_id_o',
+// 					'',  // TODO: Niet voor WKO
+// 					''
+					
+		// ===== WKO WijkDistributie kosten
+			,	'@CO@', 'KL_p', 'WijkDistributeur', 
+					'EndState/@CO@/Ki_wd', 
+					AF28_WD, 
+					''
+					
+			,	'@CO@', 'WijkDistributie', 'KL_p', 
+					'EndState/@CO@/Ki_wd', 
+					AF28_MR, 
+					''
+					
+			,	'@CO@_EIA', 'WijkDistributeur', 'KL_p',
+					'EndState/@CO@/Si_wd', 
+					AF28_WD,
+					''
+					
+			,	'@CO@_EIA_wd', 'KL_p', 'Subsidie',
+					'EndState/@CO@/Si_wd', 
+					AF28_MR,
+					''
+					
+			,	'@CO@_EEA', 'WijkDistributeur', 'Subsidie',
+					'EndState/@CO@/Se_wd', 
+					'',
+					''
+					
+// 			,	'@CO@', 'Onderhoud', 'WijkDistributeur', 
+// 					'EndState/@CO@/Kj_wd_onderhoud',
+// 					'',
+// 					''
+// 					
+// 			,	'@CO@', 'Admin', 'WijkDistributeur', 
+// 					'EndState/@CO@/Kj_wd_admin',
+// 					'',
+// 					''
+// 					
+ 			,	'@CO@', 'Precario', 'WijkDistributeur', 
+ 					'EndState/@CO@/Kj_wd_pr',
+ 					'',
+ 					''
+// 					
+		// ===== WKO OPWEKKING
+			,	'@CO@', 'KL_p', '@CO@', 
+					'EndState/@CO@/Ki_ow', 
+					AF28_OW, 
+					''
+					
+			,	'@CO@', 'Opwekking', 'KL_p', 
+					'EndState/@CO@/Ki_ow', 
+					AF28_MR, 
+					''
+					
+			,	'@CO@_EIA', '@CO@', 'KL_p',
+					'EndState/@CO@/Si_ow', 
+					AF28_WD,
+					''
+					
+			,	'@CO@_EIA_ov', 'KL_p', 'Subsidie',
+					'EndState/@CO@/Si_ow', 
+					AF28_MR,
+					''
+					
+			,	'@CO@_EEA', '@CO@', 'Subsidie',
+					'EndState/@CO@/Se_ow', 
+					'',
+					''
+					
+			,	'', 'Onderhoud', '@CO@', 
+					'EndState/@CO@/Kj_ow_o',
+					'',
+					''
+					
+// 			,	'', 'Admin', '@CO@', 
+// 					'EndState/@CO@/Kj_ow_admin',
+// 					'',
+// 					''
+// 					
+			,	'Commodity', 'Elektriciteit', '@CO@', 
+					'EndState/@CO@/Km_ow_e', 
+					'',
+					''
+					
+			,	'CO2@CO@', 'EmissieRechten', 'Elektriciteit', 
+					'EndState/@CO@/KCO2_ow_e', 
+					'',
+					''
+					
+			,	'Opwekking', 'EnergieHeffing', '@CO@', 
+					'EndState/@CO@/KEH_ow_e', 
+					'',
+					''
+					
+					
+		// ===== WKO LEVERANCIER
+		
+			,	'Verrekening@CO@', 'Woning/Eigenaar', 'Leverancier',
+					'EndState/@CO@/Kj_ge_netto', 
+					'',
+					''
+
+			,	'Verrekening@CO@', 'InpandigeDistributeur', 'Leverancier',
+					'EndState/@CO@/Kj_id_netto', 
+					'',
+					''
+			,	'Verrekening@CO@', 'WijkDistributeur', 'Leverancier',
+					'EndState/@CO@/Kj_wd_netto', 
+					'',
+					''
+			,	'Verrekening', '@CO@', 'Leverancier',
+					'EndState/@CO@/Kj_ow_netto', 
+					'',
+					''
+// 			,	'@CO@', 'Admin', 'Leverancier', 
+// 					'EndState/Flow/Kj_lv_admin * '+ROSEL,
+// 					'',  // TODO: Niet voor WKO
+// 					''
+// 			
+			);
+		}
+		
+		attribute<String> Name       := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
+		attribute<string> Leverancier:= Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
+		attribute<string> Afnemer    := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
+		attribute<string> Expr       := Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
+		attribute<string> AnnuFactor := Elements/Text[value(ID(.)* nrAttr + 4, Elements)];
+		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 5, Elements)];
+	}
+}

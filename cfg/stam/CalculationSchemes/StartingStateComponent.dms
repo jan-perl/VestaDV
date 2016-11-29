@@ -1,0 +1,109 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template StartingStateComponent
+{
+	container Bebouwing;
+	container EnergieVraagModellen;
+	
+	parameter<Classifications/BebouwingsComponent> ComponentID; 
+	
+	// end of case parameters
+	
+	unit<uint32>  BebouwingsObject := Bebouwing/BebouwingsObject;
+	unit<UInt32>  ModelObject      := EnergieVraagModellen/ModelObject;
+	unit<uint32>  WkoCluster       := StartingState/AanbodOpties/WkoCluster;
+
+	attribute<ModelObject> Model_rel  (BebouwingsObject) := rlookup(Bebouwing/SubType, EnergieVraagModellen/SubType);
+
+	attribute<Classifications/AanbodOptie> WarmteAllocatie(BebouwingsObject) := const((0 / 0)[Classifications/AanbodOptie], BebouwingsObject);
+	attribute<EUR_Yr> KoudeAllocatie(BebouwingsObject) := const(0[EUR_Yr], BebouwingsObject);
+	attribute<EUR_Yr> Om_Comfort    (BebouwingsObject) := const(0[EUR_Yr], BebouwingsObject);
+	attribute<WkoCluster>  WkoCluster_rel (BebouwingsObject) := const( (0/0)[WkoCluster], BebouwingsObject);
+
+	container EnergieLabel
+	{
+		attribute<Classifications/EnergieLabel> ModelValue(BebouwingsObject): Expr = "EnergieVraagModellen/Efficiency/EnergieLabel[ Model_rel]";
+		
+		attribute<Classifications/EnergieLabel> CalcValue (BebouwingsObject): Expr = 
+			"=(ComponentID == Classifications/BebouwingsComponent/Woning)"
+			"? 'value((Float64(ModelValue) * (max_elem(Bebouwing/Gebied/n, Float64(Bebouwing/EnergieLabelData_rel/Totaal)) -Float64(Bebouwing/EnergieLabelData_rel/Totaal)) + Float64(Bebouwing/EnergieLabelData_rel/TotWeight)) "
+			"/ max_elem(Bebouwing/Gebied/n, Float64(Bebouwing/EnergieLabelData_rel/Totaal)) + 0.5,Classifications/EnergieLabel)'"
+			": 'ModelValue'";
+		attribute<Uint8> code(BebouwingsObject) := ModelValue * UInt8(#Classifications/EnergieLabel) + CalcValue;
+			
+		attribute<Classifications/EnergieLabel> CurrValue (BebouwingsObject): Expr = "MakeDefined(rjoin(code, Classifications/LabelReclassTable/code, Classifications/LabelReclassTable/CurrLabel), ModelValue)";
+		attribute<Classifications/LabelSprong>  CurrSprong(BebouwingsObject): Expr = "rjoin(code, Classifications/LabelReclassTable/code, Classifications/LabelReclassTable/CurrSprong)";
+		attribute<Bool>                         IsChanged (BebouwingsObject): Expr = "CurrValue != ModelValue";
+	}
+	container OpwekkingsOpties
+	{
+		container capaciteit 
+		{
+			attribute<Ratio> Zon_PV     (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
+			attribute<Ratio> ZonneBoiler(BebouwingsObject) := const(0[Ratio], BebouwingsObject);
+			attribute<Ratio> EWV        (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
+			attribute<Ratio> mWKK       (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
+			attribute<Ratio> hWP        (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
+		}
+	}
+	container Efficiency
+	{
+		container Gebouw
+		{
+			attribute<units/Ratio> StartWaarde(BebouwingsObject) := EnergieVraagModellen/Efficiency/Gebouw[ Model_rel];
+			attribute<units/Ratio> VerbeterFactor(BebouwingsObject) :=
+					EnergieLabel/CurrSprong == value( 0, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency [ Model_rel] :
+					EnergieLabel/CurrSprong == value( 1, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency [ Model_rel] :
+					EnergieLabel/CurrSprong == value( 2, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel] :
+					EnergieLabel/CurrSprong == value( 3, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency [ Model_rel] :
+					EnergieLabel/CurrSprong == value( 4, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[ Model_rel] :
+					EnergieLabel/CurrSprong == value( 5, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[ Model_rel] :
+					EnergieLabel/CurrSprong == value( 6, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel] : // gebouw als bij 2
+					EnergieLabel/CurrSprong == value( 7, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[ Model_rel] : // gebouw als bij 4
+					EnergieLabel/CurrSprong == value( 8, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[ Model_rel] : // gebouw als bij 5
+					EnergieLabel/CurrSprong == value(10, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel] : // gebouw als bij 2
+					EnergieLabel/CurrSprong == value(11, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[ Model_rel] : // gebouw als bij 4
+					EnergieLabel/CurrSprong == value(12, Classifications/LabelSprong) ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[ Model_rel] : // gebouw als bij 5
+					1.0[Ratio];
+			attribute<units/Ratio> ResultaatWaarde(BebouwingsObject) := max_elem(StartWaarde, VerbeterFactor);
+		}
+	}
+	container Sprongen {
+		attribute<float64> Ki_gv_w(BebouwingsObject) :=  const(0[EUR / EnergieVraagModellen/ModelUnit], BebouwingsObject);
+	}
+	container Kosten
+	{
+		attribute<EUR_Yr> Kj_gv_incentive  (BebouwingsObject):= const(0[EUR_Yr], BebouwingsObject);
+	}
+}

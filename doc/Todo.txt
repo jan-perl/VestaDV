@@ -1,0 +1,172 @@
+TODO Vesta-Mais
+
+Legenda: 
+'-' = nog te doen; 
+'!': prioriteit
+'+' = gedaan; 
+'?': nog overleggen of en hoe dit te doen
+'C': startconditie voor vooorgaande TODO
+
+
++ REMOVE: GasEnergie_NMDA en alle dependent *_NMDA items.
++ impl vaste warmteprijs
++ RentabiliteitsAfweging annualiseren.
++ Controleer WarmteAllocatie
++ gebruik buurt als planregio
+
+
+
+Kosten
++ Precario per strekkende meter buis en niet percentage op de investeringskosten. 
++ 15 strekkende meters per aansluiting.
++ BTW Hoog laag voor gebouwmaatregelen. 50%; geen 7.5%
++ administratiekosten leverancier: percentage van het ontvangen vastrecht
++ leidingverliesfactoren tbv warmteprijs verplaatsen naar metervraag berekening voor gas
++ voor utiliteit en glastuinbouw op dezelfde wijze warmteprijs berekenen obv prijsfactor
++ kosten opwekking ZonnePV en Boiler (incl onderhoud en admin) tlv eigenaar ipv gebruiker; 
++ gebruik split incentive percentage voor toerekening van voordeel aan eigenaar (ipv gebruiker).voor lokale opwekking (incl zonne-boiler en pv),
+- ook voor microWKK.
++ parameters gas/ elek voor micro wkk lezen uit warmtebron type definities
++ Rebound van efficiency verbetering opnemen als comfortbaat en deze meenemen in de rentabiliteitsafweging (voorzover toegerekend aan eigenaar)
++ split incentive bijdrage in rentabiliteitsafweging incl BTW.
++ implementeer inlezen nieuwe data van bas als testdata
++ EWV handmatig en via labelsprong aanzetten gaat wellicht niet goed, verwijder handmatige instel voor EWV en eWP.
++ Zon PV van Drageropties verplaatsen naar saldering met metervraag; nu niet gemaximeerd afgehaald van drageroptie Apparatuur/Elektrisch
++ zonneboiler niet maximeren op tapwater maar onbeperkt negatieve vraag
++ energieprijzen volgens schijven toepassen met een commodity prijs voor een negatieve schijf (producenten).
++ inpandige distributiekosten opnemen, mim/max, zie overzicht Benno
+  + meld: voor nieuwbouw geen verwijderingskosten gerekend.
++ in flow boeken: Onderhoud + Admin Gebouwverbetering (Rj_GebouwVerbetering staat nu gelukkig op 0).
+? Aansluitbijdrage voor Gas en Elektra over 50 jaar afschrijven en niet 15 jaar zoals het was
++ flow boeken split incentive gebruiker -> eigenaar voor mWKK en hWP, en voordeelberekeningen centraliseren, ook voor Zon_PV en ZonneBoiler
++ verwijder AandeelCollectief
+- laat kapitaallasten doorlopen tot 2050 voor gebiedsopties en gebouwverbeteringen
+- issue 778: aansluitbijdrage voor initiele restwarmtebronnen verwijderen
+- issue 772: koudevraag onafhankelijk maken van gebouwverbeteringen
+
+Gebiedsopties
++ parameteriseerbare MinderDanAnders warmteprijs factor
++ percentage groen gas voor alle gas parameteriseren en vooralsnog op 10% zetten. Ook consumer gas.
++ prijsberekening (80%->90%) en verhouding 50/50 -> 75/25 afleiden uit brontype definitie in brondata.dms volgens wijzigingen van Steven
++ bijstook voor andere gebiedsopties (Geothermie, restwarmte en WKO) ook gedeeltelijk op groen gas zetten ?
++ WijkWKK en BMC aan parameteriseerbaar maximum binden (en toewijzen obv hoogste contributiemarge per verbruikseenheid eeerst).
++ huurkorting igv warmteoptie
++ Geography/RegioIndelingen/buurt/RW gebruiken als startsituatie voor Restwarmte.
+
+Infrastructuur
++ elementen van de elektriciteitsrekening
+x bijstook netbijdrage voor gasnet nog boeken
+
+Beleidsmaatregelen:
+- Check op BTW voor 2010 inderdaad bedoeld was 21% te worden (was en is nu weer 19%).
++ EEA/ov verkeerd gebruikt. Het is een factor en niet een EUR/GJ subsidie
++ BTW bw en nw (nog als mutaties boeken)
+	+ BTW op gebouwverbeteringen zoals isolatie is toch (deels) 6% ?
+	
++ EIA: EnergieInvesteringsAftrek, MIA/VAMIL etc:
+	+ Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
+		+	in te stellen per actor: UserInput/BEleidsOpties/EIA/xxx
+		+	en per technologie voorzover actor = opwekker en per zichtjaar als percentage van de investering 
+	+ Exploitatiesubsidies: per geleverde GJ of per verkochte EUR.per zichtjaar in te stellen
+		+ kosten: percentage op totale kosten (kapitaallasten + O&M) per actor aan actor
+		+ SDE: subsidie [EUR per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.
+		x SDE subsidie voor gebouwverbetering
++ impl vaste warmteprijs in EUR_GJ.
++ R_SplitIncentiveFactor naar Beleidsmaatregelen verplaatsen; 
++ besparingen * split incentive door gebruiker aan eigenaar laten betalen.
+
+Run3: 
++ fix CheckIntegrity for 2020
++ fix CheckIntegrity for 2030
++ test WKO 2020
++ test WKO 2030
+- test warmte en koude for WKO
+
+Run1Referentie_TrendPrijzen_KlimaatConstant.dms
++ /RunContext/Y2010/indicatoren/InputOutput/NL/CostsFlowChecks/FlowVerschil/BC/Utiliteit zou 0 moeten zijn, maar is -0.15 [mEur/yr]. Fixed: ruim 300 utititeit vo zonder pc4 gewicht 0 gegeven.
+
+Flow 
+- boekingen voor WKO
++ Check CO2       in InputOutput tabellen en flows
++ add Integrity Checks op consisitentie tussen InputOutput en flow.
+	+	GebiedsOpties
+	+	Bebouwingscomponenten: Kosten per component, LokaleOpwekking en Gebouwverbetering.
+	+	Risicopremie voor gebiedopties in bebouwingscomponent is nu obv percentage bebouwingscomponent
+	+	Maatschappelijke kosten
+	+	Overheidsbaten en lasten.
+	+	flow Balans	
+
+Huurkoop
++ opname kans op huur per woning obv CBS buurtgegevens en zonder allocatieregel (huurkoop kans per buurt vooralsnog onafhankelijk van woning kenmerken)
+x allocatieregel voor huurkoop kansen
+- demonstratie van hoe attribuutwaarden toe te delen obv huurkoop kansverderling
+	- lineair toedelen: V_h := P_h * V; V_k := P_k * V; geeft onderschatting van discrepantie
+	? OLS/ML toedeling (veronderstel dat V bepaald wordt door huur/koop situatie en bepaal V_h en V_k obv OSL of ML).
+
+
+Simplificaties:
++ elektriciteitsfactor uit warmteprijs berekening verwijderen.
++ oude warmteprijs methodiek verwijderen
++ verwijder onderscheid Collectieve en individuele warmtedistributie, zie huurprijs aanpassingen.
+- verwijder roze items
++ gemeenschappelijke basis van runs in gemeenschappelijke include file
+- /RunContext/y2020/Flow/actor_mut_tables/Woning_Gebruiker/all_muts/AardGas_Commodity: labels toevoegen in tabel (igv BAG, GMP heeft wel al label).
++ InfraParameters uit VestRunData halen, want onafhankelijk van zichtjaar
++ run aanroepen in include file zetten
++ zichtjaar afhankelijke klimaat instellingen in afgezonderde scenario component. Meerdere tijdscomponenten in UserInput1.
+- btw in flow boekingen automatiseren.
+
+
+performance
++ voorkom excessieve primaire dataverwerking bij openklappen flow/matrix (csv) en InputOutput/NL, selecteer niet op 0 en orden volgens formele geldstromen en niet actuele stromen.
+- niet boeken van mutaties die zeker 0 zijn, en implementeren mbv meer verschillende akfo's die selecties maken conform @BTW@:
+  - Aansluitbijdrage voor bestaande bouw: gebruik @NC@ voor nieuwbouw
+  
+script verbeteringen
++ RENAME: Kj_PC4_Kapitaallast
+- RENAME Kj_PC4_*
+- verplaatsen van Onderhoud en prijzen uit VestaRunData.
++ Check Labetoepassing BAG / GMP
+
+Test Run1
++ impl grootboek kosten voor lokale opwekking en gebouwverbetering
++ test split incentive
+
+Rapportage:
++ Voeg Matrix toe aan flow.
++ Maak .csv bestanden van alle grootboeken en matrix
+! overzichtstabel met investeringen
+- flow met nieuwe actoren voor Energy en CO2, zie overzichten Steven: per zichtjaar-> kolom; per warmtebron techniek of bebouwingscomponent de warmtevraag (dit nog aanvullen).
+! flow tabellen met toepassing van mutiplicatiefactoren per CBS buurt (zoals opsplitsing per huur/koop en inkomenscategorie)
+! pas generate all aan aan wensen van Steven.
++ GenerateAll ook per inkomensgroep en eigendomsgroep opnemen -> Bas.
+
+Fixes
++ geen BTW op Om_Extra
++ afschrijvingstermijn eWP 15 jaar, want lokaleopwekking
++ eWP en EWV niet meer als lokaleopwekking instelbaar maken, want gestuurd door verbetersprongen.
++ issue 739: missing 30keur/yer door -9999 als missing data, fixed in GeoDMS 7.126
++ Deel eWP van opwekking op 30 jaar afschrijven in flow en in costflow 
++ Onderhoud en Admin kosten van eWP en EWV meewegen in VerbeterKosten voor sprong afweging
++ BTW onderscheid (korting op GebouwVerbetering) meenemen in LabelSprong_eg.
+
+Implementatiekeuzen
+? Subsidie op LokaleOpwekking en GebouwVerbetering (zowel EIA als Exploitatie) hebben als basis de kosten excl. BTW; dit maakt wat uit voor woning eigenaren en gebruikers.
+? PrijsFactor volgens warmtewet wordt bepaald obv NMDA in gebieden met AandeelAardgas > 0. In Run4 2050 is PrijsFactor undefined wegens alle AandeelAardgas = 0; er wordt dan gekozen voor PrijsFactor = 1.25.
+
+
+appendix:
++ Boekingsschema Kapital flow
+	AB_ge: GE   -> KL_e
+	AB_mr: KL_e -> KL_p
+	AB_wd: KL_p -> Leverancier
+	IK_wd: WD   -> KL_p
+	IK_mr: KL_p -> KL_m;
+	
+==== Geconsolideerd per actor:
+	GE   betaalt:  AB_ge
+	KL_e ontvangt: AB_ge - AB_mr
+	KL_p ontvangt: (IK_wd - AB_wd) - (IK_mr - AB_mr) = RisicoPremie YCF_R12
+	KL_m ontvangt: IK_mr;
+	(Leverancier + WD) betaalt: (IK_wd -AB_wd)
+	

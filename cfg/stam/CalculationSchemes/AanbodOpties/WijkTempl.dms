@@ -1,0 +1,149 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container WijkTempl: IsTemplate = "True"
+{
+	container BeginStatus;
+	container AanbodKentallen;
+	container EnergiePrijzen;
+	parameter<Units/Jaar> Jaar;
+	
+	container TypeInfo;
+	parameter<Classifications/AanbodOptie> Optie;
+	parameter<String>  StartJaarAttr;
+	parameter<PJ_Yr>   MaxTotalDemand;
+	
+	// end of case param
+	
+	parameter<Float64> CO2_Aardgas       := TypeInfo/RekenType/Aardgas_Factor;
+	parameter<Float64> CO2_Elektriciteit := TypeInfo/RekenType/Elektriciteit_Factor;
+	
+	unit<uint32> PlanRegio: Expr = "RunImpl/PlanRegio"
+	{
+		attribute<units/Jaar> StartJaar: Expr = "=StartJaarAttr != '' ? StartJaarAttr : 'const(2000[units/jaar], .)'";
+	}
+	
+	
+	container KostenBaten: Expr = "BeginStatus/KostenBaten";
+	
+	container Kosten
+	{
+		attribute<EUR> Ki_Totaal_nu(PlanRegio) := 
+			(TypeInfo/K_kW_min * Schuiven/KostenMin + TypeInfo/K_kW_max * Schuiven/KostenMax) 
+		*	max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
+		*	1000[kW / MW]
+		;
+		
+		attribute<EUR> Ki_Totaal(PlanRegio) := Ki_Totaal_nu * LeerCurves/Curve2;
+		attribute<EUR> Oi_EIA   (PlanRegio) := Ki_Totaal * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel];
+		attribute<EUR> Ki_Netto (PlanRegio) := Ki_Totaal - Oi_EIA;
+		
+		parameter<EUR_GJ> K_GJ := 
+			(Jaar < 2020[Units/Jaar] ? TypeInfo/K_GJ10 :  
+			 Jaar < 2030[Units/Jaar] ? TypeInfo/K_GJ20 :  
+			 Jaar < 2040[Units/Jaar] ? TypeInfo/K_GJ30 :  
+			 Jaar < 2050[Units/Jaar] ? TypeInfo/K_GJ40 : TypeInfo/K_GJ50 );
+			
+		parameter<KG_GJ> CO2g_GJ := CO2_Aardgas * VestaRunData/Prijzen/AardGas/CO2_GJ;
+		parameter<KG_GJ> CO2e_GJ := CO2_Elektriciteit * VestaRunData/Prijzen/Elektriciteit/CO2_GJ;
+		parameter<KG_GJ> CO2_GJ := CO2g_GJ + CO2e_GJ, Source = "FO v7a C.5 WijkWKK";
+			
+		parameter<EUR_GJ> Km_GJ := K_GJ;
+				
+		attribute<EUR_Yr> Kj_Base        (PlanRegio):= Ki_Totaal * TypeInfo/Rj_Onderhoud;
+		attribute<EUR_Yr> Kj_Admin       (PlanRegio):= Kj_Base * VestaRunData/Onderhoud/R_Admin;
+		attribute<EUR_Yr> Kj_Onderhoud   (PlanRegio):= Kj_Base - Kj_Admin;
+		attribute<EUR_Yr> Kj_WarmteWaarde(PlanRegio):= K_GJ  * KostenBaten/Vj_WarmtePrimairD;
+		attribute<EUR_Yr> Km_WarmteWaarde(PlanRegio):= Km_GJ * KostenBaten/Vj_WarmtePrimairD;
+		
+		attribute<EUR_Yr> Ke_Totaal      (PlanRegio):= CO2_Elektriciteit * KostenBaten/Vj_WarmtePrimairD * last(VestaRunData/prijzen/Elektriciteit/Staffel/KGJ_Commodity);
+
+		attribute<EUR_Yr> Kj_Totaal  (PlanRegio) := Kj_Base + Kj_WarmteWaarde;
+		attribute<EUR_Yr> Km_Totaal(PlanRegio) := Kj_Base + Km_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.
+	}
+
+	attribute<EUR   > Oi_Totaal(PlanRegio):= KostenBaten/Oi_Aansluitbijdrage ;
+	attribute<EUR   > Ki_Totaal(PlanRegio):= KostenBaten/Ki_wd_bruto + Kosten/Ki_Totaal;
+	attribute<EUR_Yr> Ke_Totaal(PlanRegio):= Kosten/Ke_Totaal;
+	
+//	attribute<EUR   > Ki_Netto (PlanRegio):= Ki_Totaal - NCW/wd28/StartDiscountFactor * Oi_Totaal;
+	
+	attribute<EUR_Yr> Km_Totaal  (PlanRegio):= KostenBaten/Km_TotaalD + Kosten/Km_Totaal;
+	attribute<EUR_Yr> Oj_Netto   (PlanRegio):= KostenBaten/Oj_NettoD  - Kosten/Kj_Totaal;
+	attribute<kg_Yr>  CO2_Primair(PlanRegio):= KostenBaten/Vj_WarmtePrimairD * Kosten/CO2_GJ;
+	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * CO2_Elektriciteit;
+	attribute<kg_Yr>  CO2_e      (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * Kosten/CO2e_GJ;
+	attribute<kg_Yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
+	
+	attribute<EUR_Yr> Oj_Yield   (PlanRegio) :=  Oj_Netto - Kosten/Ki_Netto * NCW/ow28/AnnualisationFactor * (1.0 - UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel]);
+	
+	
+	attribute<GJ_Yr>  Vj_Warmte  (PlanRegio) := max_elem(KostenBaten/Vj_WarmtePrimairD, 0.001[GJ_Yr]);
+	attribute<EUR_GJ> YieldPerGJ (PlanRegio) := Oj_Yield / Vj_Warmte + UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
+	parameter<EUR_GJ> Threshold := -nth_element_weighted( -YieldPerGJ  * Float64(not(OldGebruik)), MaxTotalDemand * 1000000[GJ / PJ], Vj_Warmte);
+	
+	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := YieldPerGJ > max_elem(Threshold, 0[EUR_GJ]);
+	attribute<Bool> Afweging2    (PlanRegio) := PlanRegio/StartJaar >= Jaar;
+		
+	attribute<Bool> OldGebruik   (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
+	attribute<Bool> GebruiktOptie(PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Optie;   // deze optie was al in gebruik;
+	attribute<Bool> NewGebruik   (PlanRegio) := RentabiliteitsAfweging && Afweging2 && not(OldGebruik);
+	attribute<Bool> GebruikOptie (PlanRegio) := NewGebruik || GebruiktOptie;
+	
+//	attribute<EUR_Yr> Kj_Netto (PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oj_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
+	
+	container Results := BeginStatus
+	{
+		container AanbodOpties := BeginStatus/AanbodOpties
+		{
+			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := 
+				GebruikOptie
+					? MakeDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie, Optie)
+					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie;
+		}
+		container Stock := BeginStatus/Stock
+		{
+			attribute<EUR> Ki_ow         (PlanRegio) := BeginStatus/Stock/Ki_ow          + iif(NewGebruik, Kosten/Ki_Totaal, 0[EUR]);
+			attribute<EUR> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, Kosten/Oi_EIA   , 0[EUR]);
+			attribute<EUR> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik, Kosten/Ki_Netto * UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[EUR]);
+		}
+		container Flow := BeginStatus/Flow
+		{
+			attribute<EUR_Yr> Kj_ow_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_ow_Onderhoud + iif(GebruikOptie, Kosten/Kj_Onderhoud, 0[EUR_Yr]);
+			attribute<EUR_Yr> Kj_ow_admin    (PlanRegio) := BeginStatus/Flow/Kj_ow_Admin     + iif(GebruikOptie, Kosten/Kj_admin, 0[EUR_Yr]);
+			attribute<EUR_Yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, Kosten/Kj_WarmteWaarde, 0[EUR_Yr]);
+			attribute<EUR_Yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, Kosten/Km_WarmteWaarde, 0[EUR_Yr]);
+			attribute<EUR_Yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, Vj_Warmte * UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel], 0[EUR_Yr]);
+		}
+	}
+}

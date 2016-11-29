@@ -1,0 +1,50 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile wordt de grondsoort brondata geconfigureerd.          //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container grondsoort
+{
+	unit<uint8> class: nrofrows = 5, Label = "graafklasse"
+	{
+		attribute<uint32> BrushColor: [rgb(255,255,255), rgb(  0,150,  0), rgb(150,0,0), rgb(200,100,0), rgb(255,128,0)], DialogType = "BrushColor";
+		attribute<string> Label:      ['','groter dan 1,1 m. venig','tussen 0,5 en 1,1 m en kleiig','tussen 0 en 0,5 m kleiig','effecten nihil zandig'], DialogType = "LabelText";
+	}
+	
+	attribute<class> j2010 (Geography/rdc_100lu): StorageName = "%sourceDataProjDir%/hulpbestanden/grondsoort/zetting_new.asc";
+}

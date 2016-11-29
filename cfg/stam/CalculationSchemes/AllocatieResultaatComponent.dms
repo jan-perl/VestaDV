@@ -1,0 +1,147 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template AllocatieResultaatComponentTempl
+{	
+	
+	container VestaRunDataComponent;
+	unit<UInt32> PlanRegio;
+	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio);
+	
+	attribute<Classifications/AanbodOptie> WarmteAllocatie(BebouwingsObject);
+	attribute<EUR_Yr>                      KoudeAllocatie (BebouwingsObject);
+	attribute<EUR_Yr>                      Om_Comfort     (BebouwingsObject);
+	
+
+	
+	container     RuimtelijkeVraagComponent := VestaRunDataComponent/RuimtelijkeVraagComponent;
+	container     Kengetallen               := VestaRunDataComponent/Kengetallen;
+	Unit<UInt32>  BebouwingsObject          := VestaRunDataComponent/BebouwingsObject;
+
+	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent(BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[ VestaRunDataComponent/PlanRegio_rel ]);
+
+	container Aandelen
+	{
+		attribute<Float64> eWP           (BebouwingsObject) := VestaRunDataComponent/Opwekking/eWP;
+		attribute<Float64> mWKK          (BebouwingsObject) := VestaRunDataComponent/Opwekking/mWKK;
+		attribute<Float64> EWV           (BebouwingsObject) := VestaRunDataComponent/Opwekking/EWV; // @RUUD: meenemen in energiekosten als elektriciteitsvraag
+		attribute<Float64> hWP           (BebouwingsObject) := VestaRunDataComponent/Opwekking/hWP;
+		
+		attribute<Float64> GebiedsOptie  (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(IsDefined(WarmteAllocatieComponent));
+		attribute<Float64> RestWarmte    (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/RestWarmte);
+		attribute<Float64> GeoThermie    (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/GeoThermie);
+		attribute<Float64> WKO           (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WKO);
+		attribute<Float64> WijkWKK       (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WijkWKK);
+		attribute<Float64> BioWKK        (BebouwingsObject) := VestaRunDataComponent/AandeelWarmteVraag * Float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/BioWKK);
+		
+		attribute<Float64> AardGasExclMicroWKK(BebouwingsObject) := 
+			VestaRunDataComponent/AandeelWarmteVraag * Float64(not(IsDefined(WarmteAllocatieComponent)))
+			+ VestaRunDataComponent/AandeelNietDeelnemers
+			- VestaRunDataComponent/AandeelElectric_mWKK;
+			// VestaRunDataComponent/AandeelWarmteVraag + VestaRunDataComponent/AandeelNietDeelnemers == 1.0;
+			
+		attribute<Float64> AardGasInclMicroWKK(BebouwingsObject) := AardGasExclMicroWKK  + mWKK;
+		attribute<Float64> AllElectric        (BebouwingsObject) := eWP + EWV + WKO;
+	}
+		
+	container MeterVraag
+	{
+		attribute<GJ_Yr> RestWarmte(BebouwingsObject) := Aandelen/RestWarmte * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> GeoThermie(BebouwingsObject) := Aandelen/GeoThermie * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> WKO       (BebouwingsObject) := Aandelen/WKO        * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> WijkWKK   (BebouwingsObject) := Aandelen/WijkWKK    * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> BioWKK    (BebouwingsObject) := Aandelen/BioWKK     * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		
+		attribute<GJ_Yr> GebiedsOptie(BebouwingsObject) := RestWarmte+GeoThermie+WKO+WijkWKK+BioWKK;
+		
+		attribute<GJ_Yr> AardGas   (BebouwingsObject) :=
+			  Aandelen/AardGasExclMicroWKK * VestaRunDataComponent/DragerOpties/Ruimteverwarming/AardGas * (1.0 - Aandelen/hWP  * Kengetallen/hWP/DekkingsGraad) // F85
+			+ Aandelen/AardGasExclMicroWKK * VestaRunDataComponent/DragerOpties/WarmWater/AardGas
+			+ Aandelen/mWKK                * VestaRunDataComponent/DragerOpties/Warmte/Warmte / (0.8 * 0.5) // rendement: 80% waarvan 50% voor warmte en 50% voor Elektriciteit
+			, Descr = "incl gas voor Micro WKK, excl gas voor WijkWKK en bijstook in WOS";
+		
+		attribute<GJ_Yr> eWP(BebouwingsObject) :=Aandelen/eWP * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
+				
+		attribute<GJ_Yr> Elektriciteit(BebouwingsObject) :=
+			  VestaRunDataComponent/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
+			+ VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP)
+			+ VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO) // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
+			+ eWP
+			+ Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/EWV // COP is al toegepast in de DragerOptie
+			+ Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP) // F85
+			- Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte // op basis van 50/50 productie   
+		,	Descr = "excl elektra voor WKO warmtepomp";
+		
+//DEBUG		attribute<GJ_Yr> Wko_Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * Aandelen/WKO;
+				
+		attribute<GJ_Yr> Totaal(BebouwingsObject): Descr = "Totale Metervraag na verwerking lokale opwekking",
+			Expr =
+				"  RestWarmte"
+				"+ GeoThermie"
+				"+ WKO"
+				"+ WijkWKK"
+				"+ BioWKK"
+				"+ AardGas"
+				"+ Elektriciteit";
+	}
+	container AardGas {
+		attribute<EUR>    AansluitBijdrage (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageG   * Aandelen/AardGasInclMicroWKK * Float64(Metervraag/Aardgas > 0.0[GJ_Yr]);
+		attribute<EUR_Yr> VastRecht        (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastRechtBijdrageG  * Aandelen/AardGasInclMicroWKK * Float64(Metervraag/Aardgas > 0.0[GJ_Yr]);
+
+		unit<uint8> ggk := VestaRunDataComponent/PrijzenAardgas; // gebruiksgrootte klasse
+		attribute<ggk>    ggk_rel        (BebouwingsObject) := classify(MeterVraag/AardGas, ggk/ClassBreak);
+		attribute<EUR_Yr> eindgebruik_ex (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_eindgebruik_ex [ggk_rel];
+		attribute<EUR_Yr> maatschappelijk(BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_maatschappelijk[ggk_rel];
+		attribute<EUR_Yr> netwerk        (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_netwerk        [ggk_rel];
+		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_EnergieHeffing [ggk_rel];
+		attribute<EUR_Yr> CO2Heffing     (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_CO2Heffing     [ggk_rel];
+	}
+	container Elektriciteit {
+		attribute<EUR>    AansluitBijdrage(BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageE;
+		attribute<EUR_Yr> VastRecht       (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastRechtBijdrageE;
+
+		unit<uint8> ggk := VestaRunDataComponent/PrijzenElektriciteit; // gebruiksgrootte klasse
+		attribute<ggk>    ggk_rel        (BebouwingsObject) := classify(MeterVraag/Elektriciteit, ggk/ClassBreak);
+		attribute<EUR_Yr> eindgebruik_ex (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_eindgebruik_ex [ggk_rel];
+		attribute<EUR_Yr> maatschappelijk(BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_maatschappelijk[ggk_rel];
+		attribute<EUR_Yr> netwerk        (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_netwerk        [ggk_rel];
+		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel];
+		attribute<EUR_Yr> CO2Heffing     (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_CO2Heffing     [ggk_rel];
+	}
+	container CO2
+	{
+		attribute<KG_Yr> AardGas      (BebouwingsObject) := MeterVraag/AardGas       * VestaRunData/prijzen/AardGas/CO2_GJ;
+		attribute<KG_Yr> Elektriciteit(BebouwingsObject) := MeterVraag/Elektriciteit * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+	}
+}
+
