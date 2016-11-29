@@ -1,6 +1,6 @@
 # VestaDV
 Energiemodel gebouwde omgeving
 
-<korte modelbeschrijving hier>
+* TODO: korte modelbeschrijving hier opnemen
 
 Zie de wiki voor installatie-instructies en verwijzingen naar aanvullende documenten.
