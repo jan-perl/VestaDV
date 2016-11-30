@@ -5,6 +5,8 @@ Het ruimtelijk energiemodel Vesta berekent het energiegebruik en de CO2-uitstoot
 Zie de wiki voor installatie-instructies en verwijzingen naar aanvullende documenten.
 https://github.com/RuudvandenWijngaart/VestaDV/wiki
 
+n.b. deze pagina is nog in opbouw. De software, het model en de bijbehorende data en installatieinstructies zullen hier vanaf 25 december 2016 beschikbaar komen.
+
 Links:
 * http://www.pbl.nl/publicaties/2012/vesta-ruimtelijk-energiemodel-voor-de-gebouwde-omgeving
 * http://www.objectvision.nl/gallery/products/vesta
