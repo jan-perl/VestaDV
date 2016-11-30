@@ -8,3 +8,4 @@ https://github.com/RuudvandenWijngaart/VestaDV/wiki
 Links:
 * http://www.pbl.nl/publicaties/2012/vesta-ruimtelijk-energiemodel-voor-de-gebouwde-omgeving
 * http://www.objectvision.nl/gallery/products/vesta
+* http://www.ce.nl/publicatie/vesta_2.0_-_uitbreidingen_en_dataverificaties/1427
