@@ -58,8 +58,8 @@ container indicatoren
 				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie ? GebiedsAllocatie/GeoThermie/CO2   : 0.0[KG_Yr]',
 				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK    ? GebiedsAllocatie/WijkWKK/impl/CO2 : 0.0[KG_Yr]',
 				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK     ? GebiedsAllocatie/BioWKK/impl/CO2  : 0.0[KG_Yr]',
-				'EndState/WKO/CO2',
-				'AardGas: XXX');
+				'EndState/WKO/CO2'
+			);
 		}
 		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, CaseData/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_Yr)
 		{
@@ -185,8 +185,8 @@ container indicatoren
 				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - EndState/Flow/Kj_Netto) * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
 				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - EndState/Flow/Kj_Netto) * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
 				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - EndState/Flow/Kj_Netto) * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
-				'EndState/WKO/Oj_totaal - EndState/WKO/Kj_Netto',
-				'AardGas: XXX');
+				'EndState/WKO/Oj_totaal - EndState/WKO/Kj_Netto'
+			);
 				
 			attribute<String> StockExpr(Classifications/AanbodOptie) := 
 				'EndState/Stock/Ki_Totaal* Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
