@@ -40,9 +40,9 @@
 
 container Uitleg
 {
-	parameter<String> UitlegFolder := '%LocalDataDir%/WLO2Energy/VestaResults/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
+	parameter<String> UitlegFolder := '%SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
 	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
-	//parameter<String> UitlegFolder := '%LocalDataDir%/WLO2Energy/VestaResults/Run1/_NotBBGa_loc_/laag_spreiding_231115';
+	//parameter<String> UitlegFolder := '%SourceDataDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115';
 	unit<uInt32> SZW: Expr = "Classifications/ScenarioZichtjaarWonen";
 	unit<uInt32> SZU: Expr = "Classifications/ScenarioZichtjaarUtiliteit";
 

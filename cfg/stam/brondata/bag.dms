@@ -45,7 +45,8 @@ container BAG
 	parameter<string>   SnapShotDir := '%SourceDataDir%/BAG/snapshots';
 	parameter<units/Yr> SnapShotYear:= 2015[units/Yr];
 	parameter<string>   SnapShotDate:= '20160101';
-	parameter<string>   SourceDir   : = '%SourceDataDir%/BAG/snapshots.ext/' + SnapShotDate;
+//	parameter<string>   SourceDir   : = '%SourceDataDir%/BAG/snapshots.ext/' + SnapShotDate;
+	parameter<string>   SourceDir   : = '%SourceDataDir%/Vesta/BAG/' + SnapShotDate;
 
 	container typeringen
 	{
