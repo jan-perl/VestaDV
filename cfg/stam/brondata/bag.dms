@@ -231,7 +231,6 @@ container BAG
 
 		attribute<uInt8>                                 nr_verdiepingen         := rjoin(pand_id, import/pand/PAND_ID, import/pand/nr_verdiepingen);
 
-		attribute<vo_pc6_table_CALC>                     vo_pc6_rel              := rlookup(postcode, vo_pc6_table_CALC/values);
 		attribute<Float64>                               x                       := PointCol(locatie);
 		attribute<Float64>                               y                       := PointRow(locatie);
 
@@ -263,7 +262,6 @@ container BAG
 		attribute<units/Yr>                              bouwjaar                := rjoin(pand_id, import/pand/PAND_ID, import/pand/BOUWJAAR_GECORRIGEERD);
 		attribute<Classifications/BouwjaarUtilBag>       BouwjaarUtilBag_rel     := isNull(bouwjaar) ? Classifications/BouwjaarUtilBag/onbekend :classify(bouwjaar,Classifications/BouwjaarUtilBag/ClassBreak);
 
-		attribute<vo_pc6_table_CALC>                     vo_pc6_rel              := rlookup(postcode, vo_pc6_table_CALC/values);
 		attribute<Float64>                               x                       := PointCol(locatie);
 		attribute<Float64>                               y                       := PointRow(locatie);
 
@@ -299,54 +297,6 @@ container BAG
 		attribute<Classifications/utiliteitBAG> gebruiksdoel(vbo_utiliteit):= ='gebruiksdoel_impl/gebruiksdoel_index[argmax('+ AsItemList('gebruiksdoelen/' + gebruiksdoel_impl/name) + ')[Classifications/utiliteitBAG]]';
 	}
 
-	unit<uint32> vo_pc6_table_CALC
-	:	Expr       = "unique(vbo_woonfunctie/postcode)"
-	,	DialogType = "Map"
-	,	DialogData = "Point"
-	,	StorageName = "= SourceDir + '/VESTA/vo_pc6_table.dbf'"
-	{
-		attribute<String> Values; // results from the unique operator
-		
-		attribute<String> Label: Expr ="Values", DialogType = "LabelText", DisableStorage = "True";
-		
-		// accumulated attrs
-		attribute<Float64> n:    Expr = "Float64(pcount(vbo_woonfunctie/vo_pc6_rel))", Descr = "Aantal aansluitpunten";
-		
-		attribute<Float64> MEAN_x: Expr = "sum(vbo_woonfunctie/x, vbo_woonfunctie/vo_pc6_rel) / n";
-		attribute<Float64> MEAN_y: Expr = "sum(vbo_woonfunctie/y, vbo_woonfunctie/vo_pc6_rel) / n";
-		
-		// accumulated by relative distances for improved numerical stability
-		attribute<Float64> SSD_xx: Expr = "sum((vbo_woonfunctie/x - MEAN_x[vbo_woonfunctie/vo_pc6_rel])*(vbo_woonfunctie/x - MEAN_x[vbo_woonfunctie/vo_pc6_rel]), vbo_woonfunctie/vo_pc6_rel)";
-		attribute<Float64> SSD_xy: Expr = "sum((vbo_woonfunctie/x - MEAN_x[vbo_woonfunctie/vo_pc6_rel])*(vbo_woonfunctie/y - MEAN_y[vbo_woonfunctie/vo_pc6_rel]), vbo_woonfunctie/vo_pc6_rel)";
-		attribute<Float64> SSD_yy: Expr = "sum((vbo_woonfunctie/y - MEAN_y[vbo_woonfunctie/vo_pc6_rel])*(vbo_woonfunctie/y - MEAN_y[vbo_woonfunctie/vo_pc6_rel]), vbo_woonfunctie/vo_pc6_rel)";
-		
-		// derived attrs
-		attribute<rdc_meter> Point: Expr = "Point(Float64(MEAN_y), Float64(MEAN_x), rdc_meter)", DisableStorage = "True";
-		attribute<rdc_meter> PointSet(arc): Expr = "points2sequence_ps(vbo_woonfunctie/Locatie, vbo_woonfunctie/vo_pc6_rel)", DisableStorage="True";
-	}
-
-	unit<uint32> vo_pc6_table
-	:	DialogType = "Map"
-	,	DialogData = "Point"
-	,	StorageName = "= SourceDir + '/VESTA/vo_pc6_table.dbf'"
-	,	StorageReadOnly = "True"
-	{
-		attribute<String> Values;
-		
-		// accumulated attrs
-		attribute<Float64> n;
-		attribute<Float64> MEAN_x;
-		attribute<Float64> MEAN_y;
-		
-		attribute<Float64> SSD_xx;
-		attribute<Float64> SSD_xy;
-		attribute<Float64> SSD_yy;
-		
-		// derived attrs
-		attribute<String> Label: Expr ="Values", DialogType = "LabelText", DisableStorage = "True";
-		attribute<rdc_meter> Point: Expr = "Point(Float64(MEAN_y), Float64(MEAN_x), rdc_meter)", DisableStorage = "True";
-	}
-	
 	unit<uint32> gebruiksdoelcombinatie:= unique(import/vbo/gebruiksdoelcombinatie)
 	{
 		attribute<string>   Label := =AsList('(bitand(Values, uint16('+string(typeringen/gebruiksdoel/BitValue)+')) != 0w ? '''+typeringen/gebruiksdoel/Name+'''+''_'' : '''')','+');
