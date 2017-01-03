@@ -66,6 +66,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> resterendFactorName: ['onbekend', 'vrijstaand', 'TweeOnderEenKap', 'Rijtjeshuis', 'Rijtjeshuis', 'FlatTot4', 'Flat5'];
 
 		attribute<Bool> IsMeergezins: [ false, false, false, false, false, true, true ];
+		attribute<Units/Bouwlaag> StapelFactor: [ 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 6.0 ];
 		
 		attribute<uint32> BrushColor: DialogType = "BrushColor",
 		[
@@ -156,6 +157,8 @@ container Classifications: Using = "Units", KeepData = "True"
 			'BejaardenWoning', 'Boerderij', 'StudentenWoning',
 			'Woonboot', 'Woonwagen', 'Divers'
 		];
+		attribute<Units/Bouwlaag> StapelFactor: [ 1.0, 1.0, 1.0, 1.0, 2.0, 6.0, 3.0, 3.0, 3.0, 2.0, 1.0, 6.0, 1.0, 1.0, 1.0 ];
+		
 		attribute<string> excel_code: [ 
 			'onbekend', 'vrijstaand/bungalows', 'twee onder een kap', 
 			'rijtjeshuizen/eengezins', 'flats 4 of minder verdiepingen', 'flats meer dan 4 verdiepingen',

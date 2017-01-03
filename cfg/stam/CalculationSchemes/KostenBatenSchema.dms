@@ -398,7 +398,7 @@ template KostenBatenSchema
 			
 			// Ik ben zo vrij geweest CapaciteitsVraag voor utiliteit (en glastuinbouw?) hier ook mee te nemen. 
 			// Capaciteitsvraag vanuit woningen is nominaal per OnderStation; capaciteitsvraag vanuit Util + GlTb obv kengetallen
-			parameter<float64> HulpketelVermogensaandeel := 0.85;
+			parameter<float64> HulpketelVermogensaandeel := Parameters/Bijstook/vermogensaandelen/Hulpketelvermogenaandeel;
 			attribute<MW>  P(PlanRegio) := (n * Vermogen_OS + GlasTuinbouw/CapaciteitsVraag) * 0.001[ MW / kW]; //, IntegrityCheck = "P < value(115, MW)";
 			
 			container HoofdLeidingKosten := BuisKosten(PlanRegio, P);
@@ -421,7 +421,7 @@ template KostenBatenSchema
 		}
 		container PrimairNet
 		{
-			parameter<float64> HoofdbronVermogensaandeel := 0.30;
+			parameter<float64> HoofdbronVermogensaandeel := Parameters/Bijstook/vermogensaandelen/Hoofdbron;
 			attribute<MW> P(PlanRegio) := HoofdbronVermogensaandeel * SecundairNet/P; // aandeel hoofdwaarmtebron (dus de niet-bijstook); n.b. aandelen sommeren tot meer dan 100% ivm reservecapaciteit.
 			
 			container LeidingKosten := BuisKosten(PlanRegio, P);

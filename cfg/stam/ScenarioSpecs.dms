@@ -143,41 +143,13 @@ container ScenarioSpecs: Using = "Units"
 				}
 			}
 			
-			container BaseLine : Source = "FO v7a $9.5 jo C.6 Tabel 6"
+			container BaseLine := Parameters/Discontovoeten, Source = "FO v7a $9.5 jo C.6 Tabel 6"
 			{
 				parameter<Yr>    StartJaar: [ 2 ];
 				parameter<Yr>    StopJaar: [ 30 ];
-				parameter<Percent_yr> DiscontoVoet_mr  := 4.0 [Percent_yr], Descr = "Maatschappelijke discontovoet";
-				parameter<Percent_yr> DiscontoVoet_ow  := 6.0 [Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
-				parameter<Percent_yr> DiscontoVoet_wd  := 6.0 [Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
-				parameter<Percent_yr> DiscontoVoet_pt  := 6.0 [Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
-				parameter<Percent_yr> DiscontoVoet_id  := 6.0 [Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
-				parameter<Percent_yr> DiscontoVoet_ebw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
-				parameter<Percent_yr> DiscontoVoet_enw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
-				parameter<Percent_yr> DiscontoVoet_ebu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
-				parameter<Percent_yr> DiscontoVoet_enu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe utiliteiten";
-				parameter<Percent_yr> DiscontoVoet_ebt := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
-				parameter<Percent_yr> DiscontoVoet_ent := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
 
 				// obv Warmtewet maximumprijs.
-				container Warmtewet
-				{
-					parameter<Percent> CPI_2013_08_31 := 115.39[Percent];
-					parameter<Percent> CPI_2010 := 106.72[Percent];
-					
-					container Aansluitbijdrage
-					{
-						parameter<EUR_aansl> Maximum2014 := 753.53[EUR_aansl]; // excl BTW in EURO's van 31-08-2013
-						parameter<EUR_aansl> Maximum2016 := 795.83[EUR_aansl]; // excl BTW in EURO's van 31-08-2015.
-						parameter<EUR_aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
-					}
-					container Vastrecht
-					{
-						parameter<EUR_Yr_Aansl> Maximum2014 := 209.92[EUR_Yr_Aansl]; // excl BTW in EURO's van 31-08-2013.
-						parameter<EUR_Yr_Aansl> Maximum2016 := 228.21[EUR_Yr_Aansl]; // excl BTW in EURO's van 31-08-2015.
-						parameter<EUR_Yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
-					}
-				}
+				container Warmtewet := Parameters/NMDA_Prijzen;
 
 				container Woning:= ComponentBase
 				{

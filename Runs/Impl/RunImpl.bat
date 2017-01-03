@@ -38,7 +38,7 @@ echo .
 	IF %1 == D32 Set GeoDmsPlatform=Win32
 	IF %1 == R32 Set GeoDmsPlatform=Win32
 
-	CALL Impl/SetDirs.bat Referentie_2006_KlimaatConstant
+	CALL Impl/SetDirs.bat Run4Combi_2016_Referentie
 
 	if "%GEODMS_DIRECTORIES_CALCCACHEDIR%"=="" (
 		Set GEODMS_DIRECTORIES_CALCCACHEDIR=%LocalDataProjDir%\CCRUN
