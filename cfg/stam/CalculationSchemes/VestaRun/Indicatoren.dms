@@ -355,10 +355,10 @@ container indicatoren
 	parameter<String> GenerateAll := 'Ready',
 		ExplicitSuppliers =
 			"=  'Flow/GenerateAll;Stock/GenerateAll'"
-			"+ ';PerInkomensGroep/laag/Flow/GenerateAll;PerInkomensGroep/midden/Flow/GenerateAll;PerInkomensGroep/hoog/Flow/GenerateAll'"
-			"+ ';PerInkomensGroep/laag/Stock/GenerateAll;PerInkomensGroep/midden/Stock/GenerateAll;PerInkomensGroep/hoog/Stock/GenerateAll'"
-			"+ ';PerEigendom/koop/Flow/GenerateAll;PerEigendom/wcorpw/Flow/GenerateAll;PerEigendom/ov_hw/Flow/GenerateAll'"
-			"+ ';PerEigendom/koop/Stock/GenerateAll;PerEigendom/wcorpw/Stock/GenerateAll;PerEigendom/ov_hw/Stock/GenerateAll'"
+//			"+ ';PerInkomensGroep/laag/Flow/GenerateAll;PerInkomensGroep/midden/Flow/GenerateAll;PerInkomensGroep/hoog/Flow/GenerateAll'"
+//			"+ ';PerInkomensGroep/laag/Stock/GenerateAll;PerInkomensGroep/midden/Stock/GenerateAll;PerInkomensGroep/hoog/Stock/GenerateAll'"
+//			"+ ';PerEigendom/koop/Flow/GenerateAll;PerEigendom/wcorpw/Flow/GenerateAll;PerEigendom/ov_hw/Flow/GenerateAll'"
+//			"+ ';PerEigendom/koop/Stock/GenerateAll;PerEigendom/wcorpw/Stock/GenerateAll;PerEigendom/ov_hw/Stock/GenerateAll'"
 			"+ ';' + AsList('InputOutput/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/Woning/'      +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/Utiliteit/'   +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
