@@ -1,0 +1,15 @@
+Type;K_kW_min;K_kW_max;MWth_min;JaarKosten
+STEG;150;175;10;0,05
+Kolen;150;175;20;0,05
+Gasmotor;800;1800;0,48;0,01
+Gasturbine;175;185;6;0,05
+Conventioneel;175;185;6;0,05
+Industrie;225;275;6;0,05
+Raffinaderij;225;275;6;0,05
+KVSTEG;150;175;6;0,05
+AVI;150;175;3;0,05
+BMC;150;175;3;0,05
+Kern;;;0;0,05
+WijkWKK;800;1800;0,48;0,01
+Geothermie;1750;2000;3;0,01
+BioWKK;750;1000;0,5;0,08

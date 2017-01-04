@@ -54,8 +54,4 @@ container ConfigSettings: isHidden = "True"
 	parameter<String> LandUseMetaDataTempl: 
 		StorageName = "%projdir%/html/LandUseMetaDataTempl.xml", 
 		StorageType = "str";
-		
-	// driver name is different on x64, after installing new x64 drivers (incl related SP1), see http://www.mantis.objectvision.nl/view.php?id=249
-	parameter<String> OdbcExcelDriver: Expr = "(GeoDmsPlatform()=='Win32') ? '{Microsoft Excel Driver (*.xls)}' : '{Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)}'"; 
-	parameter<String> OdbcTxtDriver:   Expr = "(GeoDmsPlatform()=='Win32') ? '{Microsoft Text Driver (*.txt; *.csv)}' : '{Microsoft Access Text Driver (*.txt, *.csv)}'"; 
 }

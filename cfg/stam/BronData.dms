@@ -107,8 +107,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		{
 			container ModelBagWoning := 
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160707_Woningen_BAG.xls', 
-					'SELECT *, WoningType_str    as ModelType_str, 1.0     AS nrMUperJU FROM ImportSection', 
+					'20160707_Woningen_BAG.csv', 
+					'WoningType_str', 
 					Classifications/WoningtypeGeoHoogte, Classifications/BouwJaarBag, Units/nrWoningen, Units/nrWoningen
 				)
 			{
@@ -127,8 +127,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			container ModelWoningNieuwbouw :=
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160525_Woningen_Nieuwbouw_BAG.xls',
-					'SELECT *, WoningType_str    as ModelType_str, 1.0     AS nrMUperJU FROM ImportSection', 
+					'20160525_Woningen_Nieuwbouw_BAG.csv',
+					'WoningType_str',
 					Classifications/woningtype, Classifications/BouwJaar, Units/nrWoningen, Units/nrWoningen
 				)
 			{
@@ -148,8 +148,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			container ModelBagUtil :=
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160706_UtilTuin_BAG.xls',
-					'SELECT *, UtiliteitType_str as ModelType_str, 1 AS nrMUperJU FROM ImportSection WHERE Categorie=''utiliteit''', 
+					'20160706_Utiliteiten_BAG.csv',
+					'UtiliteitType_str', 
 					Classifications/UtiliteitBAG,Classifications/BouwjaarUtilBag,  Units/m2, Units/m2
 				)
 			{
@@ -170,8 +170,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			
 			container ModelUtilNieuwbouw := 
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160525_UtilTuin_Nieuwbouw_BAG.xls', 
-					'SELECT *, UtiliteitType_str as ModelType_str, 1.0     AS nrMUperJU FROM ImportSection WHERE Categorie=''utiliteit''', 
+					'20160525_Utiliteiten_Nieuwbouw_BAG.csv', 
+					'UtiliteitType_str', 
 					Classifications/UitlegUtil, Classifications/BouwJaar,  Units/m2, Units/m2
 				)
 			{
@@ -192,8 +192,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 
 			container ModelGlTb2010 :=  
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160706_UtilTuin_BAG.xls', 
-					'SELECT *, UtiliteitType_str as ModelType_str, 1.0 AS nrMUperJU FROM ImportSection WHERE Categorie=''GLTB''',
+					'20160706_Glastuinbouw_BAG.csv', 
+					'UtiliteitType_str',
 					Classifications/GlTb, Classifications/bouwjaar, Units/m2, Units/m2
 				)
 			{
@@ -213,11 +213,12 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			container ModelGlTbNieuwbouw :=
 				CalculationSchemes/EnergieKengetallen/import(
-					'20160525_UtilTuin_Nieuwbouw_BAG.xls',
-					'SELECT *, UtiliteitType_str as ModelType_str, 1.0 AS nrMUperJU FROM ImportSection WHERE Categorie=''GLTB''',
+					'20160525_Glastuinbouw_Nieuwbouw_BAG.csv',
+					'UtiliteitType_str',
 					Classifications/GlTb, classifications/bouwjaar, Units/m2, Units/m2
 				)
 			{
+				
 				container results {
 					container Verbeteringen
 					{
@@ -319,9 +320,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			
 			unit<uint32>  TypeInfoData
-			:	StorageName = "='DRIVER='+ConfigSettings/OdbcExcelDriver+';DBQ=%datadir%/'+UserInput2010/prijzenbron+'.xls'" 
-			,	StorageType = "ODBC"
-			,	SqlString   = "SELECT * FROM TypeInfo"
+			:	StorageName = "='%datadir%/'+UserInput2010/prijzenbron+'_TypeInfo.csv'" 
+			,	StorageType = "gdal.vect"
 			,	StorageReadOnly = "True"
 			,	SyncMode    = "None"
 			{

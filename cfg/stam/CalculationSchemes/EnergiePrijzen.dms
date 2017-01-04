@@ -55,7 +55,7 @@ container EnergiePrijzen {
 	template ImportElekGas
 	{
 		parameter<String> FileName;
-		parameter<String> SqlString;
+		parameter<String> TableName;
 		unit<Float64>     model_eenheid;
 		unit<Float64>     eenheid_GJ;
 		parameter<eenheid_GJ> OmrekenFactor;
@@ -65,9 +65,8 @@ container EnergiePrijzen {
 		unit<Float64> EUR_per_eenheid := units/EUR / model_eenheid;
 	
 		unit<UInt32> Table
-		:	StorageName = "='DRIVER='+ConfigSettings/OdbcExcelDriver+';DBQ=%datadir%/'+ FileName +'.xls'"
-		,	StorageType = "ODBC"
-		,	SqlString   = "=SqlString"
+		:	StorageName = "='%datadir%/'+ FileName +'_'+TableName+'.csv'"
+		,	StorageType = "gdal.vect"
 		,	SyncMode    = "All";
 	
 		container Results
@@ -99,14 +98,13 @@ container EnergiePrijzen {
 	template ImportOverig
 	{
 		parameter<String> FileName;
-		parameter<String> SqlString;
+		parameter<String> TableName;
 		
 		parameter<_Yr> AnnualPriceInflationFactor;
 		
 		unit<UInt32> Table
-		:	StorageName = "='DRIVER='+ConfigSettings/OdbcExcelDriver+';DBQ=%datadir%/'+ FileName +'.xls'"
-		,	StorageType = "ODBC"
-		,	SqlString   = "=SqlString"
+		:	StorageName = "='%datadir%/'+ FileName + '_'+TableName+'.csv'"
+		,	StorageType = "gdal.vect"
 		,	SyncMode    = "All";
 		
 		container Results
@@ -123,8 +121,8 @@ container EnergiePrijzen {
 		parameter<String> FileName;
 		parameter<_Yr> AnnualPriceInflationFactor;
 		
-		container Elektriciteit := ImportElekGas(FileName, 'SELECT * FROM ImportSectionElek',   kwh, Kwh / GJ, value( 1000000.0 / 3600.0, kWh / GJ),        AnnualPriceInflationFactor);
-		container AardGas       := ImportElekGas(FileName, 'SELECT * FROM ImportSectionGas',     m3,  m3 / GJ, 1.0 / BronData/FysiekeConstanten/GasEnergie, AnnualPriceInflationFactor);
-		container Overig        := ImportOverig (FileName, 'SELECT * FROM OverigeKosten',                                                                   AnnualPriceInflationFactor);
+		container Elektriciteit := ImportElekGas(FileName, 'Elek',   kwh, Kwh / GJ, value( 1000000.0 / 3600.0, kWh / GJ),        AnnualPriceInflationFactor);
+		container AardGas       := ImportElekGas(FileName, 'Gas',     m3,  m3 / GJ, 1.0 / BronData/FysiekeConstanten/GasEnergie, AnnualPriceInflationFactor);
+		container Overig        := ImportOverig (FileName, 'OverigeKosten',                                                      AnnualPriceInflationFactor);
 	}
 }

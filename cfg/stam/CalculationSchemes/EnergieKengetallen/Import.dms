@@ -42,7 +42,7 @@
 template Import
 {
 	parameter<String> FileName;
-	parameter<String> SqlString;
+	parameter<String> ModelType_str_name;
 	
 	unit<UInt8> model_type;
 	unit<UInt8> bouwjaarindeling;
@@ -60,26 +60,26 @@ template Import
 	unit<Float64> MU_per_JU: Expr = "model_eenheid / koppel_eenheid";
 	
 	unit<UInt32> Table
-	:	StorageName = "='DRIVER='+ConfigSettings/OdbcExcelDriver+';DBQ=%datadir%/'+ FileName"
-	,	StorageType = "ODBC"
-	,	SqlString   = "=SqlString"
+	:	StorageName = "='%datadir%/'+ FileName"
+	,	StorageType = "gdal.vect"
 	,	SyncMode    = "All"
 	,	IsHidden    = "True"
 	{
 		attribute<String> BouwJaar_str;
-		attribute<String> ModelType_str;
+		attribute<string> ModelType_str := =ModelType_str_name;
 		
 		attribute<String> Label: Expr = "trim(ModelType_str) +  ', ' + trim(BouwJaar_str)", DialogType = "LabelText";
 		parameter<String> LabelList: Expr = "lowercase(AsItemList(Label))";
+		
 	}
 	unit<uint32> TableColumns :=SubItem_PropValues(table, 'name');
 	container Results : FreeData = "False"
 	{
 		unit<UInt32>  ModelObject := Table;
-		unit<Float64> ModelUnit:  Expr = "model_eenheid";
-		unit<Float64> JoinedUnit: Expr = "koppel_eenheid";
+		unit<Float64> ModelUnit := model_eenheid;
+		unit<Float64> JoinedUnit := koppel_eenheid;
 		
-		attribute<MU_per_JU> nrMUperJU(ModelObject): Expr = "value(Table/nrMUperJU, ModelUnit / JoinedUnit)";
+		attribute<MU_per_JU> nrMUperJU(ModelObject) := const(1.0[ModelUnit / JoinedUnit], Table);
 		
 		attribute<bouwjaarindeling> BouwJaar (ModelObject): Expr = "rlookup(trim(Table/BouwJaar_str ), bouwjaarindeling/excel_code)";
 		attribute<model_type>       ModelType(ModelObject): Expr = "rlookup(trim(Table/ModelType_str), model_type/Excel_code)";
