@@ -329,8 +329,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				attribute<String > Label := Type, DialogType = "LabelString";
 				attribute<String > K_kW_min;   // [EUR_kW]
 				attribute<String > K_kW_max;   // [EUR_kW]
-				attribute<Float64> MWth_min;   // [MWth]
-				attribute<Float64> JaarKosten; // [_Yr]
+				attribute<String> MWth_min;   // [MWth]
+				attribute<String> JaarKosten; // [_Yr]
 				
 				attribute<TypeInfoList> TypeInfoList_rel := rlookup(Type, TypeInfoList/Naam);
 				attribute<RekenType> RekenType_rel := TypeInfoList/RekenType_rel[TypeInfoList_rel];
