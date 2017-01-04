@@ -108,16 +108,18 @@ container VestaRun
 		}
 		container LokaleOpwekking {
 			//Descr = "Hoeveelheid beschikbaar dakoppervlak voor de aanleg van PV-panelen";
+			unit<Float64> m2_Dak       := m2 / (nrWoningen / Bouwlaag);
+			
 			container Woning_bestaand {
 				parameter<KWh_Yr_m2> Zon_PV_opbrengst  := 150[KWh_Yr_m2];
 				attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeGeoHoogte ) := const(30[m2_Dak],Classifications/WoningtypeGeoHoogte);
-				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeGeoHoogte ) := const(3.0[m2_MU],Classifications/WoningtypeGeoHoogte);
+				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeGeoHoogte ) := const(3.0[m2_woning],Classifications/WoningtypeGeoHoogte);
 			}
 			container Woning_nieuw {
-				attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/woningtype2006) := const(3.0[m2_MU],Classifications/woningtype2006);
+				attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/woningtype2006) := const(3.0[m2_Woning],Classifications/woningtype2006);
 			}
 			container Utiliteit_bestaand {
-				attribute<Ratio> Zon_PV_dakopp            (Classifications/WoningtypeGeoHoogte ) := const(0.8[m2_Dak],Classifications/utiliteitBAG);
+				attribute<Ratio> Zon_PV_dakopp            (Classifications/WoningtypeGeoHoogte ) := const(0.8[Bouwlaag],Classifications/utiliteitBAG);
 				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/utiliteitBAG): [
 					0.001421186,0.001421186,0.014425039,
 					0.014093429,0.001737005,0.001421186,
@@ -133,10 +135,10 @@ container VestaRun
 				];
 			}
 			container Glastuinbouw_bestaand {
-				attribute<m2_MU > ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
+				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
 			}
 			container Glastuinbouw_nieuw {
-				attribute<m2_MU > ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
+				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
 			}
 		}
 	}

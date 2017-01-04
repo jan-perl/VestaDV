@@ -137,6 +137,7 @@ container Units:
 	unit<Float64> kW_Woning:    = kW / nrWoningen;
 	unit<Float64> kW_m2:        = kW / m2;
 	unit<Float64> m2_aansl:     = m2 / nrAansl;
+	unit<Float64> m2_Woning:    = m2 / nrWoningen;
 
 	unit<float64> Attractiviteit;
 	unit<Float64> Potentiaal: cdf = "Classifications/Potentiaal10K/Classes";
