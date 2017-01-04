@@ -157,19 +157,16 @@ container ScenarioSpecs: Using = "Units"
 					unit<Float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
 					unit<Float64> m2_MU        := units/m2 / ModelEenheid;
 
-					attribute<Units/Ratio> Deelname(Classifications/WoningtypeGeoHoogte ):= const(1[Units/Ratio],Classifications/WoningtypeGeoHoogte); // fractie deelnemers
-
-					attribute<Units/Bouwlaag> StapelFactor (Classifications/WoningtypeGeoHoogte): [ 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 6.0 ];
+					attribute<Units/Ratio> Deelname(Classifications/WoningtypeGeoHoogte ):= Parameters/CollectieveOpwekking/Woning_bestaand/Deelname;
 
 					container Zon_PV
 					{
-						attribute<m2_Dak> dakopp   (Classifications/WoningtypeGeoHoogte ):= const(30[m2_Dak],Classifications/WoningtypeGeoHoogte);
-						attribute<m2_MU > Oppervlak(Classifications/WoningtypeGeoHoogte ):= dakopp / StapelFactor; // m2 per ModelUnit
+						attribute<m2_MU > Oppervlak(Classifications/WoningtypeGeoHoogte ):= Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_dakopp / Classifications/WoningtypeGeoHoogte/StapelFactor; // m2 per ModelUnit
 					}
 					
 					container ZonneBoiler
 					{
-						attribute<m2_MU > Oppervlak(Classifications/WoningtypeGeoHoogte ) := const(3.0[m2_MU],Classifications/WoningtypeGeoHoogte);
+						attribute<m2_MU > Oppervlak(Classifications/WoningtypeGeoHoogte ) := Parameters/LokaleOpwekking/Woning_bestaand/ZonneBoiler_Oppervlak;
 					}
 					
 					container eWP
@@ -198,18 +195,17 @@ container ScenarioSpecs: Using = "Units"
 				}
 				container UitlegWoning:= Woning
 				{
-					attribute<Units/Ratio> Deelname(Classifications/woningtype2006):= const(1[Units/Ratio],Classifications/woningtype2006); // fractie deelnemers
+					attribute<Units/Ratio> Deelname(Classifications/woningtype2006):= Parameters/CollectieveOpwekking/Woning_nieuw/Deelname;
 					
-					attribute<Units/Bouwlaag> StapelFactor (Classifications/woningtype2006): [ 1.0, 1.0, 1.0, 1.0, 2.0, 6.0, 3.0, 3.0, 3.0, 2.0, 1.0, 6.0, 1.0, 1.0, 1.0 ];
 					container Zon_PV
 					{
 						attribute<m2_Dak> dakopp   (Classifications/woningtype2006): [ 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 0, 0, 30 ]; 
-						attribute<m2_MU > Oppervlak(Classifications/woningtype2006) := dakopp / StapelFactor; // m2 per ModelUnit
+						attribute<m2_MU > Oppervlak(Classifications/woningtype2006) := dakopp / Classifications/woningtype2006/StapelFactor; // m2 per ModelUnit
 					}
 					
 					container ZonneBoiler
 					{
-						attribute<m2_MU> Oppervlak(Classifications/woningtype2006) := const(3.0[m2_MU],Classifications/woningtype2006);
+						attribute<m2_MU> Oppervlak(Classifications/woningtype2006) := Parameters/LokaleOpwekking/Woning_nieuw/ZonneBoiler_Oppervlak;
 					}
 
 					container eWP := Woning/eWP
@@ -229,7 +225,7 @@ container ScenarioSpecs: Using = "Units"
 					unit<Float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
 					unit<Float64> m2_MU        := units/m2 / ModelEenheid;
 
-					attribute<Units/Ratio> Deelname(Classifications/utiliteitBAG):= const(1[Units/Ratio],Classifications/utiliteitBAG); // fractie deelnemers
+					attribute<Units/Ratio> Deelname(Classifications/utiliteitBAG):= Parameters/CollectieveOpwekking/Utiliteit_bestaand/Deelname;
 
 					// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
 					// 302671365 de oppervlakte bij het oproepen van het item /RunContext/Y2050/VestaRunData/Utiliteit/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
@@ -239,17 +235,11 @@ container ScenarioSpecs: Using = "Units"
 
 					container Zon_PV
 					{
-						attribute<m2_Dak> dakopp   (Classifications/utiliteitBAG):= const(0.8[m2_Dak],Classifications/utiliteitBAG);
-						attribute<m2_MU > Oppervlak(Classifications/utiliteitBAG):= dakopp / StapelFactor; // m2 per ModelUnit
+						attribute<m2_MU > Oppervlak(Classifications/utiliteitBAG):= Parameters/LokaleOpwekking/Utiliteit_bestaand/Zon_PV_dakopp / StapelFactor; // m2 per ModelUnit
 					}
 					container ZonneBoiler
 					{
-						attribute<m2_MU > Oppervlak(Classifications/utiliteitBAG): [
-							0.001421186,0.001421186,0.014425039,
-							0.014093429,0.001737005,0.001421186,
-							0.012601184,0.001421186,0.001421186,
-							0.001421186
-						];
+						attribute<m2_MU > Oppervlak(Classifications/utiliteitBAG) := Parameters/LokaleOpwekking/Utiliteit_bestaand/ZonneBoiler_Oppervlak;
 					}
 					container eWP
 					{
@@ -265,7 +255,7 @@ container ScenarioSpecs: Using = "Units"
 				}
 				container UitlegUtil:= Utiliteit
 				{
-					attribute<Units/Ratio> Deelname(Classifications/UitlegUtil):= const(1[Units/Ratio],Classifications/UitlegUtil); // fractie deelnemers
+					attribute<Units/Ratio> Deelname(Classifications/UitlegUtil):= Parameters/CollectieveOpwekking/Utiliteit_nieuw/Deelname;
 
 					// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
 					// 302671365 de oppervlakte bij het oproepen van het item /RunContext/Y2050/VestaRunData/Utiliteit/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
@@ -284,11 +274,7 @@ container ScenarioSpecs: Using = "Units"
 					}
 					container ZonneBoiler
 					{
-						attribute<m2_MU > Oppervlak(Classifications/UitlegUtil): [
-							0.001413423, 0.001413423, 0.001413423,
-							0.001413423, 0.009422819, 0.03533557,
-							0.001727517, 0.015312081, 0.001413423
-						];
+						attribute<m2_MU > Oppervlak(Classifications/UitlegUtil) := Parameters/LokaleOpwekking/Utiliteit_nieuw/ZonneBoiler_Oppervlak;
 					}
 					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
@@ -307,7 +293,7 @@ container ScenarioSpecs: Using = "Units"
 					unit<Float64> m2_Dak:       Expr = "units/m2 / (ModelEenheid / units/Bouwlaag)";
 					unit<Float64> m2_MU:        Expr = "units/m2 / ModelEenheid";
 
-					attribute<Units/Ratio> Deelname(Classifications/GLTB): [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0  ]; // fractie deelnemers
+					attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_bestaand/Deelname;
 					
 					attribute<Units/Bouwlaag> StapelFactor (Classifications/GLTB): expr = "const(1.0, Classifications/GLTB, Units/Bouwlaag)";
 
@@ -318,7 +304,7 @@ container ScenarioSpecs: Using = "Units"
 					}
 					container ZonneBoiler
 					{
-						attribute<m2_MU > Oppervlak(Classifications/GLTB) := const(0[m2_MU], Classifications/GLTB); // m2 per ModelUnit
+						attribute<m2_MU > Oppervlak(Classifications/GLTB) := Parameters/LokaleOpwekking/Glastuinbouw_bestaand/ZonneBoiler_Oppervlak;
 					}
 					container eWP
 					{
@@ -333,10 +319,15 @@ container ScenarioSpecs: Using = "Units"
 
 				container UitlegGlTb := Glastuinbouw
 				{
+					attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
 					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
 						attribute<EUR_kW> AansluitTarief_min(Classifications/UitlegUtil): [ 50, 50, 50, 50, 50, 50, 50, 50, 50 ];
 						attribute<EUR_kW> AansluitTarief_max(Classifications/UitlegUtil): [ 100, 100, 100, 100, 100, 100, 100, 100, 100 ];
+					}
+					container ZonneBoiler
+					{
+						attribute<m2_MU > Oppervlak(Classifications/GLTB) := Parameters/LokaleOpwekking/Glastuinbouw_nieuw/ZonneBoiler_Oppervlak;
 					}
 				}
 			}
@@ -347,7 +338,7 @@ container ScenarioSpecs: Using = "Units"
 				{
 					container Zon_PV
 					{
-						parameter<units/KWh_Yr_m2> Opbr:  [150.0];
+						parameter<units/KWh_Yr_m2> Opbr := Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_opbrengst;
 					}
 				}
 				container Utiliteit
@@ -373,28 +364,17 @@ container ScenarioSpecs: Using = "Units"
 			
 			container BaseLine := AanbodBase
 			{
-				container RestWarmte := AanbodBase
-				{
-				}
-				
-				container GeoThermie := AanbodBase
-				{
-				}
-				container BioWKK := AanbodBase
-				{
-				}
-				container WijkWKK := AanbodBase
-				{
-				}
+				container RestWarmte := AanbodBase;
+				container GeoThermie := AanbodBase;
+				container BioWKK := AanbodBase;
+				container WijkWKK := AanbodBase;
 				container WKO := AanbodBase
 				{
 					parameter<Bool> BuitenContour: [ false ];  // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
 				}
-				container AardGas := AanbodBase
-				{
-				}
+				container AardGas := AanbodBase;
 			}
-			container Toekomst : Expr = "BaseLine" // inheritance			
+			container Toekomst : Expr = "BaseLine" // inheritance
 			{
 			}
 		}
