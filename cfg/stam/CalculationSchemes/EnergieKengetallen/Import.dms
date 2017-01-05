@@ -62,6 +62,7 @@ template Import
 	unit<UInt32> Table
 	:	StorageName = "='%datadir%/'+ FileName"
 	,	StorageType = "gdal.vect"
+	,	StorageReadOnly = "True"
 	,	SyncMode    = "All"
 	,	IsHidden    = "True"
 	{
