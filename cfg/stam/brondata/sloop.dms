@@ -40,12 +40,12 @@
 
 container Sloop
 {
-	container CaseData: expr = "BronData/Uitleg";
+	container CaseData := BronData/Uitleg;
 	
 	container WoningResterendTiffs := 
 		for_each_ndva(CaseData/SZW/HasMutations ? CaseData/SZW/Name : ''
 			, Geography/rdc_100lu, float32
-			, CaseData/UitlegFolder+'/'+CaseData/SZW/period_name+'/Wonen/Resterend/'
+			, Parameters/WloScenarioFolder+'/'+CaseData/SZW/period_name+'/Wonen/Resterend/'
 			+ CaseData/SZW/wonen_wlo_filename+ '.tif'
 		);
 
@@ -58,7 +58,7 @@ container Sloop
 	container UtilDeltaFactorTiffs :=
 		for_each_ndva(  CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0  ? CaseData/SZU/Name : ''
 			, Geography/rdc_100lu, Float32
-			, CaseData/UitlegFolder+'/'+CaseData/SZU/period_name+'/Util/Resterend/'
+			, Parameters/WloScenarioFolder+'/'+CaseData/SZU/period_name+'/Util/Resterend/'
 			+ CaseData/SZU/wlo_filename_uitleg + '.tif'
 		);
 

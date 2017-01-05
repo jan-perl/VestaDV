@@ -43,12 +43,12 @@ container GGSectorAfBij
 	container Af := 
 		for_each_ndva(Classifications/ScenarioZichtjaar/HasMutations ? Classifications/ScenarioZichtjaar/name : '',
 			Geography/rdc_100lu, bool,
-			uitleg/UitlegFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Af.tif'
+			Parameters/WloScenarioFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Af.tif'
 		);
 	container Bij :=
 		for_each_ndva(Classifications/ScenarioZichtjaar/HasMutations ? Classifications/ScenarioZichtjaar/name : '',
 			Geography/rdc_100lu, bool,
-			uitleg/UitlegFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Bij.tif'
+			Parameters/WloScenarioFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Bij.tif'
 		);
 
 }

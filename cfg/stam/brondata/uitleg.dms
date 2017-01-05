@@ -40,30 +40,28 @@
 
 container Uitleg
 {
-	parameter<String> UitlegFolder := '%SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
 	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
-	//parameter<String> UitlegFolder := '%SourceDataDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115';
-	unit<uInt32> SZW: Expr = "Classifications/ScenarioZichtjaarWonen";
-	unit<uInt32> SZU: Expr = "Classifications/ScenarioZichtjaarUtiliteit";
+	unit<uInt32> SZW := Classifications/ScenarioZichtjaarWonen;
+	unit<uInt32> SZU := Classifications/ScenarioZichtjaarUtiliteit;
 
 	container UitlegWoningTiffs := 
 		for_each_ndva(SZW/HasMutations ? SZW/Name : ''
 			, Geography/rdc_100lu, float32
-			, UitlegFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
+			, Parameters/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
 			+ SZW/wonen_wlo_filename+ '.tif'
 		);
 
 	container UitlegUtilBvoTiffs :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_uitleg) > 0  ? SZU/Name : ''
 			, Geography/rdc_100lu, Float32
-			, UitlegFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_uitleg/'
+			, Parameters/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_uitleg/'
 			+ SZU/wlo_filename_uitleg + '.tif'
 		);
 		
 	container InbreidingUtilFactorTiffs :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_uitleg) > 0  ? SZU/Name : ''
 			, Geography/rdc_100lu, Float32
-			, UitlegFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
+			, Parameters/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
 			+ SZU/wlo_filename_uitleg + '.tif'
 		);
 	

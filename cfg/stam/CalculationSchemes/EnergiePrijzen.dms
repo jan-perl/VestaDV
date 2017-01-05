@@ -67,6 +67,7 @@ container EnergiePrijzen {
 		unit<UInt32> Table
 		:	StorageName = "='%datadir%/'+ FileName +'_'+TableName+'.csv'"
 		,	StorageType = "gdal.vect"
+		,	StorageReadOnly = "True"
 		,	SyncMode    = "All";
 	
 		container Results
@@ -105,6 +106,7 @@ container EnergiePrijzen {
 		unit<UInt32> Table
 		:	StorageName = "='%datadir%/'+ FileName + '_'+TableName+'.csv'"
 		,	StorageType = "gdal.vect"
+		,	StorageReadOnly = "True"
 		,	SyncMode    = "All";
 		
 		container Results

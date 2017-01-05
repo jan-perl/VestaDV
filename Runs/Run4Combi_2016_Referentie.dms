@@ -47,8 +47,13 @@ container VestaRun
 	#include <%projDir%/Runs/UserInput1.dms>
 	#include <%projDir%/Runs/UserInput4.dms>
 //	END OF INCLUDE SECTION
+
 	container Parameters : using = Vesta/Units
 	{
+		parameter<String> WloScenarioFolder := 
+			'%SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
+//			'%SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115';
+
 		container Bijstook
 		{
 			container vermogensaandelen {
