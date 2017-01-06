@@ -12,12 +12,13 @@ Het Vesta model is eigendom van het Planbureau voor de Leefomgeving. Gebruik is 
 #Disclaimer ruimtelijke ontwikkeling
 
 In de studie Welzijn en Leefomgeving (CPB/PBL 2015) zijn de scenario’s Hoog en Laag ontwikkeld waarin op basis van demografische en economische uitgangspunten de regionale ontwikkeling van sloop en nieuwbouw van woningen en utiliteitsgebouwen (http://www.wlo2015.nl/rapporten-wlo/regionale-ontwikkelingen-en-verstedelijking) is opgesteld. Ten behoeve van de Voorbeeldberekeningen met het Vesta model zijn deze regionale ontwikkelingen op basis van heuristische regels verder gedetailleerd in specifieke locaties om aan te wijzen welke woningen en utiliteitsgebouwen worden gesloopt en waar nieuwbouw plaatsvindt ten einde berekeningen te kunnen maken voor heel Nederland. Het doel hiervan is om resultaten te kunnen presenteren op
-nationaal niveau waarbij de uitersten van de scenario’s Hoog en Laag de waarschijnlijke bandbreedte van de resultaten geven. De detaillering in specifieke locatie beoogt echter niet iets te zeggen over de te verwachten regionale of lokale situatie zelf en is niet bedoeld om gebruikt worden voor regionale of lokale analyse. Indien wordt beoogt om het Vesta model regionaal of lokaal toe te passen dan kan het best default worden gerekend zonder ruimtelijke ontwikkeling van de woningen en utiliteitsgebouwen. Zo nodig en
+nationaal niveau waarbij de uitersten van de scenario’s Hoog en Laag de waarschijnlijke bandbreedte van de resultaten geven. De detaillering in specifieke locatie beoogt echter niet iets te zeggen over de te verwachten regionale of lokale situatie zelf en is niet bedoeld om te worden gebruikt voor regionale of lokale analyse. Indien wordt beoogt om het Vesta model regionaal of lokaal toe te passen dan kan het best default worden gerekend zonder ruimtelijke ontwikkeling van de woningen en utiliteitsgebouwen. Zo nodig en
 gewenst kan de gebruiker vervolgens zelf de ruimtelijke ontwikkeling van sloop en nieuwbouw opgeven op basis van eigen inzichten.
 
+#Pagina in opbouw
 n.b. deze pagina is nog in opbouw. De software, het model en de bijbehorende data en installatieinstructies zullen hier vanaf 25 december 2016 beschikbaar komen.
 
-Links:
+#Links:
 * http://www.pbl.nl/publicaties/2012/vesta-ruimtelijk-energiemodel-voor-de-gebouwde-omgeving
 * http://www.objectvision.nl/gallery/products/vesta
 * http://www.ce.nl/publicatie/vesta_2.0_-_uitbreidingen_en_dataverificaties/1427
