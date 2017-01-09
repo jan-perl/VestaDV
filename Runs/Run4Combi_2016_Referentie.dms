@@ -74,7 +74,7 @@ container VestaRun
 			parameter<Percent_yr> DiscontoVoet_ebt := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
 			parameter<Percent_yr> DiscontoVoet_ent := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
 		}
-		container NMDA_Prijzen { // @@@
+		container NMDA_Prijzen {
 			parameter<Percent> CPI_2013_08_31 := 115.39[Percent];
 			parameter<Percent> CPI_2010       := 106.72[Percent];
 			
