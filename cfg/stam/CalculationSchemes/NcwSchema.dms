@@ -42,7 +42,7 @@ container NcwSchema: IsTemplate = "True"
 	parameter<Float64> DiscontoFactor      := 1.0 + CapitalGrowthFactor * 1[Yr];
 	parameter<Float64> StartDiscountFactor := DiscontoFactor ^ -StartJaar;
 	parameter<Float64> StopDiscountFactor  := DiscontoFactor ^ -StopJaar;
-	parameter<Yr>      DurationFactor      := (CapitalGrowthFactor <> 0[_yr]) ? (StartDiscountFactor - StopDiscountFactor) / CapitalGrowthFactor : StopDiscountFactor - StartDiscountFactor;
+	parameter<Yr>      DurationFactor      := (CapitalGrowthFactor <> 0[_yr]) ? (StartDiscountFactor - StopDiscountFactor) / CapitalGrowthFactor : StopJaar - StartJaar;
 	parameter<_Yr>     AnnualisationFactor := 1.0 / DurationFactor;
 }
 
