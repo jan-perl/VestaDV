@@ -1,0 +1,44 @@
+woningtype_bouwjaarklasse;Aantal;Restwarmte;GeoThermie;WijkWKK;BioWKK;WKO;Aardgas
+[];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning]
+geen woonpand_voor 1946 ;0;0;0;0;0;0;0
+geen woonpand_tussen 1946 en 1965 ;0;0;0;0;0;0;0
+geen woonpand_tussen 1965 en 1974 ;0;0;0;0;0;0;0
+geen woonpand_tussen 1975 en 1991 ;0;0;0;0;0;0;0
+geen woonpand_tussen 1992 en 2005 ;0;0;0;0;0;0;0
+geen woonpand_tussen 2006 en 2014 ;0;0;0;0;0;0;0
+vrijstaand_voor 1946 ;280969;1594;734;0;611;0;278030
+vrijstaand_tussen 1946 en 1965 ;139439;634;279;0;522;0;138004
+vrijstaand_tussen 1965 en 1974 ;111875;509;214;0;326;0;110826
+vrijstaand_tussen 1975 en 1991 ;182135;1788;348;0;496;0;179503
+vrijstaand_tussen 1992 en 2005 ;187691;5151;356;0;409;0;181775
+vrijstaand_tussen 2006 en 2014 ;81506;2913;129;0;101;0;78363
+2 onder 1 kap_voor 1946 ;174594;1777;1134;0;730;0;170953
+2 onder 1 kap_tussen 1946 en 1965 ;130138;725;284;0;424;0;128705
+2 onder 1 kap_tussen 1965 en 1974 ;85001;201;107;0;140;0;84553
+2 onder 1 kap_tussen 1975 en 1991 ;121108;1621;159;0;163;0;119165
+2 onder 1 kap_tussen 1992 en 2005 ;99150;4794;117;0;121;0;94118
+2 onder 1 kap_tussen 2006 en 2014 ;52272;2458;125;0;44;0;49645
+rijwoning hoek_voor 1946 ;123780;2479;2078;0;676;0;118547
+rijwoning hoek_tussen 1946 en 1965 ;127325;869;309;0;373;0;125774
+rijwoning hoek_tussen 1965 en 1974 ;163622;730;64;0;69;0;162759
+rijwoning hoek_tussen 1975 en 1991 ;313768;15723;313;0;192;0;297540
+rijwoning hoek_tussen 1992 en 2005 ;127574;13802;141;0;112;0;113519
+rijwoning hoek_tussen 2006 en 2014 ;68164;3626;226;0;66;0;64246
+rijwoning tussen_voor 1946 ;321935;13732;9557;0;2611;0;296035
+rijwoning tussen_tussen 1946 en 1965 ;234668;1859;819;0;808;0;231182
+rijwoning tussen_tussen 1965 en 1974 ;336560;2808;152;0;121;0;333479
+rijwoning tussen_tussen 1975 en 1991 ;711041;47756;733;0;476;0;662076
+rijwoning tussen_tussen 1992 en 2005 ;356336;50180;590;0;268;0;305298
+rijwoning tussen_tussen 2006 en 2014 ;178669;12733;621;0;230;0;165085
+meergezins: laag en midden_voor 1946 ;372707;23851;14942;0;4364;0;329550
+meergezins: laag en midden_tussen 1946 en 1965 ;203435;4948;2838;0;1176;0;194473
+meergezins: laag en midden_tussen 1965 en 1974 ;144349;3612;1653;0;294;0;138790
+meergezins: laag en midden_tussen 1975 en 1991 ;415673;34505;9495;0;3237;0;368436
+meergezins: laag en midden_tussen 1992 en 2005 ;250758;15895;3163;0;2528;0;229172
+meergezins: laag en midden_tussen 2006 en 2014 ;381092;27752;5380;0;2949;0;345011
+meergezins: hoog_voor 1946 ;184477;22327;2696;0;1067;0;158387
+meergezins: hoog_tussen 1946 en 1965 ;139372;7272;2234;0;570;0;129296
+meergezins: hoog_tussen 1965 en 1974 ;234144;6514;1468;0;254;0;225908
+meergezins: hoog_tussen 1975 en 1991 ;150394;18915;4534;0;1470;0;125475
+meergezins: hoog_tussen 1992 en 2005 ;142439;20583;3145;0;1473;0;117238
+meergezins: hoog_tussen 2006 en 2014 ;75181;9757;1548;0;374;0;63502

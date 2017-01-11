@@ -1,0 +1,14 @@
+titel;bedrag
+[text];[MEUR/Yr]
+GasNet_;2686.35615
+ElektriciteitsNet_;2907.4745
+Woning_Eigenaar_LokaleOpwekking;0
+UitlegWoning_Eigenaar_LokaleOpwekking;0
+Utiliteit_Eigenaar_LokaleOpwekking;0
+UitlegUtil_Eigenaar_LokaleOpwekking;0
+Glastuinbouw_Eigenaar_LokaleOpwekking;0
+UitlegGlTb_Eigenaar_LokaleOpwekking;0
+InpandigeDistributeur_RestWarmte;6.238305
+WijkDistributeur_RestWarmte;82.4410702
+PrimairTransporteur_RestWarmte;19.2591747
+RestWarmte_;4.66037316

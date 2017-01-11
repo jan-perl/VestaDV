@@ -1,0 +1,11 @@
+UtiliteitsType;Aantal;Restwarmte;GeoThermie;WijkWKK;BioWKK;WKO;Aardgas
+[];[m^2];[m^2];[m^2];[m^2];[m^2];[m^2];[m^2]
+kantoor;3988988;318037;41493;0;20483;0;3608975
+winkel;950871;63034;15381;0;20742;0;851714
+groothandel;0;0;0;0;0;0;0
+autohandel_reperatie;0;0;0;0;0;0;0
+verzorging_verpleging;407646;13983;1560;0;1206;0;390897
+ziekenhuis;0;0;0;0;0;0;0
+onderwijs;2850169;210386;4417;0;6716;0;2628650
+horeca;488593;18064;711;0;1441;0;468377
+overig;1165332;41881;3413;0;6603;0;1113435

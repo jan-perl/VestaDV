@@ -1,0 +1,13 @@
+titel;bedrag
+[text];[MEUR/Yr]
+AardGas_maatschappelijk;-1446.67282
+EnergieHeffing_AardGas;-493.243584
+GasNet_Vastrecht;-525.906395
+Elektriciteit_maatschappelijk;-2436.69103
+EnergieHeffing_Elektriciteit;-756.094355
+ElektriciteitsNet_Vastrecht;-783.544159
+Utiliteit_Eigenaar_VergoedingLabelSprong;0
+Utiliteit_Eigenaar_VergoedingZonPV;0
+Utiliteit_Eigenaar_VergoedingZonneBoiler;0
+Leverancier_Vastrecht_RestWarmte;-48.7524512
+Leverancier_Warmte_RestWarmte;-83.2359265

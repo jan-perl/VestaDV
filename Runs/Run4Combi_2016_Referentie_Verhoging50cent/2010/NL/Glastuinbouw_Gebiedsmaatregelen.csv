@@ -1,0 +1,15 @@
+GlasTuinBouwType;Aantal;Restwarmte;GeoThermie;WijkWKK;BioWKK;WKO;Aardgas
+[];[m^2];[m^2];[m^2];[m^2];[m^2];[m^2];[m^2]
+onbekend;0;0;0;0;0;0;0
+Glastuinbouw_groente_verwarmd;42826071;3380015;0;0;0;0;39446056
+Glastuinbouw_groente_onverwarmd;2416531;13240;0;0;0;0;2403291
+Glastuinbouw_groente_belicht;2856394;367492;0;0;0;0;2488902
+Glastuinbouw_groente_onbelicht;42386208;3025763;0;0;0;0;39360445
+Glastuinbouw_bloemen_verwarmd;44166369;2297749;0;0;0;0;41868620
+Glastuinbouw_bloemen_onverwarmd;2734481;102664;0;0;0;0;2631817
+Glastuinbouw_bloemen_belicht;15845669;973869;0;0;0;0;14871800
+Glastuinbouw_bloemen_onbelicht;31055181;1426544;0;0;0;0;29628637
+Glastuinbouw_overig_verwarmd;1684975;18756;0;0;0;0;1666219
+Glastuinbouw_overig_onverwarmd;2054529;8801;0;0;0;0;2045728
+Glastuinbouw_overig_belicht;0;0;0;0;0;0;0
+Glastuinbouw_overig_onbelicht;0;0;0;0;0;0;0
