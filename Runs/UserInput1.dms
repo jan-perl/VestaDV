@@ -40,10 +40,6 @@
 
 container UserInput1: Using = "Vesta/Units"
 {
-//	parameter<string> prijzenbron_param := Expand(., '%env:PRIJZENBRON%');
-	parameter<string> prijzenbron := '20160528_Vesta_energieprijzen_WLO_hoog'; // @USERINPUT, moet verwijzen naar een geldige .xls in %datadir%, you can override this in UserInput2010
-//	parameter<string> prijzenbron := prijzenbron_param = 'env:PRIJZENBRON' ? prijzenbron_base : prijzenbron_param;
-
 	container BebouwingsScenario  := Vesta/ScenarioSpecs/Bebouwing/Trend;
 	container KlimaatScenario     := Vesta/Brondata/klimaat/scenario_knmi_g_plus;
 	

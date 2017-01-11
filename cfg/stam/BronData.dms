@@ -289,7 +289,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		// c	Glastuinbouw (per hectare, per type )
 		// d	Onderdelen distributie warmte.
 		// e	Transport warmte (prijs per km rechte afstand; gedifferentieerd naar capaciteit; + 'omwegfactor')
-		container prijzen: Expr = "CalculationSchemes/EnergiePrijzen/All(UserInput2010/prijzenBron, log(1.00)[_Yr])", Descr = "zie FO $3.5";
+		container prijzen: Expr = "CalculationSchemes/EnergiePrijzen/All(Parameters/prijzenBron, log(1.00)[_Yr])", Descr = "zie FO $3.5";
 	}
 	container WarmteBronnen
 	{
@@ -320,7 +320,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			
 			unit<uint32>  TypeInfoData
-			:	StorageName = "='%datadir%/'+UserInput2010/prijzenbron+'_TypeInfo.csv'" 
+			:	StorageName = "='%datadir%/'+Parameters/prijzenbron+'_TypeInfo.csv'" 
 			,	StorageType = "gdal.vect"
 			,	StorageReadOnly = "True"
 			,	SyncMode    = "None"
