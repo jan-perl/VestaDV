@@ -398,7 +398,7 @@ template KostenBatenSchema
 			
 			// Ik ben zo vrij geweest CapaciteitsVraag voor utiliteit (en glastuinbouw?) hier ook mee te nemen. 
 			// Capaciteitsvraag vanuit woningen is nominaal per OnderStation; capaciteitsvraag vanuit Util + GlTb obv kengetallen
-			parameter<float64> HulpketelVermogensaandeel := Parameters/Bijstook/vermogensaandelen/Hulpketelvermogenaandeel;
+			parameter<float64> HulpketelVermogensaandeel := Parameters/Bijstook/vermogensaandelen/Hulpketel;
 			attribute<MW>  P(PlanRegio) := (n * Vermogen_OS + GlasTuinbouw/CapaciteitsVraag) * 0.001[ MW / kW]; //, IntegrityCheck = "P < value(115, MW)";
 			
 			container HoofdLeidingKosten := BuisKosten(PlanRegio, P);

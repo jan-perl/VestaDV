@@ -57,8 +57,8 @@ container VestaRun
 		container Bijstook
 		{
 			container vermogensaandelen {
-				parameter<Float64> Hulpketelvermogenaandeel := 0.85; // 
-				parameter<Float64> Hoofdbron := 0.3; //PrimairNet
+				parameter<Float64> Hulpketel := 0.85; // capaciteit hulpketels per eenheid piekvraag
+				parameter<Float64> Hoofdbron := 0.30; // capaciteit PrimairNet per eenheid piekvraag
 			}
 		}
 		container Discontovoeten {
