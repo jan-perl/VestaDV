@@ -1,0 +1,13 @@
+titel;bedrag
+[text];[MEUR/Yr]
+AardGas_maatschappelijk;0
+EnergieHeffing_AardGas;0
+GasNet_Vastrecht;0
+Elektriciteit_maatschappelijk;0
+EnergieHeffing_Elektriciteit;0
+ElektriciteitsNet_Vastrecht;0
+UitlegUtil_Eigenaar_VergoedingLabelSprong;0
+UitlegUtil_Eigenaar_VergoedingZonPV;0
+UitlegUtil_Eigenaar_VergoedingZonneBoiler;0
+Leverancier_Vastrecht_RestWarmte;0
+Leverancier_Warmte_RestWarmte;0

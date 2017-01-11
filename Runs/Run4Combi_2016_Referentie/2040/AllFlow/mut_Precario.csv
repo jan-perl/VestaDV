@@ -1,0 +1,11 @@
+titel;bedrag
+[text];[MEUR/Yr]
+WijkDistributeur_GeoThermie;6.34900134
+WijkDistributeur_RestWarmte;40.6288098
+WijkDistributeur_BioWKK;3.32408609
+WijkDistributeur_WijkWKK;0
+PrimairTransporteur_GeoThermie;0
+PrimairTransporteur_RestWarmte;8.05377871
+PrimairTransporteur_BioWKK;0
+PrimairTransporteur_WijkWKK;0
+WijkDistributeur_WKO;119.733367

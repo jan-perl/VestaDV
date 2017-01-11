@@ -1,0 +1,44 @@
+woningtype_bouwjaarklasse;Aantal;Schil;RuimteVerwarming;EL/eWP;EL/EWV;EL/Aplus;EL/LabelB;EL/LabelC;EL/LabelD;EL/LabelE;EL/LabelF;EL/LabelG
+[];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning];[Woning]
+geen woonpand_voor 1946 ;0;0;0;0;0;0;0;0;0;0;0;0
+geen woonpand_tussen 1946 en 1965 ;0;0;0;0;0;0;0;0;0;0;0;0
+geen woonpand_tussen 1965 en 1974 ;0;0;0;0;0;0;0;0;0;0;0;0
+geen woonpand_tussen 1975 en 1991 ;0;0;0;0;0;0;0;0;0;0;0;0
+geen woonpand_tussen 1992 en 2005 ;0;0;0;0;0;0;0;0;0;0;0;0
+geen woonpand_tussen 2006 en 2014 ;0;0;0;0;0;0;0;0;0;0;0;0
+vrijstaand_voor 1946 ;278256;0;278256;0;0;0;2703;0;0;155890;0;119663
+vrijstaand_tussen 1946 en 1965 ;135464;0;135464;0;0;0;2062;0;0;133402;0;0
+vrijstaand_tussen 1965 en 1974 ;109471;0;109471;0;0;0;1873;0;1055;0;106543;0
+vrijstaand_tussen 1975 en 1991 ;180883;0;180883;0;0;0;3408;0;177475;0;0;0
+vrijstaand_tussen 1992 en 2005 ;186803;0;186803;0;0;0;186803;0;0;0;0;0
+vrijstaand_tussen 2006 en 2014 ;81056;0;81056;0;0;0;81056;0;0;0;0;0
+2 onder 1 kap_voor 1946 ;171870;0;171870;0;0;0;3019;0;2820;0;166031;0
+2 onder 1 kap_tussen 1946 en 1965 ;121567;0;121567;0;0;0;7303;0;40220;0;74044;0
+2 onder 1 kap_tussen 1965 en 1974 ;81884;0;81884;0;0;0;1266;6598;0;74020;0;0
+2 onder 1 kap_tussen 1975 en 1991 ;120114;0;120114;0;0;0;1276;118838;0;0;0;0
+2 onder 1 kap_tussen 1992 en 2005 ;98620;0;98620;0;0;0;98620;0;0;0;0;0
+2 onder 1 kap_tussen 2006 en 2014 ;51962;0;51962;0;0;0;51962;0;0;0;0;0
+rijwoning hoek_voor 1946 ;119419;0;119419;0;0;0;4284;0;0;7008;0;108127
+rijwoning hoek_tussen 1946 en 1965 ;111090;0;111090;0;0;0;12286;0;87830;0;10974;0
+rijwoning hoek_tussen 1965 en 1974 ;151383;0;151383;0;0;0;6009;31650;0;113724;0;0
+rijwoning hoek_tussen 1975 en 1991 ;310009;0;310009;0;0;0;10555;299454;0;0;0;0
+rijwoning hoek_tussen 1992 en 2005 ;126072;0;126072;0;0;0;126072;0;0;0;0;0
+rijwoning hoek_tussen 2006 en 2014 ;67124;0;67124;0;0;0;67124;0;0;0;0;0
+rijwoning tussen_voor 1946 ;307210;0;307210;0;0;0;11669;0;0;23488;0;272053
+rijwoning tussen_tussen 1946 en 1965 ;202124;0;202124;0;0;0;21561;0;158762;0;21801;0
+rijwoning tussen_tussen 1965 en 1974 ;309402;0;309402;0;0;0;10996;71518;0;226888;0;0
+rijwoning tussen_tussen 1975 en 1991 ;701344;0;701344;0;0;0;22153;679191;0;0;0;0
+rijwoning tussen_tussen 1992 en 2005 ;351522;0;351522;0;0;0;351522;0;0;0;0;0
+rijwoning tussen_tussen 2006 en 2014 ;175722;0;175722;0;0;0;175722;0;0;0;0;0
+meergezins: laag en midden_voor 1946 ;360166;0;360166;0;0;0;19922;0;0;18212;0;322032
+meergezins: laag en midden_tussen 1946 en 1965 ;185490;0;185490;0;0;0;6252;35430;0;143808;0;0
+meergezins: laag en midden_tussen 1965 en 1974 ;137353;0;137353;0;0;0;22996;0;114357;0;0;0
+meergezins: laag en midden_tussen 1975 en 1991 ;400046;0;400046;0;0;0;45128;354918;0;0;0;0
+meergezins: laag en midden_tussen 1992 en 2005 ;244415;0;244415;0;0;0;244415;0;0;0;0;0
+meergezins: laag en midden_tussen 2006 en 2014 ;372837;0;372837;0;0;0;372837;0;0;0;0;0
+meergezins: hoog_voor 1946 ;182398;0;182398;0;0;0;17261;0;165137;0;0;0
+meergezins: hoog_tussen 1946 en 1965 ;134060;0;134060;0;0;0;15018;0;119042;0;0;0
+meergezins: hoog_tussen 1965 en 1974 ;217347;0;217347;0;0;0;9478;66471;0;141398;0;0
+meergezins: hoog_tussen 1975 en 1991 ;145989;0;145989;0;0;0;10309;135680;0;0;0;0
+meergezins: hoog_tussen 1992 en 2005 ;138803;0;138803;0;0;0;138803;0;0;0;0;0
+meergezins: hoog_tussen 2006 en 2014 ;72992;0;72992;0;0;0;72992;0;0;0;0;0

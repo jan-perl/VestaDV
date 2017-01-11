@@ -1,0 +1,16 @@
+Afnemer;Oj_Totaal;Kj_Totaal;Oj_Netto;Woning;UitlegWoning;Utiliteit;UitlegUtil;Glastuinbouw;UitlegGlTb;RestWarmte;GeoThermie;WKO;WijkWKK;BioWKK;Subsidie
+[];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr];[ mega EURO per Yr]
+GebouwVerbetering;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+LokaleOpwekking;109.077349;0;109.077349;0;0;0;0;0;0;109.077349;0;0;0;0;0
+Gas;8020.32602;0;8020.32602;5116.16144;0;1972.57921;0;870.040408;0;61.5449592;0;0;0;0;-2.75313505E-11
+Elektra;6601.70423;0;6601.70423;2984.70359;0;3151.44071;0;465.559941;0;0;0;0;0;0;-1.11987902E-11
+RestWarmte;445.27318;449.200968;-3.92778832;249.229243;0;131.988378;0;64.0555591;0;0;0;0;0;0;0
+GeoThermie;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+WKO;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+WijkWKK;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+BioWKK;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+Onderhoud & Verbruik;222.78174;0;222.78174;0;0;0;0;0;0;222.78174;0;0;0;0;0
+CO2 Heffing;127.833519;0;127.833519;45.1874394;0;68.7944839;0;13.8515957;0;0;0;0;0;0;0
+Energie heffing;5507.33073;-3.87301407E-11;5507.33073;4128.93459;0;1249.33794;0;105.978841;0;23.0793597;0;0;0;0;0
+BTW;2412.31866;0;2412.31866;2379.6011;0;0;0;0;0;32.7175606;0;0;0;0;0
+RisicoPremie;-3.07846069E-11;0;-3.07846069E-11;-4.19902802E-11;0;1.1920929E-11;0;-7.15255737E-13;0;0;0;0;0;0;0

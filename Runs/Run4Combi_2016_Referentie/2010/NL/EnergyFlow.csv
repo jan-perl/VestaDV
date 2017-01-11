@@ -1,0 +1,16 @@
+Afnemer;Totaal;Input;Netto;Woning;UitlegWoning;Utiliteit;UitlegUtil;Glastuinbouw;UitlegGlTb;RestWarmte;GeoThermie;WKO;WijkWKK;BioWKK;Subsidie
+[];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr];[ peta J per Yr]
+GebouwVerbetering;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+LokaleOpwekking;19.1681448;0;19.1681448;0;0;0;0;0;0;19.1681448;0;0;0;0;0
+Gas;520.312357;0;520.312357;314.758609;0;122.804777;0;77.5683913;0;5.18057968;0;0;0;0;0
+Elektra;230.100334;0;230.100334;81.3373909;0;123.830071;0;24.9328722;0;0;0;0;0;0;0
+RestWarmte;19.1681448;24.3487245;-5.18057968;9.41864006;0;4.2983839;0;5.45112084;0;0;0;0;0;0;0
+GeoThermie;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+WKO;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+WijkWKK;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+BioWKK;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+Onderhoud & Verbruik;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+CO2 Heffing;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+Energie heffing;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+BTW;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
+RisicoPremie;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0
