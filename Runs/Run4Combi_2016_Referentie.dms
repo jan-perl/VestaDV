@@ -52,7 +52,8 @@ container VestaRun
 	{
 		// parameter: prijzenbron
 		//
-		// moet verwijzen naar een geldige .csv quintet (_Elek, _Gas, _OverigeKosten, _Co2Heffing, _TypeInfo) in %projdir%/data
+		// moet verwijzen naar een geldige .csv quintet  in %projdir%/data
+		// dwz: *_Elek.csv, *_Gas.csv, *_OverigeKosten.csv, *_Co2Heffing.csv, *_TypeInfo.csv
 		//
 		// vooalsnog beschikbaar:
 		// - 20160528_Vesta_energieprijzen_WLO_hoog
