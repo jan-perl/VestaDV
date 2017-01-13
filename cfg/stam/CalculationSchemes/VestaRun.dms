@@ -755,7 +755,7 @@ template VestaRun
 	{
 		container PlanRegioResultsShp: StorageName = "=OutputFolder+'/PR_WA.dbf'"
 		{
-			attribute<rdc_meter> Geometry(PlanRegio, poly): = PlanRegio/Geometry, StorageName =  "=OutputFolder+'/PR_WA.shp'";
+			attribute<rdc_meter> Geometry(PlanRegio, poly): = PlanRegio/poly, StorageName =  "=OutputFolder+'/PR_WA.shp'";
 			attribute<Classifications/AanbodOptie> AanbodOptie(PlanRegio):  = EndState/AanbodOpties/PlanRegioWarmteAllocatie;
 		}
 		
