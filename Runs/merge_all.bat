@@ -63,8 +63,6 @@ REM call python linenumbers.py %Run5% %tmpcsv%/Verbetering_%Run5%.csv verbeterin
 REM call python linenumbers.py %Run5% %tmpcsv%/mut_bebouwing_allflow_%Run5%.csv mut_bebouwing_allflow
 REM call python linenumbers.py %Run5% %tmpcsv%/mut_bebouwing_allstock_%Run5%.csv mut_bebouwing_allstock
 
-
-
 cd tmpcsv
 copy flow_*.csv ..\flow.csv
 copy *Gebiedsmaatregelen*.csv ..\Gebiedsmaatregelen.csv
@@ -78,5 +76,5 @@ copy *Opwekking*.csv ..\Opwekking.csv
 copy *Verbetering*.csv ..\Verbetering.csv
 
 del *.csv
-
+PAUSE
 
