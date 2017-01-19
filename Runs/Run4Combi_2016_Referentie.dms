@@ -52,8 +52,8 @@ container VestaRun
 	{
 		// parameter: prijzenbron
 		//
-		// moet verwijzen naar een geldige .csv quintet  in %projdir%/data
-		// dwz: *_Elek.csv, *_Gas.csv, *_OverigeKosten.csv, *_Co2Heffing.csv, *_TypeInfo.csv
+		// moet verwijzen naar een geldige .csv quartet  in %projdir%/data
+		// dwz: *_Elek.csv, *_Gas.csv, *_OverigeKosten.csv, *_TypeInfo.csv
 		//
 		// vooalsnog beschikbaar:
 		// - 20160528_Vesta_energieprijzen_WLO_hoog
@@ -67,10 +67,10 @@ container VestaRun
 		// moet verwijzen naar een folder met nieuwbouw en sloop projecties t/m 2050
 		//
 		// vooalsnog beschikbaar: van 2 WLO scenario's afgeleide resultaten, te weten
-		// - %SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115
-		// - %SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115
+		// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115
+		// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115
 		
-		parameter<String> WloScenarioFolder := '%SourceDataDir%/Vesta/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
+		parameter<String> WloScenarioFolder := '%SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
 
 		container Bijstook
 		{
