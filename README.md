@@ -18,6 +18,15 @@ gewenst kan de gebruiker vervolgens zelf de ruimtelijke ontwikkeling van sloop e
 #Pagina in opbouw
 n.b. deze pagina is nog in opbouw. De software, het model en de bijbehorende data en installatieinstructies zullen hier vanaf 25 december 2016 beschikbaar komen.
 
+# Vraag vanuit het Vesta team
+Voordat u aan de slag gaat met Vesta, willen we u vragen om wat eenvoudige gegevens ter informatie te versturen naar het Vesta team. De reden dat we dit vragen is dat we vanuit GitHub geen informatie krijgen wie het model allemaal downloaden. Om toch een idee te krijgen wat betreft de toepassing van Vesta vragen we u daarom de volgende gegevens door te sturen naar Info-Vesta@pbl.nl:
+-	Naam
+-	Emailadres
+-	Telefoonnummer
+-	Organisatie/bedrijf
+-	Korte beschrijving van het doel waarvoor u Vesta wil gebruiken
+Dit is geheel vrijblijvend, maar u zou ons er wel mee helpen. 
+
 #Links:
 * http://www.pbl.nl/publicaties/2012/vesta-ruimtelijk-energiemodel-voor-de-gebouwde-omgeving
 * http://www.objectvision.nl/gallery/products/vesta
