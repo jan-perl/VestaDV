@@ -15,9 +15,6 @@ In de studie Welzijn en Leefomgeving (CPB/PBL 2015) zijn de scenario’s Hoog en
 nationaal niveau waarbij de uitersten van de scenario’s Hoog en Laag de waarschijnlijke bandbreedte van de resultaten geven. De detaillering in specifieke locatie beoogt echter niet iets te zeggen over de te verwachten regionale of lokale situatie zelf en is niet bedoeld om te worden gebruikt voor regionale of lokale analyse. Indien wordt beoogt om het Vesta model regionaal of lokaal toe te passen dan kan het best default worden gerekend zonder ruimtelijke ontwikkeling van de woningen en utiliteitsgebouwen. Zo nodig en
 gewenst kan de gebruiker vervolgens zelf de ruimtelijke ontwikkeling van sloop en nieuwbouw opgeven op basis van eigen inzichten.
 
-#Pagina in opbouw
-n.b. deze pagina is nog in opbouw. De software, het model en de bijbehorende data en installatieinstructies zullen hier vanaf 25 december 2016 beschikbaar komen.
-
 # Vraag vanuit het Vesta team
 Voordat u aan de slag gaat met Vesta, willen we u vragen om wat eenvoudige gegevens ter informatie te versturen naar het Vesta team. De reden dat we dit vragen is dat we vanuit GitHub geen informatie krijgen wie het model allemaal downloaden. Om toch een idee te krijgen wat betreft de toepassing van Vesta vragen we u daarom de volgende gegevens door te sturen naar Info-Vesta@pbl.nl:
 -	Naam
