@@ -461,6 +461,8 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			StorageReadOnly = "True",
 			SyncMode        = "Attr"
 		{
+			attribute<rdc_meter> Geometry(poly);
+			
 			attribute<PC4_nrs> PC4;
 			attribute<String> PC4Str: Expr = "string(PC4)";
 			
