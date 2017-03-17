@@ -42,9 +42,8 @@
 
 container Geography: Using = "Units"
 {
-	unit<dpoint> rdc_meter: 
-		DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs",
-		Range      = "[{300000, 0}, {625000, 280000}) ";
+	unit<dpoint> rdc_meter_base: DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs";
+	unit<dpoint> rdc_meter := range(rdc_meter_base, point(300000.0, 0.0), point(625000.0, 280000.0));
 	unit<fpoint> rdc_meter_f32 := gridset(rdc_meter, point(1.0, 1.0), point(0.0, 0.0), fpoint);
 	unit<ipoint> rdc_dm := gridset(rdc_meter, point(0.1, 0.1), point(0.0,0.0), ipoint);
 	unit<ipoint> rdc_mm := gridset(rdc_meter, point(0.001, 0.001), point(0.0,0.0), ipoint);

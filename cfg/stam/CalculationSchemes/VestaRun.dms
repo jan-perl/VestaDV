@@ -70,7 +70,7 @@ template VestaRun
 					attribute<Float64>                         BronPointY;
 					attribute<Geography/RegioIndelingen/buurt> PlanRegio_rel; // using this as PlanRegio values will trigger an error if PlanRegion != PC4.
 //					attribute<EUR>                             Ki_Netto;
-					attribute<rdc_meter>                       BronPoint := point(BronPointY, BronPointX);
+					attribute<rdc_meter>                       BronPoint := point(BronPointY, BronPointX, rdc_meter);
 					parameter<bool> HasArcs := true; // avoid reading the dbf to find this out.
 				}
 				
