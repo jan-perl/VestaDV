@@ -716,10 +716,14 @@ template VestaRun
 		container Totaal := CalculationSchemes/PotentialComponent(GridKaarten/Totaal/vraag);
 	}
 	
-	parameter<String> CurrDir     := Expand(., '%currDir%');
-	parameter<String> RunDir   := Expand(., '%configDir%');
-	parameter<String> RunName   :=substr(RunDir, strlen(CurrDir), 4000000000);
-	parameter<String> OutputFolder:= '%localDataProjDir%/Results/'+RunName +'/'+String(RunJaar);
+	container FolderInfo {
+		parameter<String> CurrDir      := Expand(., '%currDir%');
+		parameter<String> RunDir       := Expand(., '%configDir%');
+		parameter<String> RunName_7139 := substr(RunDir, strlen(CurrDir)+1, 4000000000);
+		parameter<String> RunName_7140 := Expand(., '%configName%');
+		parameter<String> RunName      := =GeoDmsVersion() > 7.1395 ? 'RunName_7140' : 'RunName_7139';
+	}
+	parameter<String> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+String(RunJaar);
 	
 	container Flow  := CalculationSchemes/Flow/MainTempl(true , true, OutputFolder+'/AllFlow');
 	container Stock := CalculationSchemes/Flow/MainTempl(false, true, OutputFolder+'/AllStock');
