@@ -252,19 +252,20 @@ template VestaRunDataComponent
 			// n.b.: besparing op WarmWater wordt hier buiten beschouwing gelaten maar telt later wel mee in de kosten/baten berekening. 
 			// Wellicht is eWP zelfs wat duurder voor WarmWater dan gas. Dit kan nadelig zijn voor de gebruiker.
 			
-			attribute<EUR_Yr> KostenBasis_eWP(BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/eWP) * ElektriciteitPrijs;
+			attribute<GJ_Yr>  teBesparenGas_AP(BebouwingsObject) := Functioneel/RuimteVerwarming / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel ];
+			attribute<EUR_Yr> KostenBasis_eWP (BebouwingsObject) := (teBesparenGas_AP / Efficiency/RuimteVerwarming/eWP) * ElektriciteitPrijs;
 			
-			attribute<EUR_Yr> S_H_eWP (BebouwingsObject) := GeenGas_H         - KostenBasis_eWP / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_T_eWP (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_eWP / EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_B_eWP (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_eWP / EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_AP_eWP(BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_eWP / Efficiency/gebouw/LaatsteWaarde;
+			attribute<EUR_Yr> S_H_eWP (BebouwingsObject) := GeenGas_H         - KostenBasis_eWP;
+			attribute<EUR_Yr> S_T_eWP (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_eWP;
+			attribute<EUR_Yr> S_B_eWP (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_eWP;
+			attribute<EUR_Yr> S_AP_eWP(BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_eWP;
 			
-			attribute<EUR_Yr> KostenBasis_EWV(BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/EWV) * ElektriciteitPrijs;
+			attribute<EUR_Yr> KostenBasis_EWV(BebouwingsObject) := (teBesparenGas_AP / Efficiency/RuimteVerwarming/EWV) * ElektriciteitPrijs;
 			
-			attribute<EUR_Yr> S_H_EWV (BebouwingsObject) := GeenGas_H         - KostenBasis_EWV / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_T_EWV (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_EWV / EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_B_EWV (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_EWV / EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[ Model_rel ];
-			attribute<EUR_Yr> S_AP_EWV(BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_EWV / Efficiency/gebouw/LaatsteWaarde;
+			attribute<EUR_Yr> S_H_EWV (BebouwingsObject) := GeenGas_H         - KostenBasis_EWV;
+			attribute<EUR_Yr> S_T_EWV (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_EWV;
+			attribute<EUR_Yr> S_B_EWV (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_EWV;
+			attribute<EUR_Yr> S_AP_EWV(BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_EWV;
 		}
 		container ComfortVerbetering_eg_ex
 		{
