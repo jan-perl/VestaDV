@@ -989,4 +989,22 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<String> Label: DialogType = "LabelText",
 			['0-85.000','85.000-170.000','170.000-255.000','255.000-340.000','340.000-425.000','425.000-510.000','510.000-595.000','595.000-680.000','680.000-1.258.000','1.258.000-1.343.000','1.343.000- 1.428.000','meer dan 1.428.000'];
 	}
+	
+// =========  Classificatie voor de vervangingsstatus van Gasleidingen beheerd door Stedin""
+	unit<uint8> StatusKl: nrofrows = 3
+	{
+		attribute<string> label: DialogType = "LabelText",
+		[
+				'Te vervangen'
+			,	'<= 30 jaar'
+			,	'> 30 jaar'
+		];
+		attribute<uint32> SymbolColor: DialogType = "PenColor",
+		[
+				rgb(  0,  0,  0)
+			,	rgb(100,100,100)
+			,	rgb(200,200,200)
+
+		];
+	}
 }

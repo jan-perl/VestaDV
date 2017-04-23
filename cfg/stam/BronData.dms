@@ -598,7 +598,25 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		{
 			container TypeInfo := TypeInfoTempl('BioWKK');
 		}
+		container Gas: Descr = "Gasleidingennet beheersgebied Stedin"
+		{
+			unit<UInt32> Leiding: 
+				StorageName      = "%sourceDataProjDir%/Aanbod/Gas/Leidingen.dbf",
+				StorageReadOnly = "True",
+				DialogType      = "Map",
+				DialogData      = "Leidingen",
+				url             = "%sourceDataProjDir%/Aanbod/Gas/Gasvervangingsdata _ Stedin Zakelijk.htm",
+				Source          = "download van website op 29 maart 2017: https://www.stedin.net/zakelijk/open-data/gasvervangingsdata/#gasvervangingsbestand"
+								  "conversie van Polygon ZM-bestand naar normaal Polygon-bestand in ArcGIS 10.3 mbv Copy features", 
+				SyncMode        = "All"
+				{
+					attribute<rdc_meter> Leidingen(arc): StorageName = "%sourceDataProjDir%/Aanbod/Gas/Leidingen.shp";
+					attribute<string> Status;
+					attribute<Classifications/StatusKl> Status_rel := rlookup(Status, Classifications/StatusKl/label);
+				}
+		}
 	}
+
 	container VraagReductiePrijzen: Descr = "zie FO $3.6"
 	{
 	}
