@@ -215,11 +215,11 @@ template VestaRunDataComponent
 		
 		container VermedenGas
 		{
-			attribute<units/GJ_Yr> RV_H (BebouwingsObject) := Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/Aardgas;
+			attribute<units/GJ_Yr> RV_H (BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/Aardgas) * DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor;
 			attribute<units/GJ_Yr> RV   (BebouwingsObject) := RV_H / Efficiency/gebouw/LaatsteWaarde;
 			attribute<units/GJ_Yr> RV_AP(BebouwingsObject) := RV_H / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel];
 			
-			attribute<units/GJ_Yr> WW   (BebouwingsObject) := Functioneel/WarmWater / Efficiency/WarmWater/Aardgas;
+			attribute<units/GJ_Yr> WW   (BebouwingsObject) := (Functioneel/WarmWater / Efficiency/WarmWater/Aardgas) * DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
 			
 			attribute<units/GJ_Yr> S_H_T (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency )[ Model_rel];
 			attribute<units/GJ_Yr> S_H_B (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency )[ Model_rel];
