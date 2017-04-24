@@ -40,28 +40,27 @@
 
 container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
-	unit<uint32> Kostensoort : nrofrows = 27
+	unit<uint32> Kostensoort : nrofrows = 24
 	{
 		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
 			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
 			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
 			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
-			'KL_p', 'KL_e', 
-			'EmissieRechten', 'BTW', 'Precario', 'EnergieHeffing', 'Subsidie' //5
+			'eWP', 'EWV', 'mWKK', 'hWP' // 4
 		];
 		attribute<bool> IsMaatschappelijkeKosten: [ true, false, false, true, true,  //5
 			true, true, true, true, true, //5
 			true, true, true, true, true, //5
 			false, false, false, false, //4
-			false, false,
-			true, false, false, false, false
+			true, true, true, true
 		];
 		attribute<bool> IsOverheid : [ false, true, true, false, false, // 5
 			false, false, false, false, false, // 5
 			false, false, false, false, false, // 5
 			false, false, false, false, // 4
 			false, false, 
-			false, true, true, true, true
+			false, true, true, true, true,
+			false, false, false, false
 		];
 	}
 	unit<uint32> BC := range(uint32, 0, #Classifications/BebouwingsComponent)
@@ -73,7 +72,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 		container V := for_each_nedv(name, string(ID(.))+'[..]', void, .);
 	}
 	
-	unit<uint32> mutatieSchema: nrofrows = 2
+	unit<uint32> mutatieSchema: nrofrows = 4
 	{
 		
 		parameter<uint32> nrAttr := 6;
@@ -111,8 +110,17 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'', 
 					PRR
 			
+			,	'AardGas@BC@', 'AardGas', 'GasNet', 
+					'AllocatieResultaat/@BC@/MeterVraag/AardGas',
+					'', 
+					PRR
+			
 			,	'Elektriciteit', 'ElektriciteitsNet', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/Elektriciteit/EnergieHeffing', 
+					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
+					'', 
+					PRR
+			,	'Elektriciteit@BC@', 'Elektriciteit', 'ElektriciteitsNet', 
+					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					'', 
 					PRR
 					

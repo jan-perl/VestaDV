@@ -90,16 +90,16 @@ template AllocatieResultaatComponentTempl
 			+ Aandelen/mWKK                * VestaRunDataComponent/DragerOpties/Warmte/Warmte / (0.8 * 0.5) // rendement: 80% waarvan 50% voor warmte en 50% voor Elektriciteit
 			, Descr = "incl gas voor Micro WKK, excl gas voor WijkWKK en bijstook in WOS";
 		
-		attribute<GJ_Yr> eWP(BebouwingsObject) :=Aandelen/eWP * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
+		attribute<GJ_Yr> eWP (BebouwingsObject) :=Aandelen/eWP  * VestaRunDataComponent/DragerOpties/Warmte/EWV; // COP is al toegepast in de DragerOptie
+		attribute<GJ_Yr> EWV (BebouwingsObject) :=Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
+		attribute<GJ_Yr> hWP (BebouwingsObject) :=Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
+		attribute<GJ_Yr> mWKK(BebouwingsObject) :=Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
 				
 		attribute<GJ_Yr> Elektriciteit(BebouwingsObject) :=
 			  VestaRunDataComponent/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
 			+ VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP)
 			+ VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO) // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
-			+ eWP
-			+ Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/EWV // COP is al toegepast in de DragerOptie
-			+ Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP) // F85
-			- Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte // op basis van 50/50 productie   
+			+ eWP + EWV + hWP - mWKK
 		,	Descr = "excl elektra voor WKO warmtepomp";
 		
 //DEBUG		attribute<GJ_Yr> Wko_Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * Aandelen/WKO;
