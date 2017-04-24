@@ -53,6 +53,7 @@ container Vesta: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 	#include <CalculationSchemes.dms>
 	#include <ScenarioSpecs.dms>
 	#include <FlowData.dms>
+	#include <EnergyData.dms>
 	#include <InfraParams.dms>
 	container Exports {
 		container WarmteProductiePerBron {

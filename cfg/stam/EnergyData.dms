@@ -1,0 +1,130 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden de brondata geconfigureerd.                    //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container EnergyData: Using = "Units;Geography", KeepData = "True"
+{
+	unit<uint32> Kostensoort : nrofrows = 27
+	{
+		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
+			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
+			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
+			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
+			'KL_p', 'KL_e', 
+			'EmissieRechten', 'BTW', 'Precario', 'EnergieHeffing', 'Subsidie' //5
+		];
+		attribute<bool> IsMaatschappelijkeKosten: [ true, false, false, true, true,  //5
+			true, true, true, true, true, //5
+			true, true, true, true, true, //5
+			false, false, false, false, //4
+			false, false,
+			true, false, false, false, false
+		];
+		attribute<bool> IsOverheid : [ false, true, true, false, false, // 5
+			false, false, false, false, false, // 5
+			false, false, false, false, false, // 5
+			false, false, false, false, // 4
+			false, false, 
+			false, true, true, true, true
+		];
+	}
+	unit<uint32> BC := range(uint32, 0, #Classifications/BebouwingsComponent)
+	{
+		attribute<string> name      := union_data(., Classifications/BebouwingsComponent/name);
+		attribute<string> entity    := 'VestaRunData/'+name+'/BebouwingsObject';
+		attribute<bool  > draagtBTW := union_data(., Classifications/BebouwingsComponent/DraagtBTW);
+		attribute<bool  > kanWKO    := union_data(., Classifications/BebouwingsComponent/KanWKO);
+		container V := for_each_nedv(name, string(ID(.))+'[..]', void, .);
+	}
+	
+	unit<uint32> mutatieSchema: nrofrows = 2
+	{
+		
+		parameter<uint32> nrAttr := 6;
+		unit<UInt32> Elements := Range(uint32, 0, nrAttr * #.)
+		{
+			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
+			
+			// Annualisation Factors
+// 			parameter<string> AF28_OW := 'NCW/ow28/AnnualisationFactor'; 
+// 			parameter<string> AF28_PT := 'NCW/pt28/AnnualisationFactor'; 
+// 			parameter<string> AF28_WD := 'NCW/wd28/AnnualisationFactor'; 
+// 			parameter<string> AF28_ID := 'NCW/id28/AnnualisationFactor'; 
+// 			parameter<string> AF28_MR := 'NCW/mr28/AnnualisationFactor';
+// 			parameter<string> AF28_BW := 'NCW/bw28/AnnualisationFactor';
+// 			parameter<string> AF15_GE := 'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor';
+// 			parameter<string> AF30_GE := 'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor';
+// 			parameter<string> AF15_MR := 'NCW/mr15/AnnualisationFactor';
+// 			parameter<string> AF30_MR := 'NCW/mr30/AnnualisationFactor';
+// 			parameter<string> AFAB_ID := 'NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor'; 
+// 			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
+// 			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
+// 			parameter<string> AFAB_GE := 'VestaRunData/@BC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@BC@/NcwRefs/_28/AnnualisationFactor';
+// 			parameter<string> ROSEL := 'Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
+// 			parameter<string> VAT_F := '(UserInput/VAT / 100[Percent])';
+// 			parameter<string> VAT_R := '(1.0+iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT / 100[Percent], 0.0))';
+			attribute<String> Text := union_data(.,
+				// name //leverancier //afnemer  
+					// item 
+					// factor 
+					//left-entity-rel // right-entity-rel
+					
+		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
+				'AardGas', 'GasNet', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/AardGas',
+					'', 
+					PRR
+			
+			,	'Elektriciteit', 'ElektriciteitsNet', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/Elektriciteit/EnergieHeffing', 
+					'', 
+					PRR
+					
+			);
+		}
+		
+		attribute<String> Name       := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
+		attribute<string> Leverancier:= Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
+		attribute<string> Afnemer    := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
+		attribute<string> Expr       := Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
+		attribute<string> AnnuFactor := Elements/Text[value(ID(.)* nrAttr + 4, Elements)];
+		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 5, Elements)];
+	}
+	unit<uint32> mutatie := mutatieSchema;
+}

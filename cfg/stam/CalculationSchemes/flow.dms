@@ -99,8 +99,9 @@ container flow: FreeData = "False" // DEBUG
 	}
 	template MainTempl {
 		// parameters
-		parameter<bool>      is_flow; // false: calc stock only
-		parameter<bool>      is_all;  // false: use fraction
+		container          FlowData;
+		parameter<bool>    is_flow; // false: calc stock only
+		parameter<bool>    is_all;  // false: use fraction
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
 		// end parameters
@@ -109,16 +110,8 @@ container flow: FreeData = "False" // DEBUG
 		unit<float64> MQuantity := =is_flow ? 'Meur_yr' : 'Meur';
 		unit<uint32> PR := PlanRegio;
 		unit<uint32> Kostensoort   := FlowData/KostenSoort;
-		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
-		unit<uint32> BC   := FlowData/BC;
-		unit<uint32> BTWC := subset(BC/DraagtBTW)
-		{
-			attribute<string> name      := BC/name  [nr_OrgEntity];
-		}
-		unit<uint32> WKOC := subset(BC/KanWKO)
-		{
-			attribute<string> name      := BC/name  [nr_OrgEntity];
-		}
+//		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
+		unit<uint32> BC := FlowData/BC;
 		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Voorkeuren/WarmteOpties)
 		{
 			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Voorkeuren/WarmteOpties/name);
@@ -128,11 +121,14 @@ container flow: FreeData = "False" // DEBUG
 			attribute<bool> IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Voorkeuren/WarmteOpties));
 		}
 		container impl {
-			container applyBC := flow/subst(mutatieSchema  , '@BC@' , BC); 
-			container applyWKO:= flow/subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyBTW:= flow/subst(applyWKO/result, '@BTW@', BTWC);
-			container applyRO := flow/subst(applyBTW/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := flow/subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			unit<uint32> WKOC := subset(BC/KanWKO)
+			{
+				attribute<string> name      := BC/name  [nr_OrgEntity];
+			}
+			container applyBC := CalculationSchemes/flow/subst(FlowData/mutatie,'@BC@' , BC); 
+			container applyWKO:= CalculationSchemes/flow/subst(applyBC/result , '@WKOC@' , WKOC); 
+			container applyRO := CalculationSchemes/flow/subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := CalculationSchemes/flow/subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<Actor>  Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";

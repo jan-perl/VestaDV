@@ -725,36 +725,44 @@ template VestaRun
 	}
 	parameter<String> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+String(RunJaar);
 	
-	container Flow  := CalculationSchemes/Flow/MainTempl(true , true, OutputFolder+'/AllFlow');
-	container Stock := CalculationSchemes/Flow/MainTempl(false, true, OutputFolder+'/AllStock');
+	container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, true, OutputFolder+'/AllFlow');
+	container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, true, OutputFolder+'/AllStock');
+	container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, true, OutputFolder+'/AllEnergy');
+	
 	container PerInkomensGroep {
 		container Inkomen := RegioIndelingen/buurt/Inkomen;
 		container laag {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/InkLaagFlow',  Inkomen/p_hh_li / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/InkLaagStock', Inkomen/p_hh_li / Inkomen/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/InkLaagFlow',   Inkomen/p_hh_li / Inkomen/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/InkLaagStock',  Inkomen/p_hh_li / Inkomen/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/InkLaagEnergy', Inkomen/p_hh_li / Inkomen/p_checksum);
 		}
 		container midden {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/InkMiddenFlow',  Inkomen/p_hh_mi / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/InkMiddenStock', Inkomen/p_hh_mi / Inkomen/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/InkMiddenFlow',   Inkomen/p_hh_mi / Inkomen/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/InkMiddenStock',  Inkomen/p_hh_mi / Inkomen/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/InkMiddenEnergy', Inkomen/p_hh_mi / Inkomen/p_checksum);
 		}
 		container hoog {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/InkHoogFlow',  Inkomen/p_hh_hi / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/InkHoogStock', Inkomen/p_hh_hi / Inkomen/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/InkHoogFlow',   Inkomen/p_hh_hi / Inkomen/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/InkHoogStock',  Inkomen/p_hh_hi / Inkomen/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/InkHoogEnergy', Inkomen/p_hh_hi / Inkomen/p_checksum);
 		}
 	}
 	container PerEigendom {
 		container Eigendom := RegioIndelingen/buurt/Eigendom;
 		container koop {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/HK_kwFlow',  Eigendom/p_koopw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/HK_kwStock', Eigendom/p_koopw / Eigendom/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/HK_kwFlow',   Eigendom/p_koopw / Eigendom/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/HK_kwStock',  Eigendom/p_koopw / Eigendom/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/HK_kwEnergy', Inkomen/p_koopw  / Eigendom/p_checksum);
 		}
 		container wcorpw {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/HK_wcFlow',  Eigendom/p_wcorpw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/HK_wcStock', Eigendom/p_wcorpw / Eigendom/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/HK_wcFlow',   Eigendom/p_wcorpw / Eigendom/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/HK_wcStock',  Eigendom/p_wcorpw / Eigendom/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/HK_wcEnergy', Inkomen/p_wcorpw  / Eigendom/p_checksum);
 		}
 		container ov_hw {
-			container Flow  := CalculationSchemes/Flow/MainTempl(true , false, OutputFolder+'/HK_hwFlow',  Eigendom/p_ov_hw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Flow/MainTempl(false, false, OutputFolder+'/HK_hwStock', Eigendom/p_ov_hw / Eigendom/p_checksum);
+			container Flow  := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,   true, false, OutputFolder+'/HK_hwFlow',   Eigendom/p_ov_hw / Eigendom/p_checksum);
+			container Stock := CalculationSchemes/Flow/MainTempl(Vesta/FlowData,  false, false, OutputFolder+'/HK_hwStock',  Eigendom/p_ov_hw / Eigendom/p_checksum);
+			container Energy:= CalculationSchemes/Flow/MainTempl(Vesta/EnergyData, true, false, OutputFolder+'/HK_hwEnergy', Inkomen/p_ov_hw  / Eigendom/p_checksum);
 		}
 	}
 	
