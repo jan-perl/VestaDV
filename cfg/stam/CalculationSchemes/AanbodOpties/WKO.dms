@@ -496,7 +496,7 @@ container WKO: IsTemplate = "True"
 		}
 		attribute<Cluster> Cluster_RelNow(BebouwingsObject):= AllowedObjects/Cluster_rel[invert(AllowedObjects/nr_OrgEntity)];
 		attribute<Cluster> Cluster_Rel(BebouwingsObject):= MakeDefined(Cluster_RelNow, VestaRunDataComponent/WkoCluster_rel);
-		attribute<Bool> StartWKO(BebouwingsObject):= IsDefined(Cluster_rel);
+		attribute<Bool> StartWKO(BebouwingsObject):= IsDefined(Cluster_RelNow);
 		attribute<Bool> WasWKO  (BebouwingsObject):= (BeginStatusComponent/WarmteAllocatie == Classifications/AanbodOptie/V/WKO);
 		attribute<bool> HasWKO  (BebouwingsObject):= StartWKO || WasWKO;
 		
