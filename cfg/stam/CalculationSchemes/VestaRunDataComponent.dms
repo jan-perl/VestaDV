@@ -219,7 +219,7 @@ template VestaRunDataComponent
 			attribute<units/GJ_Yr> RV   (BebouwingsObject) := RV_H / Efficiency/gebouw/LaatsteWaarde;
 			attribute<units/GJ_Yr> RV_AP(BebouwingsObject) := RV_H / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel];
 			
-			attribute<units/GJ_Yr> WW   (BebouwingsObject) := (Functioneel/WarmWater / Efficiency/WarmWater/Aardgas) * DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
+			attribute<units/GJ_Yr> WW   (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Aardgas) * DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
 			
 			attribute<units/GJ_Yr> S_H_T (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency )[ Model_rel];
 			attribute<units/GJ_Yr> S_H_B (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency )[ Model_rel];
@@ -257,7 +257,7 @@ template VestaRunDataComponent
 			
 			attribute<EUR_Yr> KostenBasis_eWP (BebouwingsObject) := ElektriciteitPrijs * 
 				(Functioneel/RuimteVerwarming / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[ Model_rel] / Efficiency/RuimteVerwarming/eWP 
-				+ Functioneel/WarmWater / Efficiency/WarmWater/eWP);
+				+ (Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP);
 			
 			attribute<EUR_Yr> S_H_eWP (BebouwingsObject) := GeenGas_H         - KostenBasis_eWP;
 			attribute<EUR_Yr> S_T_eWP (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_eWP;
