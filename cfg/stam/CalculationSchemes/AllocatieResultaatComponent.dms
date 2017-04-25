@@ -94,12 +94,13 @@ template AllocatieResultaatComponentTempl
 		attribute<GJ_Yr> EWV (BebouwingsObject) :=Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
 		attribute<GJ_Yr> hWP (BebouwingsObject) :=Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
 		attribute<GJ_Yr> mWKK(BebouwingsObject) :=Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
+		attribute<GJ_Yr> CvPomp(BebouwingsObject) :=VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
+		attribute<GJ_Yr> Koude(BebouwingsObject) :=VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
 				
 		attribute<GJ_Yr> Elektriciteit(BebouwingsObject) :=
 			  VestaRunDataComponent/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
-			+ VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP)
-			+ VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO) // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
-			+ eWP + EWV + hWP - mWKK
+			+ CvPomp + Koude + eWP + EWV + hWP 
+			- mWKK
 		,	Descr = "excl elektra voor WKO warmtepomp";
 		
 //DEBUG		attribute<GJ_Yr> Wko_Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * Aandelen/WKO;

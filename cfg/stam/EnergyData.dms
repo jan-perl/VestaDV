@@ -40,39 +40,20 @@
 
 container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
-	unit<uint32> Kostensoort : nrofrows = 24
+	unit<uint32> Kostensoort : nrofrows = 26
 	{
 		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
 			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
 			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
 			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
-			'eWP', 'EWV', 'mWKK', 'hWP' // 4
+			'eWP', 'EWV', 'mWKK', 'hWP', 'Koude', 'CvPomp' // 4
 		];
-		attribute<bool> IsMaatschappelijkeKosten: [ true, false, false, true, true,  //5
-			true, true, true, true, true, //5
-			true, true, true, true, true, //5
-			false, false, false, false, //4
-			true, true, true, true
-		];
-		attribute<bool> IsOverheid : [ false, true, true, false, false, // 5
-			false, false, false, false, false, // 5
-			false, false, false, false, false, // 5
-			false, false, false, false, // 4
-			false, false, 
-			false, true, true, true, true,
-			false, false, false, false
-		];
+		attribute<bool> IsMaatschappelijkeKosten := const(true, .);
+		attribute<bool> IsOverheid := const(false, .);
 	}
-	unit<uint32> BC := range(uint32, 0, #Classifications/BebouwingsComponent)
-	{
-		attribute<string> name      := union_data(., Classifications/BebouwingsComponent/name);
-		attribute<string> entity    := 'VestaRunData/'+name+'/BebouwingsObject';
-		attribute<bool  > draagtBTW := union_data(., Classifications/BebouwingsComponent/DraagtBTW);
-		attribute<bool  > kanWKO    := union_data(., Classifications/BebouwingsComponent/KanWKO);
-		container V := for_each_nedv(name, string(ID(.))+'[..]', void, .);
-	}
+	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 4
+	unit<uint32> mutatieSchema: nrofrows = 15
 	{
 		
 		parameter<uint32> nrAttr := 6;
@@ -80,24 +61,6 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 		{
 			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
 			
-			// Annualisation Factors
-// 			parameter<string> AF28_OW := 'NCW/ow28/AnnualisationFactor'; 
-// 			parameter<string> AF28_PT := 'NCW/pt28/AnnualisationFactor'; 
-// 			parameter<string> AF28_WD := 'NCW/wd28/AnnualisationFactor'; 
-// 			parameter<string> AF28_ID := 'NCW/id28/AnnualisationFactor'; 
-// 			parameter<string> AF28_MR := 'NCW/mr28/AnnualisationFactor';
-// 			parameter<string> AF28_BW := 'NCW/bw28/AnnualisationFactor';
-// 			parameter<string> AF15_GE := 'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor';
-// 			parameter<string> AF30_GE := 'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor';
-// 			parameter<string> AF15_MR := 'NCW/mr15/AnnualisationFactor';
-// 			parameter<string> AF30_MR := 'NCW/mr30/AnnualisationFactor';
-// 			parameter<string> AFAB_ID := 'NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor'; 
-// 			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
-// 			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
-// 			parameter<string> AFAB_GE := 'VestaRunData/@BC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@BC@/NcwRefs/_28/AnnualisationFactor';
-// 			parameter<string> ROSEL := 'Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
-// 			parameter<string> VAT_F := '(UserInput/VAT / 100[Percent])';
-// 			parameter<string> VAT_R := '(1.0+iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT / 100[Percent], 0.0))';
 			attribute<String> Text := union_data(.,
 				// name //leverancier //afnemer  
 					// item 
@@ -115,15 +78,59 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'', 
 					PRR
 			
-			,	'Elektriciteit', 'ElektriciteitsNet', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
-					'', 
-					PRR
 			,	'Elektriciteit@BC@', 'Elektriciteit', 'ElektriciteitsNet', 
 					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					'', 
 					PRR
 					
+			,	'CvPomp@BC@', 'ElektriciteitsNet', 'CvPomp', 
+					'AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
+					'', 
+					PRR
+			,	'CvPomp@BC@', 'CvPomp', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
+					'', 
+					PRR
+			,	'Koude@BC@', 'ElektriciteitsNet', 'Koude', 
+					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
+					'', 
+					PRR
+			,	'Koude@BC@', 'Koude', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
+					'', 
+					PRR
+			,	'eWP@BC@', 'ElektriciteitsNet', 'eWP', 
+					'AllocatieResultaat/@BC@/MeterVraag/eWP', 
+					'', 
+					PRR
+			,	'eWP@BC@', 'eWP', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/eWP', 
+					'', 
+					PRR
+			,	'hWP@BC@', 'ElektriciteitsNet', 'hWP', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', 
+					'', 
+					PRR
+			,	'hWP@BC@', 'hWP', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', 
+					'', 
+					PRR
+			,	'EWV@BC@', 'ElektriciteitsNet', 'EWV', 
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', 
+					'', 
+					PRR
+			,	'EWV@BC@', 'EWV', '@BC@/Gebruiker', 
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', 
+					'', 
+					PRR
+			,	'EWV@BC@', 'mWKK', 'ElektriciteitsNet', 
+					'AllocatieResultaat/@BC@/MeterVraag/mWKK', 
+					'', 
+					PRR
+			,	'Elektriciteit', 'ElektriciteitsNet', '@BC@/Gebruiker', 
+					'VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+					'', 
+					PRR
 			);
 		}
 		
