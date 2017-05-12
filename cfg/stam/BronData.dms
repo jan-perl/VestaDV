@@ -313,9 +313,9 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		}
 		container MetaData
 		{
-			unit<uint32> RekenType: nrofrows = 7
+			unit<uint32> RekenType: nrofrows = 8
 			{
-				attribute<String> Naam: [ 'STEG', 'Kolen', 'Gasmotor', 'Industrie', 'AVI', 'BMC', 'BioWKK' ];
+				attribute<String> Naam: [ 'STEG', 'Kolen', 'Gasmotor', 'Industrie', 'AVI', 'BMC', 'BioWKK', 'GeoThermie' ];
 				attribute<String> Label := Naam, DialogType = "LabelString";
 			}
 			
@@ -356,7 +356,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					0, 0, 0, 
 					1, 1, 
 					2, 2,
-					3, 3, 3, 3,
+					3, 3, 3, 7,
 					4, 5, 6, null
 				];
 				container V := for_each_nedv(Naam, 'value('+String(ID(.))+', ..)', void, .);
@@ -397,11 +397,17 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					// obv R10 = S10[EUR/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
 					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := 0.0000025 [GJ / GJ] * prijzen/ElekKMG_GJ;
 				}
+				container GeoThermie
+				{
+					// obv 0.0000025 [GJ/GJ] * R10[EUR/GJ]
+					// obv R10 = S10[EUR/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
+					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (1GJ / 30GJ) * prijzen/ElekKMG_GJ;
+				}
 				container AVI
 				{
 					// 0.18 * Q10[EUR/GJ] 
 					// obv Q10 = 0.058[EUR/kWh] * 1000/3.6 [kWh/GJ] die varieert met de tijd.
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar): Expr = "0.18 * prijzen/ElekEnGros_GJ"; // en gros prijs als kosten, is deze prijs nu excl of incl distributiekosten en heffingen?
+					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := 0.18 * prijzen/ElekEnGros_GJ; // en gros prijs als kosten, is deze prijs nu excl of incl distributiekosten en heffingen?
 				}
 				container BMC
 				{
