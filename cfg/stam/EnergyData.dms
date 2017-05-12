@@ -144,7 +144,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					''
 					
 
-			,	'Bijstook', '@RO@', 'WijkDistributie', 
+			,	'Primair', '@RO@', 'WijkDistributie', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
 					'', 
 					''
