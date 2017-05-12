@@ -53,7 +53,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 	}
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 16
+	unit<uint32> mutatieSchema: nrofrows = 18
 	{
 		
 		parameter<uint32> nrAttr := 6;
@@ -133,10 +133,21 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					PRR
 			// ***********       gebiedsopties
 			
-			,	'', '@RO@', '@BC@/Gebruiker', 
+			,	'', 'WijkDistributie', '@BC@/Gebruiker', 
 					'AllocatieResultaat/@BC@/MeterVraag/@RO@', 
 					'', 
 					PRR
+					
+			,	'Bijstook', 'AardGas', 'WijkDistributie', 
+					'EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+					'', 
+					''
+					
+
+			,	'Bijstook', '@RO@', 'WijkDistributie', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+					'', 
+					''
 					
 			);
 		}
