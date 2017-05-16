@@ -65,7 +65,7 @@ container Transformations: FreeData = "False"
 			attribute<location> location_rel   := mutatie/location_rel[mutatie_rel];
 			attribute<string> name := mutatie/name[mutatie_rel];
 			attribute<string> location_name := location/values[mutatie/location_rel[mutatie_rel]];
-			attribute<string> expr := mutatie/expr[nr_OrgEntity];
+			attribute<string> expr := mutatie/FinalExpr[nr_OrgEntity];
 			attribute<location_rels> location_rels_rel := rlookup(location_rel, location_rels/values);
 //			attribute<string> full_name := replace(location/name[mutatie_rel], '/', '_')+'_'+ name;
 //			attribute<string> Label := full_name;
@@ -79,7 +79,7 @@ container Transformations: FreeData = "False"
 		// '#unique(mut/full_name_ORG) == #mut'
 		unit<uint32> ActorEntity := PlanRegio;
 //		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(UInt32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
-		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
+		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/Expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
 		attribute<Quantity> Saldo(ActorEntity) := ='add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')';
 		
 		container totals: KeepData = "True" 
@@ -106,17 +106,8 @@ container Transformations: FreeData = "False"
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
 		unit<uint32> PR := PlanRegio;
-//		unit<uint32> Technology := EnergyData/Name;
-//		unit<uint32> mutatieSchema := EnergyData/mutatieSchema;
 		unit<uint32> BC := EnergyData/BC;
-/*		
-		unit<uint32> Actor := union_unit(EnergyData/Actor, BC, BC, Voorkeuren/WarmteOpties)
-		{
-			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Voorkeuren/WarmteOpties/name);
-			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Voorkeuren/WarmteOpties/name);
-			attribute<string> full_name:= replace(name, '/', '_');
-		}
-*/
+		
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)
 			{
@@ -150,26 +141,27 @@ container Transformations: FreeData = "False"
 		}
 
 		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity)');
-/*	
+		
+//*	
 		container matrix {
-			unit<uint32> aggr := ='union_unit('+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/actor_rels')+')'
+			unit<uint32> aggr := ='union_unit('+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels')+')'
 			{
-				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/totals/aggr_muts')+')';
-				attribute<actor> to   := ='union_data(.,'+AsItemList('const(actor_mut_tables/'+impl/active_actor/name+'/Actor_rel, actor_mut_tables/'+impl/active_actor/name+'/actor_rels)')+')';
-				attribute<actor> from := ='union_data(.,'+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/Actor_rels/values')+')';
+				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/totals/aggr_muts')+')';
+				attribute<impl/technology> technology_rel := ='union_data(.,'+AsItemList('const(mut_tables/'+impl/active_technology/name+'/Technology_rel, mut_tables/'+impl/active_technology/name+'/location_rels)')+')';
+				attribute<impl/location> location_rel     := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels/values')+')';
 			}
 			
 			unit<uint32> ColSet := impl/active_location;
 			unit<uint32> RowSet := impl/active_technology;
 			
 			container Table := for_each_nedv(ColSet/name, 
-				'(1.0 / 1000000.0) * float64(int64(0.5+1000000.0*sum(aggr/Saldo * Float64(aggr/from == '+string(ColSet/Actor_rel)+'), aggr/to)[RowSet/Actor_rel]))', 
+				'(1.0 / 1000000.0) * float64(int64(0.5+1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
 				attribute<MQuantity> Oj_Totaal(RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
-				attribute<MQuantity> Kj_Totaal(RowSet) := ='union_data(RowSet, '+AsItemList('sum(max_elem(Table/'+RowSet/Name+', 0[MQuantity]))')+')';
-				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 1000000.0) * float64(int64(0.5+1000000.0*(Oj_Totaal - Kj_Totaal)));
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-'+ColSet/Name+', 0[MQuantity])')+')';
+				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(int64(0.5+10000.0*(Oj_Totaal - Kj_Totaal)));
 			}
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
 			parameter<String> csv := 
@@ -178,18 +170,15 @@ container Transformations: FreeData = "False"
 				+ AsList(RowSet/name+';'+String(table/Oj_Totaal)+';'+String(table/Kj_Totaal)+';'+String(table/Oj_Netto)+rows+'\n', '')
 			,	StorageType = "str", StorageName = "=OutputSubFolder+'/Matrix.csv'";
 		}
-		attribute<MQuantity> mut_overview(impl/Active_Actor) := matrix/table/Oj_Netto;
+		attribute<MQuantity> mut_overview(impl/active_technology) := matrix/table/Oj_Netto;
 		
-		attribute<string> mut_herkomst  (impl/Active_Actor) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
-		attribute<string> mut_bestemming(impl/Active_Actor) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';
-		
-		parameter<MQuantity>  MaatschappelijkEindtotaal := sum(mut_overview * Float64( impl/active_actor/IsMaatschappelijkeKosten) );
-		parameter<MQuantity>  OverheidEindtotaal        := sum(mut_overview * Float64( impl/active_actor/IsOverheid) );
+		attribute<string> mut_herkomst  (impl/active_technology) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
+		attribute<string> mut_bestemming(impl/active_technology) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';
 		
 		parameter<String> GenerateAll := 'Ready',
 			ExplicitSuppliers =
 				"=  'matrix/csv'"
-				"+ ';' + AsList('actor_mut_tables/'+impl/active_actor/name + '/all_csv',';')";
-*/				
+				"+ ';' + AsList('mut_tables/'+impl/active_technology/name + '/all_csv',';')";
+//*/				
 	}
 }
