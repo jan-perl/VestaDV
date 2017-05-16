@@ -591,7 +591,7 @@ container WKO: IsTemplate = "True"
 			attribute<EUR>    Ki_ge_pm   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_pm;
 			attribute<EUR>    Ki_ge_ov   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_ov;
 			
-			// recalculated flow
+			// recalculated Flow
 	 		container Oj_Verbruik := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Oj_Verbruik', '@W@', WkoComponent/Name), PlanRegio, EUR_Yr);
 	 		container Om_comfort  := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Om_comfort', '@W@', WkoComponent/Name), PlanRegio, EUR_Yr);
 			attribute<EUR_Yr> Kj_wd_pr   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Kj_wd_pr')+')';

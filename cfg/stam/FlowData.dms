@@ -872,6 +872,6 @@ container FlowData: Using = "Units;Geography", KeepData = "True"
 	{
 		attribute<string> name      := BC/name  [nr_OrgEntity];
 	}
-	container applyBTW:= CalculationSchemes/flow/subst(mutatieSchema, '@BTW@', BTWC);
+	container applyBTW:= CalculationSchemes/Payments/subst(mutatieSchema, '@BTW@', BTWC);
 	unit<uint32> mutatie := applyBTW/result;
 }

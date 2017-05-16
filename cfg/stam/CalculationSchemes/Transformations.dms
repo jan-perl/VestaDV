@@ -32,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-container flow: FreeData = "False" // DEBUG
+container Transformations: FreeData = "False"
 {
 	template subst
 	{
@@ -40,68 +40,65 @@ container flow: FreeData = "False" // DEBUG
 		parameter<string> key;
 		unit<uint32> valueset;
 		
-		attribute<bool> subst(src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<bool> subst(src) := strpos(src/name, key) >= 0 || strpos(src/actor, key) >= 0 || strpos(src/expr, key) >= 0;
 		attribute<uint32> firstResult(src) := UInt32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
 		unit<uint32> result := range(uint32, 0, UInt32(Int32(#src) + sum(Int32(subst))*(Int32(#valueset)-1i)))
 		{
 			attribute<src> src_rel := classify(ID(.), firstResult);
 			attribute<string> valueset_name := MakeDefined(valueset/name[value(ID(.)-firstResult[src_rel], valueset)], 'xxx');
 			attribute<string> name        := replace(src/name        [src_rel], key, valueset_name);
-			attribute<string> leverancier := replace(src/leverancier [src_rel], key, valueset_name);
-			attribute<string> afnemer     := replace(src/afnemer     [src_rel], key, valueset_name);
+			attribute<string> actor       := replace(src/actor       [src_rel], key, valueset_name);
 			attribute<string> Expr        := replace(src/Expr        [src_rel], key, valueset_name);
-			attribute<string> AnnuFactor  := replace(src/AnnuFactor  [src_rel], key, valueset_name);
 			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], key, valueset_name);
 		}
 	}
-	template actor_mut_table {
-		unit<uint32> Actor;
-		parameter<Actor> Actor_rel;
+	template mut_table {
+		unit<uint32>  Technology;
+		unit<uint32>  Location;
+		parameter<Technology> Technology_rel;
 		unit<float64>      Quantity;
 		
-		unit<uint32> mutatie_elem := impl/mutatie_elem;
-		unit<uint32> mut := subset(mutatie_elem/actor_rel == Actor_rel && mutatie_elem/is_active)
+		unit<uint32> mutatie := impl/mutatie;
+		unit<uint32> mut := subset(mutatie/technology_rel == Technology_rel)
 		{
-			attribute<mutatie_elem> mutatie_elem_rel : = nr_OrgEntity;
-			attribute<Actor> other_rel := mutatie_elem/other_rel[mutatie_elem_rel];
-			attribute<string> name := mutatie_elem/name[nr_OrgEntity];
-			attribute<string> actor_name := Actor/name[mutatie_elem/other_rel[nr_OrgEntity]];
-			attribute<string> expr := mutatie_elem/expr[nr_OrgEntity];
-			attribute<actor_rels> actor_rels_rel := rlookup(other_rel, actor_rels/values);
-			attribute<string> full_name := replace(actor/name[other_rel], '/', '_')+'_'+ name;
-			attribute<string> Label := full_name;
+			attribute<mutatie>  mutatie_rel : = nr_OrgEntity;
+			attribute<location> location_rel   := mutatie/location_rel[mutatie_rel];
+			attribute<string> name := mutatie/name[mutatie_rel];
+			attribute<string> location_name := location/values[mutatie/location_rel[mutatie_rel]];
+			attribute<string> expr := mutatie/expr[nr_OrgEntity];
+			attribute<location_rels> location_rels_rel := rlookup(location_rel, location_rels/values);
+//			attribute<string> full_name := replace(location/name[mutatie_rel], '/', '_')+'_'+ name;
+//			attribute<string> Label := full_name;
 		}
-		unit<uint32> actor_rels := unique(mut/other_rel)
+		unit<uint32> location_rels := unique(mut/location_rel)
 		{
-			attribute<Actor> Values; // auto-result
-			attribute<string> Label := Actor/full_name[Values];
+			attribute<location> Values; // auto-result
+			attribute<string> name := location/values[Values];
 		}
 		unit<float64> MQuantity := 1000000 * Quantity;
 		// '#unique(mut/full_name_ORG) == #mut'
 		unit<uint32> ActorEntity := PlanRegio;
-		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(UInt32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
-		container aggr_muts := for_each_nedv(Actor/full_name[actor_rels/values], 'add('+AsItemList('all_muts/'+mut/full_name, mut/actor_rels_rel)+')', ActorEntity, Quantity);
-		attribute<Quantity> Saldo(ActorEntity) := ='add('+AsItemList('aggr_muts/'+Actor/full_name[actor_rels/values])+')';
+//		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(UInt32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
+		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
+		attribute<Quantity> Saldo(ActorEntity) := ='add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')';
 		
 		container totals: KeepData = "True" 
 		{
-			attribute<string>  all_mut_names(mut)     := mut/full_name;
-			attribute<MQuantity> all_muts (mut)        := ='union_data(mut, '       +AsItemList('sum(../all_muts/'+mut/full_name+')')+')[MQuantity]';
-			attribute<MQuantity> aggr_muts(actor_rels) := sum(all_muts, mut/actor_rels_rel);
+			attribute<string>  name(location_rels)     := location_rels/name;
+//			attribute<MQuantity> all_muts (mut)       := ='union_data(mut, '+AsItemList('sum(../all_muts/'+mut/full_name+')')+')[MQuantity]';
+			attribute<MQuantity> aggr_muts(location_rels) := ='union_data(location_rels, '+AsItemList('sum(../aggr_muts/'+location_rels/name+')')+')[MQuantity]';
 			parameter<MQuantity> saldo :=sum(aggr_muts);
-			
 		}
 		parameter<String> all_csv := 
-			'titel;bedrag\n'
-			'[text];'+(is_flow ? '[MEUR/Yr]' : '[MEUR]')+'\n'
-			+ AsList(String(totals/all_mut_names)+';'+String(totals/all_muts)+'\n', '')
-		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_'+Actor/name[actor_rel]+'.csv'";
+			'titel;quantity\n'
+			'[text];[GJ_Yr]\n'
+			+ AsList(String(totals/name)+';'+String(totals/aggr_muts)+'\n', '')
+		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_' + Technology/values[Technology_rel]+'.csv'";
 	}
 	template MainTempl {
 		// parameters
-		container          FlowData;
+		container          EnergyData;
 		unit<float64>      Quantity;
-		parameter<bool>    is_flow; // false: calc stock only
 		parameter<bool>    is_all;  // false: use fraction
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
@@ -109,58 +106,51 @@ container flow: FreeData = "False" // DEBUG
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
 		unit<uint32> PR := PlanRegio;
-		unit<uint32> Kostensoort   := FlowData/KostenSoort;
-//		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
-		unit<uint32> BC := FlowData/BC;
-		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Voorkeuren/WarmteOpties)
+//		unit<uint32> Technology := EnergyData/Name;
+//		unit<uint32> mutatieSchema := EnergyData/mutatieSchema;
+		unit<uint32> BC := EnergyData/BC;
+/*		
+		unit<uint32> Actor := union_unit(EnergyData/Actor, BC, BC, Voorkeuren/WarmteOpties)
 		{
 			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Voorkeuren/WarmteOpties/name);
 			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Voorkeuren/WarmteOpties/name);
 			attribute<string> full_name:= replace(name, '/', '_');
-			attribute<bool> IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BC), const(false, BC), const(false, Voorkeuren/WarmteOpties));
-			attribute<bool> IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Voorkeuren/WarmteOpties));
 		}
+*/
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)
 			{
 				attribute<string> name      := BC/name  [nr_OrgEntity];
 			}
-			container applyBC := CalculationSchemes/flow/subst(FlowData/mutatie,'@BC@' , BC); 
-			container applyWKO:= CalculationSchemes/flow/subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO := CalculationSchemes/flow/subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := CalculationSchemes/flow/subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			container applyBC := subst(EnergyData/mutatie,'@BC@' , BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
+			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
-				attribute<Actor>  Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
-				attribute<Actor>  Afnemer_rel     := rlookup(Afnemer,     Actor/name), IntegrityCheck = "IsDefined(this)";
+				attribute<technology>  technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
+				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
+				attribute<string> entityRel := PlanRegioRel;
+				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
+				attribute<string> FinalExpr := is_all ? ExprSum : ExprSum +' * fraction';
 			}
-			unit<uint32> mutatie_elem := union_unit(mutatie, mutatie) //van afnemer aan leverancier
-			{
-				attribute<String> name      := union_data(., mutatie/name , mutatie/name);
-				attribute<string> label     := union_data(., mutatie/name+' (deb)', mutatie/name + ' (cr)');
-				attribute<actor> actor_rel  := union_data(., mutatie/Afnemer_rel, mutatie/Leverancier_rel);
-				attribute<actor> other_rel  := union_data(., mutatie/Leverancier_rel, mutatie/Afnemer_rel);
-				attribute<string> entityRel := union_data(., mutatie/PlanRegioRel, mutatie/PlanRegioRel);
-				attribute<string> ExprBase  := union_data(., '-('+mutatie/Expr+')', '('+mutatie/Expr+')');
-				attribute<string> AnnuFactor:= union_data(., mutatie/AnnuFactor,  mutatie/AnnuFactor);
-				attribute<bool  > has_af    := AnnuFactor  != '';
-				attribute<bool  > is_active := has_af || is_flow;
-				attribute<string> ExprProd  := has_af && is_flow ? ExprBase + ' * ('+AnnuFactor+')' : ExprBase;
-				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+ExprProd + ', '+entityRel+')' : ExprProd;
-				attribute<string> Expr      := is_all ? ExprSum : ExprSum+' * fraction';
-			}
-			unit<uint32> active_actor := subset(sum(uint32(mutatie_elem/is_active), mutatie_elem/actor_rel) > 0)
-			{
-				attribute<Actor> Actor_rel := nr_OrgEntity;
-				attribute<string> name := Actor/full_name[Actor_rel];
-				attribute<string> Label := name;
-				attribute<bool>   IsMaatschappelijkeKosten := Actor/IsMaatschappelijkeKosten[Actor_rel];
-				attribute<bool>   IsOverheid               := Actor/IsOverheid              [Actor_rel];
-			}
+			unit<uint32> technology := unique(mutatie/name);
+			unit<uint32> location   := unique(mutatie/actor);
 			
+			unit<uint32> active_technology := subset(pcount(mutatie/technology_rel) > 0)
+			{
+				attribute<technology> technology_rel := nr_OrgEntity;
+				attribute<string> name := technology/values[technology_rel];
+			}
+			unit<uint32> active_location := subset(pcount(mutatie/location_rel) > 0)
+			{
+				attribute<location> location_rel := nr_OrgEntity;
+				attribute<string> name := location/values[location_rel];
+			}
 		}
-		container actor_mut_tables := for_each_ne(impl/active_actor/name, 'flow/actor_mut_table(Actor,'+String(impl/active_actor/nr_OrgEntity)+'[Actor], Quantity)');
-	
+
+		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity)');
+/*	
 		container matrix {
 			unit<uint32> aggr := ='union_unit('+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/actor_rels')+')'
 			{
@@ -169,8 +159,8 @@ container flow: FreeData = "False" // DEBUG
 				attribute<actor> from := ='union_data(.,'+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/Actor_rels/values')+')';
 			}
 			
-			unit<uint32> ColSet := impl/active_actor;
-			unit<uint32> RowSet := ColSet;
+			unit<uint32> ColSet := impl/active_location;
+			unit<uint32> RowSet := impl/active_technology;
 			
 			container Table := for_each_nedv(ColSet/name, 
 				'(1.0 / 1000000.0) * float64(int64(0.5+1000000.0*sum(aggr/Saldo * Float64(aggr/from == '+string(ColSet/Actor_rel)+'), aggr/to)[RowSet/Actor_rel]))', 
@@ -200,5 +190,6 @@ container flow: FreeData = "False" // DEBUG
 			ExplicitSuppliers =
 				"=  'matrix/csv'"
 				"+ ';' + AsList('actor_mut_tables/'+impl/active_actor/name + '/all_csv',';')";
+*/				
 	}
 }

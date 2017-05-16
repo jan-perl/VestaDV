@@ -32,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-container flow: FreeData = "False" // DEBUG
+container Payments: FreeData = "False" // DEBUG
 {
 	template subst
 	{
@@ -125,10 +125,10 @@ container flow: FreeData = "False" // DEBUG
 			{
 				attribute<string> name      := BC/name  [nr_OrgEntity];
 			}
-			container applyBC := CalculationSchemes/flow/subst(FlowData/mutatie,'@BC@' , BC); 
-			container applyWKO:= CalculationSchemes/flow/subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO := CalculationSchemes/flow/subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := CalculationSchemes/flow/subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			container applyBC := subst(FlowData/mutatie,'@BC@' , BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
+			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<Actor>  Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
@@ -159,7 +159,7 @@ container flow: FreeData = "False" // DEBUG
 			}
 			
 		}
-		container actor_mut_tables := for_each_ne(impl/active_actor/name, 'flow/actor_mut_table(Actor,'+String(impl/active_actor/nr_OrgEntity)+'[Actor], Quantity)');
+		container actor_mut_tables := for_each_ne(impl/active_actor/name, 'Payments/actor_mut_table(Actor,'+String(impl/active_actor/nr_OrgEntity)+'[Actor], Quantity)');
 	
 		container matrix {
 			unit<uint32> aggr := ='union_unit('+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/actor_rels')+')'

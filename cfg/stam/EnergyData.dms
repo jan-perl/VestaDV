@@ -40,6 +40,7 @@
 
 container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
+/* REMOVE
 	unit<uint32> Kostensoort : nrofrows = 26
 	{
 		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
@@ -51,12 +52,13 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 		attribute<bool> IsMaatschappelijkeKosten := const(true, .);
 		attribute<bool> IsOverheid := const(false, .);
 	}
+*/
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 18
+	unit<uint32> mutatieSchema: nrofrows = 27
 	{
 		
-		parameter<uint32> nrAttr := 6;
+		parameter<uint32> nrAttr := 4;
 		unit<UInt32> Elements := Range(uint32, 0, nrAttr * #.)
 		{
 			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
@@ -68,96 +70,111 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					//left-entity-rel // right-entity-rel
 					
 		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
-				'AardGas', 'GasNet', '@BC@/Gebruiker', 
+				'GLevering', 'GNet', 
+					'-AllocatieResultaat/@BC@/MeterVraag/AardGas',
+					PRR
+			,	'GLevering', 'Gas_@BC@', 
 					'AllocatieResultaat/@BC@/MeterVraag/AardGas',
-					'', 
 					PRR
 			
-			,	'AardGas@BC@', 'AardGas', 'GasNet', 
-					'AllocatieResultaat/@BC@/MeterVraag/AardGas',
-					'', 
-					PRR
-			
-			,	'Elektriciteit@BC@', 'Elektriciteit', 'ElektriciteitsNet', 
-					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
-					'', 
+			,	'eLevering', 'eNet', 
+					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
 					
-			,	'CvPomp@BC@', 'ElektriciteitsNet', 'CvPomp', 
-					'AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
-					'', 
+			,	'eLevering', 'Elektra_@BC@', 
+					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
-			,	'CvPomp@BC@', 'CvPomp', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
-					'', 
+					
+			,	'HR', 'Gas_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV'
+					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
 					PRR
-			,	'Koude@BC@', 'ElektriciteitsNet', 'Koude', 
+					
+			,	'HR', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
+					PRR
+					
+			,	'HR', '@BC@_WW',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
+					PRR
+					
+					
+			,	'HR', '@BC@_RV',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV', 
+					PRR
+					
+			,	'KoudePomp', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/Koude', 
+					PRR
+					
+			,	'KoudePomp', '@BC@_Koude', 
 					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
-					'', 
 					PRR
-			,	'Koude@BC@', 'Koude', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
-					'', 
+			,	'eWP', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/eWP', 
 					PRR
-			,	'eWP@BC@', 'ElektriciteitsNet', 'eWP', 
-					'AllocatieResultaat/@BC@/MeterVraag/eWP', 
-					'', 
+			,	'eWP', '@BC@_RV',
+					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // RV
 					PRR
-			,	'eWP@BC@', 'eWP', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/eWP', 
-					'', 
+			,	'eWP', '@BC@_WW',
+					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // WW
 					PRR
-			,	'hWP@BC@', 'ElektriciteitsNet', 'hWP', 
-					'AllocatieResultaat/@BC@/MeterVraag/hWP', 
-					'', 
+			,	'hWP', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/hWP', 
 					PRR
-			,	'hWP@BC@', 'hWP', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/hWP', 
-					'', 
+			,	'hWP', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', // RV
 					PRR
-			,	'EWV@BC@', 'ElektriciteitsNet', 'EWV', 
-					'AllocatieResultaat/@BC@/MeterVraag/EWV', 
-					'', 
+			,	'hWP', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', // WW
 					PRR
-			,	'EWV@BC@', 'EWV', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/EWV', 
-					'', 
+			,	'EVW', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/EVW', 
 					PRR
-			,	'EWV@BC@', 'mWKK', 'ElektriciteitsNet', 
-					'AllocatieResultaat/@BC@/MeterVraag/mWKK', 
-					'', 
+			,	'EWV', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/MeterVraag/EVW', // RV
 					PRR
-			,	'Elektriciteit', 'ElektriciteitsNet', '@BC@/Gebruiker', 
+			,	'EVW', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/MeterVraag/EVW', // WW
+					PRR
+					
+			,	'mWKK', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/mWKK', 
+					PRR
+					
+			,	'Verbruik', 'Elektra_@BC@',
+					'-VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+					PRR
+			,	'Verbruik', '@BC@_EA',
 					'VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
-					'', 
 					PRR
+					
 			// ***********       gebiedsopties
 			
-			,	'', 'WijkDistributie', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/MeterVraag/@RO@', 
-					'', 
+			,	'WijkDistributie', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/WarmWater/Warmte', 
 					PRR
 					
-			,	'Bijstook', 'AardGas', 'WijkDistributie', 
+			,	'WijkDistributie', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte', 
+					PRR
+					
+			,	'Bijstook', 'AardGas',
+					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+					''					
+			,	'Bijstook', 'WijkWarmte',
 					'EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
-					'', 
 					''
-					
-
-			,	'Primair', '@RO@', 'WijkDistributie', 
+			,	'WijkDistributie', '@RO@', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
-					'', 
 					''
-					
 			);
 		}
 		
-		attribute<String> Name       := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
-		attribute<string> Leverancier:= Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
-		attribute<string> Afnemer    := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
-		attribute<string> Expr       := Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
-		attribute<string> AnnuFactor := Elements/Text[value(ID(.)* nrAttr + 4, Elements)];
-		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 5, Elements)];
+		attribute<String> Name        := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
+		attribute<string> Actor       := Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
+		attribute<string> Expr        := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
+		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
 	}
 	unit<uint32> mutatie := mutatieSchema;
 }
