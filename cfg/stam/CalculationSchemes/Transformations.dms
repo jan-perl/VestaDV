@@ -155,7 +155,7 @@ container Transformations: FreeData = "False"
 			unit<uint32> RowSet := impl/active_technology;
 			
 			container Table := for_each_nedv(ColSet/name, 
-				'(1.0 / 1000000.0) * float64(int64(0.5+1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+				'(1.0 / 10000.0) * float64(int64(0.5+10000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
@@ -163,6 +163,17 @@ container Transformations: FreeData = "False"
 				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-'+ColSet/Name+', 0[MQuantity])')+')';
 				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(int64(0.5+10000.0*(Oj_Totaal - Kj_Totaal)));
 			}
+			
+			unit<uint32> RowSetWithTotal := union_unit(RowSet, void);
+			
+			container TableWithTotal := for_each_nedv(ColSet/name, replace('union_data(RowSetWithTotal,Table/@X,sum(Table/@X))','@X', ColSet/name), RowSetWithTotal, MQuantity)
+			{
+				attribute<string> name        (RowSetWithTotal) := union_data(RowSetWithTotal, RowSet/name, 'TOTAL');
+				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Totaal, sum(Table/Oj_Totaal));
+				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Kj_Totaal, sum(Table/Kj_Totaal));
+				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Netto , sum(Table/Oj_Netto ));
+			}
+			
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
 			parameter<String> csv := 
 				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+
