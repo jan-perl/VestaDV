@@ -128,14 +128,14 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			,	'hWP', '@BC@_WW', 
 					'AllocatieResultaat/@BC@/MeterVraag/hWP', // WW
 					PRR
-			,	'EVW', 'Elektra_@BC@',
-					'-AllocatieResultaat/@BC@/MeterVraag/EVW', 
+			,	'EWV', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/EWV', 
 					PRR
 			,	'EWV', '@BC@_RV', 
-					'AllocatieResultaat/@BC@/MeterVraag/EVW', // RV
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', // RV
 					PRR
-			,	'EVW', '@BC@_WW', 
-					'AllocatieResultaat/@BC@/MeterVraag/EVW', // WW
+			,	'EWV', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', // WW
 					PRR
 					
 			,	'mWKK', 'Elektra_@BC@',
