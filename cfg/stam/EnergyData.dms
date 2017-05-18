@@ -163,7 +163,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/Warmte/Warmte', 
 					PRR
 					
-			,	'Bijstook', 'AardGas',
+			,	'Bijstook', 'GNet',
 					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
 					''					
 			,	'Bijstook', 'WijkWarmte',

@@ -155,13 +155,14 @@ container Transformations: FreeData = "False"
 			unit<uint32> RowSet := impl/active_technology;
 			
 			container Table := for_each_nedv(ColSet/name, 
-				'(1.0 / 10000.0) * float64(int64(0.5+10000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+				'(1.0 / 1000000.0) * float64(int64(1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
 				attribute<MQuantity> Oj_Totaal(RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
 				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-'+ColSet/Name+', 0[MQuantity])')+')';
-				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(int64(0.5+10000.0*(Oj_Totaal - Kj_Totaal)));
+//				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(round64(10000.0*(Oj_Totaal - Kj_Totaal)));
+				attribute<MQuantity> Oj_Netto (RowSet) := Oj_Totaal - Kj_Totaal;
 			}
 			
 			unit<uint32> RowSetWithTotal := union_unit(RowSet, void);
