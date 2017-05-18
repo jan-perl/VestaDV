@@ -173,7 +173,7 @@ container Transformations: FreeData = "False"
 				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Kj_Totaal, sum(Table/Kj_Totaal));
 				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Netto , sum(Table/Oj_Netto ));
 			}
-			
+
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
 			parameter<String> csv := 
 				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+

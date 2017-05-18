@@ -55,7 +55,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 */
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 27
+	unit<uint32> mutatieSchema: nrofrows = 29
 	{
 		
 		parameter<uint32> nrAttr := 4;
@@ -159,14 +159,21 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte', 
 					PRR
 					
+			,	'WijkDistributie', 'WijkWarmte', 
+					'-AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/Warmte/Warmte', 
+					PRR
+					
 			,	'Bijstook', 'AardGas',
-					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
 					''					
 			,	'Bijstook', 'WijkWarmte',
-					'EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+					'EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
 					''
-			,	'WijkDistributie', '@RO@', 
-					'EndState/KostenBaten/Vj_WarmtePrimairD * sum(Float64(AllocatieResultaat/@BC@/MeterVraag/@RO@ != 0[GJ_Yr]), '+PRR+')', 
+			,	'@RO@', 'WijkWarmte', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					''
+			,	'@RO@', 'Opwekking', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
 					''
 			);
 		}
