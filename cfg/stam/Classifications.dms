@@ -375,7 +375,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 	unit<uint8> BouwjaarBag: nrofrows = 6
 	{
-		attribute<units/Yr> ClassBreak: [ -9998, 1946, 1965, 1974, 1991, 2005];
+		attribute<units/Yr> ClassBreak: [ -9998, 1946, 1965, 1975, 1992, 2006];
 		
 		parameter<.> v1946 := value( 0,. ); 
 		parameter<.> v1965 := value( 1,. ); 
