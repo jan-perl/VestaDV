@@ -8,6 +8,9 @@ echo *************               *************
 echo .
 
 	Rem Bepaal de actieve program files directory, deze verschilt op Windows 64 machines
+	set runDir=..\Runs
+
+	Rem Bepaal de actieve program files directory, deze verschilt op Windows 64 machines
 	Set ProgramFiles32=%ProgramFiles(x86)%
 	
 	if "%ProgramFiles(x86)%"=="" (
