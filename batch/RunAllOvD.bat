@@ -1,3 +1,3 @@
 Rem Test Debug Versie uit LocalData/bin
-set LocalDataDir=e:\LD
-Call Impl/RunImpl.bat D64 7140
+set LocalDataDir=c:\LD
+Call Impl/RunImpl.bat D64 7142
