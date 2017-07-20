@@ -8,9 +8,6 @@ echo *************               *************
 echo .
 
 	Rem Bepaal de actieve program files directory, deze verschilt op Windows 64 machines
-	set runDir=..\Runs
-
-	Rem Bepaal de actieve program files directory, deze verschilt op Windows 64 machines
 	Set ProgramFiles32=%ProgramFiles(x86)%
 	
 	if "%ProgramFiles(x86)%"=="" (
@@ -42,6 +39,10 @@ echo .
 	IF %1 == R32 Set GeoDmsPlatform=Win32
 
 	CALL Impl/SetDirs.bat Run4Combi_2016_Referentie
+
+	Rem Bepaal de actieve Runs directory
+	set runDir=%projDir%\Runs
+	echo RunDir=%runDir%
 
 	if "%GEODMS_DIRECTORIES_CALCCACHEDIR%"=="" (
 		Set GEODMS_DIRECTORIES_CALCCACHEDIR=%LocalDataProjDir%\CCRUN
