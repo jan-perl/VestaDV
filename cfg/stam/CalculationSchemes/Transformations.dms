@@ -1,0 +1,197 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+container Transformations: FreeData = "False"
+{
+	template subst
+	{
+		unit<uint32> src;
+		parameter<string> key;
+		unit<uint32> valueset;
+		
+		attribute<bool> subst(src) := strpos(src/name, key) >= 0 || strpos(src/actor, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<uint32> firstResult(src) := UInt32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
+		unit<uint32> result := range(uint32, 0, UInt32(Int32(#src) + sum(Int32(subst))*(Int32(#valueset)-1i)))
+		{
+			attribute<src> src_rel := classify(ID(.), firstResult);
+			attribute<string> valueset_name := MakeDefined(valueset/name[value(ID(.)-firstResult[src_rel], valueset)], 'xxx');
+			attribute<string> name        := replace(src/name        [src_rel], key, valueset_name);
+			attribute<string> actor       := replace(src/actor       [src_rel], key, valueset_name);
+			attribute<string> Expr        := replace(src/Expr        [src_rel], key, valueset_name);
+			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], key, valueset_name);
+		}
+	}
+	template mut_table {
+		unit<uint32>  Technology;
+		unit<uint32>  Location;
+		parameter<Technology> Technology_rel;
+		unit<float64>      Quantity;
+		
+		unit<uint32> mutatie := impl/mutatie;
+		unit<uint32> mut := subset(mutatie/technology_rel == Technology_rel)
+		{
+			attribute<mutatie>  mutatie_rel : = nr_OrgEntity;
+			attribute<location> location_rel   := mutatie/location_rel[mutatie_rel];
+			attribute<string> name := mutatie/name[mutatie_rel];
+			attribute<string> location_name := location/values[mutatie/location_rel[mutatie_rel]];
+			attribute<string> expr := mutatie/FinalExpr[nr_OrgEntity];
+			attribute<location_rels> location_rels_rel := rlookup(location_rel, location_rels/values);
+//			attribute<string> full_name := replace(location/name[mutatie_rel], '/', '_')+'_'+ name;
+//			attribute<string> Label := full_name;
+		}
+		unit<uint32> location_rels := unique(mut/location_rel)
+		{
+			attribute<location> Values; // auto-result
+			attribute<string> name := location/values[Values];
+		}
+		unit<float64> MQuantity := 1000000 * Quantity;
+		// '#unique(mut/full_name_ORG) == #mut'
+		unit<uint32> ActorEntity := PlanRegio;
+//		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(UInt32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
+		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/Expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
+		attribute<Quantity> Saldo(ActorEntity) := ='add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')';
+		
+		container totals: KeepData = "True" 
+		{
+			attribute<string>  name(location_rels)     := location_rels/name;
+//			attribute<MQuantity> all_muts (mut)       := ='union_data(mut, '+AsItemList('sum(../all_muts/'+mut/full_name+')')+')[MQuantity]';
+			attribute<MQuantity> aggr_muts(location_rels) := ='union_data(location_rels, '+AsItemList('sum(../aggr_muts/'+location_rels/name+')')+')[MQuantity]';
+			parameter<MQuantity> saldo :=sum(aggr_muts);
+		}
+		parameter<String> all_csv := 
+			'titel;quantity\n'
+			'[text];[GJ_Yr]\n'
+			+ AsList(String(totals/name)+';'+String(totals/aggr_muts)+'\n', '')
+		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_' + Technology/values[Technology_rel]+'.csv'";
+	}
+	template MainTempl {
+		// parameters
+		container          EnergyData;
+		unit<float64>      Quantity;
+		parameter<bool>    is_all;  // false: use fraction
+		parameter<string>  OutputSubFolder;
+		attribute<Float64> fraction(PR);
+		// end parameters
+		
+		unit<float64> MQuantity := 1000000 * Quantity;
+		unit<uint32> PR := PlanRegio;
+		unit<uint32> BC := EnergyData/BC;
+		
+		container impl {
+			unit<uint32> WKOC := subset(BC/KanWKO)
+			{
+				attribute<string> name      := BC/name  [nr_OrgEntity];
+			}
+			container applyBC := subst(EnergyData/mutatie,'@BC@' , BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
+			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			unit<uint32> mutatie := applyCO/result
+			{
+				attribute<technology>  technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
+				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
+				attribute<string> entityRel := PlanRegioRel;
+				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
+				attribute<string> FinalExpr := is_all ? ExprSum : ExprSum +' * fraction';
+			}
+			unit<uint32> technology := unique(mutatie/name);
+			unit<uint32> location   := unique(mutatie/actor);
+			
+			unit<uint32> active_technology := subset(pcount(mutatie/technology_rel) > 0)
+			{
+				attribute<technology> technology_rel := nr_OrgEntity;
+				attribute<string> name := technology/values[technology_rel];
+			}
+			unit<uint32> active_location := subset(pcount(mutatie/location_rel) > 0)
+			{
+				attribute<location> location_rel := nr_OrgEntity;
+				attribute<string> name := location/values[location_rel];
+			}
+		}
+
+		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity)');
+		
+//*	
+		container matrix {
+			unit<uint32> aggr := ='union_unit('+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels')+')'
+			{
+				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/totals/aggr_muts')+')';
+				attribute<impl/technology> technology_rel := ='union_data(.,'+AsItemList('const(mut_tables/'+impl/active_technology/name+'/Technology_rel, mut_tables/'+impl/active_technology/name+'/location_rels)')+')';
+				attribute<impl/location> location_rel     := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels/values')+')';
+			}
+			
+			unit<uint32> ColSet := impl/active_location;
+			unit<uint32> RowSet := impl/active_technology;
+			
+			container Table := for_each_nedv(ColSet/name, 
+//				'(1.0 / 1000000.0) * float64(int64   (1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+				'(1.0 / 1000000.0) * float64(round_64(1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+				RowSet, MQuantity)
+			{
+				attribute<string> name        (RowSet) := RowSet/name;
+				attribute<MQuantity> Oj_Totaal(RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-'+ColSet/Name+', 0[MQuantity])')+')';
+//				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(round64(10000.0*(Oj_Totaal - Kj_Totaal)));
+				attribute<MQuantity> Oj_Netto (RowSet) := Oj_Totaal - Kj_Totaal;
+			}
+			
+			unit<uint32> RowSetWithTotal := union_unit(RowSet, void);
+			
+			container TableWithTotal := for_each_nedv(ColSet/name, replace('union_data(RowSetWithTotal,Table/@X,sum(Table/@X))','@X', ColSet/name), RowSetWithTotal, MQuantity)
+			{
+				attribute<string> name        (RowSetWithTotal) := union_data(RowSetWithTotal, RowSet/name, 'TOTAL');
+				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Totaal, sum(Table/Oj_Totaal));
+				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Kj_Totaal, sum(Table/Kj_Totaal));
+				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Netto , sum(Table/Oj_Netto ));
+			}
+
+			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
+			parameter<String> csv := 
+				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+
+				'[text];[MEUR/Yr];[MEUR/Yr];[MEUR/Yr];'+AsList(const('[MEUR/Yr]', ColSet),';')+'\n'
+				+ AsList(RowSet/name+';'+String(table/Oj_Totaal)+';'+String(table/Kj_Totaal)+';'+String(table/Oj_Netto)+rows+'\n', '')
+			,	StorageType = "str", StorageName = "=OutputSubFolder+'/Matrix.csv'";
+		}
+		attribute<MQuantity> mut_overview(impl/active_technology) := matrix/table/Oj_Netto;
+		
+		attribute<string> mut_herkomst  (impl/active_technology) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
+		attribute<string> mut_bestemming(impl/active_technology) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';
+		
+		parameter<String> GenerateAll := 'Ready',
+			ExplicitSuppliers =
+				"=  'matrix/csv'"
+				"+ ';' + AsList('mut_tables/'+impl/active_technology/name + '/all_csv',';')";
+//*/				
+	}
+}

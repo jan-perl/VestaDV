@@ -866,4 +866,12 @@ container FlowData: Using = "Units;Geography", KeepData = "True"
 		attribute<string> AnnuFactor := Elements/Text[value(ID(.)* nrAttr + 4, Elements)];
 		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 5, Elements)];
 	}
+	
+//	unit<uint32> BC   := FlowData/BC;
+	unit<uint32> BTWC := subset(BC/DraagtBTW)
+	{
+		attribute<string> name      := BC/name  [nr_OrgEntity];
+	}
+	container applyBTW:= CalculationSchemes/Payments/subst(mutatieSchema, '@BTW@', BTWC);
+	unit<uint32> mutatie := applyBTW/result;
 }

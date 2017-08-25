@@ -42,12 +42,11 @@ container EnergiePrijzen {
 	{
 		unit<UInt32> Table;
 		parameter<string> code;
-		
-		attribute<EUR_GJ> distr_trans    (table) := ='(Table/'+code+'_PC_DIS + Table/'+code+'_PC_TRANS)[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> netwerk        (table) := ='(Table/'+code+'_PC_NET)                    [EUR_per_eenheid] * OmrekenFactor * InflationFactor';
+		attribute<EUR_GJ> distr_trans    (table) := ='(Table/'+code+'_PC_DIS[EUR_per_eenheid] + Table/'+code+'_PC_TRANS[EUR_per_eenheid]) * OmrekenFactor * InflationFactor';
+		attribute<EUR_GJ> netwerk        (table) := ='Table/'+code+'_PC_NET[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
 		attribute<EUR_GJ> CommodityPrice (table) := ='Table/'+code+'_PC_COM_EXCL_CO2[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
 		attribute<EUR_GJ> CO2Heffing     (table) := ='Table/'+code+'_PC_CO2         [EUR_per_eenheid] * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> EnergieHeffing (table) := ='(Table/'+code+'_PC_BEL_EL + Table/'+code+'_PC_SDE)[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
+		attribute<EUR_GJ> EnergieHeffing (table) := ='(Table/'+code+'_PC_BEL_EL[EUR_per_eenheid] + Table/'+code+'_PC_SDE[EUR_per_eenheid]) * OmrekenFactor * InflationFactor';
 		
 		attribute<EUR_GJ> maatschappelijk(table) := CommodityPrice + CO2Heffing + netwerk;
 		attribute<EUR_GJ> eindgebruik_ex (table) := maatschappelijk + EnergieHeffing;

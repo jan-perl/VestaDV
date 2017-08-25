@@ -442,47 +442,9 @@ container InputOutputTempl: IsTemplate = "True", using = "Classifications"
 				&&	Abs(BalanceTotal    ) < MaxMarge
 			;
 		}
-		container FlowVerschil
-		{
-			parameter<mEur_Yr> GebiedsOpties1 := 
-				CostsFlow/Oj_Netto[value(4, KostenSoort)] +
-				CostsFlow/Oj_Netto[value(5, KostenSoort)] +
-				CostsFlow/Oj_Netto[value(6, KostenSoort)] +
-				CostsFlow/Oj_Netto[value(7, KostenSoort)] +
-				CostsFlow/Oj_Netto[value(8, KostenSoort)];
-				
-			parameter<mEur_Yr> GebiedsOpties2   := MakeDefined(rjoin('Leverancier' , Flow/impl/active_actor/label, Flow/mut_overview), 0[mEur_Yr]);
-			
-			parameter<mEur_Yr> CostFlowOverheid := 
-				CostsFlow/Oj_Netto[value(11,kostenSoort)] + // EnergieHeffing - Subsidies
-				CostsFlow/Oj_Netto[value(12,kostenSoort)] ; // BTW + Precario
-				
-			
-			container BC := for_each_nedv(Classifications/BebouwingsComponent/Name,
-				replace(
-					' rjoin('+Quote('@BC@_Gebruiker')+', Flow/impl/active_actor/label, Flow/mut_overview)'
-					'+rjoin('+Quote('@BC@_Eigenaar' )+', Flow/impl/active_actor/label, Flow/mut_overview)'
-					'+sum(CostsFlow/@BC@)'
-				,	'@BC@', Classifications/BebouwingsComponent/Name)
-			,	void, mEur_Yr
-			)
-			{
-				parameter<bool> IsOK :=  ='and('+AsItemList('abs('+Classifications/BebouwingsComponent/Name+') < MaxMarge')+')';
-			}
-			parameter<bool> FlowMaatschappelijkOK := abs(Km_Totaal        - Flow/MaatschappelijkEindtotaal) < MaxMarge;
-			parameter<bool> FlowOverheidOK        := abs(CostFlowOverheid - Flow/OverheidEindtotaal       ) < MaxMarge;
-			parameter<bool> FlowGebiedsOptiesOK   := Abs(GebiedsOpties1   - GebiedsOpties2                ) < MaxMarge;
-			
-			parameter<bool> IsOK := FlowCheck/IsOK
-				&&	FlowMaatschappelijkOK
-				&&	FlowOverheidOK
-				&&	FlowGebiedsOptiesOK
-				&&	BC/IsOK
-			;
-		}
 		
 		parameter<mEur_yr> MaxMarge: [ 0.001 ]; // See issue 739
-		parameter<Bool> IsOK:= FlowVerschil/IsOK &&
+		parameter<Bool> IsOK:= 
 			(Abs(Km_Verschil) < MaxMarge) && 
 			(Abs(Kj_Verschil) < MaxMarge) && 
 			(Abs(EindgebruikerVerschil/Woning      ) < MaxMarge) &&  // allow for some extra slack on the positive side to accept some missing PC6 demand in the PC4 aggregation (6x)
@@ -495,7 +457,7 @@ container InputOutputTempl: IsTemplate = "True", using = "Classifications"
 			(Abs(ProducentVerschil/GeoThermie) < MaxMarge) && 
 			(Abs(ProducentVerschil/WKO       ) < MaxMarge) && 
 			(Abs(ProducentVerschil/WijkWKK   ) < MaxMarge) && 
-			(Abs(ProducentVerschil/BioWKK       ) < MaxMarge);
+			(Abs(ProducentVerschil/BioWKK    ) < MaxMarge);
 	}
 	container EnergyFlow:= for_each_nedv(KostenPlaats/Name, 
 		'=''union_data(KostenSoort, ''+AsItemList('+Quote('CaseData/'+KostenPlaats/Name+'/EFL_')+'+KostenSoort/Name)+'')''', 

@@ -1,0 +1,187 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2011                                       //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden de brondata geconfigureerd.                    //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container EnergyData: Using = "Units;Geography", KeepData = "True"
+{
+/* REMOVE
+	unit<uint32> Kostensoort : nrofrows = 26
+	{
+		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
+			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
+			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
+			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
+			'eWP', 'EWV', 'mWKK', 'hWP', 'Koude', 'CvPomp' // 4
+		];
+		attribute<bool> IsMaatschappelijkeKosten := const(true, .);
+		attribute<bool> IsOverheid := const(false, .);
+	}
+*/
+	unit<uint32> BC := FlowData/BC;
+	
+	unit<uint32> mutatieSchema: nrofrows = 29
+	{
+		
+		parameter<uint32> nrAttr := 4;
+		unit<UInt32> Elements := Range(uint32, 0, nrAttr * #.)
+		{
+			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
+			
+			attribute<String> Text := union_data(.,
+				// name //leverancier //afnemer  
+					// item 
+					// factor 
+					//left-entity-rel // right-entity-rel
+					
+		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
+				'GLevering', 'GNet', 
+					'-AllocatieResultaat/@BC@/MeterVraag/AardGas',
+					PRR
+			,	'GLevering', 'Gas_@BC@', 
+					'AllocatieResultaat/@BC@/MeterVraag/AardGas',
+					PRR
+			
+			,	'eLevering', 'eNet', 
+					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
+					PRR
+					
+			,	'eLevering', 'Elektra_@BC@', 
+					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
+					PRR
+					
+			,	'HR', 'Gas_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV'
+					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
+					PRR
+					
+			,	'HR', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
+					PRR
+					
+			,	'HR', '@BC@_WW',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
+					PRR
+					
+					
+			,	'HR', '@BC@_RV',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV', 
+					PRR
+					
+			,	'KoudePomp', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/Koude', 
+					PRR
+					
+			,	'KoudePomp', '@BC@_Koude', 
+					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
+					PRR
+			,	'eWP', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/eWP', 
+					PRR
+			,	'eWP', '@BC@_RV',
+					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // RV
+					PRR
+			,	'eWP', '@BC@_WW',
+					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // WW
+					PRR
+			,	'hWP', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/hWP', 
+					PRR
+			,	'hWP', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', // RV
+					PRR
+			,	'hWP', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/MeterVraag/hWP', // WW
+					PRR
+			,	'EWV', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/EWV', 
+					PRR
+			,	'EWV', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', // RV
+					PRR
+			,	'EWV', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/MeterVraag/EWV', // WW
+					PRR
+					
+			,	'mWKK', 'Elektra_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/mWKK', 
+					PRR
+					
+			,	'Verbruik', 'Elektra_@BC@',
+					'-VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+					PRR
+			,	'Verbruik', '@BC@_EA',
+					'VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+					PRR
+					
+			// ***********       gebiedsopties
+			
+			,	'WijkDistributie', '@BC@_WW', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/WarmWater/Warmte', 
+					PRR
+					
+			,	'WijkDistributie', '@BC@_RV', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte', 
+					PRR
+					
+			,	'WijkDistributie', 'WijkWarmte', 
+					'-AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/Warmte/Warmte', 
+					PRR
+					
+			,	'Bijstook', 'GNet',
+					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					''					
+			,	'Bijstook', 'WijkWarmte',
+					'EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					''
+			,	'@RO@', 'WijkWarmte', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					''
+			,	'@RO@', 'Opwekking', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					''
+			);
+		}
+		
+		attribute<String> Name        := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
+		attribute<string> Actor       := Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
+		attribute<string> Expr        := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
+		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
+	}
+	unit<uint32> mutatie := mutatieSchema;
+}

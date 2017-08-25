@@ -125,7 +125,7 @@ template KostenBatenSchema
 				attribute<EUR>       Ki_ge_ov_o(WoonObject) := =IsNieuwbouw?'const(0[EUR], WoonObject)':'NrDeelnemers * Ki_ge_ov_w';
 				attribute<EUR>       Ki_ge_pm_o(WoonObject) := =IsNieuwbouw?'const(0[EUR], WoonObject)':'NrDeelnemers * Ki_ge_pm_w';
 				
-				// huurverlaging, alleen gebruikt in flow en als kostenfactor
+				// huurverlaging, alleen gebruikt in Payments en als kostenfactor
 				attribute<EUR_Yr_Aansl> Kj_hv_w(WoonObject) := =IsNieuwbouw?'const(0[EUR_Yr_Aansl], WoonObject)':'(IsMeergezins ? Schuiven/VerketelingMax : 1.0) * 160[EUR_Yr_Aansl] * Schuiven/HuurVerlagingBijGebiedsOptie';
 				attribute<EUR_Yr>       Kj_hv_o(WoonObject) := =IsNieuwbouw?'const(0[EUR_Yr      ], WoonObject)':'Kj_hv_w* NrDeelnemers';
 				
