@@ -173,4 +173,5 @@ container VestaRun
 	container UserInput2050 := UserInput2040;
 	
 	#include <%projDir%/cfg/RunContext.dms>
+	#include <%projDir%/cfg/meta.dms>
 }

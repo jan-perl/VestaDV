@@ -1,0 +1,77 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2016                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                               FEBRUARI 2010                                          //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container meta
+{
+	unit<uint32> property: nrofrows = 10
+	{
+		attribute<string> label : ['name','fullname','descr','label','url','domainunit','valuesunit','storagename','domainunit_fullname','valuesunit_fullname'];
+	}
+
+	container vbo_woonfunctie:= genereer_ItemLijst('/Vesta/BronData/BAG/vbo_woonfunctie');
+	container Run2010:= genereer_ItemLijst('/RunContext/Y2010');
+	container Run    := genereer_ItemLijst('/RunContext');
+	container Vesta  := genereer_ItemLijst('/Vesta');
+	
+	template genereer_ItemLijst
+	{
+		// begin case parameters
+		parameter<string> src_string;
+		// end case parameters
+
+		unit<uint32> all := ='SubTree_PropValues(' + src_string + ',property/label)';
+
+		container per_domein
+		{
+			container bebouwingsobject := domeinselectie('bebouwingsobject');
+			container planregio        := domeinselectie('planregio');
+			
+			template domeinselectie
+			{
+				// begin case parameters
+				parameter<string> domein_sel;
+				// end case parameters
+				unit<uint32> results := Subset(strcount(lowercase(all/domainunit_fullname), domein_sel) > 0)
+				{
+					attribute<string> name        := all/name[Nr_OrgEntity];
+					attribute<string> label       := all/label[Nr_OrgEntity];
+					attribute<string> descr       := all/descr[Nr_OrgEntity];
+					attribute<string> url         := all/url[Nr_OrgEntity];
+					attribute<string> domainunit  := all/domainunit[Nr_OrgEntity];
+					attribute<string> valuesunit  := all/valuesunit[Nr_OrgEntity];
+					attribute<string> storagename := all/storagename[Nr_OrgEntity];
+				}
+			}
+		}
+	}
+}
