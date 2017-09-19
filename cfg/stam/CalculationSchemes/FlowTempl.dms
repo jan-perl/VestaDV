@@ -64,7 +64,7 @@ template FlowTempl: using = "Classifications"
 		container midden := ComponentsT('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
 		container hoog   := ComponentsT('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
 		
-		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;middeb/GenerateAll;hoog/GenerateAll";
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;midden/GenerateAll;hoog/GenerateAll";
 	}
 	container PerEigendom {
 		container Eigendom := RegioIndelingen/buurt/Eigendom;
@@ -73,7 +73,7 @@ template FlowTempl: using = "Classifications"
 		container wcorpw := ComponentsT('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
 		container ov_hw  := ComponentsT('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
 		
-		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;middeb/GenerateAll;hoog/GenerateAll";
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "koop/GenerateAll;wcorpw/GenerateAll;ov_hw/GenerateAll";
 	}
 
 	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "All/GenerateAll;PerInkomensGroep/GenerateAll;PerEigendom/GenerateAll";

@@ -235,6 +235,14 @@ container BAG
 		parameter<uint32>                                 Aantal_Meergezings_Verdiepingen_Onbekend:=
 			sum(WoningtypeGeo_rel == classifications/WoningtypeGeo/V/meergezinspand && isNull(nr_verdiepingen) ? 1 : 0);
 
+		unit<uint32> combine_BouwjaarBag_WoningtypeGeoHoogte := combine(Classifications/BouwjaarBag ,Classifications/WoningtypeGeoHoogte)
+			{
+				attribute<string>name_bj                        :=Classifications/BouwjaarBag/label[nr_1];
+				attribute<string>name_wt                        :=Classifications/WoningtypeGeoHoogte/label[nr_2];	
+				attribute<.> combine_bj_wt_rel(vbo_woonfunctie) := combine_data(., BouwjaarBag_rel, WoningtypeGeoHoogte_rel);
+				attribute<UInt32> count(.)                      := pcount(combine_bj_wt_rel);
+			}
+
 	}
 
 	unit<uint32> vbo_utiliteit:= Subset
@@ -293,6 +301,17 @@ container BAG
 			attribute<string> name(Classifications/utiliteitBAG) := Classifications/utiliteitBAG/name[gebruiksdoel_index];
 		}
 		attribute<Classifications/utiliteitBAG> gebruiksdoel(vbo_utiliteit):= ='gebruiksdoel_impl/gebruiksdoel_index[argmax('+ AsItemList('gebruiksdoelen/' + gebruiksdoel_impl/name) + ')[Classifications/utiliteitBAG]]';
+
+		unit<uint32> combine_BouwjaarUtilBag_utiliteitBAG := combine(Classifications/BouwjaarUtilBag ,Classifications/utiliteitBAG)
+		{
+			attribute<string>name_bj                        :=Classifications/BouwjaarUtilBag/label[nr_1];
+			attribute<string>name_gd                        :=Classifications/utiliteitBAG/label[nr_2];	
+			attribute<.> combine_bj_gd_rel(vbo_utiliteit)   := combine_data(., BouwjaarUtilBag_rel, gebruiksdoel);
+			attribute<UInt32> count(.)                      := pcount(combine_bj_gd_rel);
+			attribute<Float64> sum(.)                       := sum(Oppervlakte,combine_bj_gd_rel);
+
+		}
+
 	}
 
 	unit<uint32> gebruiksdoelcombinatie:= unique(import/vbo/gebruiksdoelcombinatie)
