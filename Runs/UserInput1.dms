@@ -40,7 +40,7 @@
 
 container UserInput1: Using = "Vesta/Units"
 {
-	container BebouwingsScenario  := Vesta/ScenarioSpecs/Bebouwing/Trend;
+	container BebouwingsScenario  := Vesta/ScenarioSpecs/Bebouwing;
 	container KlimaatScenario     := Vesta/Brondata/klimaat/scenario_knmi_g_plus;
 	
 	container VraagKentallen  := Vesta/ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine;

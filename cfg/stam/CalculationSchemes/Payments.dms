@@ -102,7 +102,6 @@ container Payments: FreeData = "False" // DEBUG
 		container          FlowData;
 		unit<float64>      Quantity;
 		parameter<bool>    is_flow; // false: calc stock only
-		parameter<bool>    is_all;  // false: use fraction
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
 		// end parameters
@@ -147,7 +146,7 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<bool  > is_active := has_af || is_flow;
 				attribute<string> ExprProd  := has_af && is_flow ? ExprBase + ' * ('+AnnuFactor+')' : ExprBase;
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+ExprProd + ', '+entityRel+')' : ExprProd;
-				attribute<string> Expr      := is_all ? ExprSum : ExprSum+' * fraction';
+				attribute<string> Expr      := ExprSum +' * fraction';
 			}
 			unit<uint32> active_actor := subset(sum(uint32(mutatie_elem/is_active), mutatie_elem/actor_rel) > 0)
 			{

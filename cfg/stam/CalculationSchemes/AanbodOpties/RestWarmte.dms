@@ -279,7 +279,7 @@ container RestWarmte: IsTemplate = "True"
  					attribute<Float64>   BronPointY := MakeDefined(PointRow(BronPoint), (300000.0 + 325000.0) / 2.0);
 					attribute<PlanRegio> PlanRegio_rel := union_data(., StartArcSet/PlanRegio_rel, ExtraArcSet/PlanRegio_rel);
 					
-					parameter<bool> HasArcs := true;
+					parameter<bool> HasArcs := true, DisableStorage = "True";
 				}
 				
 				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc) := union_data(CumulatedArcSet, RestWarmteStartingState/CumulatedArcs, LastState/CumulatedArcs[ExtraArcSet/LastCumulatedArcSet_rel])

@@ -45,6 +45,8 @@
 
 container Vesta: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 {
+	#include <ConfigSettings.dms>
+	#include <ExportSettings.dms>
 	#include <Units.dms>
 	#include <Geography.dms>
 	#include <Classifications.dms>

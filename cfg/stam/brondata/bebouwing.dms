@@ -232,7 +232,7 @@ container bebouwing
 	{
 		unit<uint32>  BebouwingsObject := ., FreeData = "True"
 		{
-			attribute<.> code: Expr="ID(.)";
+			attribute<.> code := ID(.);
 		}
 		unit<uint8>   KengetalTypeDomein := Classifications/GLTB;
 		

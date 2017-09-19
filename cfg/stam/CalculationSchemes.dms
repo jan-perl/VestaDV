@@ -44,6 +44,7 @@ container CalculationSchemes: Using = "Units;Geography"
 
 	#include <WoningComponentOperaties.dms> 
 	#include <UtilComponentOperaties.dms> 
+	#include <GlTbComponentOperaties.dms> 
 
 	container BebouwingsOperaties
 	{
@@ -218,8 +219,8 @@ container CalculationSchemes: Using = "Units;Geography"
 	
 	container Rapportage {
 		#include <RegionaleRapportageTempl.dms>
-		#include <InputOutput.dms>
-	
+		#include <FlowTempl.dms>
+
 		template EindgebruikerComponentTempl
 		{
 			container AllocatieResultaatComponent;

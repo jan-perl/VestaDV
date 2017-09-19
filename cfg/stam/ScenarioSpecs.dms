@@ -40,66 +40,19 @@
 
 container ScenarioSpecs: Using = "Units"
 {
-	container BebouwingsComponenten
-	{
-// 		container Util: 
-// 			Expr = "for_each_ne(Classifications/zichtjaar/name, "
-// 				   "            'CalculationSchemes/UtilComponentOperaties/PerYear(Brondata/bebouwing/Utiliteit/' + Classifications/zichtjaar/BanenAttrLISA + ')'"
-// 				   "           )";
-		#include<Uitleg.dms>
-		#include<GlasTuinbouwBijEnAf.dms>
-	}	
-	container bebouwing: Descr = "Blok 1"
-	{
-		container Huidig
-		{
-			container J2006:    Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,       BebouwingsComponenten/Uitleg/woning/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Utiliteit,    BebouwingsComponenten/Uitleg/Utiliteit/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Huidig/J2006/Uitleg, false, BronData"
-				")";
-		}
-		container Trend
-		{
-//* Alleen Uitleg uitbreiden; mutaties op huidige voorraad negeren; dit moet later als  mutatie op RunResults worden gebouwd
-			container J2010: Expr = 
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,       BebouwingsComponenten/Uitleg/woning/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Utiliteit,    BebouwingsComponenten/Uitleg/Utiliteit/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Huidig/J2006/Uitleg, false, BronData"
-				")";
-			container J2020: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2020/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2020"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2020/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2020"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2020/Uitleg, false, BronData"
-				")";
-			container J2030: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2030/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2030"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2030/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2030"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2030/Uitleg, false, BronData"
-				")";
-			container J2040: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2040/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2040"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2040/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2040"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2040/Uitleg, false, BronData"
-				")";
-			container J2050: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2050/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2050"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2050/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2050"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2050/Uitleg, false, BronData"
-				")";
-		}
-	}
-	container EnergieVraag: Descr = "Blok 2"
-	{
-		container BaseLine: Expr = "for_each_ne(Classifications/BebouwingsComponent/Name, 'BronData/energie/vraag/'+Classifications/BebouwingsComponent/ModelName+'/Results')";
-	}
+	#include<Uitleg.dms>
 	
+	container bebouwing := for_each_ne( Classifications/Zichtjaar/Name,
+			'CalculationSchemes/BebouwingsOperaties/Samenstelling('
+			'   BronData/Bebouwing/Woning,       Uitleg/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/WoningResterendFactors/'+Classifications/Zichtjaar/Name : '')+
+			',  BronData/Bebouwing/Utiliteit,    Uitleg/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/UtilResterendFactors/'+Classifications/Zichtjaar/Name : '')+
+			',  BronData/Bebouwing/Glastuinbouw, Uitleg/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
+			')'
+			);
+			
+	container EnergieVraag := for_each_ne(Classifications/BebouwingsComponent/Name, 'BronData/energie/vraag/'+Classifications/BebouwingsComponent/ModelName+'/Results');
 
 	container VestaRunOpties
 	{

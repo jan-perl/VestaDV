@@ -99,7 +99,6 @@ container Transformations: FreeData = "False"
 		// parameters
 		container          EnergyData;
 		unit<float64>      Quantity;
-		parameter<bool>    is_all;  // false: use fraction
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
 		// end parameters
@@ -123,7 +122,7 @@ container Transformations: FreeData = "False"
 				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
 				attribute<string> entityRel := PlanRegioRel;
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
-				attribute<string> FinalExpr := is_all ? ExprSum : ExprSum +' * fraction';
+				attribute<string> FinalExpr := ExprSum +' * fraction';
 			}
 			unit<uint32> technology := unique(mutatie/name);
 			unit<uint32> location   := unique(mutatie/actor);

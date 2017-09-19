@@ -31,26 +31,50 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
-// In deze configuratiefile worden configuratie settings voor paden e.d. geconfigureerd.//
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
-container ConfigSettings: isHidden = "True", KeepData = "False" // HACK to avoid issue with GetInterestCount()
+template FlowTempl: using = "Classifications"
 {
-	container Overridable {
-		parameter<String> SourceDataProjDir: [ '%sourceDataDir%/Vesta' ];
+	// begin case param
+	unit<uint32>               RapportageRegio;
+	parameter<String>          ReportRegioNaam; //: Expr = "'NL'";
+	parameter<RapportageRegio> RapportageRegio_sel;
+	// end case param
+	
+	unit<uint32> PlanRegio := RunImpl/PlanRegio;
+	
+	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
+	
+	attribute<RapportageRegio> PlanRegioRapportageRegio_rel(PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
+	attribute<Float64>         PlanRegioInRapportageFactor (PlanRegio) := Float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
+	
+	template ComponentsT {
+		parameter<string>   name;
+		attribute<Float64> Factor (PlanRegio);
+		
+		container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
+		container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, ReportFolder+'/'+Name+'_Stock', Factor);
+		container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_Energy', Factor);
+		
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll";
 	}
-	parameter<String> DataDir:           [ '%projdir%/data' ];
+	container All := ComponentsT('All', PlanRegioInRapportageFactor);
+	
+	container PerInkomensGroep {
+		container Inkomen := RegioIndelingen/buurt/Inkomen;
+		container laag   := ComponentsT('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
+		container midden := ComponentsT('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
+		container hoog   := ComponentsT('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
+		
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;middeb/GenerateAll;hoog/GenerateAll";
+	}
+	container PerEigendom {
+		container Eigendom := RegioIndelingen/buurt/Eigendom;
+		
+		container koop   := ComponentsT('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw / Eigendom/p_checksum);
+		container wcorpw := ComponentsT('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
+		container ov_hw  := ComponentsT('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
+		
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;middeb/GenerateAll;hoog/GenerateAll";
+	}
 
-	container CaseManagement
-	{
-		parameter<String> TemplateContainers: [ 'CalculationSchemes' ];
-		parameter<String> CaseContainer: [ 'Runs' ];
-	}
-	parameter<String> LandUseMetaDataTempl: 
-		StorageName = "%projdir%/html/LandUseMetaDataTempl.xml", 
-		StorageType = "str";
+	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "All/GenerateAll;PerInkomensGroep/GenerateAll;PerEigendom/GenerateAll";
 }

@@ -69,7 +69,7 @@ container Sloop
 		);
 
 	container Totalen {
-		attribute<float32> WoningResterend (CaseData/SZW) := ='union_data(CaseData/SZW,'+AsItemList(CaseData/SZW/HasMutations ? 'sum(WoningResteredTiffs/' +CaseData/SZW/Name+')' : '0f / 0f')+')';
+		attribute<float32> WoningResterend (CaseData/SZW) := ='union_data(CaseData/SZW,'+AsItemList(CaseData/SZW/HasMutations ? 'sum(WoningResterendTiffs/' +CaseData/SZW/Name+')' : '0f / 0f')+')';
 		attribute<string>  ScenYearTypeW (CaseData/SZW) := CaseData/SZW/Name;		
 		attribute<float32> UtilDeltaFactorSum(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'sum(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';
 		attribute<float32> UtilDeltaFactorMean(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'mean(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';

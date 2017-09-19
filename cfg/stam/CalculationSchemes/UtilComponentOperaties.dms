@@ -39,7 +39,7 @@
 
 container UtilComponentOperaties
 {
-	container PerYear: IsTemplate = "True"
+	template PerYear
 	{
 		// begin case parameters
 		attribute<nrArbeidspl> BanenZichtjaar (Brondata/bebouwing/Utiliteit);
@@ -124,7 +124,7 @@ container UtilComponentOperaties
 			}
 		}
 	}
-	container Unite: isTemplate = "True"
+	template Unite
 	{
 		// begin case parameters
 		container bron;

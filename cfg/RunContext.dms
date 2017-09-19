@@ -31,19 +31,16 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container RunContext: using = "Vesta"
+container RunContext :=
+	for_each_ne(
+		Vesta/Classifications/zichtjaar/Name, 
+		'CalculationSchemes/VestaRun('
+			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Vesta/Classifications/zichtjaar/Name+']'
+			+MakeDefined(', '+Vesta/Classifications/zichtjaar/Name[ID(Vesta/Classifications/zichtjaar)-1b]+'/EndState','')
+		+')'
+	)
+	, using = "Vesta"
 {
-	container Y2010 := CalculationSchemes/VestaRun(2010[Units/Jaar]);
-	container Y2020 := CalculationSchemes/VestaRun(2020[Units/Jaar], Y2010/EndState);
-	container Y2030 := CalculationSchemes/VestaRun(2030[Units/Jaar], Y2020/EndState);
-	container Y2040 := CalculationSchemes/VestaRun(2040[Units/Jaar], Y2030/EndState);
-	container Y2050 := CalculationSchemes/VestaRun(2050[Units/Jaar], Y2040/EndState);
-
 	parameter<String> GenerateAll := 'Ready', 
-		ExplicitSuppliers = 
-			"Y2010/indicatoren/GenerateAll;"
-			"Y2020/indicatoren/GenerateAll;"
-			"Y2030/indicatoren/GenerateAll;"
-			"Y2040/indicatoren/GenerateAll;"
-			"Y2050/indicatoren/GenerateAll";
+		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')";
 }
