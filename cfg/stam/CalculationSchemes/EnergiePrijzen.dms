@@ -92,7 +92,7 @@ container EnergiePrijzen {
 			container KleinMiddelGebruik := GebruiksSectie(table, 'KMG');
 			container MiddelMiddelGebruik:= GebruiksSectie(table, 'MMG');
 			container GrootGebruik       := GebruiksSectie(table, 'GG');
-			container GlasTuinBouw       := GebruiksSectie(table, 'GLAST');
+			container GlasTuinBouw       := =(TableName = 'Elek')? 'GrootGebruik' : 'GebruiksSectie(table, ''GLAST'')';
 		}
 	}
 	template ImportOverig

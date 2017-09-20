@@ -120,7 +120,6 @@ container UtilComponentOperaties
 			
 			container Criteria 
 			{
-				attribute<Bool> NietKlein(BebouwingsObject): Expr = "const(false, BebouwingsObject)";
 			}
 		}
 	}
@@ -170,7 +169,6 @@ container UtilComponentOperaties
 			
 			container Criteria 
 			{
-				attribute<Bool> NietKlein(BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/UitlegUtil/Name + '/results/Criteria/ZZP') + ')'";
 			}
 		}
 	}

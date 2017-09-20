@@ -823,12 +823,11 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<String>     Name              := zichtjaar_Name + '/' + Wonen_Name;
 		attribute<string>     Label             := Name;
 
-		container V := for_each_nedv(name, 'value('+string(ID(.))+', ....)', void, .);
+		container V := for_each_nedv(name, 'value('+string(ID(.))+', ...)', void, .);
 	}
 	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UitlegUtil)
 	{
 		attribute<Bool>       HasMutations   := Zichtjaar/HasMutations[nr_1];
-		attribute<String>     scenario_Name  := Zichtjaar/Scenario_Name[nr_1];
 		attribute<String>     zichtjaar_Label:= Zichtjaar/Label[nr_1];
 		attribute<String>     zichtjaar_name := Zichtjaar/Name[nr_1];
 		attribute<Units/Jaar> zichtjaar_jaar := Zichtjaar/Jaar[nr_1];
