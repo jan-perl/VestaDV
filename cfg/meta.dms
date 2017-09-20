@@ -42,6 +42,7 @@ container meta
 	container Run2010:= genereer_ItemLijst('/RunContext/Y2010');
 	container Run    := genereer_ItemLijst('/RunContext');
 	container Vesta  := genereer_ItemLijst('/Vesta');
+	container VestaBrondata  := genereer_ItemLijst('/Vesta/BronData');
 	
 	template genereer_ItemLijst
 	{
@@ -55,6 +56,9 @@ container meta
 		{
 			container bebouwingsobject := domeinselectie('bebouwingsobject');
 			container planregio        := domeinselectie('planregio');
+			
+			
+			
 			
 			template domeinselectie
 			{
