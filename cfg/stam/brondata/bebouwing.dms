@@ -90,10 +90,9 @@ container bebouwing
 			attribute<Classifications/energielabel> AvgLabel  (..):= EnergieLabelData_rel;
 		}
 
-		container Criteria // REMOVE
+		container Criteria
 		{
 		}
-// REMOVE	
 //		attribute<Classifications/eigendom_woning  > Eigendom := rjoin(PC6code, GmpWoning/PC6code, GmpWoning/Eigendom); // wordt gebruikt bij BestaandeWoningRapGroep [ 4 ]
 //		attribute<Classifications/InkomensKlasse>    Inkomen  := rjoin(PC6code, GmpWoning/PC6code, GmpWoning/Inkomen ); // wordt gebruikt bij BestaandeWoningRapGroep [ 8 ]
 

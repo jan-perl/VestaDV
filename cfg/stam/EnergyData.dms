@@ -40,19 +40,6 @@
 
 container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
-/* REMOVE
-	unit<uint32> Kostensoort : nrofrows = 26
-	{
-		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
-			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
-			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
-			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier',  //4
-			'eWP', 'EWV', 'mWKK', 'hWP', 'Koude', 'CvPomp' // 4
-		];
-		attribute<bool> IsMaatschappelijkeKosten := const(true, .);
-		attribute<bool> IsOverheid := const(false, .);
-	}
-*/
 	unit<uint32> BC := FlowData/BC;
 	
 	unit<uint32> mutatieSchema: nrofrows = 29

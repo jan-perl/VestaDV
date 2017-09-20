@@ -113,34 +113,6 @@ container GlTbComponentOperaties
 				attribute<Float64> SSD_yy(BebouwingsObject) := const(0.0, BebouwingsObject);
 			}
 		}
-/* REMOVE		
-		container Mutaties
-		{
-			// units en attributen van BebouwingsComponent
-			unit<uint32>  BebouwingsObject  := BronData/bebouwing/glastuinbouw;
-			unit<uint8>   KengetalTypeDomein:= Classifications/GLTB;
-
-			attribute<Geography/rdc_meter>           point            (BebouwingsObject): Expr = "bron/point";
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject): Expr = "bron/PC4_rel     ";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel(BebouwingsObject): Expr = "bron/grid500m_rel";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel (BebouwingsObject): Expr = "bron/grid1km_rel ";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel (BebouwingsObject): Expr = "bron/grid2km_rel ";
-			attribute<UInt8>                         SubType          (BebouwingsObject): Expr = "KengetalType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
-			attribute<m2>                            NrJoinedUnits    (BebouwingsObject): Expr = "Oppervlakte";
-			attribute<nrAansl>                       nrAansluitingen  (BebouwingsObject): Expr = "bron/nrAansluitingen * (Oppervlakte / bron/Opp_m2)";
-
-			// overige attributen
-			attribute<Classifications/GLTB>          GLTB_code        (BebouwingsObject): Expr = "bron/GLTB_Code";
-			attribute<m2>                            Oppervlakte      (BebouwingsObject): Expr = "bron/Opp_m2 * CaseData/AggrReg/behoudfactor[PC4_rel] ";
-			
-			attribute<KengetalTypeDomein>            KengetalType     (BebouwingsObject): Expr = "GLTB_Code";
-			attribute<Classifications/bouwjaar>      bouwjaarOrg      (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
-			attribute<Classifications/bouwjaar>      bouwjaar         (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
-			attribute<Float64>                    AandeelWarmteVraag  (BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // geen AandeelWarmteVraag in de nieuwe glastuinbouw
-			
-			container Criteria : Expr  = "bron/Criteria";
-		}
-*/		
 	}
 
 }

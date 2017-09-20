@@ -158,7 +158,7 @@ template KostenBatenSchema
 				attribute<EUR> Ki_ge_ov(PlanRegio) := sum(Ki_ge_ov_w * NrDeelnemers, VestaRunDataComponent/PlanRegio_rel) * Float64(!IsNieuwbouw);
 				attribute<EUR> Ki_ge_pm(PlanRegio) := sum(Ki_ge_pm_w * NrDeelnemers, VestaRunDataComponent/PlanRegio_rel) * Float64(!IsNieuwbouw);
 				
-				attribute<EUR_Yr> Kj_hv(PlanRegio) :=  =IsNieuwbouw?'const(0[EUR_Yr      ], WoonObject)':'sum(Kj_hv_o, VestaRunDataComponent/PlanRegio_rel)'; // huurverlaging, alleen gebruikt in flow en als kostenfactor
+				attribute<EUR_Yr> Kj_hv(PlanRegio) :=  =IsNieuwbouw?'const(0[EUR_Yr      ], PlanRegio)':'sum(Kj_hv_o, VestaRunDataComponent/PlanRegio_rel)'; // huurverlaging, alleen gebruikt in flow en als kostenfactor
 				
 				attribute<EUR_Yr> Kj_wd_base     (PlanRegio) := Ki_wd_sec * VestaRunData/Onderhoud/Rj_wd + Onderstation/Ki_wd * VestaRunData/Onderhoud/Rj_Onderstation;
 				attribute<EUR_Yr> Kj_id_base     (PlanRegio) := Ki_id * VestaRunData/Onderhoud/Rj_id;

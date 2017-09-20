@@ -39,7 +39,7 @@ container meta
 	}
 
 	container vbo_woonfunctie:= genereer_ItemLijst('/Vesta/BronData/BAG/vbo_woonfunctie');
-	container Run2010:= genereer_ItemLijst('/RunContext/Y2010');
+	container Run2010:= genereer_ItemLijst('/RunContext/J2010');
 	container Run    := genereer_ItemLijst('/RunContext');
 	container Vesta  := genereer_ItemLijst('/Vesta');
 	container VestaBrondata  := genereer_ItemLijst('/Vesta/BronData');

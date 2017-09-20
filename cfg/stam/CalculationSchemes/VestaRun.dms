@@ -447,7 +447,7 @@ template VestaRun
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief    (Domains/GlasTuinbouw) := 0[EUR / nrAansl];
+				attribute<Float64> AansluitTarief    (Domains/GlasTuinbouw) := const(0[EUR / nrAansl],    Domains/GlasTuinbouw);
 				attribute<EUR>    AansluitBijdrageD  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
 				attribute<EUR>    AansluitBijdrageA  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
 				
@@ -724,65 +724,26 @@ template VestaRun
 		parameter<String> RunName      := =GeoDmsVersion() > 7.1395 ? 'RunName_7140' : 'RunName_7139';
 	}
 	parameter<String> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+String(RunJaar);
-/* REMOVE	
-	container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, true, OutputFolder+'/AllFlow', const(1.0, PlanRegio));
-	container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, true, OutputFolder+'/AllStock', const(1.0, PlanRegio));
-	container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,   true, OutputFolder+'/AllEnergy', const(1.0, PlanRegio));
-	
-	container PerInkomensGroep {
-		container Inkomen := RegioIndelingen/buurt/Inkomen;
-		container laag {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr,  true, false, OutputFolder+'/InkLaagFlow',   Inkomen/p_hh_li / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,    false, false, OutputFolder+'/InkLaagStock',  Inkomen/p_hh_li / Inkomen/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_Yr,   false, OutputFolder+'/InkLaagEnergy', Inkomen/p_hh_li / Inkomen/p_checksum);
-		}
-		container midden {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr, true, false, OutputFolder+'/InkMiddenFlow',   Inkomen/p_hh_mi / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,   false, false, OutputFolder+'/InkMiddenStock',  Inkomen/p_hh_mi / Inkomen/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/InkMiddenEnergy', Inkomen/p_hh_mi / Inkomen/p_checksum);
-		}
-		container hoog {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr, true, false, OutputFolder+'/InkHoogFlow',   Inkomen/p_hh_hi / Inkomen/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,   false, false, OutputFolder+'/InkHoogStock',  Inkomen/p_hh_hi / Inkomen/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/InkHoogEnergy', Inkomen/p_hh_hi / Inkomen/p_checksum);
-		}
-	}
-	container PerEigendom {
-		container Eigendom := RegioIndelingen/buurt/Eigendom;
-		container koop {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr, true, false, OutputFolder+'/HK_kwFlow',   Eigendom/p_koopw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,   false, false, OutputFolder+'/HK_kwStock',  Eigendom/p_koopw / Eigendom/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/HK_kwEnergy', Inkomen/p_koopw  / Eigendom/p_checksum);
-		}
-		container wcorpw {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr, true, false, OutputFolder+'/HK_wcFlow',   Eigendom/p_wcorpw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,   false, false, OutputFolder+'/HK_wcStock',  Eigendom/p_wcorpw / Eigendom/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/HK_wcEnergy', Inkomen/p_wcorpw  / Eigendom/p_checksum);
-		}
-		container ov_hw {
-			container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR_Yr, true, false, OutputFolder+'/HK_hwFlow',   Eigendom/p_ov_hw / Eigendom/p_checksum);
-			container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,  EUR,   false, false, OutputFolder+'/HK_hwStock',  Eigendom/p_ov_hw / Eigendom/p_checksum);
-			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/HK_hwEnergy', Inkomen/p_ov_hw  / Eigendom/p_checksum);
-		}
-	}
-REMOVE */
 	
 	container AllocExports
 	{
-		container PlanRegioResultsShp: StorageName = "=OutputFolder+'/PR_WA.dbf'"
+		template PlanRegioResultsShp: StorageName = "=OutputFolder+'/PR_WA.dbf'"
 		{
 			attribute<rdc_meter> Geometry(PlanRegio, poly): = PlanRegio/poly, StorageName =  "=OutputFolder+'/PR_WA.shp'";
-			attribute<Classifications/AanbodOptie> AanbodOptie(PlanRegio):  = EndState/AanbodOpties/PlanRegioWarmteAllocatie;
+			attribute<Classifications/AanbodOptie> AanbodOptie(PlanRegio) := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
+			
+			parameter<string> Generate := 'Ready', ExplicitSuppliers = "Geometry;AanbodOptie";
 		}
 		
-		container PlanRegioResultsGrid
+		template PlanRegioResultsGrid
 		{
 			unit<WPoint> rdc_grid:  = DomainUnit(PlanRegio/BaseGrid);
 			attribute<Classifications/AanbodOptie> AanbodOptie(rdc_grid) := =EndState/AanbodOpties/PlanRegioWarmteAllocatie[PlanRegio/BaseGrid]
 			,	StorageName =  "=OutputFolder+'/PR_WA.tif'";
+			parameter<string> Generate := 'Ready', ExplicitSuppliers = "AanbodOptie";
 		}
 		
-		parameter<String>PlanRegioResults:  = PlanRegio/HasBaseGrid ? 'PlanRegioResultsGrid/AanbodOptie' : 'PlanRegioResultsShp/Geometry;PlanRegioResultsShp/AanbodOptie';
+		container PlanRegioResults := =PlanRegio/HasBaseGrid ? 'PlanRegioResultsGrid()' : 'PlanRegioResultsShp()';
 
 		template BebouwingsComponentTempl
 		{
@@ -790,15 +751,14 @@ REMOVE */
 			container AllocatieResultaatComponent;
 			container VestaRunDataComponent:  = AllocatieResultaatComponent/VestaRunDataComponent;
 			
-			Unit<UInt32>  BebouwingsObject
-			:	 = AllocatieResultaatComponent/BebouwingsObject
+			Unit<UInt32>  BebouwingsObject := AllocatieResultaatComponent/BebouwingsObject
 			,	StorageName =  "=OutputFolder+'/'+ComponentName+'.dbf'"
 			{
 				attribute<rdc_meter> Point(BebouwingsObject):
 					 = AllocatieResultaatComponent/VestaRunDataComponent/RuimtelijkeVraagComponent/Point, 
 					StorageName =  "=OutputFolder+'/'+ComponentName+'.shp'";
 				
-				attribute<string> label: = "VestaRunDataComponent/bebouwing/label";
+				attribute<string> label := VestaRunDataComponent/bebouwing/label;
 				attribute<Classifications/AanbodOptie> AanbodOptie: = AllocatieResultaatComponent/WarmteAllocatie;
 				
 				attribute<GJ_Yr> MV_RW   := AllocatieResultaatComponent/MeterVraag/RestWarmte;
@@ -842,7 +802,7 @@ REMOVE */
 		
 		parameter<String> GenerateThisToo := 'Ready',
 			ExplicitSuppliers = 
-				"=PlanRegioResults"
+				"='PlanRegioResults/Generate'"
 				"+';'+AsList('BebouwingsComponentResults/'+Classifications/BebouwingsComponent/name+'/Generate',';')"
 			;
 	}
