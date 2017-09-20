@@ -52,30 +52,33 @@ container meta
 
 		unit<uint32> all := ='SubTree_PropValues(' + src_string + ',property/label)';
 
-		container per_domein
+		unit<uint32> domainunit_fullname := unique(all/domainunit_fullname);
+		unit<uint32> domainunit_attr := subset(strcount(domainunit_fullname/values, '::') == 0)
 		{
-			container bebouwingsobject := domeinselectie('bebouwingsobject');
-			container planregio        := domeinselectie('planregio');
-			
-			
-			
-			
-			template domeinselectie
+			attribute<string> values := domainunit_fullname/values[nr_OrgEntity];
+			attribute<uint32> attr_count := pcount(rlookup(all/domainunit_fullname, values));
+			attribute<string> name := replace(values, '/', '_');
+		}
+		
+		container Domains := for_each_ne(domainunit_attr/name, 'domeinselectie('+Quote(domainunit_attr/values)+')');
+		template domeinselectie
+		{
+			// begin case parameters
+			parameter<string> domein_sel;
+			// end case parameters
+			unit<uint32> results := Subset(all/domainunit_fullname == domein_sel)
 			{
-				// begin case parameters
-				parameter<string> domein_sel;
-				// end case parameters
-				unit<uint32> results := Subset(strcount(lowercase(all/domainunit_fullname), domein_sel) > 0)
-				{
-					attribute<string> name        := all/name[Nr_OrgEntity];
-					attribute<string> label       := all/label[Nr_OrgEntity];
-					attribute<string> descr       := all/descr[Nr_OrgEntity];
-					attribute<string> url         := all/url[Nr_OrgEntity];
-					attribute<string> domainunit  := all/domainunit[Nr_OrgEntity];
-					attribute<string> valuesunit  := all/valuesunit[Nr_OrgEntity];
-					attribute<string> storagename := all/storagename[Nr_OrgEntity];
-				}
+				attribute<string> name        := all/name[Nr_OrgEntity];
+				attribute<string> fulll_name  := all/full_name[Nr_OrgEntity];
+//				attribute<string> label       := all/label[Nr_OrgEntity];
+//				attribute<string> descr       := all/descr[Nr_OrgEntity];
+//				attribute<string> url         := all/url[Nr_OrgEntity];
+//				attribute<string> domainunit_fullname  := all/domainunit_fullname[Nr_OrgEntity];
+				attribute<string> valuesunit_fullname  := all/valuesunit_fullname[Nr_OrgEntity];
+//				attribute<string> storagename := all/storagename[Nr_OrgEntity];
 			}
+			unit<uint32> domain := =domein_sel;
+			container table := for_each_nedv(replace(results/full_name, '/', '.'), string(full_name), domain, string);
 		}
 	}
 }
