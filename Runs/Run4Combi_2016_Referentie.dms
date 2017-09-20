@@ -40,10 +40,11 @@
 
 container VestaRun
 {
-//	INCLUDE MODEL AND FIXED SETTINGS SECTION
-	#include <%projDir%/cfg/stam/ConfigSettings.dms>
-	#include <%projDir%/cfg/stam/ExportSettings.dms>
+//	INCLUDE MODEL AND FIXED SETTINGS SECTION	
 	#include <%projDir%/cfg/stam.dms>
+	container ConfigSettings := Vesta/ConfigSettings;
+	container ExportSettings := Vesta/ExportSettings;
+	
 	#include <%projDir%/Runs/UserInput1.dms>
 	#include <%projDir%/Runs/UserInput4.dms>
 //	END OF INCLUDE SECTION

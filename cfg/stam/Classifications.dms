@@ -799,69 +799,43 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<String> Label:= Name, DialogType = "LabelText";
 	}
 	
-	unit<uint8> scenario: nrofrows = 2
+	unit<uint8> zichtjaar: nrofrows = 5
 	{
-		attribute<String> Name:   ['Huidig', 'Trend'];
-		parameter<.>      Huidig: Expr = "value(0, .)";
-		parameter<.>      Trend:  Expr = "value(1, .)";
-	}
-	unit<uint8> zichtjaar: nrofrows = 6
-	{
-		attribute<Units/Jaar> Jaar: [2006, 2010, 2020, 2030, 2040, 2050 ];
-		attribute<String>     Label: Expr = "String(Jaar)";
-		attribute<String>     Name:  Expr = "'J'+Label";
-		attribute<String>     period_name: Expr = "'Y'+Label[ID(.)-1[.]] + '_Y'+Label";
-		attribute<String>     BanenAttrLISA:  Expr = "'banen'+ String(Jaar- value(2000, Units/Jaar))";
+		attribute<Units/Jaar> Jaar: [2010, 2020, 2030, 2040, 2050 ];
+		attribute<bool>       HasMutations := Jaar > 2010[Units/Jaar];
+		attribute<String>     Label := String(Jaar);
+		attribute<String>     Name  := 'J'+Label;
+		attribute<String>     period_name := 'Y'+Label[ID(.)-1[.]] + '_Y'+Label;
 		
 		
-		parameter<.> J2006: Expr = "value(0, .)";
-		parameter<.> J2010: Expr = "value(1, .)";
-		parameter<.> J2020: Expr = "value(2, .)";
-		parameter<.> J2030: Expr = "value(3, .)";
-		parameter<.> J2040: Expr = "value(4, .)";
-		parameter<.> J2050: Expr = "value(5, .)";
+		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
-	unit<uint32> ScenarioZichtjaarCombined:  = combine(Scenario, zichtjaar);
-	unit<uint32> ScenarioZichtjaar:          = Subset((ScenarioZichtjaarCombined/nr_1 == scenario/Huidig) == (ScenarioZichtjaarCombined/nr_2 == zichtjaar/J2006))
+	unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningType) // wordt gebruikt om uitleg maps en ResterdFactorMaps te lezen.
 	{
-		attribute<Bool> HasMutations:  = ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] > Zichtjaar/j2010;
-		
-		attribute<String>     Scenario_Name  := Scenario/Name  [ScenarioZichtjaarCombined/nr_1[nr_OrgEntity] ];
-		attribute<String>     Zichtjaar_Name := zichtjaar/Name [ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     Zichtjaar_label:= zichtjaar/Label[ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<Units/Jaar> zichtjaar_jaar := zichtjaar/Jaar [ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     period_Name    := zichtjaar/period_Name[ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     Name           := Scenario_Name + '/'+ Zichtjaar_name;
-
-		container V := for_each_nedv(name, 'value('+string(ID(.))+', ...)', void, .);
-	}
-	unit<uint32> ScenarioZichtjaarWonen := combine(ScenarioZichtjaar, WoningType) // wordt gebruikt om uitleg maps en ResterdFactorMaps te lezen.
-	{
-		attribute<Bool>       HasMutations      := ScenarioZichtjaar/HasMutations[nr_1];
-		attribute<String>     scenario_Name     := ScenarioZichtjaar/Scenario_Name[nr_1];
-		attribute<String>     zichtjaar_Label   := ScenarioZichtjaar/ZichtJaar_Label[nr_1];
-		attribute<String>     zichtjaar_name    := ScenarioZichtjaar/ZichtJaar_Name[nr_1];
-		attribute<Units/Jaar> zichtjaar_jaar    := ScenarioZichtjaar/ZichtJaar_Jaar[nr_1];
-		attribute<String>     period_name       := ScenarioZichtjaar/period_name[nr_1];
+		attribute<Bool>       HasMutations      := Zichtjaar/HasMutations[nr_1];
+		attribute<String>     zichtjaar_Label   := Zichtjaar/Label[nr_1];
+		attribute<String>     zichtjaar_name    := Zichtjaar/Name[nr_1];
+		attribute<Units/Jaar> zichtjaar_jaar    := Zichtjaar/Jaar[nr_1];
+		attribute<String>     period_name       := Zichtjaar/period_name[nr_1];
 		attribute<String>     Wonen_Name        := WoningType/Name[nr_2];
 		attribute<String>     Wonen_wlo_FileName:= WoningType/wlo_FileName[nr_2];
 		attribute<WoningType> WoningType_rel    := nr_2;
-		attribute<String>     Name              := Scenario_Name + '/' + zichtjaar_Name + '/' + Wonen_Name;
+		attribute<String>     Name              := zichtjaar_Name + '/' + Wonen_Name;
 		attribute<string>     Label             := Name;
 
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ....)', void, .);
 	}
-	unit<uint32> ScenarioZichtjaarUtiliteit := combine(ScenarioZichtjaar, UitlegUtil)
+	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UitlegUtil)
 	{
-		attribute<Bool>       HasMutations   := ScenarioZichtjaar/HasMutations[nr_1];
-		attribute<String>     scenario_Name  := ScenarioZichtjaar/Scenario_Name[nr_1];
-		attribute<String>     zichtjaar_Label:= ScenarioZichtjaar/ZichtJaar_Label[nr_1];
-		attribute<String>     zichtjaar_name := ScenarioZichtjaar/ZichtJaar_Name[nr_1];
-		attribute<Units/Jaar> zichtjaar_jaar := ScenarioZichtjaar/ZichtJaar_Jaar[nr_1];
-		attribute<String>     period_name    := ScenarioZichtjaar/period_name[nr_1];
+		attribute<Bool>       HasMutations   := Zichtjaar/HasMutations[nr_1];
+		attribute<String>     scenario_Name  := Zichtjaar/Scenario_Name[nr_1];
+		attribute<String>     zichtjaar_Label:= Zichtjaar/Label[nr_1];
+		attribute<String>     zichtjaar_name := Zichtjaar/Name[nr_1];
+		attribute<Units/Jaar> zichtjaar_jaar := Zichtjaar/Jaar[nr_1];
+		attribute<String>     period_name    := Zichtjaar/period_name[nr_1];
 		attribute<String>     utiliteit_Name := UitlegUtil/Name[nr_2];
 		attribute<String>     wlo_filename_uitleg:  = UitlegUtil/wlo_filename_uitleg[nr_2];
-		attribute<String>     Name := Scenario_Name + '/' + zichtjaar_Name + '/' + utiliteit_Name;
+		attribute<String>     Name := zichtjaar_Name + '/' + utiliteit_Name;
 		attribute<string>     Label:= Name;
 	}
 	unit<uint8> ggWonen: nrofrows = 3

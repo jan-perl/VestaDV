@@ -41,8 +41,8 @@
 container Uitleg
 {
 	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
-	unit<uInt32> SZW := Classifications/ScenarioZichtjaarWonen;
-	unit<uInt32> SZU := Classifications/ScenarioZichtjaarUtiliteit;
+	unit<uInt32> SZW := Classifications/ZichtjaarWonen;
+	unit<uInt32> SZU := Classifications/ZichtjaarUtiliteit;
 
 	container UitlegWoningTiffs := 
 		for_each_ndva(SZW/HasMutations ? SZW/Name : ''

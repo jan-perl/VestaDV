@@ -567,28 +567,16 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 		}
 		unit<UInt32> EmptySequenceSetSource := Range(UInt32, 0,0)
 		{
-			attribute<rdc_meter> Point:      Expr = "const(Point(Float64(0),Float64(0)), .)";
-			attribute<.>         SequenceNr: Expr = "const(value(0, .), .)";
-			attribute<UInt32>    Ordinal:    Expr = "const(value(0, uInt32), .)";
+			attribute<rdc_meter> Point     := const(Point(0.0, 0.0, rdc_meter), .);
+			attribute<.>         SequenceNr:= const(value(0, .), .);
+			attribute<UInt32>    Ordinal   := const(value(0, uInt32), .);
 		}
 	}
 	container top100
 	{
 		unit<uint8>  kleurindex_detail: isHidden = "True", nrofrows = 254, label = "background palette"
 		{
-			attribute<uint32> palette: expr = "Grid/nl_detail/PaletteData", DialogType = "BrushColor";
-		}
-		unit<uint8> kleurindex: isHidden = "True", nrofrows = 255
-		{
-			attribute<uint32> KleurenPalet_org: Expr = "grid/nl/PaletteData";
-			attribute<uint32> KleurenPalet: 
-				DialogType = "BrushColor", 
-				Expr = "iif(id(kleurindex) = value(0,kleurindex) 
-							|| id(kleurindex) = value(133,kleurindex) 
-							|| id(kleurindex) = value(144,kleurindex) 
-							|| id(kleurindex) = value(164,kleurindex)  
-							|| id(kleurindex) = value(171,kleurindex)
-							, rgb(240,247,246), KleurenPalet_org)";
+			attribute<uint32> palette := Grid/nl_detail/PaletteData, DialogType = "BrushColor";
 		}
 		container grid
 		{

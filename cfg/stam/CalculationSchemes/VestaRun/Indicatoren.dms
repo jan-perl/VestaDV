@@ -225,7 +225,7 @@ container indicatoren
 			IntegrityCheck = "!(heeft_gas && all_electric)";
 			
 		container aardgas {
-			attribute<bool>   had_gas    (Planregio) := Y2010/indicatoren/heeft_gas; // false voor bestaande restwarmte
+			attribute<bool>   had_gas    (Planregio) := J2010/indicatoren/heeft_gas; // false voor bestaande restwarmte
 			attribute<bool>   verwijderd (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
 			
 			// inkomsten
@@ -236,7 +236,7 @@ container indicatoren
 			
 			// kosten
 			attribute<m>  L_infra_nu      (PlanRegio) := Float64(heeft_gas ) * EndState/KostenBaten/KostenD/L_infra_g;
-			attribute<m>  L_infra_org     (PlanRegio) := Y2010/indicatoren/netwerk/aardgas/L_infra_nu;
+			attribute<m>  L_infra_org     (PlanRegio) := J2010/indicatoren/netwerk/aardgas/L_infra_nu;
 			attribute<m>  L_infra         (PlanRegio) := max_elem(L_infra_nu, L_infra_org);
 			
 			attribute<EUR_Yr> kapitaallasten  (Planregio) := L_infra    * InfraParameters/KK_infra_g;
@@ -344,22 +344,22 @@ container indicatoren
 	container InputOutput := 
 		for_each_ne(
 			 UserInput/ReportOpties/RapportageRegio/Name
-		,	'Rapportage/InputOutputTempl('
+		,	'Rapportage/FlowTempl('
 				'UserInput/ReportOpties/RapportageRegio'
 				','+Quote(UserInput/ReportOpties/RapportageRegio/Name)+
 				', value('+ string(id(UserInput/ReportOpties/RapportageRegio)) + ',UserInput/ReportOpties/RapportageRegio)'
-				', Flow'
 			')'
-		);
+		)
+	{
+		container Totaal := =(UserInput/ReportOpties/RapportageRegio/Name != 'NL')
+			? 'Rapportage/FlowTempl(geography/RegioIndelingen/NL, ''NL'', value(0, geography/RegioIndelingen/NL) )'
+			: '.';
+	}
 
 	parameter<String> GenerateAll := 'Ready',
 		ExplicitSuppliers =
-			"=  'Flow/GenerateAll;Stock/GenerateAll'"
-//			"+ ';PerInkomensGroep/laag/Flow/GenerateAll;PerInkomensGroep/midden/Flow/GenerateAll;PerInkomensGroep/hoog/Flow/GenerateAll'"
-//			"+ ';PerInkomensGroep/laag/Stock/GenerateAll;PerInkomensGroep/midden/Stock/GenerateAll;PerInkomensGroep/hoog/Stock/GenerateAll'"
-//			"+ ';PerEigendom/koop/Flow/GenerateAll;PerEigendom/wcorpw/Flow/GenerateAll;PerEigendom/ov_hw/Flow/GenerateAll'"
-//			"+ ';PerEigendom/koop/Stock/GenerateAll;PerEigendom/wcorpw/Stock/GenerateAll;PerEigendom/ov_hw/Stock/GenerateAll'"
-			"+ ';' + AsList('InputOutput/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"= ';' + AsList('InputOutput/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ (UserInput/ReportOpties/RapportageRegio/Name != 'NL' ? ';InputOutput/Totaal/GenerateAll': '')"
 			"+ ';' + AsList('MaatregelenRapportage/Woning/'      +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/Utiliteit/'   +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/UitlegWoning/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"

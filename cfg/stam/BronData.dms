@@ -335,11 +335,11 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				attribute<TypeInfoList> TypeInfoList_rel := rlookup(Type, TypeInfoList/Naam);
 				attribute<RekenType> RekenType_rel := TypeInfoList/RekenType_rel[TypeInfoList_rel];
 
-				attribute<EUR_GJ>  K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/J2010]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/J2020]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ30 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/J2030]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ40 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/J2040]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ50 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/J2050]')+')[RekenType_rel]';
+				attribute<EUR_GJ>  K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2010]')+')[RekenType_rel]';
+ 				attribute<EUR_GJ>  K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2020]')+')[RekenType_rel]';
+ 				attribute<EUR_GJ>  K_GJ30 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2030]')+')[RekenType_rel]';
+ 				attribute<EUR_GJ>  K_GJ40 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2040]')+')[RekenType_rel]';
+ 				attribute<EUR_GJ>  K_GJ50 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2050]')+')[RekenType_rel]';
 			}
 			unit<int32> TypeInfoList: nrofrows = 15
 			{

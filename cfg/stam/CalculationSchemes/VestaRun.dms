@@ -50,7 +50,7 @@ template VestaRun
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/StartingStateComponent('+
 				'Bebouwing/'+Classifications/BebouwingsComponent/Name+','+
-				'ScenarioSpecs/energievraag/BaseLine/'+Classifications/BebouwingsComponent/Name+', '+
+				'ScenarioSpecs/energievraag/'+Classifications/BebouwingsComponent/Name+', '+
 				String(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
 			')'
 		)
@@ -203,10 +203,10 @@ template VestaRun
 	
 	container LeerCurves {
 		// data
-		attribute <Ratio> LeerCurve1DataMin(Classifications/ZichtJaar): [ null, 1.00, 0.87, 0.77, 0.70, 0.65 ];
-		attribute <Ratio> LeerCurve1DataMax(Classifications/ZichtJaar): [ null, 1.00, 0.92, 0.87, 0.83, 0.80 ];
-		attribute <Ratio> LeerCurve2DataMin(Classifications/ZichtJaar): [ null, 1.00, 0.72, 0.58, 0.49, 0.43 ];
-		attribute <Ratio> LeerCurve2DataMax(Classifications/ZichtJaar): [ null, 1.00, 0.80, 0.70, 0.64, 0.59 ];
+		attribute <Ratio> LeerCurve1DataMin(Classifications/ZichtJaar): [ 1.00, 0.87, 0.77, 0.70, 0.65 ];
+		attribute <Ratio> LeerCurve1DataMax(Classifications/ZichtJaar): [ 1.00, 0.92, 0.87, 0.83, 0.80 ];
+		attribute <Ratio> LeerCurve2DataMin(Classifications/ZichtJaar): [ 1.00, 0.72, 0.58, 0.49, 0.43 ];
+		attribute <Ratio> LeerCurve2DataMax(Classifications/ZichtJaar): [ 1.00, 0.80, 0.70, 0.64, 0.59 ];
 		
 		parameter<Ratio> Curve1Min:  = interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMin);
 		parameter<Ratio> Curve1Max:  = interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMax);
@@ -231,7 +231,7 @@ template VestaRun
 					+String(Classifications/BebouwingsComponent/IsUitleg)+','
 					+String(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
-					'ScenarioSpecs/energievraag/BaseLine/'+BCN+','
+					'ScenarioSpecs/energievraag/'+BCN+','
 					'UserInput/RuimtelijkeVraagOpties/DragerSpecifiekeOpties,'
 					'UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/'+BCN+','
 					'float64(klimaat),'
@@ -341,7 +341,7 @@ template VestaRun
 			{
 
 				attribute<Float64> AansluitTarief     (Domains/Woning) := 
-					Float64(Y2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
 				attribute<EUR>     AansluitBijdrageG  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
@@ -366,7 +366,7 @@ template VestaRun
 			container opbrengsten: Source = "Fo v7a F 6"
 			{
 				attribute<Float64> AansluitTarief     (Domains/UitlegWoning) := 
-					Float64(Y2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
@@ -392,7 +392,7 @@ template VestaRun
 			container opbrengsten
 			{
 				attribute<Float64> AansluitTarief     (Domains/Utiliteit) := 
-					Float64(Y2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 
@@ -419,7 +419,7 @@ template VestaRun
 			container opbrengsten
 			{
 				attribute<Float64> AansluitTarief     (Domains/UitlegUtil) := 
-					Float64(Y2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
@@ -466,7 +466,7 @@ template VestaRun
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief    (Domains/UitlegGlTb) := Float64(Y2010/indicatoren/heeft_gas[Planregio_rel]) * 100[EUR / nrAansl];
+				attribute<Float64> AansluitTarief    (Domains/UitlegGlTb) := Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 100[EUR / nrAansl];
 				
 				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief * WarmteVraagD/nrAansluitingen;
 				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief * WarmteVraagA/nrAansluitingen;
@@ -702,7 +702,7 @@ template VestaRun
 			{
 				attribute<GJ_Yr> V_Warmte    (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
 				attribute<GJ_Yr> V_Koude     (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
-				attribute<kWh_Yr>F_Elektrisch(Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/F_Elektrisch')+')';
+				attribute<GJ_Yr> F_Elektrisch(Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/F_Elektrisch')+')';
 				attribute<GJ_Yr> Onttrekking (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
 				attribute<kW>    Capaciteit  (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
 			}
@@ -724,10 +724,10 @@ template VestaRun
 		parameter<String> RunName      := =GeoDmsVersion() > 7.1395 ? 'RunName_7140' : 'RunName_7139';
 	}
 	parameter<String> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+String(RunJaar);
-	
-	container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, true, OutputFolder+'/AllFlow');
-	container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, true, OutputFolder+'/AllStock');
-	container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,   true, OutputFolder+'/AllEnergy');
+/* REMOVE	
+	container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, true, OutputFolder+'/AllFlow', const(1.0, PlanRegio));
+	container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, true, OutputFolder+'/AllStock', const(1.0, PlanRegio));
+	container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,   true, OutputFolder+'/AllEnergy', const(1.0, PlanRegio));
 	
 	container PerInkomensGroep {
 		container Inkomen := RegioIndelingen/buurt/Inkomen;
@@ -765,6 +765,7 @@ template VestaRun
 			container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData,GJ_YR,  false, OutputFolder+'/HK_hwEnergy', Inkomen/p_ov_hw  / Eigendom/p_checksum);
 		}
 	}
+REMOVE */
 	
 	container AllocExports
 	{
