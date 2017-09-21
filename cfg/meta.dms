@@ -33,30 +33,34 @@
 
 container meta
 {
-	unit<uint32> property: nrofrows = 10
+	unit<uint32> property: nrofrows = 6
 	{
-		attribute<string> label : ['name','fullname','descr','label','url','domainunit','valuesunit','storagename','domainunit_fullname','valuesunit_fullname'];
+		attribute<string> label : ['name', 'fullname', 'storagename','domainunit_fullname', 'valuesunit_fullname', 'InTemplate'];
 	}
 
-	container vbo_woonfunctie:= genereer_ItemLijst('/Vesta/BronData/BAG/vbo_woonfunctie');
-	container Run2010:= genereer_ItemLijst('/RunContext/J2010');
-	container Run    := genereer_ItemLijst('/RunContext');
-	container Vesta  := genereer_ItemLijst('/Vesta');
-	container VestaBrondata  := genereer_ItemLijst('/Vesta/BronData');
+	container vbo_woonfunctie:= ItemLijstT('/Vesta/BronData/BAG/vbo_woonfunctie');
+	container Run2010:= ItemLijstT('/RunContext/J2010');
+	container Run    := ItemLijstT('/RunContext');
+	container Vesta  := ItemLijstT('/Vesta');
+	container VestaBrondata  := ItemLijstT('/Vesta/BronData');
 	
-	template genereer_ItemLijst
+	template ItemLijstT
 	{
 		// begin case parameters
 		parameter<string> src_string;
 		// end case parameters
 
 		unit<uint32> all := ='SubTree_PropValues(' + src_string + ',property/label)';
+		unit<uint32> all_inst := subset(uppercase(substr(all/InTemplate, 0, 1)) == 'F') {
+			attribute<all> all_ref := nr_OrgEntity;
+			attribute<string> domainunit_fullname :=all/domainunit_fullname[all_ref];
+		}
 
-		unit<uint32> domainunit_fullname := unique(all/domainunit_fullname);
+		unit<uint32> domainunit_fullname := unique(all_inst/domainunit_fullname);
 		unit<uint32> domainunit_attr := subset(strcount(domainunit_fullname/values, '::') == 0)
 		{
 			attribute<string> values := domainunit_fullname/values[nr_OrgEntity];
-			attribute<uint32> attr_count := pcount(rlookup(all/domainunit_fullname, values));
+			attribute<uint32> attr_count := pcount(rlookup(all_inst/domainunit_fullname, values));
 			attribute<string> name := replace(values, '/', '_');
 		}
 		
@@ -66,19 +70,19 @@ container meta
 			// begin case parameters
 			parameter<string> domein_sel;
 			// end case parameters
-			unit<uint32> results := Subset(all/domainunit_fullname == domein_sel)
+			unit<uint32> results := Subset(all_inst/domainunit_fullname == domein_sel)
 			{
-				attribute<string> name        := all/name[Nr_OrgEntity];
-				attribute<string> fulll_name  := all/full_name[Nr_OrgEntity];
-//				attribute<string> label       := all/label[Nr_OrgEntity];
-//				attribute<string> descr       := all/descr[Nr_OrgEntity];
-//				attribute<string> url         := all/url[Nr_OrgEntity];
-//				attribute<string> domainunit_fullname  := all/domainunit_fullname[Nr_OrgEntity];
-				attribute<string> valuesunit_fullname  := all/valuesunit_fullname[Nr_OrgEntity];
-//				attribute<string> storagename := all/storagename[Nr_OrgEntity];
+				attribute<all>    all_ref  := all_inst/all_ref[nr_OrgEntity];
+				
+				attribute<string> name     := all/name[all_ref];
+				attribute<string> FullName := all/FullName[all_ref];
+//				attribute<string> domainunit_fullname  := all/domainunit_fullname[all_ref];
+				attribute<string> valuesunit_fullname  := all/valuesunit_fullname[all_ref];
+				attribute<string> storagename := all/storagename[all_ref];
+				attribute<bool>   InTemplate := all/InTemplate[all_ref];
 			}
 			unit<uint32> domain := =domein_sel;
-			container table := for_each_nedv(replace(results/full_name, '/', '.'), string(full_name), domain, string);
+			container table := for_each_nedv(replace(results/FullName, '/', '_'), 'string('+results/FullName+')', domain, string);
 		}
 	}
 }
