@@ -431,16 +431,16 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		container RestWarmte: Descr = "zie FO $3.3", FreeData = "False"
 		{
 			unit<uint32> bron: 
-				StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20160407_in_gebruik_PBL.dbf",
+				StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20161130.dbf",
 				StorageReadOnly = "True",
 				DialogType      = "Map",
 				DialogData      = "P",
-				Source          = "ECN, Marit van Hout, 5 juni 2015 per email
-				                   aanlevering Y:\\data\\Vesta\\v2\\config\\MAIS\\aanlevering\\Steven_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx
-				                   bewerking: Y:\\data\\Vesta\\v2\\config\\MAIS\\bewerk\\puntbronnen_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx tabblad GIS",
+				Source          = "ECN, Marit van Hout, 5 juni 2015 per email\n"
+				                   "aanlevering Y:\\data\\Vesta\\v2\\config\\MAIS\\aanlevering\\Steven_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx\n"
+				                   "bewerking: Y:\\data\\Vesta\\v2\\config\\MAIS\\bewerk\\puntbronnen_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx tabblad GIS",
 				SyncMode        = "None"
 			{
-				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20160407_in_gebruik_PBL.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20161130.shp", StorageReadOnly = "True";
 
 				attribute<String>    Naam;
 				
@@ -478,6 +478,10 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				
 				unit<UInt32> BronElementen := SubSet(WarmteBronnen/ingebruik <= Jaar)
 				{
+//					attribute<WarmteBronnen> WarmteBron_rel := nr_OrgEntity;
+
+					attribute<units/Jaar> ingebruik := WarmteBronnen/ingebruik[nr_OrgEntity];
+					
 					attribute<String>     Label := WarmteBronnen/Label[nr_OrgEntity], DialogType = "LabelText";
 					attribute<MetaData/TypeInfoList> TypeInfoList_rel := WarmteBronnen/TypeInfoList_rel[nr_OrgEntity];
 		
@@ -498,19 +502,21 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				}
 				unit<UInt32> Bronnen := Unique(BronElementen/Point), DialogType = "Map", DialogData = "Point"
 				{
-					attribute<String>     Label:        Expr = "AsItemList(BronElementen/Label, BronElementen_rel)", DialogType = "LabelText";
-		
-					attribute<.> BronElementen_rel(BronElementen): Expr = "rlookup(BronElementen/Point, Values)";
-					attribute<MetaData/TypeInfoList> TypeInfoList_rel := modus_weighted(BronElementen/TypeInfoList_rel, BronElementen/MWth_max, BronElementen_rel);
+					attribute<String>     Label:        Expr = "AsItemList(BronElementen/Label, per_BronElementen)", DialogType = "LabelText";
+
+//					attribute<WarmteBronnen> WarmteBron_rel := modus_weighted(BronElementen/WarmteBron_rel, Jaar+1[units/jaar]-BronElementen/ingebruik, per_BronElementen);
+					
+					attribute<.> per_BronElementen(BronElementen) := rlookup(BronElementen/Point, Values);
+					attribute<MetaData/TypeInfoList> TypeInfoList_rel := modus_weighted(BronElementen/TypeInfoList_rel, BronElementen/MWth_max, per_BronElementen);
 					
 					attribute<rdc_meter>  Point:        Expr = "Values";
-					attribute<EUR_kW>     K_kW_min:     Expr = "sum(BronElementen/K_kW_min * BronElementen/MWth_max, BronElementen_rel) / sum(BronElementen/MWth_max, BronElementen_rel)";
-					attribute<EUR_kW>     K_kW_max:     Expr = "sum(BronElementen/K_kW_max * BronElementen/MWth_max, BronElementen_rel) / sum(BronElementen/MWth_max, BronElementen_rel)";
-					attribute<MW>         MWth_max:     Expr = "sum(BronElementen/MWth_max, BronElementen_rel)";
-					attribute<MW>         MWth_min:     Expr = "sum(BronElementen/MWth_min, BronElementen_rel)";
-					attribute<_Yr>        Rj_Onderhoud: Expr = "sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, BronElementen_rel) / sum(BronElementen/MWth_max, BronElementen_rel)";
-					attribute<EUR_GJ>     K_GJ:         Expr = "sum(BronElementen/K_GJ         * BronElementen/MWth_max, BronElementen_rel) / sum(BronElementen/MWth_max, BronElementen_rel)";
-					attribute<KG_GJ >     CO2_GJ:       Expr = "sum(BronElementen/CO2_GJ       * BronElementen/MWth_max, BronElementen_rel) / sum(BronElementen/MWth_max, BronElementen_rel)";
+					attribute<EUR_kW>     K_kW_min:     Expr = "sum(BronElementen/K_kW_min * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<EUR_kW>     K_kW_max:     Expr = "sum(BronElementen/K_kW_max * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<MW>         MWth_max:     Expr = "sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<MW>         MWth_min:     Expr = "sum(BronElementen/MWth_min, per_BronElementen)";
+					attribute<_Yr>        Rj_Onderhoud: Expr = "sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<EUR_GJ>     K_GJ:         Expr = "sum(BronElementen/K_GJ         * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<KG_GJ >     CO2_GJ:       Expr = "sum(BronElementen/CO2_GJ       * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
 					attribute<m>          cumulDist:    Expr = "const(0[m], .)";
 					attribute<MW>         cumulP:       Expr = "const(0[MW], .)";
 					attribute<Bronnen>    Bronnen_rel:  Expr = "ID(.)";

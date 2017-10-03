@@ -340,8 +340,6 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<string> codeorgtmp:= substr(codeorg,2,8);
 			attribute<Buurt_nrs> code:= codeorgtmp[uint32];
 		
-			attribute<uint32> RW; // in de dbf is dit waarschijnlijk als numeric en niet als logical gedefinieerd
-				
 			attribute<rdc_meter> Point    := centroid_or_mid(poly);
 			attribute<m2>        Area     := Area(poly, m2);
 			attribute<km2>       AreaInKm2:= Area / value(1000000, m2 / km2);
