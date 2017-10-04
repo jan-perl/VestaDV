@@ -43,4 +43,11 @@ container RunContext :=
 {
 	parameter<String> GenerateAll := 'Ready', 
 		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')";
+		
+	container AllocExports
+	{
+		parameter<string> GenerateAll := 'ready', 
+			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/period_name+'/AllocExports/GenerateAll', ';')";
+	}
+
 }

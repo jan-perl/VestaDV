@@ -725,88 +725,10 @@ template VestaRun
 	}
 	parameter<String> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+String(RunJaar);
 	
-	container AllocExports
-	{
-		template PlanRegioResultsShp: StorageName = "=OutputFolder+'/PR_WA.dbf'"
-		{
-			attribute<rdc_meter> Geometry(PlanRegio, poly): = PlanRegio/poly, StorageName =  "=OutputFolder+'/PR_WA.shp'";
-			attribute<Classifications/AanbodOptie> AanbodOptie(PlanRegio) := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
-			
-			parameter<string> Generate := 'Ready', ExplicitSuppliers = "Geometry;AanbodOptie";
-		}
-		
-		template PlanRegioResultsGrid
-		{
-			unit<WPoint> rdc_grid:  = DomainUnit(PlanRegio/BaseGrid);
-			attribute<Classifications/AanbodOptie> AanbodOptie(rdc_grid) := =EndState/AanbodOpties/PlanRegioWarmteAllocatie[PlanRegio/BaseGrid]
-			,	StorageName =  "=OutputFolder+'/PR_WA.tif'";
-			parameter<string> Generate := 'Ready', ExplicitSuppliers = "AanbodOptie";
-		}
-		
-		container PlanRegioResults := =PlanRegio/HasBaseGrid ? 'PlanRegioResultsGrid()' : 'PlanRegioResultsShp()';
-
-		template BebouwingsComponentTempl
-		{
-			parameter<String> ComponentName;
-			container AllocatieResultaatComponent;
-			container VestaRunDataComponent:  = AllocatieResultaatComponent/VestaRunDataComponent;
-			
-			Unit<UInt32>  BebouwingsObject := AllocatieResultaatComponent/BebouwingsObject
-			,	StorageName =  "=OutputFolder+'/'+ComponentName+'.dbf'"
-			{
-				attribute<rdc_meter> Point(BebouwingsObject):
-					 = AllocatieResultaatComponent/VestaRunDataComponent/RuimtelijkeVraagComponent/Point, 
-					StorageName =  "=OutputFolder+'/'+ComponentName+'.shp'";
-				
-				attribute<string> label := VestaRunDataComponent/bebouwing/label;
-				attribute<Classifications/AanbodOptie> AanbodOptie: = AllocatieResultaatComponent/WarmteAllocatie;
-				
-				attribute<GJ_Yr> MV_RW   := AllocatieResultaatComponent/MeterVraag/RestWarmte;
-				attribute<GJ_Yr> MV_GT   := AllocatieResultaatComponent/MeterVraag/GeoThermie;
-				attribute<GJ_Yr> MV_WKK  := AllocatieResultaatComponent/MeterVraag/WijkWKK;
-				attribute<GJ_Yr> MV_WKO  := AllocatieResultaatComponent/MeterVraag/WKO;
-				attribute<GJ_Yr> MV_GAS  := AllocatieResultaatComponent/MeterVraag/AardGas;
-				attribute<GJ_Yr> MV_ELEK := AllocatieResultaatComponent/MeterVraag/Elektriciteit;
-				attribute<GJ_Yr> MV_TOTL := AllocatieResultaatComponent/MeterVraag/Totaal;
-				
-//				attribute<KG_Yr> CO2_RW:   = AllocatieResultaatComponent/CO2/RestWarmte;
-//				attribute<KG_Yr> CO2_GT:   = AllocatieResultaatComponent/CO2/GeoThermie;
-//				attribute<KG_Yr> CO2_WKK:  = AllocatieResultaatComponent/CO2/WijkWKK;
-//				attribute<KG_Yr> CO2_WKO:  = AllocatieResultaatComponent/CO2/WKO;
-				attribute<KG_Yr> CO2_GAS:  = AllocatieResultaatComponent/CO2/AardGas;
-				attribute<KG_Yr> CO2_ELEK: = AllocatieResultaatComponent/CO2/Elektriciteit;
-//				attribute<KG_Yr> CO2_TOTL: = AllocatieResultaatComponent/CO2/Totaal;
-
-				attribute<classifications/EnergieLabel> el_lv := VestaRunDataComponent/energielabel/LastValue;
-				attribute<classifications/EnergieLabel> el_cv := VestaRunDataComponent/energielabel/CurrValue;
-				attribute<bool> el_wc  := VestaRunDataComponent/energielabel/WasChanged;
-				attribute<bool> el_icn := VestaRunDataComponent/energielabel/IsChangedNow;
-				attribute<bool> el_ic  := VestaRunDataComponent/energielabel/IsChanged;
-			}
-			
-			parameter<String> Generate := 'Ready', ExplicitSuppliers = 
-				"BebouwingsObject/Point"
-				";BebouwingsObject/label"
-				";BebouwingsObject/AanbodOptie"
-				";BebouwingsObject/MV_RW;BebouwingsObject/MV_GT;BebouwingsObject/MV_WKK;BebouwingsObject/MV_WKO;BebouwingsObject/MV_GAS;BebouwingsObject/MV_ELEK;BebouwingsObject/MV_TOTL"
-				";BebouwingsObject/CO2_GAS;BebouwingsObject/CO2_ELEK"
-				";BebouwingsObject/el_lv;BebouwingsObject/el_cv;BebouwingsObject/el_wc;BebouwingsObject/el_icn;BebouwingsObject/el_ic"
-			; 
-		}
-
-		container BebouwingsComponentResults := 
-				for_each_ne(Classifications/BebouwingsComponent/name, 
-					'BebouwingsComponentTempl('+Quote(Classifications/BebouwingsComponent/name)+',AllocatieResultaat/'+Classifications/BebouwingsComponent/name+')'
-				);
-		
-		
-		parameter<String> GenerateThisToo := 'Ready',
-			ExplicitSuppliers = 
-				"='PlanRegioResults/Generate'"
-				"+';'+AsList('BebouwingsComponentResults/'+Classifications/BebouwingsComponent/name+'/Generate',';')"
-			;
-	}
 	#include <Indicatoren.dms>
+	
+	#include <AllocExports.dms>
+//	#include <exports.dms>
 	
 	container RegressieTest
 	{
@@ -816,5 +738,4 @@ template VestaRun
 			ExplicitSuppliers = "Indicatoren/GenerateAll"; // Generates All reports.
 		
 	}
-
 }

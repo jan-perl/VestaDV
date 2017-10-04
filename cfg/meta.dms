@@ -40,6 +40,7 @@ container meta
 
 	container vbo_woonfunctie:= ItemLijstT('/Vesta/BronData/BAG/vbo_woonfunctie');
 	container Run2010:= ItemLijstT('/RunContext/J2010');
+	container Run2020:= ItemLijstT('/RunContext/J2020');
 	container Run    := ItemLijstT('/RunContext');
 	container Vesta  := ItemLijstT('/Vesta');
 	container VestaBrondata  := ItemLijstT('/Vesta/BronData');
