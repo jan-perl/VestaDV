@@ -225,13 +225,11 @@ container bebouwing
 		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
 		FreeData        = "False"
 	{
-		unit<uint32>  BebouwingsObject := ., FreeData = "True"
-		{
-			attribute<.> code := ID(.);
-		}
+		unit<uint32>  BebouwingsObject := ., FreeData = "True";
 		unit<uint8>   KengetalTypeDomein := Classifications/GLTB;
 		
 		// external key
+		attribute<string>                     code  := string(ID(.));
 		attribute<UInt32>                     POSTCODE4;
 		attribute<String>                     Label := String(POSTCODE4), DialogType = "LabelText", FreeData = "True";
 		attribute<Classifications/GLTB>       GLTB_Code;
