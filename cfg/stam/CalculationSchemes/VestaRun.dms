@@ -64,21 +64,55 @@ template VestaRun
 				attribute<CumulatedArcSet> CumulatedArcSet_rel(PlanRegio):  = invert(CumulatedArcSet/planregio_rel);
 				attribute<Bool> GebruikRestWarmte(PlanRegio) := IsDefined(CumulatedArcSet_rel);
 
-				unit<Uint32> GivenStartArcSet: StorageName = "%projdir%/data/RestWarmteStart/CumulatedArcSet.dbf", StorageReadOnly = "True"
+				unit<uint32> WarmteBronnen := BronData/WarmteBronnen/RestWarmte/bron; // BronData/WarmteBronnen/RestWarmte/BronSelecties/J2010/Bronnen;
+				unit<Uint32> netwerk_data: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte_20161130.csv", StorageType = "gdal.vect", StorageReadOnly = "True";
+				unit<Uint32> linkset := subset(bool(int8(netwerk_data/RW)))
 				{
-					attribute<Float64>                         BronPointX;
-					attribute<Float64>                         BronPointY;
-					attribute<Geography/RegioIndelingen/buurt> PlanRegio_rel; // using this as PlanRegio values will trigger an error if PlanRegion != PC4.
+					attribute<string> BU_code    := netwerk_data/BU_code   [nr_OrgEntity];
+					attribute<string> BU_code_dk := netwerk_data/BU_code_dk[nr_OrgEntity];
+					
+					 // error when PlanRegio != Vesta/Geography/RegioIndelingen/buurt
+					attribute<PlanRegio> BU_rel    := rlookup(BU_Code,    Vesta/Geography/RegioIndelingen/buurt/BU_code);
+					attribute<PlanRegio> BU_DK_rel := rlookup(BU_Code_dk, Vesta/Geography/RegioIndelingen/buurt/BU_code);
+					attribute<.>         up_rel    := rlookup(BU_DK_rel, BU_rel);
+					
+					attribute<rdc_meter> Point     := PlanRegio/Point[BU_rel];
+					
+					attribute<int32> pntnr := int32(netwerk_data/pntnr[nr_OrgEntity]);
+					attribute<WarmteBronnen> bron_rel := value(pntnr, WarmteBronnen);
+					
+					attribute<nodeset> F1 := MakeDefined(value(bron_rel+#linkset, nodeset), value(up_rel, nodeset));
+					attribute<nodeset> F2 := value(ID(.), nodeset);
+				}
+				unit<uint32> nodeset := union_unit(linkset, WarmteBronnen)
+				{
+					attribute<rdc_meter> Point := union_data(., linkset/Point, WarmteBronnen/P);
+					unit<uint32> e := dijkstra_m('directed;startPoint(Node_rel);cut(OrgZone_max_imp);od:impedance,OrgZone_rel,DstZone_rel', 
+						const(1.0f, linkset), linkset/f1, linkset/f2, 
+						value(ID(WarmteBronnen)+#linkset, nodeset),
+						1000.0f
+					);
+//					attribute<nodeset> d := dijkstra_s('directed;startPoint(Node_rel);node:TraceBack', const(1.0f, linkset), linkset/f1, linkset/f2, value(ID(WarmteBronnen)+#linkset, nodeset) );
+				}
+
+				unit<Uint32> GivenStartArcSet := linkset //: StorageName = "%projdir%/data/RestWarmteStart/CumulatedArcSet.dbf", StorageReadOnly = "True"
+				{
+					attribute<Geography/RegioIndelingen/buurt> PlanRegio_rel := linkset/BU_rel;
+					attribute<rdc_meter> PrevPoint := nodeset/Point[linkset/F1];
 //					attribute<EUR>                             Ki_Netto;
-					attribute<rdc_meter>                       BronPoint := point(BronPointY, BronPointX, rdc_meter);
+					attribute<WarmteBronnen>                   Bron_rel := value(rjoin(value(ID(linkset), nodeset), nodeset/e/DstZone_rel, nodeset/e/OrgZone_rel) - #linkset, WarmteBronnen);
+					attribute<rdc_meter>                       BronPoint := WarmteBronnen/P[Bron_rel];
+					
 					parameter<bool> HasArcs := true; // avoid reading the dbf to find this out.
 				}
 				
 				unit<Uint32> EmptyArcSet: = Geography/RegioIndelingen/EmptySequenceSetSource
 				{
+					attribute<rdc_meter> PrevPoint    :  = Point;
 					attribute<rdc_meter> BronPoint    :  = Point;
 					attribute<PlanRegio> PlanRegio_rel:  = const(0[PlanRegio], .);
 					attribute<EUR>       Ki_Netto:       = const(value(0, EUR), .);
+					
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
 // onderste regel aanzetten voor lege startstate Restwarmte en bovenste regel uitzetten
@@ -87,7 +121,7 @@ template VestaRun
 				
 				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc): 
 					 = points2sequence_ps(
-						union_data(union_unit(CumulatedArcSet, CumulatedArcSet), CumulatedArcSet/BronPoint, PlanRegio/Point[CumulatedArcSet/PlanRegio_rel]),
+						union_data(union_unit(CumulatedArcSet, CumulatedArcSet), CumulatedArcSet/PrevPoint, PlanRegio/Point[CumulatedArcSet/PlanRegio_rel]),
 						union_data(union_unit(CumulatedArcSet, CumulatedArcSet), ID(CumulatedArcSet), ID(CumulatedArcSet))
 					);
 			}

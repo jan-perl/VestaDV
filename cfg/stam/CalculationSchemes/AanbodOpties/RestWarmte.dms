@@ -53,9 +53,9 @@ container RestWarmte: IsTemplate = "True"
 	
 	container RestWarmteStartingState := BeginStatus/AanbodOpties/RestWarmte
 	{
-		unit<UInt32> BronConnections := Bronnen;
+		unit<UInt32> BronConnections := ../Bronnen;
 		
-		attribute<BronConnections>  CurrBron      (PlanRegio) := rlookup(CumulatedArcSet/BronPoint, Bronnen/Point)[invert(CumulatedArcSet/PlanRegio_rel)];
+		attribute<BronConnections>  CurrBron      (PlanRegio) := rlookup(CumulatedArcSet/BronPoint, BronConnections/Point)[invert(CumulatedArcSet/PlanRegio_rel)];
 		attribute<BronConnections>  CurrConnection(PlanRegio) := CurrBron;
 		
 		attribute<MW> MWth_used      (BronConnections) := sum(KostenBaten/CapaciteitsVraagD * Float64(GebruikRestwarmte) , CurrBron);
@@ -203,7 +203,7 @@ container RestWarmte: IsTemplate = "True"
 	container LastState:= LastIter/NextState;
 	
 	attribute<MW>   P_Bron (Bronnen) := sum(KostenBaten/CapaciteitsVraagD * Float64(LastState/GebruikRestWarmte) , LastState/CurrBron);
-	attribute<Float64> R_Bron(Bronnen): Expr = "P_Bron / Bronnen/MWTh_Max";
+	attribute<Float64> R_Bron(Bronnen) := P_Bron / Bronnen/MWTh_Max;
 	
 	attribute<Bool> GebruikBron(Bronnen) := P_Bron >= Bronnen/MWth_min;
 	

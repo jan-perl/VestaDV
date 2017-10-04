@@ -41,9 +41,7 @@
 container bebouwing
 : Descr = "zie FO $2, Blok 1"
 {
-	unit<uint32> Woning := BAG/vbo_woonfunctie
-	,	DialogData = "point"
-	,	DialogType = "Map"
+	unit<uint32> Woning := BAG/vbo_woonfunctie,	DialogData = "point", DialogType = "Map"
 	{
 		unit<uint32> BebouwingsObject:= .;
 		unit<uint8>  KengetalTypeDomein:= Classifications/WoningtypeGeoHoogte;
@@ -117,13 +115,11 @@ container bebouwing
 
 	unit<uint32> Utiliteit:= BAG/vbo_utiliteit
 	{
-		unit<uint32>  BebouwingsObject:= .
-		{
-			attribute<.> code:= id(.);
-		}
+		unit<uint32>  BebouwingsObject:= .;
 		unit<uint8>   KengetalTypeDomein:= Classifications/utiliteitBAG;
 
 		// external key
+		attribute<string>                     code          := BAG/vbo_utiliteit/id;
 		attribute<String>                     POSTCODE      := BAG/vbo_utiliteit/PostCode;
 		attribute<String>                     PC6code       := POSTCODE;
 
@@ -229,13 +225,11 @@ container bebouwing
 		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
 		FreeData        = "False"
 	{
-		unit<uint32>  BebouwingsObject := ., FreeData = "True"
-		{
-			attribute<.> code := ID(.);
-		}
+		unit<uint32>  BebouwingsObject := ., FreeData = "True";
 		unit<uint8>   KengetalTypeDomein := Classifications/GLTB;
 		
 		// external key
+		attribute<string>                     code  := string(ID(.));
 		attribute<UInt32>                     POSTCODE4;
 		attribute<String>                     Label := String(POSTCODE4), DialogType = "LabelText", FreeData = "True";
 		attribute<Classifications/GLTB>       GLTB_Code;
