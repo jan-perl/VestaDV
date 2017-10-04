@@ -41,7 +41,7 @@ container AllocExports
 		Unit<UInt32>  table := AllocatieResultaatComponent/BebouwingsObject
 		{
 			//attribute<String> BAG_id := /Vesta/BronData/BAG/vbo_woonfunctie/id;
-			attribute<uint32> id := code;
+			attribute<string> id := code;
 			attribute<string> Label := VestaRunDataComponent/bebouwing/label;
 			attribute<Classifications/AanbodOptie> AanbodOptie: = AllocatieResultaatComponent/WarmteAllocatie;
 
