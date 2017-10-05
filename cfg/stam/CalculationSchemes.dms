@@ -371,7 +371,7 @@ container CalculationSchemes: Using = "Units;Geography"
 			unit<uint8> RapGroep;
 			parameter<String> fieldlist;
 			parameter<String> filename;
-			// begin case parameters
+			// end   case parameters
 	
 			container casedata
 			{
@@ -403,6 +403,20 @@ container CalculationSchemes: Using = "Units;Geography"
 			,	StorageName = "=filename"
 			,	StorageType = "str";
 		}
+		template ExportCsvT
+		{
+			// begin case parameters
+			unit<uint32> table;
+			unit<uint32> variabele;
+			parameter<string> filename;
+			// end   case parameters
+			
+			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
+			attribute<string> result_att(table) := =result_expr;
+			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
+				Storagename = "=filename",
+				StorageType = "str";
+		}		
 	}
 	template BuisKosten
 	{

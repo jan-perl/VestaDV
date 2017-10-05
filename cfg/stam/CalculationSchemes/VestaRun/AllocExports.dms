@@ -19,16 +19,7 @@ container AllocExports
 			attribute<Vesta/Units/GJ_Yr> WarmteVraagD                       := Initieel/KostenBaten/WarmteVraagD;
 		}
 
-		unit<uint32> export:= PlanRegio
-		{
-			unit<uint32> variabele := SubItem_PropValues(table,'name');
-			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
-			attribute<string> result_att := =result_expr;
-			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
-				Storagename = "=OutputFolder+'/PR.csv'",
-				StorageType = "str";
-		}
-		parameter<string> Generate := 'Ready', ExplicitSuppliers = "export/result";
+		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/PR.csv');
 	}
 
 	template BebouwingsComponentTempl
@@ -84,18 +75,7 @@ container AllocExports
 			attribute<EUR> Ki_Zon_PV      := VestaRunDataComponent/Kosten/Ki_Zon_PV;
 		}
 		
-		container export
-		{
-			unit<uint32> variabele := SubItem_PropValues(table,'name');
-			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
-			attribute<string> result_att(table) := =result_expr;
-			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
-			
-				Storagename = "=OutputFolder+'/'+ComponentName+'.csv'",
-				StorageType = "str";
-		}
-		
-		parameter<String> Generate := 'Ready', ExplicitSuppliers = 'export/result';
+		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/'+ComponentName+'csv');
 	}
 
 	container BebouwingsComponentResults := 
@@ -103,9 +83,8 @@ container AllocExports
 				'BebouwingsComponentTempl('+Quote(Classifications/BebouwingsComponent/name)+',AllocatieResultaat/'+Classifications/BebouwingsComponent/name+')'
 			);
 
-	parameter<String> GenerateAll := 'Ready',
-		ExplicitSuppliers = 
-			"='PlanRegioResults/Generate'"
-			"+';'+AsList('BebouwingsComponentResults/'+Classifications/BebouwingsComponent/name+'/Generate',';')"
+	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = 
+			"='PlanRegioResults/export/result;'"
+			"+AsList('BebouwingsComponentResults/'+Classifications/BebouwingsComponent/name+'/export/result',';')"
 		;
 }
