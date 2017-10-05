@@ -22,9 +22,9 @@ container AllocExports
 		unit<uint32> export:= PlanRegio
 		{
 			unit<uint32> variabele := SubItem_PropValues(table,'name');
-			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')+'';''',' + ');
+			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
 			attribute<string> result_att := =result_expr;
-			parameter<string> result := AsList(variabele/name+';', '')+'\n'+AsList(result_att, '\n'),
+			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
 				Storagename = "=OutputFolder+'/PR.csv'",
 				StorageType = "str";
 		}
@@ -87,9 +87,9 @@ container AllocExports
 		container export
 		{
 			unit<uint32> variabele := SubItem_PropValues(table,'name');
-			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')+'';''',' + ');
+			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
 			attribute<string> result_att(table) := =result_expr;
-			parameter<string> result := AsList(variabele/name+';', '')+'\n'+AsList(result_att, '\n'),
+			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
 			
 				Storagename = "=OutputFolder+'/'+ComponentName+'.csv'",
 				StorageType = "str";
