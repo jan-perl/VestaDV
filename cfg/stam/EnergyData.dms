@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 29
+	unit<uint32> mutatieSchema: nrofrows = 30
 	{
 		
 		parameter<uint32> nrAttr := 4;
@@ -82,12 +82,18 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					PRR
 					
 			,	'HR', '@BC@_WW',
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)', 
 					PRR
 					
 					
 			,	'HR', '@BC@_RV',
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV', 
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
+					PRR
+					
+			,	'HR', 'Omgeving',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 - 1.0 / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)'
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 - 1.0 / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)'
+					'+AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
 					PRR
 					
 			,	'KoudePomp', 'Elektra_@BC@',
@@ -139,15 +145,15 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			// ***********       gebiedsopties
 			
 			,	'WijkDistributie', '@BC@_WW', 
-					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/WarmWater/Warmte', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * VestaRunData/@BC@/DragerOpties/WarmWater/Warmte', 
 					PRR
 					
 			,	'WijkDistributie', '@BC@_RV', 
-					'AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte', 
+					'AllocatieResultaat/@BC@/Aandelen/@RO@ * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte', 
 					PRR
 					
 			,	'WijkDistributie', 'WijkWarmte', 
-					'-AllocatieResultaat/@BC@/Aandelen/@RO@ * AllocatieResultaat/@BC@/VestaRunDataComponent/DragerOpties/Warmte/Warmte', 
+					'-AllocatieResultaat/@BC@/Aandelen/@RO@ * VestaRunData/@BC@/DragerOpties/Warmte/Warmte', 
 					PRR
 					
 			,	'Bijstook', 'GNet',
