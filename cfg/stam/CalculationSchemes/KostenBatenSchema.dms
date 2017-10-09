@@ -427,11 +427,15 @@ template KostenBatenSchema
 			container LeidingKosten := BuisKosten(PlanRegio, P);
 		}
 		
-		attribute<GJ_Yr>  Vj_Warmte       (PlanRegio) := (Lq2+Lq4+Lq6) / (1.0-N3), Source = "FO v7a F 36";
-		attribute<GJ_Yr>  Vj_WarmtePrimair(PlanRegio) := N1 * Vj_Warmte, Source = "FO v7a F 36";
+		attribute<GJ_Yr>  Vj_WarmteVraag   (PlanRegio) := (Lq2+Lq4+Lq6);
+		attribute<GJ_Yr>  Vj_Warmte        (PlanRegio) := Vj_WarmteVraag * (1.0 / (1.0-N3)), Source = "FO v7a F 36"; // vraag * factor ter compensatie van leidingverliezen in de wijk
+		attribute<GJ_Yr>  Vj_LeidingVerlies(PlanRegio) := Vj_Warmte - Vj_WarmteVraag; // leidingverlies in het wijk-distributienet.
+		attribute<GJ_Yr>  Vj_WarmtePrimair (PlanRegio) := N1 * Vj_Warmte, Source = "FO v7a F 36"; // deel dat niet door bijstook wordt geleverd.
 		
 		container Bijstook {
-			attribute<GJ_Yr>  Vj_Bijstook(PlanRegio) := (Vj_Warmte - Vj_WarmtePrimair) / 0.925, Source = "FO v7a F 35";
+			attribute<GJ_Yr>  Vj_Vraag   (PlanRegio) := Vj_Warmte - Vj_WarmtePrimair;
+			attribute<GJ_Yr>  Vj_Bijstook(PlanRegio) := Vj_Vraag / 0.925, Source = "FO v7a F 35";
+			attribute<GJ_Yr>  Vj_Verlies (PlanRegio) := Vj_Bijstook - Vj_Vraag;
 			attribute<EUR_Yr> Kj_Verbruik(PlanRegio) := N2   * Vj_Bijstook;
 			attribute<EUR_Yr> Km_Verbruik(PlanRegio) := N2_m * Vj_Bijstook;
 		}
