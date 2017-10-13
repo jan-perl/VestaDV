@@ -101,6 +101,8 @@ container Transformations: FreeData = "False"
 		unit<float64>      Quantity;
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
+		parameter<string>  EmissionPrefix;
+		unit<float64>       OutputUnit;
 		// end parameters
 		
 		unit<float64> MQuantity := 1000000 * Quantity;

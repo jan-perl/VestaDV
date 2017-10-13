@@ -50,11 +50,16 @@ template FlowTempl: using = "Classifications"
 		parameter<string>   name;
 		attribute<Float64> Factor (PlanRegio);
 		
-		container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
-		container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, ReportFolder+'/'+Name+'_Stock', Factor);
-		container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_Energy', Factor);
+		container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, ReportFolder+'/'+Name+'_Flow');
+		container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, ReportFolder+'/'+Name+'_Stock');
+		container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_Energy', Factor, '', PJ_Yr);
+		container CO2   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_CO2', Factor, 'CO2_', kTon_Yr);
+		container NOx   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_NOx', Factor, 'NOx_', ton_Yr);
+		container SO2   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_SO2', Factor, 'SO2_', ton_Yr);
+		container VOS   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_VOS', Factor, 'VOS_', ton_Yr);
+		container TS    := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_TS',  Factor, 'TS_' , ton_Yr);
 		
-		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll";
+		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll;CO2/GenerateAll;NOx/GenerateAll;SO2/GenerateAll;VOS/GenerateAll;TS/GenerateAll";
 	}
 	container All := ComponentsT('All', PlanRegioInRapportageFactor);
 	
