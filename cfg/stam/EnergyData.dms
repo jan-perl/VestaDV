@@ -81,18 +81,17 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
 					PRR
 					
-			,	'HR', '@BC@_WW',
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)', 
-					PRR
-					
-					
 			,	'HR', '@BC@_RV',
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (VestaRunData/@BC@/Efficiency/RuimteVerwarming/AardGas / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
 					PRR
+					
+			,	'HR', '@BC@_WW',
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor) * VestaRunData/@BC@/Efficiency/WarmWater/AardGas', 
+					PRR					
 					
 			,	'HR', 'Omgeving',
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 - 1.0 / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)'
-					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 - 1.0 / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)'
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/AardGas / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)'
+					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 - VestaRunData/@BC@/Efficiency/WarmWater/AardGas / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)'
 					'+AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
 					PRR
 					
