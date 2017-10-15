@@ -144,7 +144,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			// ***********       gebiedsopties
 			
 			,	'WijkDistributie', 'WijkWarmte', 
-					'-EndState/KostenBaten/KostenD/Vj_Warmte * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', // incl opbrengst van bijstook
+					'-EndState/KostenBaten/KostenD/Vj_Warmte * Float64(EndState/GebiedsOptie)', // incl opbrengst van bijstook
 					''
 					
 			,	'WijkDistributie', '@BC@_WW', 
@@ -156,24 +156,24 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					PRR
 					
 			,	'WijkDistributie', 'Omgeving', 
-					'EndState/KostenBaten/KostenD/Vj_LeidingVerlies * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'EndState/KostenBaten/KostenD/Vj_LeidingVerlies * Float64(EndState/GebiedsOptie)', 
 					''
 					
 			,	'Bijstook', 'GNet',
-					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(EndState/GebiedsOptie)', 
 					''					
 			,	'Bijstook', 'WijkWarmte',
-					'EndState/KostenBaten/KostenD/Bijstook/Vj_Vraag * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'EndState/KostenBaten/KostenD/Bijstook/Vj_Vraag * Float64(EndState/GebiedsOptie)', 
 					''
 			,	'Bijstook', 'Omgeving',
-					'EndState/KostenBaten/KostenD/Bijstook/Vj_Verlies * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'EndState/KostenBaten/KostenD/Bijstook/Vj_Verlies * Float64(EndState/GebiedsOptie)', 
 					''
 					
 			,	'@RO@', 'Opwekking', 
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)', 
 					''
 			,	'@RO@', 'WijkWarmte', 
-					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(sum(AllocatieResultaat/@BC@/MeterVraag/@RO@, '+PRR+') != 0[GJ_Yr])', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)', 
 					''
 			);
 		}
