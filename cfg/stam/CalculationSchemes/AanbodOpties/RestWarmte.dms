@@ -225,7 +225,12 @@ container RestWarmte: IsTemplate = "True"
 
 	
 	attribute<EUR   > Oi_Totaal  (PlanRegio):= KostenBaten/Oi_Aansluitbijdrage;
-	attribute<KG_Yr>  CO2_Primair(PlanRegio):= KostenBaten/Vj_WarmtePrimairD * MakeDefined(Bronnen/CO2_GJ[LastIter/NextState/CurrBron], 0[KG_GJ]);
+	attribute<KG_GJ>  CO2_GJ     (PlanRegio):= Bronnen/CO2_GJ[LastIter/NextState/CurrBron];
+	attribute<G_GJ>   NOx_GJ     (PlanRegio):= Bronnen/NOx_GJ[LastIter/NextState/CurrBron];
+	attribute<G_GJ>   SO2_GJ     (PlanRegio):= Bronnen/SO2_GJ[LastIter/NextState/CurrBron];
+	attribute<G_GJ>   VOS_GJ     (PlanRegio):= Bronnen/VOS_GJ[LastIter/NextState/CurrBron];
+	attribute<G_GJ>   TS_GJ      (PlanRegio):= Bronnen/TS_GJ [LastIter/NextState/CurrBron];
+	attribute<KG_Yr>  CO2_Primair(PlanRegio):= KostenBaten/Vj_WarmtePrimairD * MakeDefined(CO2_GJ, 0[KG_GJ]);
 	attribute<KG_Yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
 	attribute<EUR_Yr> Ke_Totaal  (PlanRegio):= const(0[EUR_Yr], PlanRegio);
 	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= const(0[GJ_Yr], PlanRegio);

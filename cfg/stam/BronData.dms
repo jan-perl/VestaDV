@@ -503,7 +503,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				attribute<Float64>   SymbolWorldSize: Expr = "Sqrt(MWth_max * value(100000, 1 / MW))", DialogType = "SymbolWorldSize";
 				parameter<int16>     SymbolIndex:     Expr = "int16(44)",                              DialogType = "SymbolIndex";
 			}
-			container BronSelectieTempl: IsTemplate = "True"
+			template BronSelectieTempl
 			{
 				parameter<units/Jaar> Jaar;
 				unit<uint32> WarmteBronnen := Bron;
@@ -530,7 +530,12 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 						" Jaar < value(2050, Units/Jaar) ? WarmteBronnen/K_GJ40 :  "
 						"               WarmteBronnen/K_GJ50 )  "
 						"[nr_OrgEntity]";
-					attribute<KG_GJ>      CO2_GJ := WarmteBronnen/CO2  [nr_OrgEntity];
+						
+					attribute<KG_GJ> CO2_GJ := ='WarmteBronnen/CO2_'+String(Jaar)+'[nr_OrgEntity]';
+					attribute<G_GJ>  NOx_GJ := ='WarmteBronnen/NOx_'+String(Jaar)+'[nr_OrgEntity]';
+					attribute<G_GJ>  SO2_GJ := ='WarmteBronnen/SO2_'+String(Jaar)+'[nr_OrgEntity]';					
+					attribute<G_GJ>  VOS_GJ := ='WarmteBronnen/VOS_'+String(Jaar)+'[nr_OrgEntity]';
+					attribute<G_GJ>  TS_GJ  := ='WarmteBronnen/TS_' +String(Jaar)+'[nr_OrgEntity]';
 				}
 				unit<UInt32> Bronnen := Unique(BronElementen/Point), DialogType = "Map", DialogData = "Point"
 				{
@@ -548,7 +553,11 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					attribute<MW>         MWth_min:     Expr = "sum(BronElementen/MWth_min, per_BronElementen)";
 					attribute<_Yr>        Rj_Onderhoud: Expr = "sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
 					attribute<EUR_GJ>     K_GJ:         Expr = "sum(BronElementen/K_GJ         * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
-					attribute<KG_GJ >     CO2_GJ:       Expr = "sum(BronElementen/CO2_GJ       * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<KG_GJ >     CO2_GJ := sum(BronElementen/CO2_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+					attribute<G_GJ >      NOx_GJ := sum(BronElementen/NOx_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+					attribute<G_GJ >      SO2_GJ := sum(BronElementen/SO2_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+					attribute<G_GJ >      VOS_GJ := sum(BronElementen/VOS_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+					attribute<G_GJ >      TS_GJ  := sum(BronElementen/TS_GJ  * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
 					attribute<m>          cumulDist:    Expr = "const(0[m], .)";
 					attribute<MW>         cumulP:       Expr = "const(0[MW], .)";
 					attribute<Bronnen>    Bronnen_rel:  Expr = "ID(.)";
