@@ -83,7 +83,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			,	'eLevering', 'eNet', 
 					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
@@ -102,7 +102,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV'
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
 					PRR
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -239,7 +239,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			,	'mWKK', 'Gas_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK', 
 					PRR
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0'  // g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -335,7 +335,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 			,	'Bijstook', 'GNet',
 					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(EndState/GebiedsOptie)', 
 					''					
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0' // g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
