@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 32
+	unit<uint32> mutatieSchema: nrofrows = 36
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -84,10 +84,10 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 					
 			,	'eLevering', 'Elektra_@BC@', 
 					'AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
@@ -103,7 +103,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -236,8 +236,40 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
+			,	'mWKK', 'Gas_@BC@',
+					'-AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'20.0', '20.0', '20.0', '20.0', '20.0'  // g/GJ NOx
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'mWKK', 'Omgeving',
+					'AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK * 0.25', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'mWKK', 'Elektra_@BC@',
-					'-AllocatieResultaat/@BC@/MeterVraag/mWKK', 
+					'AllocatieResultaat/@BC@/MeterVraag/mWKK', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'mWKK', '@BC@_RV',
+					'AllocatieResultaat/@BC@/aandelen/mWKK * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'mWKK', '@BC@_WW',
+					'AllocatieResultaat/@BC@/aandelen/mWKK * VestaRunData/@BC@/DragerOpties/WarmWater/Warmte', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -304,7 +336,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(EndState/GebiedsOptie)', 
 					''					
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'20.0', '20.0', '20.0', '20.0', '20.0' // g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'

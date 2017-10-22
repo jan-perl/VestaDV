@@ -67,8 +67,8 @@ template AllocatieResultaatComponentTempl
 		attribute<Float64> AardGasExclMicroWKK(BebouwingsObject) := 
 			VestaRunDataComponent/AandeelWarmteVraag * Float64(not(IsDefined(WarmteAllocatieComponent)))
 			+ VestaRunDataComponent/AandeelNietDeelnemers
+			- eWP - EWV
 			- VestaRunDataComponent/AandeelElectric_mWKK;
-			// VestaRunDataComponent/AandeelWarmteVraag + VestaRunDataComponent/AandeelNietDeelnemers == 1.0;
 			
 		attribute<Float64> AardGasInclMicroWKK(BebouwingsObject) := AardGasExclMicroWKK  + mWKK;
 		attribute<Float64> AllElectric        (BebouwingsObject) := eWP + EWV + WKO;
@@ -93,7 +93,7 @@ template AllocatieResultaatComponentTempl
 		attribute<GJ_Yr> EWV (BebouwingsObject) :=Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/EWV; // COP is al toegepast in de DragerOptie
 		attribute<GJ_Yr> hWP (BebouwingsObject) :=Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
 		attribute<GJ_Yr> mWKK(BebouwingsObject) :=Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
-		attribute<GJ_Yr> CvPomp(BebouwingsObject):=VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
+		attribute<GJ_Yr> CvPomp(BebouwingsObject):=VestaRunDataComponent/Functioneel/PompEnergie * (Aandelen/AardGasExclMicroWKK - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
 		attribute<GJ_Yr> Koude(BebouwingsObject) :=VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
 				
 		attribute<GJ_Yr> Elektriciteit(BebouwingsObject) :=

@@ -58,6 +58,7 @@ container Transformations: FreeData = "False"
 		unit<uint32>  Location;
 		parameter<Technology> Technology_rel;
 		unit<float64>      Quantity;
+		unit<float64>      EmissionFactorUnit;
 		
 		unit<uint32> mutatie := impl/mutatie;
 		unit<uint32> mut := subset(mutatie/technology_rel == Technology_rel)
@@ -103,7 +104,7 @@ container Transformations: FreeData = "False"
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
 		parameter<string>  EmissionPrefix;
-		unit<float64>       OutputUnit;
+		unit<float64>      EmissionFactorUnit;
 		// end parameters
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
@@ -130,7 +131,7 @@ container Transformations: FreeData = "False"
 				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
 				attribute<string> entityRel := PlanRegioRel;
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
-				attribute<string> FinalExpr := ExprSum +' * fraction' + (EmissionExpr == '' ? '' : ' * ' + EmissionExpr);
+				attribute<string> FinalExpr := ExprSum +' * fraction' + (EmissionExpr == '' ? '' : ' * -value(' + EmissionExpr+',EmissionFactorUnit)');
 			}
 			unit<uint32> technology := unique(mutatie/name);
 			unit<uint32> location   := unique(mutatie/actor);
@@ -147,7 +148,7 @@ container Transformations: FreeData = "False"
 			}
 		}
 
-		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity)');
+		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity, EmissionFactorUnit)');
 		
 //*	
 		container matrix {
