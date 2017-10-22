@@ -50,6 +50,7 @@ container Transformations: FreeData = "False"
 			attribute<string> actor       := replace(src/actor       [src_rel], key, valueset_name);
 			attribute<string> Expr        := replace(src/Expr        [src_rel], key, valueset_name);
 			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], key, valueset_name);
+			attribute<string> EmissionExpr:= replace(src/EmissionExpr[src_rel], key, valueset_name);
 		}
 	}
 	template mut_table {
@@ -114,7 +115,12 @@ container Transformations: FreeData = "False"
 			{
 				attribute<string> name      := BC/name  [nr_OrgEntity];
 			}
-			container applyBC := subst(EnergyData/mutatie,'@BC@' , BC); 
+			unit<uint32> EnergyData_mutatie := EnergyData/mutatie
+			{
+				parameter<string> EmissionExprE:= (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
+				attribute<string> EmissionExpr := =EmissionExprE;
+			}
+			container applyBC := subst(EnergyData_mutatie,'@BC@' , BC); 
 			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
 			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
 			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
@@ -124,7 +130,7 @@ container Transformations: FreeData = "False"
 				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
 				attribute<string> entityRel := PlanRegioRel;
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
-				attribute<string> FinalExpr := ExprSum +' * fraction';
+				attribute<string> FinalExpr := ExprSum +' * fraction' + (EmissionExpr == '' ? '' : ' * ' + EmissionExpr);
 			}
 			unit<uint32> technology := unique(mutatie/name);
 			unit<uint32> location   := unique(mutatie/actor);
