@@ -46,8 +46,14 @@ container AanbodOptieTemplates
 		container EnergiePrijzen;
 		parameter<Units/Jaar> Jaar;
 		
+		parameter<kg_GJ>  CO2_GJ     :=  Impl/kosten/CO2_GJ; // inclusief CO2 effect van Elektriciteitsverbruik of productie
+		parameter<g_GJ>   NOx_GJ     := 28[g_GJ];
+		parameter<g_GJ>   SO2_GJ     := 0 [g_GJ];
+		parameter<g_GJ>   VOS_GJ     := 420[g_GJ];
+		parameter<g_GJ>   TS_GJ      := 0  [g_GJ];
+	
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_Yr]);
-		container Results: Expr = "Impl/Results";
+		container Results := Impl/Results;
 	}
 	Template BioWKK
 	{
@@ -56,6 +62,12 @@ container AanbodOptieTemplates
 		container EnergiePrijzen;
 		parameter<Units/Jaar> Jaar;
 		
+		parameter<kg_GJ>  CO2_GJ     :=  Impl/kosten/CO2_GJ;
+		parameter<g_GJ>   NOx_GJ     := 49[g_GJ];
+		parameter<g_GJ>   SO2_GJ     := 10[g_GJ];
+		parameter<g_GJ>   VOS_GJ     :=  0[g_GJ];
+		parameter<g_GJ>   TS_GJ      :=  2[g_GJ];
+	
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_Yr]);
 		container Results: Expr = "Impl/Results";
 	}
