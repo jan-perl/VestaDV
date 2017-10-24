@@ -340,6 +340,31 @@ container BronData: Using = "Units;Geography", FreeData = "False"
  				attribute<EUR_GJ>  K_GJ30 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2030]')+')[RekenType_rel]';
  				attribute<EUR_GJ>  K_GJ40 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2040]')+')[RekenType_rel]';
  				attribute<EUR_GJ>  K_GJ50 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2050]')+')[RekenType_rel]';
+ 				attribute<KG_GJ>   CO2_2010;
+ 				attribute<KG_GJ>   CO2_2020;
+ 				attribute<KG_GJ>   CO2_2030;
+ 				attribute<KG_GJ>   CO2_2040;
+ 				attribute<KG_GJ>   CO2_2050;
+ 				attribute<G_GJ >   NOx_2010;
+ 				attribute<G_GJ >   NOx_2020;
+ 				attribute<G_GJ >   NOx_2030;
+ 				attribute<G_GJ >   NOx_2040;
+ 				attribute<G_GJ >   NOx_2050;
+ 				attribute<G_GJ >   SO2_2010;
+ 				attribute<G_GJ >   SO2_2020;
+ 				attribute<G_GJ >   SO2_2030;
+ 				attribute<G_GJ >   SO2_2040;
+ 				attribute<G_GJ >   SO2_2050;
+ 				attribute<G_GJ >   VOS_2010;
+ 				attribute<G_GJ >   VOS_2020;
+ 				attribute<G_GJ >   VOS_2030;
+ 				attribute<G_GJ >   VOS_2040;
+ 				attribute<G_GJ >   VOS_2050;
+ 				attribute<G_GJ >   TS_2010;
+ 				attribute<G_GJ >   TS_2020;
+ 				attribute<G_GJ >   TS_2030;
+ 				attribute<G_GJ >   TS_2040;
+ 				attribute<G_GJ >   TS_2050;
 			}
 			unit<int32> TypeInfoList: nrofrows = 15
 			{
