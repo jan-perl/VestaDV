@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 36
+	unit<uint32> mutatieSchema: nrofrows = 43
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -103,7 +103,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
 					PRR
 				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
-				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g/GJ NOx
+				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g per GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -153,10 +153,34 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'					
+			,	'KoudePomp', '@BC@_Koude', 
+					'-AllocatieResultaat/@BC@/MeterVraag/Koude * VestaRunData/@BC@/Efficiency/Koude/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'KoudePomp', 'Omgeving',
+					'AllocatieResultaat/@BC@/MeterVraag/Koude + AllocatieResultaat/@BC@/MeterVraag/Koude * VestaRunData/@BC@/Efficiency/Koude/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'KoudePomp', '@BC@_Koude', 
-					'AllocatieResultaat/@BC@/MeterVraag/Koude', 
+			,	'ZonneBoiler', 'Zon',
+					'-VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'ZonneBoiler', '@BC@_WW',
+					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -164,15 +188,16 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'eWP', 'Elektra_@BC@',
-					'-AllocatieResultaat/@BC@/MeterVraag/eWP', 
+					'-(AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/Warmte/eWP)', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
 			,	'eWP', '@BC@_RV',
-					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // RV
+					'AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/eWP * VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -180,13 +205,23 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'eWP', '@BC@_WW',
-					'AllocatieResultaat/@BC@/MeterVraag/eWP',  // WW
+					'AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/WarmWater/eWP * VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP',  // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'eWP', 'Omgeving',
+					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/eWP * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)'  // RV
+					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)', // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
 			,	'hWP', 'Elektra_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/hWP', 
 					PRR
@@ -196,15 +231,15 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'hWP', '@BC@_RV', 
-					'AllocatieResultaat/@BC@/MeterVraag/hWP', // RV
+					'AllocatieResultaat/@BC@/Aandelen/hWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte * AllocatieResultaat/@BC@/Kengetallen/hWP/DekkingsGraad * AllocatieResultaat/@BC@/Kengetallen/hWP/COP',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'hWP', '@BC@_WW', 
-					'AllocatieResultaat/@BC@/MeterVraag/hWP', // WW
+			,	'hWP', 'Omgeving', 
+					'AllocatieResultaat/@BC@/Aandelen/hWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte * AllocatieResultaat/@BC@/Kengetallen/hWP/DekkingsGraad * (1.0 - 1.0 * AllocatieResultaat/@BC@/Kengetallen/hWP/COP)',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -277,7 +312,23 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'Verbruik', 'Elektra_@BC@',
+			,	'Zon_PV', 'Zon',
+					'-VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'Zon_PV', 'Elektra_@BC@',
+					'VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'Apparatuur', 'Elektra_@BC@',
 					'-VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -285,8 +336,17 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'Verbruik', '@BC@_EA',
-					'VestaRunData/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+			,	'Apparatuur', '@BC@_EA',
+					'VestaRunData/@BC@/Functioneel/Apparatuur', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+					
+			,	'Apparatuur', 'Omgeving',
+					'VestaRunData/@BC@/Functioneel/Apparatuur * (1.0 / VestaRunData/@BC@/Efficiency/Apparatuur/Elektriciteit - 1.0)', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
