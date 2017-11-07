@@ -426,7 +426,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				{
 					// obv 0.0000025 [GJ/GJ] * R10[EUR/GJ]
 					// obv R10 = S10[EUR/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (1GJ / 30GJ) * prijzen/ElekKMG_GJ;
+					parameter<Float64> Elektriciteit_Factor := (1GJ / 30GJ);
+					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := Elektriciteit_Factor * prijzen/ElekKMG_GJ;
 				}
 				container AVI
 				{

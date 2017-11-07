@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 43
+	unit<uint32> mutatieSchema: nrofrows = 45
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -417,14 +417,32 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'@RO@', 'Opwekking', 
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)', 
+			,	'@RO@', 'GNet',  // Gas
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Brandstof_Factor', 
 					''
-				,	'GebiedsAllocatie/@RO@/CO2_GJ', 'GebiedsAllocatie/@RO@/CO2_GJ', 'GebiedsAllocatie/@RO@/CO2_GJ', 'GebiedsAllocatie/@RO@/CO2_GJ', 'GebiedsAllocatie/@RO@/CO2_GJ'
-				,	'GebiedsAllocatie/@RO@/NOx_GJ', 'GebiedsAllocatie/@RO@/NOx_GJ', 'GebiedsAllocatie/@RO@/NOx_GJ', 'GebiedsAllocatie/@RO@/NOx_GJ', 'GebiedsAllocatie/@RO@/NOx_GJ'
-				,	'GebiedsAllocatie/@RO@/SO2_GJ', 'GebiedsAllocatie/@RO@/SO2_GJ', 'GebiedsAllocatie/@RO@/SO2_GJ', 'GebiedsAllocatie/@RO@/SO2_GJ', 'GebiedsAllocatie/@RO@/SO2_GJ'
-				,	'GebiedsAllocatie/@RO@/VOS_GJ', 'GebiedsAllocatie/@RO@/VOS_GJ', 'GebiedsAllocatie/@RO@/VOS_GJ', 'GebiedsAllocatie/@RO@/VOS_GJ', 'GebiedsAllocatie/@RO@/VOS_GJ'
-				,	'GebiedsAllocatie/@RO@/TS_GJ' , 'GebiedsAllocatie/@RO@/TS_GJ' , 'GebiedsAllocatie/@RO@/TS_GJ' , 'GebiedsAllocatie/@RO@/TS_GJ' , 'GebiedsAllocatie/@RO@/TS_GJ'
+				,	'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb'
+				,	'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb'
+				,	'GebiedsAllocatie/@RO@/SO2_GJb', 'GebiedsAllocatie/@RO@/SO2_GJb', 'GebiedsAllocatie/@RO@/SO2_GJb', 'GebiedsAllocatie/@RO@/SO2_GJb', 'GebiedsAllocatie/@RO@/SO2_GJb'
+				,	'GebiedsAllocatie/@RO@/VOS_GJb', 'GebiedsAllocatie/@RO@/VOS_GJb', 'GebiedsAllocatie/@RO@/VOS_GJb', 'GebiedsAllocatie/@RO@/VOS_GJb', 'GebiedsAllocatie/@RO@/VOS_GJb'
+				,	'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb'
+				
+			,	'@RO@', 'eNet',  // Elektriciteit
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Elektriciteit_Factor', 
+					''
+				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+				
+			,	'@RO@', 'Opwekking', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) *  (GebiedsAllocatie/@RO@/Results/Brandstof_Factor + GebiedsAllocatie/@RO@/Results/Elektriciteit_Factor - 1.0)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
 			,	'@RO@', 'WijkWarmte', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)', 

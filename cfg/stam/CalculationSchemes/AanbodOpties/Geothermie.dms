@@ -129,6 +129,9 @@ container GeoThermie: IsTemplate = "True"
 	
 	container Results := BeginStatus
 	{
+		parameter<Float64> Brandstof_factor := 0.0;
+		parameter<Float64> Elektriciteit_factor := 1.0 / 30.0;
+		
 		container AanbodOpties := BeginStatus/AanbodOpties
 		{
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio): Expr = 

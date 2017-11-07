@@ -236,8 +236,11 @@ container RestWarmte: IsTemplate = "True"
 	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= const(0[GJ_Yr], PlanRegio);
 	attribute<KG_Yr>  CO2_e      (PlanRegio):= const(0[KG_Yr], PlanRegio);
 	
-	container Results: IntegrityCheck = "P_Bron <= Bronnen/MWTh_Max * Float64(3.00)", Expr = "BeginStatus"
+	container Results := BeginStatus, IntegrityCheck = "P_Bron <= Bronnen/MWTh_Max * Float64(3.00)"
 	{
+		parameter<Float64> Brandstof_factor := 1.0;
+		parameter<Float64> Elektriciteit_factor := 1.0;
+		
 		container Flow := BeginStatus/Flow {
 			attribute<EUR_Yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, lastiter/Assignment/Kj_warmtewaarde, 0[EUR_Yr]);
 			attribute<EUR_Yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, lastiter/Assignment/Km_warmtewaarde, 0[EUR_Yr]);
