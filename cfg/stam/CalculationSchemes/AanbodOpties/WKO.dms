@@ -81,13 +81,13 @@ container WKO: IsTemplate = "True"
 			attribute<NrWoningen> Lw1     (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/UitlegWoning/Totaal/Warmte;
 			attribute<GJ_Yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_Yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_Yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_Yr>   F_Elec     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_Yr>   V_Elec     (BebouwingsObject) := F_Elec / SPF_coll;
-			attribute<GJ_Yr>   V_WKO      (BebouwingsObject) := F_Elec - V_Elec;
+			attribute<GJ_Yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_Yr>   V_Elek     (BebouwingsObject) := V_Warmte / SPF_coll + V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>   V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
 			
 			attribute<kW>     P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * Lw1;
 			attribute<kW>     P_Koude     (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * Lw1;
-			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elec, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
+			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
 			
 
 			container Kosten
@@ -101,12 +101,12 @@ container WKO: IsTemplate = "True"
 				
 				attribute<EUR_Yr> Kj_ge_netto(BebouwingsObject) := KostenBase/Kj_ge_netto;
 
-				attribute<EUR_Yr> Kj_ow_e (BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
-				attribute<EUR_Yr> Km_ow_e (BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
+				attribute<EUR_Yr> Kj_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
+				attribute<EUR_Yr> Km_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
 				attribute<EUR_Yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_Yr / NrWoningen] * Lw1;
 				
-				attribute<EUR_Yr> KEH_ow_e (BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
-				attribute<EUR_Yr> KCO2_ow_e(BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+				attribute<EUR_Yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<EUR_Yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
 				
 			}
 			
@@ -150,15 +150,15 @@ container WKO: IsTemplate = "True"
 			
 			attribute<GJ_Yr>  V_Warmte(BebouwingsObject) := Lq4;
 			attribute<GJ_Yr>  V_Koude (BebouwingsObject) := Lq4bis;
-			attribute<GJ_Yr>  F_Elec  (BebouwingsObject) := V_Warmte + V_Koude;
-			attribute<GJ_Yr>  V_Elec  (BebouwingsObject) := F_Elec / SPF_coll;
-			attribute<GJ_Yr>  V_WKO   (BebouwingsObject) := F_Elec - V_Elec;
+			attribute<GJ_Yr>  F_Elek  (BebouwingsObject) := V_Warmte + V_Koude;
+			attribute<GJ_Yr>  V_Elek  (BebouwingsObject) := V_Warmte / SPF_coll + V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>  V_WKO   (BebouwingsObject) := F_Elek - V_Elek;
 			
 			attribute<kW>     P_Warmte(BebouwingsObject) := 0.95[Ratio] * ASW_wu[kW_m2] * Lu;
 			attribute<kW>     P_Koude (BebouwingsObject) := 0.95[Ratio] * ASW_ku[kW_m2] * Lu;
 			
 			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := 
-				classify(V_Elec, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
+				classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
 			attribute<EUR_GJ> KGJj_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex[gebruiksgrootteklasse_rel];
 			attribute<EUR_GJ> KGJm_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel];
 				
@@ -177,12 +177,12 @@ container WKO: IsTemplate = "True"
 // 				attribute<EUR_Yr> Kj_ge_hv   (BebouwingsObject) := const(0[EUR_Yr], BebouwingsObject);
 				attribute<EUR_Yr> Kj_ge_netto(BebouwingsObject) := const(0[EUR_Yr], BebouwingsObject);
 			
-				attribute<EUR_Yr> Kj_ow_e  (BebouwingsObject) := V_Elec * KGJj_Elek, Descr = "F 65"; 
+				attribute<EUR_Yr> Kj_ow_e  (BebouwingsObject) := V_Elek * KGJj_Elek, Descr = "F 65"; 
 				attribute<EUR_Yr> Kj_ow_o  (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_Yr / m2] * Lu;
-				attribute<EUR_Yr> Km_ow_e  (BebouwingsObject) := V_Elec * KGJm_Elek;
+				attribute<EUR_Yr> Km_ow_e  (BebouwingsObject) := V_Elek * KGJm_Elek;
 				
-				attribute<EUR_Yr> KEH_ow_e (BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
-				attribute<EUR_Yr> KCO2_ow_e(BebouwingsObject) := V_Elec * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+				attribute<EUR_Yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<EUR_Yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
 			}
 			
 			container Opbrengsten
@@ -266,7 +266,7 @@ container WKO: IsTemplate = "True"
 			attribute<EUR_Yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
 			attribute<EUR_Yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
 			
-			attribute<GJ_Yr > GJe(BebouwingsObject) := WkoDataComponent/V_Elec;
+			attribute<GJ_Yr > GJe(BebouwingsObject) := WkoDataComponent/V_Elek;
 			attribute<GJ_Yr > GJw(BebouwingsObject) := WkoDataComponent/V_WKO;
 			attribute<KG_Yr>  CO2(BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/CO2_GJ * GJe;
 			attribute<EUR_Yr >SDE(BebouwingsObject) := GJw * UserInput/BeleidsOpties/EEA/SDE_WKO;
@@ -502,7 +502,10 @@ container WKO: IsTemplate = "True"
 		
 		attribute<GJ_Yr> V_Warmte (BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(StartWKO); // @@@ is Thermische Vraag
 		attribute<GJ_Yr> V_Koude  (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-		attribute<GJ_Yr> F_Elec   (BebouwingsObject):= WkoData/WkoDataComponent/F_Elec   * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_Elek   (BebouwingsObject):= WkoData/WkoDataComponent/V_Elek   * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_WarmteC(BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(HasWKO); // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_KoudeC (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekC  (BebouwingsObject):= WkoData/WkoDataComponent/V_Elek   * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 		
 		attribute<kW>     P_Warmte (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit * Float64(StartWKO);
 		

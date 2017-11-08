@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 45
+	unit<uint32> mutatieSchema: nrofrows = 49
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -452,7 +452,43 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			
+			// ===== WKO 
+			,	'@CO@', '@WKOC@_RV',
+					'GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_WarmteC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
+			,	'@CO@', '@WKOC@_Koude',
+					'-GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_KoudeC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'@CO@', 'Ondergrond',
+					'GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_KoudeC - GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_WarmteC + GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_ElekC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'@CO@', 'eNet',
+					'-GebiedsAllocatie/@CO@/ObjectResults/@WKOC@/V_ElekC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
+				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 			);
+					
 		}
 		
 		attribute<String> Name        := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
