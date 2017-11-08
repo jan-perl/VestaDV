@@ -50,8 +50,8 @@ template FlowTempl: using = "Classifications"
 		parameter<string>   name;
 		attribute<Float64> Factor (PlanRegio);
 		
-		container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, ReportFolder+'/'+Name+'_Flow');
-		container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, ReportFolder+'/'+Name+'_Stock');
+		container Flow  := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR_Yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
+		container Stock := CalculationSchemes/Payments/MainTempl(Vesta/FlowData,   EUR,    false, ReportFolder+'/'+Name+'_Stock', Factor);
 		container Energy:= CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, GJ_Yr,  ReportFolder+'/'+Name+'_Energy', Factor, '', PJ_Yr);
 		container CO2   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, kg_Yr,  ReportFolder+'/'+Name+'_CO2', Factor, 'CO2_'+String(RunJaar), kg_GJ);
 		container NOx   := CalculationSchemes/Transformations/MainTempl(Vesta/EnergyData, g / Yr ,  ReportFolder+'/'+Name+'_NOx', Factor, 'NOx_'+String(RunJaar), g_GJ);
