@@ -162,24 +162,34 @@ container Transformations: FreeData = "False"
 			unit<uint32> ColSet := impl/active_location;
 			unit<uint32> RowSet := impl/active_technology;
 			
-			container Table := for_each_nedv(ColSet/name, 
-				'(1.0 / 1000000.0) * float64(round_64(1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+			container TableData := for_each_nedv(ColSet/name, 
+				'sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]', 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
-				attribute<MQuantity> Oj_Totaal(RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*add('+AsItemList('max_elem(sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')))';
-				attribute<MQuantity> Kj_Totaal(RowSet) := ='-(1.0 / 1000000.0) * float64(round_64(1000000.0*add('+AsItemList('-max_elem(-sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')))';
-				attribute<MQuantity> Oj_Netto (RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*add('+AsItemList('sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]')+')))';
+				attribute<MQuantity> Oj_Totaal(RowSet) := =' add('+AsItemList('max_elem(sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')';
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')';
+				attribute<MQuantity> Oj_Netto (RowSet) := =' add('+AsItemList('sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]')+')';
+			}
+			
+			container Table := for_each_nedv(ColSet/name, 
+				'(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/'+ColSet/name+'))', 
+				RowSet, MQuantity)
+			{
+				attribute<string> name        (RowSet) := RowSet/name;
+				attribute<MQuantity> Oj_Totaal(RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Oj_Totaal))';
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Kj_Totaal))';
+				attribute<MQuantity> Oj_Netto (RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Oj_Netto))';
 			}
 			
 			unit<uint32> RowSetWithTotal := union_unit(RowSet, void);
 			
-			container TableWithTotal := for_each_nedv(ColSet/name, replace('union_data(RowSetWithTotal,Table/@X,sum(Table/@X))','@X', ColSet/name), RowSetWithTotal, MQuantity)
+			container TableWithTotal := for_each_nedv(ColSet/name, replace('(1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal,TableData/@X,sum(TableData/@X))))','@X', ColSet/name), RowSetWithTotal, MQuantity)
 			{
 				attribute<string> name        (RowSetWithTotal) := union_data(RowSetWithTotal, RowSet/name, 'TOTAL');
-				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Totaal, sum(Table/Oj_Totaal));
-				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Kj_Totaal, sum(Table/Kj_Totaal));
-				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Netto , sum(Table/Oj_Netto ));
+				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Oj_Totaal, sum(TableData/Oj_Totaal))));
+				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Kj_Totaal, sum(TableData/Kj_Totaal))));
+				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Oj_Netto , sum(TableData/Oj_Netto ))));
 			}
 
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
