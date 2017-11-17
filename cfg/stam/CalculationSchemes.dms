@@ -151,10 +151,10 @@ container CalculationSchemes: Using = "Units;Geography"
 		}
 		container WKO
 		{
-			attribute<GJ_Yr>  V_Warmte    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte,     CaseData/GridCellID)';
-			attribute<GJ_Yr>  V_Koude     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude ,     CaseData/GridCellID)';
-			attribute<GJ_Yr> F_Elektrisch (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/F_Elec, CaseData/GridCellID)';
-			attribute<GJ_Yr>  Onttrekking (Geography/rdc_100lu) := V_Warmte - (V_Koude + F_Elektrisch);
+			attribute<GJ_Yr>  V_Warmte   (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte, CaseData/GridCellID)';
+			attribute<GJ_Yr>  V_Koude    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude , CaseData/GridCellID)';
+			attribute<GJ_Yr>  V_Elek     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Elek  , CaseData/GridCellID)';
+			attribute<GJ_Yr>  Onttrekking(Geography/rdc_100lu) := V_Warmte - (V_Koude + V_Elek);
 			
 			attribute<kW> Capaciteit(Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/P_Warmte,     CaseData/GridCellID)';
 		}
