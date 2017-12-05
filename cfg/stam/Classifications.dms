@@ -776,29 +776,6 @@ container Classifications: Using = "Units", KeepData = "True"
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
 	
-	unit<uint8> KostenSoort: nrofrows = 14
-	{
-		attribute<String> Name: Expr = "'R'+String(ID(.))";
-		attribute<String> Label: DialogType = "LabelText",
-		[
-			'GebouwVerbetering', 'LokaleOpwekking',
-			'Gas', 'Elektra',
-			'RestWarmte', 'GeoThermie', 'WKO', 'WijkWKK', 'BioWKK', 
-			'Onderhoud & Verbruik',
-			'CO2 Heffing',
-			'Energie heffing',
-			'BTW',
-			'RisicoPremie'
-		];
-		attribute<Bool> IsMaatschappelijk: [ true, true, true, true, false, false, false, false, false, true, true, false, false, false ];
-	}
-	
-	unit<UInt32> KostenPlaats: nrOfRows = 12
-	{
-		attribute<String> Name := union_data(., BebouwingsComponent/name, 'RestWarmte', 'GeoThermie', 'WKO', 'WijkWKK', 'BioWKK', 'Subsidie');
-		attribute<String> Label:= Name, DialogType = "LabelText";
-	}
-	
 	unit<uint8> zichtjaar: nrofrows = 5
 	{
 		attribute<Units/Jaar> Jaar: [2010, 2020, 2030, 2040, 2050 ];
