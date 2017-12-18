@@ -278,23 +278,26 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			parameter<String> RegioNaam: Expr = "'NL'";
 		}
 		
-		unit<uint32> Provincie: Expr = "Unique(PC4_Gemeente_NL/PRVNM)"
+		unit<uint32> Provincie := unique(buurt/PROVNR)
 		{
-			attribute<String> Name: Expr = "replace_value(Replace(Label, '-', ''), '', 'Elders')";
+//			attribute<string> name := 'P'+string(Values);
+			attribute<string> label := rjoin(values, buurt/PROVNR, buurt/PROVNM);
+			
+			attribute<String> Name := replace_value(Replace(Label, '-', ''), '', 'Elders');
 //			attribute<String> Name: Expr = "Replace(Label, '-', '')";
 //			Expr = "'Prov'+String(ID(.))";
-			attribute<String> Label: Expr = "Values";
+///			attribute<String> Label: Expr = "Values";
 			
-			parameter<String> RegioNaam: Expr = "'Provincie'";
+			parameter<String> RegioNaam := 'Provincie';
 		}
 
-		unit<uint32> Gemeente: Expr = "Unique(PC4_Gemeente_NL/GEMNM)"
+		unit<uint32> Gemeente := unique(buurt/GEMNR2017)
 		{
-			attribute<Int32>  GemNr: Expr = "rjoin(Values, PC4_Gemeente_NL/GEMNM, PC4_Gemeente_NL/GEMNR)";
-			attribute<String> Name: Expr = "'Gem'+String(GemNr)";
-			attribute<String> Label: Expr = "Values";
+//			attribute<Int32>  GemNr: Expr = "rjoin(Values, PC4_Gemeente_NL/GEMNM, PC4_Gemeente_NL/GEMNR)";
+			attribute<string> name := 'G'+string(Values);
+			attribute<string> label := rjoin(values, buurt/GEMNR2017, buurt/GEMNM2017);
 			
-			parameter<String> RegioNaam: Expr = "'Gemeente'";
+			parameter<String> RegioNaam := 'Gemeente';
 		}
 
 		container CBS {
@@ -319,23 +322,23 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 		}
 		
 		unit<uint32> buurt:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte.dbf",
+			StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.dbf",
 			DialogData      = "poly",
 			DialogType      = "Map",
 			StorageReadOnly = "True",
-			url             = "%sourceDataProjDir%/hulpbestanden/buurt/CBS wijk- en buurtkaart 2014 - buurten - DataPortaal Explorer_xml.mht",
-			SyncMode        = "None"
+			url             = "%sourceDataProjDir%/hulpbestanden/buurt/CBS wijk- en buurtkaart 2014 - buurten - DataPortaal Explorer_xml.mht"
+//			SyncMode        = "None"
 		{
 			
 			attribute<rdc_meter> poly(polygon):
 				label           = "De buurtkaart 2014 CBS",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte.shp",
+				StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.shp",
 				StorageReadOnly = "True";
 			
 			parameter<Bool> HasBaseGrid: [ false ];
 			
 			attribute<String> BU_CODE; 
-			attribute<string> codeorg: Expr = "BU_CODE";
+			attribute<string> codeorg := BU_CODE;
 			
 			attribute<string> codeorgtmp:= substr(codeorg,2,8);
 			attribute<Buurt_nrs> code:= codeorgtmp[uint32];
@@ -345,8 +348,8 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<km2>       AreaInKm2:= Area / value(1000000, m2 / km2);
 			
 			attribute<NL>        NL_rel   := const(0[NL],.);
-			// attribute<Gemeente>  Gemeente_rel := ???;
-			// attribute<Provincie> Provincie_rel := ??;
+			attribute<Gemeente>  Gemeente_rel  := rlookup(GEMNR2017, Gemeente/Values);
+			attribute<Provincie> Provincie_rel := rlookup(PROVNR, provincie/Values);
 			
 			attribute<Jaar>      BioWKK_Start:= const(2020[jaar], .); // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 			
@@ -405,7 +408,6 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 				attribute<Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
 			}
 		}
-		
 		unit<uint32> wijken_vogelaar_2007:
 			StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_vogelaar/wijken_vogelaar_2007.dbf",
 			DialogData      = "poly",

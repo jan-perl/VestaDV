@@ -204,7 +204,8 @@ container UserInput1: Using = "Vesta/Units"
 	
 	container ReportOpties
 	{
-		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
+//		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
+		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/Provincie;
 		
 		//'0=geen onderverdeling',
 		//'1=woningtype',
