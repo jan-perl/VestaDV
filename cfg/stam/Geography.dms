@@ -183,7 +183,7 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 		}
 		
 //		unit<uint32> grid500m: Expr = "Subset(rdc_500m/IsNL)", DialogType = "Map", DialogData = "BaseGrid"
-		unit<uint32> grid500m := Subset(const(true,rdc_500m)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
+		unit<uint32> grid500m := Subset(const(true, rdc_500m)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
 		{
 			attribute<.>    BaseGrid(rdc_500m) := invert(nr_OrgEntity);
 			parameter<Bool> HasBaseGrid: [ true ];
@@ -192,9 +192,9 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<km2>       AreaInKm2: Expr = "const(0.25[km2], .)";
 			
 			// Report Regio relations
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_500m/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_500m/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/Buurt/Gemeente_rel [rdc_500m/Buurt_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_500m/Buurt_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
@@ -211,9 +211,9 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			
 			// Report Regio relations
 
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_1km/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_1km/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/buurt/Gemeente_rel [rdc_1km/PC4_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_1km/PC4_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
@@ -230,9 +230,9 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			
 			// Report Regio relations
 
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_2km/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_2km/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/buurt/Gemeente_rel [rdc_2km/PC4_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_2km/PC4_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}

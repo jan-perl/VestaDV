@@ -196,9 +196,8 @@ container UserInput1: Using = "Vesta/Units"
 	}
 	
 	parameter<String> PlanRegioNaam :=  // @USERINPUT
-			'buurt';
-//			'PC4';
-//			'grid500m';
+//			'buurt';
+			'grid500m';
 //			'grid1km';
 //			'grid2km';
 	
