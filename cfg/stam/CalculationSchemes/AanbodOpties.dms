@@ -78,7 +78,7 @@ container AanbodOptieTemplates
 	
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_Yr]);
 		container Results := Impl/Results {
-			parameter<Float64> Brandstof_factor := 1.0; // GJ 'BioMassa' per GJ opgewekte energie
+			parameter<Float64> Brandstof_factor := 1.0 / (0.8 * 0.75); // GJ 'BioMassa' per GJ opgewekte energie
 		}
 	}
 	
