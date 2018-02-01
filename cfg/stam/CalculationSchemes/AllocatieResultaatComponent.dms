@@ -67,7 +67,6 @@ template AllocatieResultaatComponentTempl
 		attribute<Float64> AardGasExclMicroWKK(BebouwingsObject) := 
 			VestaRunDataComponent/AandeelWarmteVraag * Float64(not(IsDefined(WarmteAllocatieComponent)))
 			+ VestaRunDataComponent/AandeelNietDeelnemers
-			- eWP - EWV
 			- VestaRunDataComponent/AandeelElectric_mWKK;
 			
 		attribute<Float64> AardGasInclMicroWKK(BebouwingsObject) := AardGasExclMicroWKK  + mWKK;
