@@ -56,9 +56,7 @@ container AanbodOptieTemplates
 		parameter<g_GJ>   TS_GJb      := 0  [g_GJ];
 	
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_Yr]);
-		container Results := Impl/Results {
-			parameter<Float64> Brandstof_factor := impl/AardGas_factor;
-		}
+		container Results := Impl/Results;
 	}
 	Template BioWKK
 	{
@@ -67,8 +65,6 @@ container AanbodOptieTemplates
 		container EnergiePrijzen;
 		parameter<Units/Jaar> Jaar;
 		
-//		parameter<kg_GJ>  CO2_GJ     :=  Impl/kosten/CO2_GJ + 0[GJ];
-
 		// emissies per GJ bio-brandstof voor BioWKK.
 		parameter<kg_GJ>  CO2_GJb     :=  0[kg_GJ]; // obv definitie hernieuwbare bron.
 		parameter<g_GJ>   NOx_GJb     := 49[g_GJ];
@@ -77,9 +73,6 @@ container AanbodOptieTemplates
 		parameter<g_GJ>   TS_GJb      :=  2[g_GJ];
 	
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_Yr]);
-		container Results := Impl/Results {
-			parameter<Float64> Brandstof_factor := 1.0 / (0.8 * 0.75); // GJ 'BioMassa' per GJ opgewekte energie
-		}
+		container Results := Impl/Results;
 	}
-	
 }

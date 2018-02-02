@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 49
+	unit<uint32> mutatieSchema: nrofrows = 52
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -418,7 +418,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
 			,	'@RO@', 'GNet',  // Gas
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Brandstof_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Factoren/Aardgas_Factor', 
 					''
 				,	'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb', 'GebiedsAllocatie/@RO@/CO2_GJb'
 				,	'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb', 'GebiedsAllocatie/@RO@/NOx_GJb'
@@ -427,7 +427,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb' , 'GebiedsAllocatie/@RO@/TS_GJb'
 				
 			,	'@RO@', 'eNet',  // Elektriciteit
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Elektriciteit_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Factoren/Elektriciteit_Factor', 
 					''
 				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
@@ -435,8 +435,36 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 				
+			,	'@RO@', 'Biogas',  //Biogas
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Factoren/Biogas_Factor', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
+			,	'@RO@', 'Biovast',  //Biovast
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Factoren/Biovast_Factor', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
+			,	'@RO@', 'Ondergrond',  //Ondergrond
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * GebiedsAllocatie/@RO@/Results/Factoren/Ondergrond_Factor', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
 			,	'@RO@', 'Opwekking', 
-					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) *  (GebiedsAllocatie/@RO@/Results/Brandstof_Factor + GebiedsAllocatie/@RO@/Results/Elektriciteit_Factor - 1.0)', 
+					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@) * '
+					'(GebiedsAllocatie/@RO@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@RO@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@RO@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@RO@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@RO@/Results/Factoren/Ondergrond_Factor + - 1.0)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'

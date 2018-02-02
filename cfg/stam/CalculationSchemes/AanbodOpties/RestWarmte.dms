@@ -238,8 +238,13 @@ container RestWarmte: IsTemplate = "True"
 	
 	container Results := BeginStatus, IntegrityCheck = "P_Bron <= Bronnen/MWTh_Max * Float64(3.00)"
 	{
-		parameter<Float64> Brandstof_factor := 0.0; // TODO
-		parameter<Float64> Elektriciteit_factor := 0.0; // TODO
+		container Factoren {
+			parameter<Float64> Aardgas_factor       := 0.0; // TODO
+			parameter<Float64> Biogas_factor        := 0.0; // TODO
+			parameter<Float64> Biovast_factor       := 0.0; // TODO
+			parameter<Float64> Ondergrond_factor    := 0.0;
+			parameter<Float64> Elektriciteit_factor := 0.0; // TODO
+		}
 		
 		container Flow := BeginStatus/Flow {
 			attribute<EUR_Yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, lastiter/Assignment/Kj_warmtewaarde, 0[EUR_Yr]);

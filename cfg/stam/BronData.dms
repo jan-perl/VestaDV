@@ -413,6 +413,9 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					parameter<Float64>  ElektriciteitAandeel := 1.0 - WarmteAandeel;
 					parameter<Float64> Aardgas_Factor := 1.0 / (Rendement * WarmteAandeel);
 					parameter<Float64> Elektriciteit_Factor := - ElektriciteitAandeel / WarmteAandeel;
+					parameter<Float64> Biogas_Factor := 0.0;
+					parameter<Float64> Biovast_Factor := 0.0;
+					parameter<Float64> Ondergrond_Factor := 0.0;
 					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) :=Aardgas_Factor * prijzen/Gas_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
 					// attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (prijzen/Gas_GJ/(0.9*0.75))-(prijzen/ElekEnGros_GJ*((0.9*0.25)/(0.9*0.75)))
 				}
@@ -450,6 +453,10 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					parameter<Float64> Warmte_Factor := 1.0 / (Rendement * WarmteAandeel);
 					parameter<Float64> Elektriciteit_Factor := - ElektriciteitAandeel / WarmteAandeel;
 					parameter<Float64> Aardgas_Factor := 0.0;
+					parameter<Float64> Biogas_Factor := 0.0;
+					parameter<Float64> Biovast_Factor := Warmte_Factor;
+					parameter<Float64> Ondergrond_Factor := 0.0;
+					
 					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := Warmte_Factor *  prijzen/BioMassa_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
 				}
 			}
