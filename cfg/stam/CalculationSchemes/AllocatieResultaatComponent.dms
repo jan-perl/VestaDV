@@ -128,13 +128,14 @@ template AllocatieResultaatComponentTempl
 	container Elektriciteit {
 		attribute<EUR>    AansluitBijdrage(BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageE;
 		attribute<EUR_Yr> VastRecht       (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastRechtBijdrageE;
+		attribute<EUR_Yr> Heffingskorting (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/HeffingskortingE;
 
 		unit<uint8> ggk := VestaRunDataComponent/PrijzenElektriciteit; // gebruiksgrootte klasse
 		attribute<ggk>    ggk_rel        (BebouwingsObject) := classify(MeterVraag/Elektriciteit, ggk/ClassBreak);
 		attribute<EUR_Yr> eindgebruik_ex (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_eindgebruik_ex [ggk_rel];
 		attribute<EUR_Yr> maatschappelijk(BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_maatschappelijk[ggk_rel];
 		attribute<EUR_Yr> netwerk        (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_netwerk        [ggk_rel];
-		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel];
+		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel] - Heffingskorting;
 		attribute<EUR_Yr> CO2Heffing     (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_CO2Heffing     [ggk_rel];
 	}
 	container CO2

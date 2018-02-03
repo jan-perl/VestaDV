@@ -142,6 +142,8 @@ container UserInput1: Using = "Vesta/Units"
 	}
 	
 	container Beleidsopties {
+		parameter<EUR_Yr_Aansl> Heffingskorting := 284[EUR_Yr_Aansl];
+		
 		container EIA: Descr = "Energie Inversterings aftrek, zoals  MIA/VAMIL etc."
 		{
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald

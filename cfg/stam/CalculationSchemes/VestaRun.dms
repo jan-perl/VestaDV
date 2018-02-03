@@ -393,6 +393,7 @@ template VestaRun
 
 				attribute<EUR_Yr> VastRechtBijdrageG(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
 				attribute<EUR_Yr> VastRechtBijdrageE(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<EUR_Yr> HeffingskortingE  (Domains/Woning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<EUR_Yr> VastRechtBijdrage (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<EUR_Yr> VastRechtBijdrageD(Domains/Woning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -419,6 +420,7 @@ template VestaRun
 					
 				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
 				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegWoning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<EUR_Yr>  VastRechtBijdrage (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<EUR_Yr>  VastRechtBijdrageD(Domains/UitlegWoning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -450,6 +452,8 @@ template VestaRun
 				
 				attribute<EUR_Yr> VastRechtBijdrageG(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
 				attribute<EUR_Yr> VastRechtBijdrageE(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
+				
+				attribute<EUR_Yr> HeffingskortingE  (Domains/Utiliteit) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 		container UitlegUtil
@@ -479,6 +483,8 @@ template VestaRun
 				
 				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
 				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
+				
+				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegUtil) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}		
 		container GlasTuinbouw // specific Bijdragen
@@ -498,6 +504,7 @@ template VestaRun
 				
 				attribute<EUR_Yr> VastRechtBijdrageG (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
 				attribute<EUR_Yr> VastRechtBijdrageE (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
+				attribute<EUR_Yr> HeffingskortingE   (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
 			}
 		}
 		container UitlegGlTb // specific Bijdragen
@@ -518,6 +525,7 @@ template VestaRun
 				
 				attribute<EUR_Yr> VastRechtBijdrageG (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
 				attribute<EUR_Yr> VastRechtBijdrageE (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
+				attribute<EUR_Yr> HeffingskortingE   (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
 			}
 		}
 	}
