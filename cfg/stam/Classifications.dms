@@ -539,6 +539,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		,	'Glastuinbouw'
 		,	'UitlegGlTb'
 		];
+		attribute<String> Code := string(ID(.));
 
 		attribute<String> Label: Expr = "Name", DialogType = "LabelText";
 		
@@ -583,6 +584,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	unit<uint8> WkoComponent := Subset(BebouwingsComponent/KanWKO)
 	{
 		attribute<String> Name := BebouwingsComponent/Name[nr_OrgEntity];
+		attribute<String> Code := BebouwingsComponent/Code[nr_OrgEntity];
 	}
 	unit<uint8> GasnetComponent := WkoComponent;
 
@@ -762,6 +764,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		,	'BioWKK'
 		,	'WKO'
 		];
+		attribute<string> code := string(id(.));
 		attribute<bool> IsPlanRegioOptie: [ true, true, true, true, false]; //, false ];
 		attribute<string> label: DialogType = "LabelText", Expr = "Name";
 		attribute<UInt32> Color: DialogType = "BrushColor",

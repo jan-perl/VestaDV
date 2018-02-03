@@ -37,20 +37,24 @@ container Transformations: FreeData = "False"
 	template subst
 	{
 		unit<uint32> src;
-		parameter<string> key;
+		parameter<string> name_key;
+		parameter<string> code_key;
 		unit<uint32> valueset;
 		
-		attribute<bool> subst(src) := strpos(src/name, key) >= 0 || strpos(src/actor, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<bool> subst(src) := 
+			strpos(src/name, name_key) >= 0 || strpos(src/actor, name_key) >= 0 || strpos(src/expr, name_key) >= 0 ||
+			strpos(src/name, code_key) >= 0 || strpos(src/actor, code_key) >= 0 || strpos(src/expr, code_key) >= 0;
 		attribute<uint32> firstResult(src) := UInt32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
 		unit<uint32> result := range(uint32, 0, UInt32(Int32(#src) + sum(Int32(subst))*(Int32(#valueset)-1i)))
 		{
 			attribute<src> src_rel := classify(ID(.), firstResult);
 			attribute<string> valueset_name := MakeDefined(valueset/name[value(ID(.)-firstResult[src_rel], valueset)], 'xxx');
-			attribute<string> name        := replace(src/name        [src_rel], key, valueset_name);
-			attribute<string> actor       := replace(src/actor       [src_rel], key, valueset_name);
-			attribute<string> Expr        := replace(src/Expr        [src_rel], key, valueset_name);
-			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], key, valueset_name);
-			attribute<string> EmissionExpr:= replace(src/EmissionExpr[src_rel], key, valueset_name);
+			attribute<string> valueset_code := MakeDefined(valueset/code[value(ID(.)-firstResult[src_rel], valueset)], 'yyy');
+			attribute<string> name        := replace(src/name        [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> actor       := replace(src/actor       [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> Expr        := replace(src/Expr        [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> EmissionExpr:= replace(src/EmissionExpr[src_rel], name_key, valueset_name, code_key, valueset_code);
 		}
 	}
 	template mut_table {
@@ -114,17 +118,18 @@ container Transformations: FreeData = "False"
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)
 			{
-				attribute<string> name      := BC/name  [nr_OrgEntity];
+				attribute<string> name := BC/name[nr_OrgEntity];
+				attribute<string> code := BC/code[nr_OrgEntity];
 			}
 			unit<uint32> EnergyData_mutatie := EnergyData/mutatie
 			{
 				parameter<string> EmissionExprE:= (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 				attribute<string> EmissionExpr := =EmissionExprE;
 			}
-			container applyBC := subst(EnergyData_mutatie,'@BC@' , BC); 
-			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			container applyBC := subst(EnergyData_mutatie,'@BC@' , '@BN@', BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@' , '@WKON@' ,WKOC); 
+			container applyRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<technology>  technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
