@@ -162,7 +162,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C1_KoudePomp', 'h10_OmgevingWinst',
+			,	'C1_KoudePomp', 'i10_OmgevingVerlies',
 					'AllocatieResultaat/@BC@/MeterVraag/Koude + AllocatieResultaat/@BC@/MeterVraag/Koude * VestaRunData/@BC@/Efficiency/Koude/Elektriciteit', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -454,7 +454,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'h20_Ondergrond',  //Ondergrond
+			,	'E@RON@_@ROC@', 'h10_OmgevingWinst',  //Ondergrond
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -463,7 +463,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'i20_OpwekkingVerlies', 
+			,	'E@RON@_@ROC@', 'i10_OmgevingVerlies', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * '
 					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor + - 1.0)', 
 					''
@@ -500,7 +500,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'E@CON@_@COC@', 'h20_Ondergrond',
+			,	'E@CON@_@COC@', 'h10_OmgevingWinst',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
