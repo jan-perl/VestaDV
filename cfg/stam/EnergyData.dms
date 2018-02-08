@@ -62,7 +62,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					// TS_2010, TS_2020, TS_2030, TS_2040, TS_2050, 
 					
 		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
-				'A1_GLevering', 'e1_GNet', 
+				'A1_GLevering', 'e10_GNet', 
 					'-AllocatieResultaat/@BC@/MeterVraag/AardGas',
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -80,7 +80,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			
-			,	'A2_eLevering', 'e2_eNet', 
+			,	'A2_eLevering', 'e20_eNet', 
 					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
 				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
@@ -135,7 +135,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'B1_HR', 'i1_OmgevingVerlies',
+			,	'B1_HR', 'i10_OmgevingVerlies',
 					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/AardGas / VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)'
 					'+AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW * (1.0 - VestaRunData/@BC@/Efficiency/WarmWater/AardGas / VestaRunData/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)'
 					'+AllocatieResultaat/@BC@/MeterVraag/CvPomp', 
@@ -162,7 +162,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C1_KoudePomp', 'h1_OmgevingWinst',
+			,	'C1_KoudePomp', 'h10_OmgevingWinst',
 					'AllocatieResultaat/@BC@/MeterVraag/Koude + AllocatieResultaat/@BC@/MeterVraag/Koude * VestaRunData/@BC@/Efficiency/Koude/Elektriciteit', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -171,7 +171,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'C2_ZonneBoiler', 'g_Zon',
+			,	'C3_ZonneBoiler', 'g10_Zon',
 					'-VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -179,7 +179,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C2_ZonneBoiler', 'a@BN@5_@BC@_WW',
+			,	'C3_ZonneBoiler', 'a@BN@5_@BC@_WW',
 					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -187,7 +187,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C3_eWP', 'a@BN@2_Elektra_@BC@',
+			,	'C4_eWP', 'a@BN@2_Elektra_@BC@',
 					'-(AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/Warmte/eWP)', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -196,7 +196,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'C3_eWP', 'a@BN@3_@BC@_RV',
+			,	'C4_eWP', 'a@BN@3_@BC@_RV',
 					'AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/eWP * VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -204,7 +204,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C3_eWP', 'a@BN@5_@BC@_WW',
+			,	'C4_eWP', 'a@BN@5_@BC@_WW',
 					'AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/WarmWater/eWP * VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP',  // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -212,7 +212,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C3_eWP', 'h1_OmgevingWinst',
+			,	'C4_eWP', 'h10_OmgevingWinst',
 					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/eWP * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)'  // RV
 					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)', // WW
 					PRR
@@ -222,7 +222,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'C4_hWP', 'a@BN@2_Elektra_@BC@',
+			,	'C5_hWP', 'a@BN@2_Elektra_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/hWP', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -230,7 +230,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C4_hWP', 'a@BN@3_@BC@_RV', 
+			,	'C5_hWP', 'a@BN@3_@BC@_RV', 
 					'AllocatieResultaat/@BC@/Aandelen/hWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte * AllocatieResultaat/@BC@/Kengetallen/hWP/DekkingsGraad * AllocatieResultaat/@BC@/Kengetallen/hWP/COP',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -238,7 +238,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C4_hWP', 'h1_OmgevingWinst', 
+			,	'C5_hWP', 'h10_OmgevingWinst', 
 					'AllocatieResultaat/@BC@/Aandelen/hWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte * AllocatieResultaat/@BC@/Kengetallen/hWP/DekkingsGraad * (1.0 - 1.0 * AllocatieResultaat/@BC@/Kengetallen/hWP/COP)',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -246,7 +246,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C5_EWV', 'a@BN@2_Elektra_@BC@',
+			,	'C6_EWV', 'a@BN@2_Elektra_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/EWV', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -254,7 +254,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C5_EWV', 'a@BN@3_@BC@_RV', 
+			,	'C6_EWV', 'a@BN@3_@BC@_RV', 
 					'AllocatieResultaat/@BC@/MeterVraag/EWV', // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -262,7 +262,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C5_EWV', 'a@BN@5_@BC@_WW', 
+			,	'C6_EWV', 'a@BN@5_@BC@_WW', 
 					'AllocatieResultaat/@BC@/MeterVraag/EWV', // WW
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -271,7 +271,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'C6_mWKK', 'a@BN@1_Gas_@BC@',
+			,	'C7_mWKK', 'a@BN@1_Gas_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK', 
 					PRR
 				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
@@ -279,7 +279,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C6_mWKK', 'i1_OmgevingVerlies',
+			,	'C7_mWKK', 'i10_OmgevingVerlies',
 					'AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK * 0.25', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -287,7 +287,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C6_mWKK', 'a@BN@2_Elektra_@BC@',
+			,	'C7_mWKK', 'a@BN@2_Elektra_@BC@',
 					'AllocatieResultaat/@BC@/MeterVraag/mWKK', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -295,7 +295,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C6_mWKK', 'a@BN@3_@BC@_RV',
+			,	'C7_mWKK', 'a@BN@3_@BC@_RV',
 					'AllocatieResultaat/@BC@/aandelen/mWKK * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -303,7 +303,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C6_mWKK', 'a@BN@5_@BC@_WW',
+			,	'C7_mWKK', 'a@BN@5_@BC@_WW',
 					'AllocatieResultaat/@BC@/aandelen/mWKK * VestaRunData/@BC@/DragerOpties/WarmWater/Warmte', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -312,7 +312,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'C2_Zon_PV', 'g_Zon',
+			,	'C2_Zon_PV', 'g10_Zon',
 					'-VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -345,7 +345,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'C0_Apparatuur', 'i1_OmgevingVerlies',
+			,	'C0_Apparatuur', 'i10_OmgevingVerlies',
 					'VestaRunData/@BC@/Functioneel/Apparatuur * (1.0 / VestaRunData/@BC@/Efficiency/Apparatuur/Elektriciteit - 1.0)', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -356,7 +356,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 					
 			// ***********       gebiedsopties
 			
-			,	'D1_WijkDistributie', 'c_WijkWarmte', 
+			,	'D1_WijkDistributie', 'c10_WijkWarmte', 
 					'-EndState/KostenBaten/KostenD/Vj_Warmte * Float64(EndState/GebiedsOptie)', // incl opbrengst van bijstook
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -383,7 +383,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'D1_WijkDistributie', 'i1_OmgevingVerlies', 
+			,	'D1_WijkDistributie', 'i10_OmgevingVerlies', 
 					'EndState/KostenBaten/KostenD/Vj_LeidingVerlies * Float64(EndState/GebiedsOptie)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -392,7 +392,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'D2_Bijstook', 'e1_GNet',
+			,	'D2_Bijstook', 'e10_GNet',
 					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(EndState/GebiedsOptie)', 
 					''					
 				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
@@ -401,7 +401,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'D2_Bijstook', 'c_WijkWarmte',
+			,	'D2_Bijstook', 'c10_WijkWarmte',
 					'EndState/KostenBaten/KostenD/Bijstook/Vj_Vraag * Float64(EndState/GebiedsOptie)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -409,7 +409,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'D2_Bijstook', 'i1_OmgevingVerlies',
+			,	'D2_Bijstook', 'i10_OmgevingVerlies',
 					'EndState/KostenBaten/KostenD/Bijstook/Vj_Verlies * Float64(EndState/GebiedsOptie)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -418,7 +418,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 					
-			,	'E@RON@_@ROC@', 'e1_GNet',  // Gas
+			,	'E@RON@_@ROC@', 'e10_GNet',  // Gas
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor', 
 					''
 				,	'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb'
@@ -427,7 +427,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb'
 				,	'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb'
 				
-			,	'E@RON@_@ROC@', 'e2_eNet',  // Elektriciteit
+			,	'E@RON@_@ROC@', 'e20_eNet',  // Elektriciteit
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor', 
 					''
 				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
@@ -436,7 +436,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'f1_Biogas',  //Biogas
+			,	'E@RON@_@ROC@', 'f10_Biogas',  //Biogas
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -445,7 +445,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'f2_Biovast',  //Biovast
+			,	'E@RON@_@ROC@', 'f20_Biovast',  //Biovast
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -454,7 +454,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'h2_Ondergrond',  //Ondergrond
+			,	'E@RON@_@ROC@', 'h20_Ondergrond',  //Ondergrond
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -463,7 +463,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'i2_OpwekkingVerlies', 
+			,	'E@RON@_@ROC@', 'i20_OpwekkingVerlies', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * '
 					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor + - 1.0)', 
 					''
@@ -473,7 +473,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'c_WijkWarmte', 
+			,	'E@RON@_@ROC@', 'c10_WijkWarmte', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -500,7 +500,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'E@CON@_@COC@', 'h2_Ondergrond',
+			,	'E@CON@_@COC@', 'h20_Ondergrond',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -508,7 +508,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'E@CON@_@COC@', 'e2_eNet',
+			,	'E@CON@_@COC@', 'e20_eNet',
 					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
