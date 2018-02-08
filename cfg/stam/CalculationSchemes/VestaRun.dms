@@ -65,11 +65,11 @@ template VestaRun
 				attribute<Bool> GebruikRestWarmte(PlanRegio) := IsDefined(CumulatedArcSet_rel);
 
 				unit<uint32> WarmteBronnen := BronData/WarmteBronnen/RestWarmte/bron; // BronData/WarmteBronnen/RestWarmte/BronSelecties/J2010/Bronnen;
-				unit<Uint32> netwerk_data: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte_20161130.csv", StorageType = "gdal.vect", StorageReadOnly = "True";
-				unit<Uint32> linkset := subset(bool(int8(netwerk_data/RW)))
+				unit<Uint32> linkset: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte_20180207.csv", StorageType = "gdal.vect", StorageReadOnly = "True"
 				{
-					attribute<string> BU_code    := netwerk_data/BU_code   [nr_OrgEntity];
-					attribute<string> BU_code_dk := netwerk_data/BU_code_dk[nr_OrgEntity];
+					attribute<string> BU_code;
+					attribute<string> BU_code_dk;
+					attribute<string> pntnr;
 					
 					 // error when PlanRegio != Vesta/Geography/RegioIndelingen/buurt
 					attribute<PlanRegio> BU_rel    := rlookup(BU_Code,    Vesta/Geography/RegioIndelingen/buurt/BU_code);
@@ -78,8 +78,7 @@ template VestaRun
 					
 					attribute<rdc_meter> Point     := PlanRegio/Point[BU_rel];
 					
-					attribute<int32> pntnr := int32(netwerk_data/pntnr[nr_OrgEntity]);
-					attribute<WarmteBronnen> bron_rel := value(pntnr, WarmteBronnen);
+					attribute<WarmteBronnen> bron_rel := rlookup(pntnr, WarmteBronnen/naam);
 					
 					attribute<nodeset> F1 := MakeDefined(value(bron_rel+#linkset, nodeset), value(up_rel, nodeset));
 					attribute<nodeset> F2 := value(ID(.), nodeset);

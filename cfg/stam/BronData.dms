@@ -463,15 +463,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		}
 		container RestWarmte: Descr = "zie FO $3.3", FreeData = "False"
 		{
-			unit<uint32> bron_in_gebruik: 
-				StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20170914_in_gebruik_pbl.dbf",
-				StorageReadOnly = "True",
-				DialogType      = "Map",
-				DialogData      = "P",
-				SyncMode        = "None";
-
 			unit<uint32> bron
-			:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20170914_pbl.dbf"
+			:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180207.dbf"
 			,	StorageReadOnly = "True"
 			,	DialogType      = "Map"
 			,	DialogData      = "P"
@@ -481,7 +474,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 								   "zie email van Bas van Bemmel dd 14-09-2017"
 //			,	SyncMode        = "None"
 			{
-				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20170914_pbl.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180207.shp", StorageReadOnly = "True";
 
 				attribute<String>    Naam;
 				
