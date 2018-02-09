@@ -82,7 +82,9 @@ container WKO: IsTemplate = "True"
 			attribute<GJ_Yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_Yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_Yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_Yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_Yr>   V_Elek     (BebouwingsObject) := V_Warmte / SPF_coll + V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>   V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
+			attribute<GJ_Yr>   V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>   V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
 			attribute<GJ_Yr>   V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
 			
 			attribute<kW>     P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * Lw1;
@@ -151,7 +153,9 @@ container WKO: IsTemplate = "True"
 			attribute<GJ_Yr>  V_Warmte(BebouwingsObject) := Lq4;
 			attribute<GJ_Yr>  V_Koude (BebouwingsObject) := Lq4bis;
 			attribute<GJ_Yr>  F_Elek  (BebouwingsObject) := V_Warmte + V_Koude;
-			attribute<GJ_Yr>  V_Elek  (BebouwingsObject) := V_Warmte / SPF_coll + V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>  V_ElekW (BebouwingsObject) := V_Warmte / SPF_coll;
+			attribute<GJ_Yr>  V_ElekK (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_Yr>  V_Elek  (BebouwingsObject) := V_ElekW + V_ElekK;
 			attribute<GJ_Yr>  V_WKO   (BebouwingsObject) := F_Elek - V_Elek;
 			
 			attribute<kW>     P_Warmte(BebouwingsObject) := 0.95[Ratio] * ASW_wu[kW_m2] * Lu;
@@ -502,10 +506,14 @@ container WKO: IsTemplate = "True"
 		
 		attribute<GJ_Yr> V_Warmte (BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(StartWKO); // @@@ is Thermische Vraag
 		attribute<GJ_Yr> V_Koude  (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-		attribute<GJ_Yr> V_Elek   (BebouwingsObject):= WkoData/WkoDataComponent/V_Elek   * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekW  (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekW  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekK  (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekK  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_Elek   (BebouwingsObject):= V_ElekW + V_ElekK;
 		attribute<GJ_Yr> V_WarmteC(BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(HasWKO); // @@@ is Thermische Vraag
 		attribute<GJ_Yr> V_KoudeC (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-		attribute<GJ_Yr> V_ElekC  (BebouwingsObject):= WkoData/WkoDataComponent/V_Elek   * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekWC (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekW  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekKC (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekK  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_Yr> V_ElekC  (BebouwingsObject):= V_ElekWC + V_ElekKC;
 		
 		attribute<kW>     P_Warmte (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit * Float64(StartWKO);
 		

@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 52
+	unit<uint32> mutatieSchema: nrofrows = 54
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -483,16 +483,32 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			
 			// ===== WKO 
-			,	'E@CON@_@COC@', 'a@WKON@3_@WKOC@_RV',
+			,	'E4_WKO_Warmte', 'a@WKON@3_@WKOC@_RV',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'				
+			,	'E4_WKO_Warmte', 'h20_OmgevingWarmteWinst',
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E4_WKO_Warmte', 'e20_eNet',
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC', 
+					'VestaRunData/@WKOC@/PlanRegio_rel'
+				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@CON@_@COC@', 'a@WKON@4_@WKOC@_Koude',
+			,	'E5_WKO_Koude', 'a@WKON@4_@WKOC@_Koude',
 					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -500,16 +516,16 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'E@CON@_@COC@', 'h10_OmgevingWinst',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekC', 
+			,	'E5_WKO_Koude', 'i20_OmgevingKoudeWinst',
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'E@CON@_@COC@', 'e20_eNet',
-					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekC', 
+			,	'E5_WKO_Koude', 'e20_eNet',
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe', 'indicatoren/CO2/CO2_GJe'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
