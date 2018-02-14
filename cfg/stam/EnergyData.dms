@@ -212,7 +212,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C4_eWP', 'h10_OmgevingWinst',
+			,	'C4_eWP', 'h10_OmgevingsWarmteWinst',
 					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/eWP * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)'  // RV
 					'+ AllocatieResultaat/@BC@/Aandelen/eWP  * VestaRunData/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - VestaRunData/@BC@/Efficiency/RuimteVerwarming/eWP)', // WW
 					PRR
@@ -238,7 +238,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C5_hWP', 'h10_OmgevingWinst', 
+			,	'C5_hWP', 'h10_OmgevingsWarmteWinst', 
 					'AllocatieResultaat/@BC@/Aandelen/hWP  * VestaRunData/@BC@/DragerOpties/RuimteVerwarming/Warmte * AllocatieResultaat/@BC@/Kengetallen/hWP/DekkingsGraad * (1.0 - 1.0 * AllocatieResultaat/@BC@/Kengetallen/hWP/COP)',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -454,7 +454,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'E@RON@_@ROC@', 'h10_OmgevingWinst',  //Ondergrond
+			,	'E@RON@_@ROC@', 'h10_OmgevingsWarmteWinst',  //Ondergrond
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -491,7 +491,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'				
-			,	'E4_WKO_Warmte', 'h10_OmgevingWinst',
+			,	'E4_WKO_Warmte', 'h10_OmgevingsWarmteWinst',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
