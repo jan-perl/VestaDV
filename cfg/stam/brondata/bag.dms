@@ -156,8 +156,8 @@ container BAG
 			attribute<classifications/WoningtypeGeo> WOONPAND_TYPE;
 
 			// some simple derivations for filtering unreliably large vbo's
-			attribute<units/m2> footprint         := area(geometry, float32(m2))[units/m2], FreeData = "Fase";
-			attribute<units/m2> vbo_oppervlak     := sum(vbo/Oppervlakte, vbo/pand_rel)[units/m2], FreeData = "Fase";
+			attribute<units/m2> footprint         := area(geometry, float32(m2))[units/m2], FreeData = "False";
+			attribute<units/m2> vbo_oppervlak     := sum(vbo/Oppervlakte, vbo/pand_rel)[units/m2], FreeData = "False";
 			attribute<float32>  bouwlagen_fictief := float32(vbo_oppervlak / footprint);
 		}
 		
