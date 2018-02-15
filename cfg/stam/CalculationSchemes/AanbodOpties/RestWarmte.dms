@@ -243,6 +243,7 @@ container RestWarmte: IsTemplate = "True"
 			parameter<Float64> Biogas_factor        := 0.0; // TODO
 			parameter<Float64> Biovast_factor       := 0.0; // TODO
 			parameter<Float64> Ondergrond_factor    := 0.0;
+			parameter<Float64> Opwekking_Factor     := 1.0;
 			parameter<Float64> Elektriciteit_factor := 0.0; // TODO
 		}
 		

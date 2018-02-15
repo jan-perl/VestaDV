@@ -42,7 +42,7 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint32> BC := FlowData/BC;
 	
-	unit<uint32> mutatieSchema: nrofrows = 54
+	unit<uint32> mutatieSchema: nrofrows = 55
 	{
 		
 		parameter<uint32> nrAttr := 29;
@@ -462,10 +462,19 @@ container EnergyData: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E@RON@_@ROC@', 'h20_Opwekking',  // Opwekking
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking_Factor', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				
 				
 			,	'E@RON@_@ROC@', 'i10_OmgevingVerlies', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * '
-					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor + - 1.0)', 
+					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking_Factor + - 1.0)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
