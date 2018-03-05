@@ -320,7 +320,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			}
 			
 			unit<uint32>  TypeInfoData
-			:	StorageName = "='%datadir%/'+Parameters/prijzenbron+'_TypeInfo.csv'" 
+			:	StorageName = "%datadir%/TypeInfo.csv" 
 			,	StorageType = "gdal.vect"
 			,	StorageReadOnly = "True"
 			,	SyncMode    = "None"
