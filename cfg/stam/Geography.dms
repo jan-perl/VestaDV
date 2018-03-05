@@ -42,48 +42,79 @@
 
 container Geography: Using = "Units"
 {
-	unit<dpoint> rdc_meter_base: DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs";
+	unit<dpoint> rdc_meter_base: 
+//		DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs";
+		DialogData = "ngr_layer";
 	unit<dpoint> rdc_meter := range(rdc_meter_base, point(300000.0, 0.0), point(625000.0, 280000.0));
 	unit<fpoint> rdc_meter_f32 := gridset(rdc_meter, point(1.0, 1.0), point(0.0, 0.0), fpoint);
 	unit<ipoint> rdc_dm := gridset(rdc_meter, point(0.1, 0.1), point(0.0,0.0), ipoint);
 	unit<ipoint> rdc_mm := gridset(rdc_meter, point(0.001, 0.001), point(0.0,0.0), ipoint);
 
-	container WmtsSpecs {
-		parameter<string> name: ['BRT Achtergrondkaart'];
-		parameter<string> url: ['http://geodata.nationaalgeoregister.nl/wmts/'];
-		parameter<string> layer: ['brtachtergrondkaart'];
-		parameter<string> matrixSet: ['EPSG:28992'];
-		parameter<string> matrixIds: ['epsg28992matrixids'];
-		parameter<string> format: ['image/png8'];
-		parameter<string> attribution: ['BRT Achtergrondkaart'];
-// 		parameter<string> opacity: 0.8,
-// 		parameter<string> maxZoomLevel: [ 14 ];
-/*
-GET 
-	/wmts/?SERVICE=WMTS
-	&REQUEST=GetTile
-	&VERSION=1.0.0
-	&LAYER=brtachtergrondkaart
-	&STYLE=null
-	&TILEMATRIXSET=EPSG%3A28992
-	&TILEMATRIX=EPSG%3A28992%3A4
-	&TILEROW=8
-	&TILECOL=10
-	&FORMAT=image%2Fpng8 HTTP/1.1
-Host: geodata.nationaalgeoregister.nl
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36
-Accept: image/webp,image/*,* /*;q=0.8
-Referer: http://maps.objectvision.nl/test/
-Accept-Encoding: gzip, deflate, sdch
-Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
-
-*/
-	}
-	container TmsSpecs {
-		parameter<string> name: ['Open basiskaart'];
-		parameter<string> url: ['http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd/'];
-		// GET http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd/10/427/459.png
+	container ngr_layer {
+		container getCapabilitiesSchema// xml attributes are here modelled as sub units of the entity related unit.
+		{
+			unit<uint32> Contents
+			{
+				unit<uint32> Layer{
+					attribute<string> ows_Title;
+					attribute<string> ows_Identifier;
+//					unit<uint32> ows_Identifier;
+					
+//					attribute<string> ows_WGS84BoundingBox;
+					attribute<string> ows_LowerCorner;
+					attribute<string> ows_UpperCorner;
+					
+					unit<uint32> Style;
+					unit<uint32> Format;
+					unit<uint32> TileMatrixSetLink {
+						attribute<string> TileMatrixSet;
+					}
+				}
+				unit<uint32> TileMatrixSet {
+					attribute<string> ows_Identifier;
+					unit<uint32> TileMatrix {
+						attribute<string> ows_Identifier;
+						attribute<Float64> ScaleDenominator;
+						attribute<string> TopLeftCorner;
+						attribute<uint16> TileWidth;
+						attribute<uint16> TileHeight;
+						attribute<uint32> MatrixWidth;
+						attribute<uint32> MatrixHeight;
+					}
+				}
+			}	
+		}
+		parameter<string> getCapabilities: StorageName = "%projdir%/xml/ngr-wmts-getCapabilities.xml", StorageType = "str", StorageReadOnly = "True";
+		
+		container ParsedXML  := parse_xml(getCapabilities, getCapabilitiesSchema);
+		
+		parameter<string> TileMatrixSet_name := 'EPSG:28992';
+		unit<uint32> TileMatrixSet := ParsedXML/Contents/TileMatrixSet;
+		
+		parameter<TileMatrixSet> TileMatrixSet_rel := rlookup(TileMatrixSet_name, ParsedXML/Contents/TileMatrixSet/ows_Identifier);
+		
+		unit<uint32> AllTileMatricesOrg := ParsedXML/Contents/TileMatrixSet/TileMatrix;
+		unit<uint32> AllTileMatrices := range(uint32, 0, #AllTileMatricesOrg); // trick to avoid TileMatrix/nr_OrgEntity having an untraceable values unit.
+		unit<uint32> TileMatrix := subset(union_data(AllTileMatrices, AllTileMatricesOrg/Parent_rel) == TileMatrixSet_rel)
+		{
+			attribute<ParsedXML/Contents/TileMatrixSet/TileMatrix> tm_rel := nr_OrgEntity;
+			attribute<string> name              := AllTileMatricesOrg/ows_Identifier  [tm_rel[AllTileMatricesOrg]];
+			attribute<Float64> ScaleDenominator := AllTileMatricesOrg/ScaleDenominator[tm_rel[AllTileMatricesOrg]];
+			attribute<string> TopLeftCorner     := AllTileMatricesOrg/TopLeftCorner   [tm_rel[AllTileMatricesOrg]];
+			attribute<Float64> LeftCoord        := Float64(substr(TopLeftCorner, 0, strpos(TopLeftCorner, ' ')));
+			attribute<Float64> TopCoord         := Float64(substr(TopLeftCorner, strpos(TopLeftCorner, ' ')+1));
+			attribute<uint16> TileWidth         := AllTileMatricesOrg/TileWidth       [tm_rel[AllTileMatricesOrg]];
+			attribute<uint16> TileHeight        := AllTileMatricesOrg/TileHeight      [tm_rel[AllTileMatricesOrg]];
+			attribute<uint32> MatrixWidth       := AllTileMatricesOrg/MatrixWidth     [tm_rel[AllTileMatricesOrg]];
+			attribute<uint32> MatrixHeight      := AllTileMatricesOrg/MatrixHeight    [tm_rel[AllTileMatricesOrg]];
+		}
+			
+		parameter<string> host := 'geodata.nationaalgeoregister.nl';
+		parameter<string> target := 
+			'/wmts/?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0'+
+			'&LAYER=brtachtergrondkaart&TILEMATRIXSET=EPSG%3A28992&TILEMATRIX=@TM@'+
+			'&TILEROW=@TR@&TILECOL=@TC@&FORMAT=image%2Fpng8';
+		parameter<string> layer := 'brtachtergrondkaart';
 	}
 	unit<wpoint> rdc_100lu :=
 		range(
