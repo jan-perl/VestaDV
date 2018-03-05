@@ -97,7 +97,7 @@ container Transformations: FreeData = "False"
 		}
 		parameter<String> all_csv := 
 			'titel;quantity\n'
-			'[text];[GJ_Yr]\n'
+			'[text];[PJ_Yr]\n'
 			+ AsList(String(totals/name)+';'+String(totals/aggr_muts)+'\n', '')
 		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_' + Technology/values[Technology_rel]+'.csv'";
 	}
