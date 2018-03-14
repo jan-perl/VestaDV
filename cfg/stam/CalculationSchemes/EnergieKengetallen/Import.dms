@@ -114,11 +114,11 @@ template Import
 			}
 			container Koude
 			{
-				attribute<Ratio> Elektriciteit (ModelObject): Expr = "MakeDefined(value(table/E_KOU_ELEK, Ratio), value(1.0, Ratio))", Descr = "Efficiency Airco";
+				attribute<Ratio> Elektriciteit (ModelObject) := MakeDefined(value(table/E_KOU_ELEK, Ratio), 1.0[Ratio]), Descr = "Efficiency Airco";
 			}
 			container WarmWater
 			{
-				attribute<Ratio> AardGas     (ModelObject): Expr = "MakeDefined(value(table/E_WW_GAS,  Ratio), value(1.0, Ratio))";
+				attribute<Ratio> AardGas     (ModelObject) := MakeDefined(value(table/E_WW_GAS,  Ratio), 1.0[Ratio]);
 			}
 			container Apparatuur
 			{
