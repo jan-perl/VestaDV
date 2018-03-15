@@ -45,6 +45,7 @@ container indicatoren
 			{
  				attribute<KG_Yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
+
 			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/CO2/AardGas, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_Yr)
 			{
  				attribute<KG_Yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
@@ -67,6 +68,28 @@ container indicatoren
 		}
 		attribute<KG_Yr> Totaal(PlanRegio) := Gebouwen/Totaal + CentraleWarmteBronnen/Totaal;
 	}
+
+	container Metervraag: Source = "Rapportagebehoefte cijfers per buurt --> Geodan 15 maart 2018"
+	{
+		container gebouwen
+		{
+			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_Yr)
+			{
+				attribute<GJ_Yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_Yr)
+			{
+				attribute<GJ_Yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_Yr)
+			{
+				attribute<GJ_Yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+		}
+	}
+
 	// *** Bij vervanging van AardGas door warmte, of eWP, EWV, of WKO,
 	// valt de distributievergoeding weg tbv het dekken van de afschrijving van het bestaande aardgasnet
 	attribute<Bool> heeft_gebiedswarmte(PlanRegio) := IsDefined(EndState/AanbodOpties/PlanRegioWarmteAllocatie); 
