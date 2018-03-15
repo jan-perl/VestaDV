@@ -24,6 +24,8 @@ elif (methodlist == "matrix_allstock"):
     from matrix_allflow import *
 elif (methodlist == "NL"):
     from NL import *
+elif (methodlist == "NL_emission"):
+    from NL_emission import *
 elif (methodlist == "gebiedsmaatregelen"):
     from gebiedsmaatregelen import *
 elif (methodlist == "opwekking"):
