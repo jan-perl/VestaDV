@@ -8,16 +8,16 @@ set "Run1=Run4Combi_2016_Referentie"
 set "Run1_pad=%padtoresults%%Run1%" 
 
 REM set "Run2=Run4Combi_2016_Referentie_Verhoging25cent"
-REM Set Run2_pad=%padtoresults%%Run2%" 
+REM Set "Run2_pad=%padtoresults%%Run2%" 
 
 set "Run3=Run4Combi_2016_Referentie_Verhoging50cent"
-Set Run3_pad=%padtoresults%%Run3%" 
+Set "Run3_pad=%padtoresults%%Run3%" 
 
 REM set "Run4=Run4Combi_2016_Referentie_Verhoging100cent"
-REM Set Run4_pad=%padtoresults%%Run4%" 
+REM Set "Run4_pad=%padtoresults%%Run4%" 
 
 REM set "Run5=Run4Combi_2016_Referentie_Verhoging150cent"
-REM Set Run5_pad=%padtoresults%%Run5%" 
+REM Set "Run5_pad=%padtoresults%%Run5%" 
 
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_allflow_%Run1%.csv mut_lijst
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_allstock_%Run1%.csv mut_allstock_lijst
