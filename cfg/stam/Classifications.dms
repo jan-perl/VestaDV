@@ -751,7 +751,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<Uint8> code: Expr = "ModelValue *  UInt8(#EnergieLabel) + CalcValue";
 		
 		attribute<LabelSprong>   CurrSprong: [ 0, 0, 1, 1, 1, 2, 2, 0, 1, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 2 ];
-		attribute<EnergieLabel>  CurrLabel : [ 6, 6, 3, 3, 3, 2, 2, 5, 3, 3, 3, 2, 2, 4, 4, 3, 3, 2, 2, 3, 3, 3, 2, 2, 3, 3, 2, 2, 3, 2, 2, 2, 2 ];
+		attribute<EnergieLabel>  CurrLabel : [ 6, 6, 3, 3, 2, 2, 2, 5, 3, 3, 2, 2, 2, 4, 4, 3, 2, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2 ];
 	}
 	
 	unit<uint8> AanbodOptie: nrofrows = 5 // volgorde niet hier instellen maar in ScenarioSpecs/VestaRunOpties/Voorkeuren/BaseLine/WarmteOpties
