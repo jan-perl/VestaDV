@@ -60,9 +60,14 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		//order of replace matters!
 		attribute<Classifications/energielabel> energielabel_rel:= rlookup(replace(replace(replace(replace(replace(replace(label,SQoute,''),'A++++','eWP'),'A+++','eWP'),'A++','eWP'),'A+','EWV'),'A','A+'), Classifications/energielabel/Label);
 		attribute<uint32>                       datum_numeriek  := uint32(replace(DATUM,SQoute,''));
+		attribute<voorkomende_labels>           voorkomende_labels_rel :=rlookup(label, voorkomende_labels/Values);
 	}
 
-	unit<uint32> voorkomende_labels:= unique(EnergieLabelData_src/label);
+	unit<uint32> voorkomende_labels:= unique(EnergieLabelData_src/label)//;
+	{
+		attribute<uint32> aantal:=pcount(EnergieLabelData_src/voorkomende_labels_rel);
+	}
+
 
 	unit<uint32> EnergieLabelData:= unique(EnergieLabelData_src/adres_key)
 	{
