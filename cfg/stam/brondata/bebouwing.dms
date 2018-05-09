@@ -248,7 +248,7 @@ container bebouwing
 		attribute<RegioIndelingen/grid2km>    grid2km_rel:  Expr = "RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]]", FreeData = "True";
 		
 		attribute<m2>      Opp_M2;
-		attribute<nrAansl>    nrAansluitingen:= const(0[nrAansl   ], .), FreeData = "True";
+		attribute<nrAansl>    nrAansluitingen:= const(1[nrAansl   ], .), FreeData = "True";
 		attribute<nrWoningen> nrWoonUnits    := const(0[nrWoningen], .), FreeData = "True";
 		attribute<m2>      NrJoinedUnits := Opp_M2;
 

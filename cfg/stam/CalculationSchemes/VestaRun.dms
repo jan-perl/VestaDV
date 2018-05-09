@@ -490,41 +490,52 @@ template VestaRun
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief    (Domains/GlasTuinbouw) := const(0[EUR / nrAansl],    Domains/GlasTuinbouw);
-				attribute<EUR>    AansluitBijdrageD  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
-				attribute<EUR>    AansluitBijdrageA  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
+				attribute<Float64> AansluitTarief     (Domains/GlasTuinbouw) := 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<EUR>    AansluitBijdrageG  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
-				attribute<EUR>    AansluitBijdrageE  (Domains/GlasTuinbouw) := const(0[EUR],    Domains/GlasTuinbouw);
+				attribute<EUR>     AansluitBijdrageG  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<EUR>     AansluitBijdrageE  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<EUR>     AansluitBijdrageD  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<EUR>     AansluitBijdrageA  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+//
+				parameter<Float64> VastRechtTarief := 
+					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
+					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+				attribute<EUR_Yr> VastRechtBijdrageG(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<EUR_Yr> VastRechtBijdrageE(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<EUR_Yr> HeffingskortingE  (Domains/GlasTuinbouw) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR_Yr> VastRechtBijdrage  (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
-				attribute<EUR_Yr> VastRechtBijdrageD (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
-				attribute<EUR_Yr> VastRechtBijdrageA (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
-				
-				attribute<EUR_Yr> VastRechtBijdrageG (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
-				attribute<EUR_Yr> VastRechtBijdrageE (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
-				attribute<EUR_Yr> HeffingskortingE   (Domains/GlasTuinbouw) := const(0[EUR_YR], Domains/GlasTuinbouw);
+				attribute<EUR_Yr> VastRechtBijdrage (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<EUR_Yr> VastRechtBijdrageD(Domains/GlasTuinbouw) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<EUR_Yr> VastRechtBijdrageA(Domains/GlasTuinbouw) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 		container UitlegGlTb // specific Bijdragen
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief    (Domains/UitlegGlTb) := Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 100[EUR / nrAansl];
+				attribute<Float64> AansluitTarief     (Domains/UitlegGlTb) := 
+					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
+					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief * WarmteVraagD/nrAansluitingen;
-				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief * WarmteVraagA/nrAansluitingen;
+				attribute<EUR>     AansluitBijdrageG  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<EUR>     AansluitBijdrageE  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+//
+				parameter<Float64> VastRechtTarief := 
+					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
+					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegGlTb) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR>    AansluitBijdrageG  (Domains/UitlegGlTb) := const(0[EUR],    Domains/UitlegGlTb);
-				attribute<EUR>    AansluitBijdrageE  (Domains/UitlegGlTb) := const(0[EUR],    Domains/UitlegGlTb);
-				
-				attribute<EUR_Yr> VastRechtBijdrage  (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
-				attribute<EUR_Yr> VastRechtBijdrageD (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
-				attribute<EUR_Yr> VastRechtBijdrageA (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
-				
-				attribute<EUR_Yr> VastRechtBijdrageG (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
-				attribute<EUR_Yr> VastRechtBijdrageE (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
-				attribute<EUR_Yr> HeffingskortingE   (Domains/UitlegGlTb) := const(0[EUR_YR], Domains/UitlegGlTb);
+				attribute<EUR_Yr> VastRechtBijdrage (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<EUR_Yr> VastRechtBijdrageD(Domains/UitlegGlTb) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<EUR_Yr> VastRechtBijdrageA(Domains/UitlegGlTb) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 	}

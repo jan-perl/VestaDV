@@ -93,7 +93,7 @@ container GlTbComponentOperaties
 			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
 			attribute<UInt8>                         SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
 			attribute<m2>                            NrJoinedUnits  (BebouwingsObject): Expr = "Oppervlakte";
-			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(0[nrAansl   ], BebouwingsObject), FreeData = "True";
+			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(1[nrAansl   ], BebouwingsObject), FreeData = "True";
 			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";
 			
 			// overige attributen 

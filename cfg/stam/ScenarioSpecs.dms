@@ -266,17 +266,25 @@ container ScenarioSpecs: Using = "Units"
 						parameter<units/EUR_m2> InvesteringsKosten_min: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
 						parameter<units/EUR_m2> InvesteringsKosten_max: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
 					}
-					container Opbengsten: Source= "geen nrAansluitingen voor GLTB";
+					container opbrengsten: Source= "http://www.mantis.objectvision.nl/view.php?id=841"
+					{
+						parameter<EUR_Yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
+						parameter<EUR_Yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
+						
+						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+					}
 				}
 				
 
 				container UitlegGlTb := Glastuinbouw
 				{
 					attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
-					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
+					container Opbrengsten: 
+						Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36 jo http://www.mantis.objectvision.nl/view.php?id=841"
 					{
-						attribute<EUR_kW> AansluitTarief_min(Classifications/UitlegUtil): [ 50, 50, 50, 50, 50, 50, 50, 50, 50 ];
-						attribute<EUR_kW> AansluitTarief_max(Classifications/UitlegUtil): [ 100, 100, 100, 100, 100, 100, 100, 100, 100 ];
+						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
 					}
 					container ZonneBoiler
 					{
