@@ -727,6 +727,7 @@ template VestaRunDataComponent
 				)
 			;
 		}
+		attribute<Yr> TVT(BebouwingsObject) := Ki_gv_w * 1[ModelUnit] / Vermeden_ex;
 	}
 	
 	container Efficiency
