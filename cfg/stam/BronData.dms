@@ -730,23 +730,23 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		{
 			attribute<float32> TovDeBilt (Geography/rdc_100lu): StorageName = "%sourceDataProjDir%/hulpbestanden/klimaat/1976-2005/klimaat_1976_2005.tif";
 		}
-		container de_bilt
+		container de_bilt:= 
+			for_each_nedv(Classifications/zichtjaar/name, 'een'
+			, Geography/rdc_100lu, float32
+			)
 		{
-//			attribute<Ratio> een (Geography/rdc_100lu): StorageName = "%sourceDataProjDir%/hulpbestanden/klimaat/de_bilt/een.tif";
-			attribute<float32> een (Geography/rdc_100lu): Expr = "const(1.0, Geography/rdc_100lu, float32)";
+			attribute<float32> een (Geography/rdc_100lu) := const(1.0, Geography/rdc_100lu, float32);
 		}
-		container scenario_knmi_w: 
-			Expr = "for_each_ndva(  Classifications/zichtjaar/name "
-				   "              , Geography/rdc_100lu"
-				   "              , float32"
-				   "              , '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_w/" // dir name
-				                  "w_' + Classifications/zichtjaar/label + '.tif')";             // file name
-		container scenario_knmi_g_plus: 
-			Expr = "for_each_ndva(  Classifications/zichtjaar/name "
-				   "              , Geography/rdc_100lu"
-				   "              , float32"
-				   "              , '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/" // dir name
-				                  "g_pl_' + Classifications/zichtjaar/label + '.tif')";               // file name
+		container scenario_knmi_w := 
+			for_each_ndva(Classifications/zichtjaar/name
+			, Geography/rdc_100lu, float32
+			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_w/w_' + Classifications/zichtjaar/label + '.tif'
+			);
+		container scenario_knmi_g_plus := 
+			for_each_ndva(  Classifications/zichtjaar/name
+			, Geography/rdc_100lu, float32
+			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
+			);
 	}
 	container Leercurves
 	{
