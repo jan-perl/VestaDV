@@ -51,7 +51,8 @@ container Sloop
 
 	container WoningResterendFactors :=
 		for_each_nedv(  CaseData/SZW/HasMutations ? CaseData/SZW/Name : ''
-			, 'Float64(WoningResterendTiffs/'+CaseData/SZW/Name+')'
+			, 'median(0.0, Float64(WoningResterendTiffs/'+CaseData/SZW/Name +'), '
+				+ (CaseData/SZW/Zichtjaar_jaar > 2020w ? CaseData/SZW/prev_name : '1.0')+')' 
 			, Geography/rdc_100lu, Float64
 		);
 
