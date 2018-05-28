@@ -810,11 +810,13 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<Bool>       HasMutations   := Zichtjaar/HasMutations[nr_1];
 		attribute<String>     zichtjaar_Label:= Zichtjaar/Label[nr_1];
 		attribute<String>     zichtjaar_name := Zichtjaar/Name[nr_1];
+		attribute<String>     prev_zichtjaar_name := Zichtjaar/Name[nr_1-1b];
 		attribute<Units/Jaar> zichtjaar_jaar := Zichtjaar/Jaar[nr_1];
 		attribute<String>     period_name    := Zichtjaar/period_name[nr_1];
 		attribute<String>     utiliteit_Name := UitlegUtil/Name[nr_2];
 		attribute<String>     wlo_filename_uitleg:  = UitlegUtil/wlo_filename_uitleg[nr_2];
 		attribute<String>     Name := zichtjaar_Name + '/' + utiliteit_Name;
+		attribute<String>     prev_name := prev_zichtjaar_Name + '/' + utiliteit_Name;
 		attribute<string>     Label:= Name;
 	}
 	unit<uint8> ggWonen: nrofrows = 3
