@@ -197,7 +197,7 @@ container UserInput1: Using = "Vesta/Units"
 		}
 	}
 	
-	parameter<String> PlanRegioNaam :=  // @USERINPUT
+	parameter<String> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in UserInput1.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
 //			'grid500m';
 //			'grid1km';
@@ -205,8 +205,8 @@ container UserInput1: Using = "Vesta/Units"
 	
 	container ReportOpties
 	{
-//		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
-		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/Provincie;
+		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
+//		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/Provincie;
 		
 		//'0=geen onderverdeling',
 		//'1=woningtype',
