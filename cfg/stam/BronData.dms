@@ -654,13 +654,13 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		container WKO: Descr = "zie FO $3.4"
 		{
 			unit<UInt32> ContourSet: 
-				StorageName      = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.dbf",
+				StorageName      = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.dbf",
 				StorageReadOnly = "True",
-				url             = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.txt",
+				url             = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.txt",
 				DialogType      = "Map",
 				DialogData      = "Polygon"
 			{
-				attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.shp", StorageReadOnly = "True";
 				attribute<string>    WKO;
 				attribute<Bool>      Geschikt: Expr = "WKO == 'geschikt' || WKO == 'zeer geschikt'";
 			}
