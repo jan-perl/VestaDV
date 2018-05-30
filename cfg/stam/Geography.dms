@@ -374,50 +374,7 @@ container Geography: Using = "Units"
 				attribute<Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
 			}
 		}
-		unit<uint32> wijken_vogelaar_2007:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_vogelaar/wijken_vogelaar_2007.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Volgelaar Wijken 2007, ontvangen per mail op 15 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_vogelaar/wijken_vogelaar_2007.shp",
-				StorageReadOnly = "True";
-			attribute<String> Wijknaam;
-			attribute<String> Gemeente;
-			attribute<uint32> Wijknum;
-		}
-		unit<uint32> wijken_winsemius_2005:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_winsemius/winsemius_pc04_2005_IRIS.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Winsemius Wijken 2005 op basis van PC4, ontvangen per mail op 16 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_winsemius/winsemius_pc04_2005_IRIS.shp",
-				StorageReadOnly = "True";
-			attribute<String> WINS_NM;
-			attribute<String> GEM_PC04NM;
-			attribute<uint32> POSTCODE4;
-		}
-		unit<uint32> nkn_herstucturering:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/nkn_herstucturering/NieuweKaart_polygon_herstructurering_wonen_gemengd_stedelijk_010310.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Nieuwe kaart van Nederland herstucturering wonen, ontvangen per mail op 16 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/nkn_herstucturering/NieuweKaart_polygon_herstructurering_wonen_gemengd_stedelijk_010310.shp",
-				StorageReadOnly = "True";
-			attribute<String> BESTEMMING;
-			attribute<String> OPM_TXT;
-		}
+
 		unit<uint32> PC4_Gemeente_NL:
 			StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_aggregatie_230812_union_IRIS_PC04_2011_strip.shp",
 			StorageType     = "gdal.vect",
@@ -434,103 +391,7 @@ container Geography: Using = "Units"
 			attribute<../PC4> PC4_rel_1: Expr = "rlookup(PC4, ../PC4/code)";
 			attribute<../PC4> PC4_rel  : Expr = "max(Shape_area, PC4_rel_1)[PC4_rel_1] == Shape_area ? PC4_rel_1 : value(0 / 0, ../PC4)";
 		}
-		
-		unit<uint32> randstad:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/randstad.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Randstad ten behoeve van zoomextent op dit gebied",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/randstad.shp",
-				StorageReadOnly = "True";
-		}	
-		
-		unit<uint32> gemeentegrens_utrecht:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_Utrecht.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Gemeentegrens Utrecht ten behoeve van zoomextent op dit gebied",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_Utrecht.shp",
-				StorageReadOnly = "True";
-			attribute<String> GEMNM;
-		}
-						
-		unit<uint32> Grens_Bebouwd_Gebied_2003_org:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/BegrBG_2003_org_VROM.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "All"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Grens_Bebouwd_Gebied_2003_org",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/BegrBG_2003_org_VROM.shp",
-				StorageReadOnly = "True"              
-				{
-				parameter<uint32> BrushColor 
-				:  DialogType = "BrushColor"
-				,  expr       = "rgb(127,127,127)";
-                parameter<uint32> PenColor: expr = "rgb(127,127,127)", DialogType = "PenColor";
-                parameter<int16>  PenWidth: expr = "int16(1)"    , DialogType = "PenWidth";
-                }
-            }
 
-		unit<uint32> Socrates:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/Socrates/socrates_regio.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Socrates Regios uit NLL configuratie van Ruimtescanner",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/Socrates/socrates_regio.shp",
-				StorageReadOnly = "True";
-			attribute<String> Label:
-				DialogType     = "LabelText",
-				DisableStorage = "True",
-				[
-				 'geen'
-				,'Oost Groningen,Delfzijl'
-				,'Ov. Groningen'
-				,'Noord Fryslan'
-				,'ZW Fryslan,ZO Fryslan'
-				,'Noord Drente'
-				,'ZO Drente,ZW Drente'
-				,'Noord Overijssel,ZW Overijssel'
-				,'Twente'
-				,'Veluwe'
-				,'Achterhoek'
-				,'Arnhem-Nijmegen'
-				,'ZW Gelderland'
-				,'Utrecht'
-				,'Kop Noord-Holland'
-				,'Alkmaar e.o.'
-				,'IJmond,Haarlem'
-				,'Zaanstreek,Amsterdam'
-				,'Gooi/Vechtstreek'
-				,'Leiden/Bollenstreek'
-				,'Den Haag,Delft/Westland'
-				,'Oost Zuid-Holland'
-				,'Rijnmond'
-				,'ZO Zuid-Holland'
-				,'Zeeuws Vlaanderen,Ov. Zeeland'
-				,'West N-Brabant'
-				,'Midden N-Brabant'
-				,'NO N-Brabant'
-				,'ZO N-Brabant'
-				,'Noord Limburg,Midden Limburg'
-				,'Zuid Limburg'
-				,'Flevoland'
-				];
-		}
 		unit<UInt32> EmptySequenceSetSource := Range(UInt32, 0,0)
 		{
 			attribute<rdc_meter> Point     := const(Point(0.0, 0.0, rdc_meter), .);

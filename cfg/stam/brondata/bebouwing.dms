@@ -54,7 +54,6 @@ container bebouwing
 		attribute<RegioIndelingen/grid500m>           grid500m_rel       := RegioIndelingen/grid500m/BaseGrid[point[rdc_500m]];
 		attribute<RegioIndelingen/grid1km>            grid1km_rel        := RegioIndelingen/grid1km/BaseGrid[point[rdc_1km]];
 		attribute<RegioIndelingen/grid2km>            grid2km_rel        := RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]];
-		attribute<RegioIndelingen/Socrates>           Socrates_nr        := point_in_polygon(point, RegioIndelingen/Socrates/poly);
 		attribute<RegioIndelingen/buurt>              buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/poly);
 
 		attribute<nrAansl>                            nrAansluitingen    := Impl/nrWon * 1[ nrAansl / nrWoningen];
