@@ -44,7 +44,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 	#include <Uitleg.dms>
 
 	unit<uint32> EnergieLabelData_src
-	:	StorageName     = "%SourceDataProjDir%/vraag/wonen/definitieve_labels_fixed_date_311214_v2.csv"
+	:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
 	,	StorageType     = "gdal.vect"
 	,	StorageReadOnly = "True"
 	{
