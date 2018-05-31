@@ -44,7 +44,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 	#include <Uitleg.dms>
 
 	unit<uint32> EnergieLabelData_src
-	:	StorageName     = "%SourceDataProjDir%/vraag/wonen/definitieve_labels_fixed_date_311214_v2.csv"
+	:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
 	,	StorageType     = "gdal.vect"
 	,	StorageReadOnly = "True"
 	{
@@ -474,17 +474,18 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		container RestWarmte: Descr = "zie FO $3.3", FreeData = "False"
 		{
 			unit<uint32> bron
-			:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180207.dbf"
+			:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180517.dbf"
 			,	StorageReadOnly = "True"
 			,	DialogType      = "Map"
 			,	DialogData      = "P"
 			,	Source          = "ECN, Marit van Hout, 5 juni 2015 per email\n"
 				                   "aanlevering Y:\\data\\Vesta\\v2\\config\\MAIS\\aanlevering\\Steven_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx\n"
 				                   "bewerking: Y:\\data\\Vesta\\v2\\config\\MAIS\\bewerk\\puntbronnen_070416\\06-04 vergelijk_puntbronnen_180713_PBL-Lijst met centrales.xlsx tabblad GIS\n"
+				                   "eigen bewerking verwijderen steenkolencentrales"
 								   "zie email van Bas van Bemmel dd 14-09-2017"
 //			,	SyncMode        = "None"
 			{
-				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180207.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/puntbronnen_20180517.shp", StorageReadOnly = "True";
 
 				attribute<String>    Naam;
 				
@@ -654,13 +655,13 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		container WKO: Descr = "zie FO $3.4"
 		{
 			unit<UInt32> ContourSet: 
-				StorageName      = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.dbf",
+				StorageName      = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.dbf",
 				StorageReadOnly = "True",
-				url             = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.txt",
+				url             = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.txt",
 				DialogType      = "Map",
 				DialogData      = "Polygon"
 			{
-				attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2.shp", StorageReadOnly = "True";
 				attribute<string>    WKO;
 				attribute<Bool>      Geschikt: Expr = "WKO == 'geschikt' || WKO == 'zeer geschikt'";
 			}
