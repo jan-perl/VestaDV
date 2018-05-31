@@ -80,8 +80,8 @@ template VestaRun
 					
 					attribute<WarmteBronnen> bron_rel := rlookup(pntnr, WarmteBronnen/naam);
 					
-					attribute<nodeset> F1 := MakeDefined(value(bron_rel+#linkset, nodeset), value(up_rel, nodeset));
-					attribute<nodeset> F2 := value(ID(.), nodeset);
+					attribute<nodeset> F1 := MakeDefined(value(bron_rel+#linkset, nodeset), value(up_rel, nodeset)); // source, a WarmteBronnen or alternatively the up_rel Planregio
+					attribute<nodeset> F2 := value(ID(.), nodeset); // serviced Planregio
 				}
 				unit<uint32> nodeset := union_unit(linkset, WarmteBronnen)
 				{
@@ -99,7 +99,7 @@ template VestaRun
 					attribute<Geography/RegioIndelingen/buurt> PlanRegio_rel := linkset/BU_rel;
 					attribute<rdc_meter> PrevPoint := nodeset/Point[linkset/F1];
 //					attribute<EUR>                             Ki_Netto;
-					attribute<WarmteBronnen>                   Bron_rel := value(rjoin(value(ID(linkset), nodeset), nodeset/e/DstZone_rel, nodeset/e/OrgZone_rel) - #linkset, WarmteBronnen);
+					attribute<WarmteBronnen>                   Bron_rel := value(rjoin(value(ID(linkset), nodeset), nodeset/e/DstZone_rel, nodeset/e/OrgZone_rel), WarmteBronnen);
 					attribute<rdc_meter>                       BronPoint := WarmteBronnen/P[Bron_rel];
 					
 					parameter<bool> HasArcs := true; // avoid reading the dbf to find this out.
