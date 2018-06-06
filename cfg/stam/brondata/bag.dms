@@ -42,8 +42,8 @@
 
 container BAG
 {
-	parameter<units/Yr> SnapShotYear:= 2015[units/Yr];
-	parameter<string>   SnapShotDate:= '20160101';
+	parameter<units/Yr> SnapShotYear:= 2018[units/Yr];
+	parameter<string>   SnapShotDate:= '20180101';
 	parameter<string>   SourceDir   : = '%SourceDataProjDir%/BAG/' + SnapShotDate;
 
 	container typeringen
