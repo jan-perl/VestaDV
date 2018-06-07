@@ -366,7 +366,7 @@ template VestaRunDataComponent
 			// kosten excl Investeringskosten eWP want deze moeten langs een andere leercurve gelegd worden.
 			attribute<EUR_ModelUnit> LTAS(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_max[ Model_rel ];
 			attribute<EUR_ModelUnit> eWP (BebouwingsObject) := const(Kengetallen/eWP/InvesteringsKosten_max, BebouwingsObject);
-			attribute<EUR_ModelUnit> EWV (BebouwingsObject) := (10[Percent] / 100[Percent]) * 352[EUR_m2] *  EnergieVraagModellen/area/max[ Model_rel ];
+			attribute<EUR_ModelUnit> EWV (BebouwingsObject) := (75[Percent] / 100[Percent]) * 352[EUR_m2] *  EnergieVraagModellen/area/max[ Model_rel ];
 		}
 		container VerbeterKosten_nu
 		{

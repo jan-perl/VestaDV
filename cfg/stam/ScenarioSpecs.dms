@@ -91,8 +91,8 @@ container ScenarioSpecs: Using = "Units"
 				{
 					parameter<Ratio>   COP: [ 4.00 ];
 					parameter<Ratio>   DekkingsGraad: [ 0.80 ];
-					parameter<EUR_aansl> InvesteringsKosten_Min: [ 2600 ];
-					parameter<EUR_aansl> InvesteringsKosten_Max: [ 3600 ];
+					parameter<EUR_aansl> InvesteringsKosten_Min: [ 2500 ];
+					parameter<EUR_aansl> InvesteringsKosten_Max: [ 4300 ];
 				}
 			}
 			
@@ -124,7 +124,7 @@ container ScenarioSpecs: Using = "Units"
 					
 					container eWP
 					{
-						parameter<Ratio> COP: [ 4.00 ]; // tov rendement van Elektrische straalkachels
+						parameter<Ratio> COP: [ 3.00 ];
 						// Het minimum is gebaseerd op lucht/water systeem met LT-radiatoreen en het maximum op water/water systeem met vloerverwarming, 
 						// beide voor rijtjeshuis uit de periode 1960-1980 (CE-rapport, augustus 2013) met aftrek van het alternatief van de HR-ketel:
 						// 2000 euro ketelkosten bij minimale kosten
