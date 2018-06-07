@@ -106,6 +106,36 @@ container BAG
 					"Correctie van oppervlaktes deels op basis van document: http://www.cbs.nl/nl-NL/menu/themas/bouwen-wonen/methoden/dataverzameling/korte-onderzoeksbeschrijvingen/2015-kenmerken-woningen-kob.htm"
 					"Aanvulling van OV op oppervlakte in relatie tot pand footprint (verdacht groot) en op 99999";
 
+			attribute<Units/m2> OPPERVLAK_GECORRIGEERD_Utiliteit :=
+				(Oppervlakte = int32(1) || Oppervlakte = int32(999999) || Oppervlakte = int32(99999) || Oppervlakte = int32(9999) || (Oppervlakte > int32(160000) && bouwlagen_fictief > float32(45)))
+					? (0 / 0)[Units/m2]
+					: Oppervlakte[Units/m2]
+			,	FreeData = "False"
+			,	Descr = 
+					"Grootste kantoorgebouw van Nederland bedraagt 160000m2 Rotterdam Kop van Zuid, aantal bouwlagen in Nederland maximaal 44";
+
+// analyse records die afvallen
+			attribute<Units/m2> OPPERVLAK_GECORRIGEERD_INV_Wonen :=
+				(Oppervlakte = int32(1) || Oppervlakte = int32(999999) || Oppervlakte = int32(99999) || Oppervlakte = int32(9999) || (Oppervlakte > int32(10000) && bouwlagen_fictief > float32(10)))
+					? Oppervlakte[Units/m2]
+					: (0 / 0)[Units/m2]
+			,	FreeData = "False"
+			,	Descr = "Dataset van records die afvallen door het filter, statistieken geven inzicht in de verdeling in oppervlaktes";
+
+			attribute<Units/m2> OPPERVLAK_GECORRIGEERD_INV_Utiliteit :=
+				(Oppervlakte = int32(1) || Oppervlakte = int32(999999) || Oppervlakte = int32(99999) || Oppervlakte = int32(9999) || (Oppervlakte > int32(160000) && bouwlagen_fictief > float32(45)))
+					? Oppervlakte[Units/m2]
+					: (0 / 0)[Units/m2]
+			,	FreeData = "False"
+			,	Descr = "Dataset van records die afvallen door het filter, statistieken geven inzicht in de verdeling in oppervlaktes";
+
+			unit<uint32> OPPERVLAK_GECORRIGEERD_INV_Utiliteit_sub := subset((Oppervlakte <> int32(999999) && (Oppervlakte > int32(160000) && bouwlagen_fictief > float32(45))))
+			{
+			attribute<Units/m2> Oppervlakte      := vbo/Oppervlakte[nr_OrgEntity][Units/m2];
+			attribute<float32> bouwlagen_fictief := vbo/bouwlagen_fictief[nr_OrgEntity];
+			}
+// eind analyse
+
 			container gebruiksdoelen :=
 				for_each_ndv(
 					typeringen/gebruiksdoel/name
@@ -249,7 +279,7 @@ container BAG
 		(
 			!import/vbo/gebruiksdoelen/woon 
 		&&	IsDefined(import/vbo/pand_rel)
-		&&	isDefined(import/vbo/OPPERVLAK_GECORRIGEERD)
+		&&	isDefined(import/vbo/OPPERVLAK_GECORRIGEERD_Utiliteit)
 	//	&&	!import/vbo/gebruiksdoelen/Industrie    // Deze regel aanzetten als in Utiliteit alle industrie niet meedoet (dus ook alle vbo die industrie in combinatie met een andere gebruikdoel hebben)
 		&&	import/vbo/gebruiksdoelcombinatie <> 8w // Deze regel aanzetten als in Utiliteit vbo's niet meedoen die alleen een industriefunctie hebben.
 		)
