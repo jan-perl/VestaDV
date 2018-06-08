@@ -178,11 +178,6 @@ container CalculationSchemes: Using = "Units;Geography"
 	{
 		container VestaRunDataComponent;
 		
-// 		parameter<EUR_GJ> WarmtePrijs_GasComponent;
-// 		parameter<EUR_GJ> WarmtePrijs_ElekComponent;
-// 		
-// 		parameter<EUR_GJ> WarmtePrijs := WarmtePrijs_GasComponent + WarmtePrijs_ElekComponent; // TODO: Verplaats berekening naar VeestaRunDataComponent
-		
 		unit<uint32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent(BebouwingsObject) := VestaRunDataComponent/WarmteAllocatie;
 		

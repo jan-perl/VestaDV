@@ -222,19 +222,17 @@ container Geography: Using = "Units"
 			DialogType      = "Map",
 			StorageReadOnly = "True"
 		{
-			unit<uint32> PC6_Segm: Expr = "PC6"; // Expr = "TiledUnit(value(100000, PC6))"; // TODO ShapeFiles don't support segmented units yet 
-			
-			attribute<rdc_meter> poly(polygon, PC6_Segm):
+			attribute<rdc_meter> poly(polygon):
 				label           = "Postcode 6 gebieden Nederland 2006 obv percelen",
 				StorageName     = "%SourceDataProjDir%/hulpbestanden/pc06_vlakken_simplify/PC6gebieden_2006_KAD_simplify.shp",
 				StorageReadOnly = "True";
-			attribute<String> PostCode(PC6_Segm);
-			attribute<String> code(PC6_Segm): Expr = "PostCode";
-			attribute<UInt32> len (PC6_Segm): Expr = "strlen(code)";
+			attribute<String> PostCode;
+			attribute<String> code := PostCode;
+			attribute<UInt32> len  := strlen(code);
 			
-			attribute<String>  code4str(PC6_Segm): Expr = "substr(PostCode,0,4)";
-			attribute<PC4_nrs> code4   (PC6_Segm): Expr = "value(code4str, PC4_nrs)";
-			attribute<PC4>     PC4_rel (PC6_Segm): Expr = "rlookup(code4, PC4/code)";
+			attribute<String>  code4str := substr(PostCode,0,4);
+			attribute<PC4_nrs> code4    := value(code4str, PC4_nrs);
+			attribute<PC4>     PC4_rel  := rlookup(code4, PC4/code);
 		}
 
 		unit<uint32> NL: nrofrows = 1
