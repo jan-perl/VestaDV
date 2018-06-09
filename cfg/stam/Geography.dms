@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -42,49 +42,16 @@
 
 container Geography: Using = "Units"
 {
-	unit<dpoint> rdc_meter_base: DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs";
+	unit<dpoint> rdc_meter_base: 
+//		DialogData = "Geography/top100/grid/Nl_detail/GridData;Geography/RegioIndelingen/Provincie/Shapes/Polygons;WmsSpecs";
+		DialogData = "ngr_layer";
 	unit<dpoint> rdc_meter := range(rdc_meter_base, point(300000.0, 0.0), point(625000.0, 280000.0));
 	unit<fpoint> rdc_meter_f32 := gridset(rdc_meter, point(1.0, 1.0), point(0.0, 0.0), fpoint);
 	unit<ipoint> rdc_dm := gridset(rdc_meter, point(0.1, 0.1), point(0.0,0.0), ipoint);
 	unit<ipoint> rdc_mm := gridset(rdc_meter, point(0.001, 0.001), point(0.0,0.0), ipoint);
 
-	container WmtsSpecs {
-		parameter<string> name: ['BRT Achtergrondkaart'];
-		parameter<string> url: ['http://geodata.nationaalgeoregister.nl/wmts/'];
-		parameter<string> layer: ['brtachtergrondkaart'];
-		parameter<string> matrixSet: ['EPSG:28992'];
-		parameter<string> matrixIds: ['epsg28992matrixids'];
-		parameter<string> format: ['image/png8'];
-		parameter<string> attribution: ['BRT Achtergrondkaart'];
-// 		parameter<string> opacity: 0.8,
-// 		parameter<string> maxZoomLevel: [ 14 ];
-/*
-GET 
-	/wmts/?SERVICE=WMTS
-	&REQUEST=GetTile
-	&VERSION=1.0.0
-	&LAYER=brtachtergrondkaart
-	&STYLE=null
-	&TILEMATRIXSET=EPSG%3A28992
-	&TILEMATRIX=EPSG%3A28992%3A4
-	&TILEROW=8
-	&TILECOL=10
-	&FORMAT=image%2Fpng8 HTTP/1.1
-Host: geodata.nationaalgeoregister.nl
-Connection: keep-alive
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36
-Accept: image/webp,image/*,* /*;q=0.8
-Referer: http://maps.objectvision.nl/test/
-Accept-Encoding: gzip, deflate, sdch
-Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
+	#include <ngr_layer.dms>
 
-*/
-	}
-	container TmsSpecs {
-		parameter<string> name: ['Open basiskaart'];
-		parameter<string> url: ['http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd/'];
-		// GET http://www.openbasiskaart.nl/mapcache/tms/1.0.0/osm-nb@rd/10/427/459.png
-	}
 	unit<wpoint> rdc_100lu :=
 		range(
 			gridset(rdc_meter, point( - 100.0,   100.0),  point(625000.0, 10000.0), wpoint),
@@ -175,15 +142,15 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<UINt32> PC4_Gemeente_NL_count: Expr = "pcount(PC4_Gemeente_NL/PC4_rel)", DisableStorage = "True";
 			
 			attribute<NL>        NL_rel:               Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:         Expr = "rlookup(PC4_Gemeente_NL/GEMNM[PC4_Gemeente_NL_rel], Gemeente/Values)";
+			attribute<Gemeente>  Gemeente_rel:         Expr = "rlookup(PC4_Gemeente_NL/GEMNR[PC4_Gemeente_NL_rel], Gemeente/Values)";
 			attribute<PC4_Gemeente_NL>  PC4_rel:       Expr = "rlookup(PC4_Gemeente_NL/PC4Str[PC4_Gemeente_NL_rel], PC4Rap/Values)";
-			attribute<Provincie> Provincie_rel:        Expr = "MakeDefined(rlookup(PC4_Gemeente_NL/PRVNM[PC4_Gemeente_NL_rel], Provincie/Values), 0[Provincie])";
+			attribute<Provincie> Provincie_rel:        Expr = "MakeDefined(rlookup(PC4_Gemeente_NL/PRVNR[PC4_Gemeente_NL_rel], Provincie/Values), 0[Provincie])";
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
 		
 //		unit<uint32> grid500m: Expr = "Subset(rdc_500m/IsNL)", DialogType = "Map", DialogData = "BaseGrid"
-		unit<uint32> grid500m := Subset(const(true,rdc_500m)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
+		unit<uint32> grid500m := Subset(const(true, rdc_500m)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
 		{
 			attribute<.>    BaseGrid(rdc_500m) := invert(nr_OrgEntity);
 			parameter<Bool> HasBaseGrid: [ true ];
@@ -192,17 +159,16 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<km2>       AreaInKm2: Expr = "const(0.25[km2], .)";
 			
 			// Report Regio relations
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_500m/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_500m/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/Buurt/Gemeente_rel [rdc_500m/Buurt_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_500m/Buurt_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
 		
-//		unit<uint32> grid1km: Expr = "Subset(rdc_1km/IsNL)", DialogType = "Map", DialogData = "BaseGrid"
-		unit<uint32> grid1km: Expr = "Subset(const(true,rdc_1km))", DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
+		unit<uint32> grid1km := Subset(const(true,rdc_1km)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
 		{
-			attribute<.>         BaseGrid(rdc_1km): Expr = "invert(nr_OrgEntity)";
+			attribute<.>    BaseGrid(rdc_1km) := invert(nr_OrgEntity);
 			parameter<Bool> HasBaseGrid: [ true ];
 			
 			attribute<rdc_meter> Point: Expr  = "rdc_1km/point[nr_OrgEntity]";
@@ -211,9 +177,9 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			
 			// Report Regio relations
 
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_1km/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_1km/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/buurt/Gemeente_rel [rdc_1km/buurt_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_1km/buurt_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
@@ -230,9 +196,9 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			
 			// Report Regio relations
 
-			attribute<NL>        NL_rel:        Expr = "const(0[NL],.)";
-			attribute<Gemeente>  Gemeente_rel:  Expr = "RegioIndelingen/PC4/Gemeente_rel [rdc_2km/PC4_rel[nr_OrgEntity]]";
-			attribute<Provincie> Provincie_rel: Expr = "RegioIndelingen/PC4/Provincie_rel[rdc_2km/PC4_rel[nr_OrgEntity]]";
+			attribute<NL>        NL_rel       := const(0[NL],.);
+			attribute<Gemeente>  Gemeente_rel := RegioIndelingen/buurt/Gemeente_rel [rdc_2km/buurt_rel[nr_OrgEntity]];
+			attribute<Provincie> Provincie_rel:= RegioIndelingen/buurt/Provincie_rel[rdc_2km/buurt_rel[nr_OrgEntity]];
 			
 			attribute<Jaar> BioWKK_Start: Expr = "const(2020[jaar], .)"; // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 		}
@@ -256,19 +222,17 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			DialogType      = "Map",
 			StorageReadOnly = "True"
 		{
-			unit<uint32> PC6_Segm: Expr = "PC6"; // Expr = "TiledUnit(value(100000, PC6))"; // TODO ShapeFiles don't support segmented units yet 
-			
-			attribute<rdc_meter> poly(polygon, PC6_Segm):
+			attribute<rdc_meter> poly(polygon):
 				label           = "Postcode 6 gebieden Nederland 2006 obv percelen",
 				StorageName     = "%SourceDataProjDir%/hulpbestanden/pc06_vlakken_simplify/PC6gebieden_2006_KAD_simplify.shp",
 				StorageReadOnly = "True";
-			attribute<String> PostCode(PC6_Segm);
-			attribute<String> code(PC6_Segm): Expr = "PostCode";
-			attribute<UInt32> len (PC6_Segm): Expr = "strlen(code)";
+			attribute<String> PostCode;
+			attribute<String> code := PostCode;
+			attribute<UInt32> len  := strlen(code);
 			
-			attribute<String>  code4str(PC6_Segm): Expr = "substr(PostCode,0,4)";
-			attribute<PC4_nrs> code4   (PC6_Segm): Expr = "value(code4str, PC4_nrs)";
-			attribute<PC4>     PC4_rel (PC6_Segm): Expr = "rlookup(code4, PC4/code)";
+			attribute<String>  code4str := substr(PostCode,0,4);
+			attribute<PC4_nrs> code4    := value(code4str, PC4_nrs);
+			attribute<PC4>     PC4_rel  := rlookup(code4, PC4/code);
 		}
 
 		unit<uint32> NL: nrofrows = 1
@@ -278,23 +242,26 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			parameter<String> RegioNaam: Expr = "'NL'";
 		}
 		
-		unit<uint32> Provincie: Expr = "Unique(PC4_Gemeente_NL/PRVNM)"
+		unit<uint32> Provincie := unique(buurt/PROVNR)
 		{
-			attribute<String> Name: Expr = "replace_value(Replace(Label, '-', ''), '', 'Elders')";
+//			attribute<string> name := 'P'+string(Values);
+			attribute<string> label := rjoin(values, buurt/PROVNR, buurt/PROVNM);
+			
+			attribute<String> Name := replace_value(Replace(Label, '-', ''), '', 'Elders');
 //			attribute<String> Name: Expr = "Replace(Label, '-', '')";
 //			Expr = "'Prov'+String(ID(.))";
-			attribute<String> Label: Expr = "Values";
+///			attribute<String> Label: Expr = "Values";
 			
-			parameter<String> RegioNaam: Expr = "'Provincie'";
+			parameter<String> RegioNaam := 'Provincie';
 		}
 
-		unit<uint32> Gemeente: Expr = "Unique(PC4_Gemeente_NL/GEMNM)"
+		unit<uint32> Gemeente := unique(buurt/GEMNR2017)
 		{
-			attribute<Int32>  GemNr: Expr = "rjoin(Values, PC4_Gemeente_NL/GEMNM, PC4_Gemeente_NL/GEMNR)";
-			attribute<String> Name: Expr = "'Gem'+String(GemNr)";
-			attribute<String> Label: Expr = "Values";
+//			attribute<Int32>  GemNr: Expr = "rjoin(Values, PC4_Gemeente_NL/GEMNM, PC4_Gemeente_NL/GEMNR)";
+			attribute<string> name := 'G'+string(Values);
+			attribute<string> label := rjoin(values, buurt/GEMNR2017, buurt/GEMNM2017);
 			
-			parameter<String> RegioNaam: Expr = "'Gemeente'";
+			parameter<String> RegioNaam := 'Gemeente';
 		}
 
 		container CBS {
@@ -319,36 +286,34 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 		}
 		
 		unit<uint32> buurt:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte.dbf",
+			StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.dbf",
 			DialogData      = "poly",
 			DialogType      = "Map",
 			StorageReadOnly = "True",
-			url             = "%sourceDataProjDir%/hulpbestanden/buurt/CBS wijk- en buurtkaart 2014 - buurten - DataPortaal Explorer_xml.mht",
-			SyncMode        = "None"
+			url             = "%sourceDataProjDir%/hulpbestanden/buurt/CBS wijk- en buurtkaart 2014 - buurten - DataPortaal Explorer_xml.mht"
+//			SyncMode        = "None"
 		{
 			
 			attribute<rdc_meter> poly(polygon):
 				label           = "De buurtkaart 2014 CBS",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte.shp",
+				StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.shp",
 				StorageReadOnly = "True";
 			
 			parameter<Bool> HasBaseGrid: [ false ];
 			
 			attribute<String> BU_CODE; 
-			attribute<string> codeorg: Expr = "BU_CODE";
+			attribute<string> codeorg := BU_CODE;
 			
 			attribute<string> codeorgtmp:= substr(codeorg,2,8);
 			attribute<Buurt_nrs> code:= codeorgtmp[uint32];
 		
-			attribute<uint32> RW; // in de dbf is dit waarschijnlijk als numeric en niet als logical gedefinieerd
-				
 			attribute<rdc_meter> Point    := centroid_or_mid(poly);
 			attribute<m2>        Area     := Area(poly, m2);
 			attribute<km2>       AreaInKm2:= Area / value(1000000, m2 / km2);
 			
 			attribute<NL>        NL_rel   := const(0[NL],.);
-			// attribute<Gemeente>  Gemeente_rel := ???;
-			// attribute<Provincie> Provincie_rel := ??;
+			attribute<Gemeente>  Gemeente_rel  := rlookup(GEMNR2017, Gemeente/Values);
+			attribute<Provincie> Provincie_rel := rlookup(PROVNR, provincie/Values);
 			
 			attribute<Jaar>      BioWKK_Start:= const(2020[jaar], .); // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 			
@@ -407,51 +372,7 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 				attribute<Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
 			}
 		}
-		
-		unit<uint32> wijken_vogelaar_2007:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_vogelaar/wijken_vogelaar_2007.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Volgelaar Wijken 2007, ontvangen per mail op 15 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_vogelaar/wijken_vogelaar_2007.shp",
-				StorageReadOnly = "True";
-			attribute<String> Wijknaam;
-			attribute<String> Gemeente;
-			attribute<uint32> Wijknum;
-		}
-		unit<uint32> wijken_winsemius_2005:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_winsemius/winsemius_pc04_2005_IRIS.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Winsemius Wijken 2005 op basis van PC4, ontvangen per mail op 16 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/wijken_winsemius/winsemius_pc04_2005_IRIS.shp",
-				StorageReadOnly = "True";
-			attribute<String> WINS_NM;
-			attribute<String> GEM_PC04NM;
-			attribute<uint32> POSTCODE4;
-		}
-		unit<uint32> nkn_herstucturering:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/nkn_herstucturering/NieuweKaart_polygon_herstructurering_wonen_gemengd_stedelijk_010310.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Nieuwe kaart van Nederland herstucturering wonen, ontvangen per mail op 16 november 2010 van Bas van Bemmel",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/nkn_herstucturering/NieuweKaart_polygon_herstructurering_wonen_gemengd_stedelijk_010310.shp",
-				StorageReadOnly = "True";
-			attribute<String> BESTEMMING;
-			attribute<String> OPM_TXT;
-		}
+
 		unit<uint32> PC4_Gemeente_NL:
 			StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_aggregatie_230812_union_IRIS_PC04_2011_strip.shp",
 			StorageType     = "gdal.vect",
@@ -468,127 +389,19 @@ Accept-Language: en-US,en;q=0.8,nl;q=0.6,fr;q=0.4
 			attribute<../PC4> PC4_rel_1: Expr = "rlookup(PC4, ../PC4/code)";
 			attribute<../PC4> PC4_rel  : Expr = "max(Shape_area, PC4_rel_1)[PC4_rel_1] == Shape_area ? PC4_rel_1 : value(0 / 0, ../PC4)";
 		}
-		
-		unit<uint32> randstad:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/randstad.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Randstad ten behoeve van zoomextent op dit gebied",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/randstad.shp",
-				StorageReadOnly = "True";
-		}	
-		
-		unit<uint32> gemeentegrens_utrecht:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_Utrecht.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Gemeentegrens Utrecht ten behoeve van zoomextent op dit gebied",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/gemeenten_2011/GemeenteGrenzen_2011_org_KAD_Utrecht.shp",
-				StorageReadOnly = "True";
-			attribute<String> GEMNM;
-		}
-						
-		unit<uint32> Grens_Bebouwd_Gebied_2003_org:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/BegrBG_2003_org_VROM.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "All"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Grens_Bebouwd_Gebied_2003_org",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/regios/BegrBG_2003_org_VROM.shp",
-				StorageReadOnly = "True"              
-				{
-				parameter<uint32> BrushColor 
-				:  DialogType = "BrushColor"
-				,  expr       = "rgb(127,127,127)";
-                parameter<uint32> PenColor: expr = "rgb(127,127,127)", DialogType = "PenColor";
-                parameter<int16>  PenWidth: expr = "int16(1)"    , DialogType = "PenWidth";
-                }
-            }
 
-		unit<uint32> Socrates:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/Socrates/socrates_regio.dbf",
-			DialogData      = "poly",
-			DialogType      = "Map",
-			StorageReadOnly = "True",
-			SyncMode        = "None"
-		{
-			attribute<rdc_meter> poly(polygon):
-				label           = "Socrates Regios uit NLL configuratie van Ruimtescanner",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/Socrates/socrates_regio.shp",
-				StorageReadOnly = "True";
-			attribute<String> Label:
-				DialogType     = "LabelText",
-				DisableStorage = "True",
-				[
-				 'geen'
-				,'Oost Groningen,Delfzijl'
-				,'Ov. Groningen'
-				,'Noord Fryslan'
-				,'ZW Fryslan,ZO Fryslan'
-				,'Noord Drente'
-				,'ZO Drente,ZW Drente'
-				,'Noord Overijssel,ZW Overijssel'
-				,'Twente'
-				,'Veluwe'
-				,'Achterhoek'
-				,'Arnhem-Nijmegen'
-				,'ZW Gelderland'
-				,'Utrecht'
-				,'Kop Noord-Holland'
-				,'Alkmaar e.o.'
-				,'IJmond,Haarlem'
-				,'Zaanstreek,Amsterdam'
-				,'Gooi/Vechtstreek'
-				,'Leiden/Bollenstreek'
-				,'Den Haag,Delft/Westland'
-				,'Oost Zuid-Holland'
-				,'Rijnmond'
-				,'ZO Zuid-Holland'
-				,'Zeeuws Vlaanderen,Ov. Zeeland'
-				,'West N-Brabant'
-				,'Midden N-Brabant'
-				,'NO N-Brabant'
-				,'ZO N-Brabant'
-				,'Noord Limburg,Midden Limburg'
-				,'Zuid Limburg'
-				,'Flevoland'
-				];
-		}
 		unit<UInt32> EmptySequenceSetSource := Range(UInt32, 0,0)
 		{
-			attribute<rdc_meter> Point:      Expr = "const(Point(Float64(0),Float64(0)), .)";
-			attribute<.>         SequenceNr: Expr = "const(value(0, .), .)";
-			attribute<UInt32>    Ordinal:    Expr = "const(value(0, uInt32), .)";
+			attribute<rdc_meter> Point     := const(Point(0.0, 0.0, rdc_meter), .);
+			attribute<.>         SequenceNr:= const(value(0, .), .);
+			attribute<UInt32>    Ordinal   := const(value(0, uInt32), .);
 		}
 	}
 	container top100
 	{
 		unit<uint8>  kleurindex_detail: isHidden = "True", nrofrows = 254, label = "background palette"
 		{
-			attribute<uint32> palette: expr = "Grid/nl_detail/PaletteData", DialogType = "BrushColor";
-		}
-		unit<uint8> kleurindex: isHidden = "True", nrofrows = 255
-		{
-			attribute<uint32> KleurenPalet_org: Expr = "grid/nl/PaletteData";
-			attribute<uint32> KleurenPalet: 
-				DialogType = "BrushColor", 
-				Expr = "iif(id(kleurindex) = value(0,kleurindex) 
-							|| id(kleurindex) = value(133,kleurindex) 
-							|| id(kleurindex) = value(144,kleurindex) 
-							|| id(kleurindex) = value(164,kleurindex)  
-							|| id(kleurindex) = value(171,kleurindex)
-							, rgb(240,247,246), KleurenPalet_org)";
+			attribute<uint32> palette := Grid/nl_detail/PaletteData, DialogType = "BrushColor";
 		}
 		container grid
 		{

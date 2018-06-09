@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -14,9 +14,9 @@
 //       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
 //                                                                                      //
 //     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
-//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving//
+//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
 //       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
-//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                       //
+//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
 //                                                                                      //
 //     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
 //       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
@@ -61,8 +61,8 @@ container InfraParameters: using = "units", Source = "MEMO Benno Schippers, 08-0
 	parameter<EUR_Yr_Aansl> JaarlijksW_G := VR_G + PA_G + MH_G + CT_G + AK_G;
 	parameter<EUR_Yr_Aansl> JaarlijksW_E := VR_E + PA_E + MH_E + CT_E + AK_E;
 	
-//	parameter<m2>        total_woning_area  := sum(RunContext/Y2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[RunContext/Y2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
-//	parameter<nrAansl>   total_woning_aansl := sum(RunContext/Y2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
+//	parameter<m2>        total_woning_area  := sum(RunContext/J2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[RunContext/J2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
+//	parameter<nrAansl>   total_woning_aansl := sum(RunContext/J2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
 	parameter<m2_aansl> gem_aansl_area      := 100[m2_aansl];
 	
 	parameter<EUR_m2> AansluitTariefG_BU := 0[EUR_m2];
@@ -86,11 +86,11 @@ container InfraParameters: using = "units", Source = "MEMO Benno Schippers, 08-0
 	parameter<MEUR_Yr> J_g := JK_g + JO_g; // K_infra_g
 	parameter<MEUR_Yr> J_e := JK_e + JO_e; // K_infra_e
 				
-	parameter<m> L_infra_g := sum(RunContext/Y2010/Endstate/KostenBaten/KostenD/L_infra_g);
-	parameter<m> L_infra_e := sum(RunContext/Y2010/Endstate/KostenBaten/KostenD/L_infra_e);
+	parameter<m> L_infra_g := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_g);
+	parameter<m> L_infra_e := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_e);
 	
-	parameter<EUR_Yr> O_net_g := sum(RunContext/Y2010/indicatoren/netwerk/AardGas/Oj_totaal);
-	parameter<EUR_Yr> O_net_e := sum(RunContext/Y2010/indicatoren/netwerk/Elektriciteit/Oj_totaal);
+	parameter<EUR_Yr> O_net_g := sum(RunContext/J2010/indicatoren/netwerk/AardGas/Oj_totaal);
+	parameter<EUR_Yr> O_net_e := sum(RunContext/J2010/indicatoren/netwerk/Elektriciteit/Oj_totaal);
 	
 	// schalingsfactoren
 	parameter<Float64> SF_g := N8_g * O_net_g / J_g[EUR_Yr]; 

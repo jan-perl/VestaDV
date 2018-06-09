@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -37,19 +37,24 @@ container Transformations: FreeData = "False"
 	template subst
 	{
 		unit<uint32> src;
-		parameter<string> key;
+		parameter<string> name_key;
+		parameter<string> code_key;
 		unit<uint32> valueset;
 		
-		attribute<bool> subst(src) := strpos(src/name, key) >= 0 || strpos(src/actor, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<bool> subst(src) := 
+			strpos(src/name, name_key) >= 0 || strpos(src/actor, name_key) >= 0 || strpos(src/expr, name_key) >= 0 ||
+			strpos(src/name, code_key) >= 0 || strpos(src/actor, code_key) >= 0 || strpos(src/expr, code_key) >= 0;
 		attribute<uint32> firstResult(src) := UInt32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
 		unit<uint32> result := range(uint32, 0, UInt32(Int32(#src) + sum(Int32(subst))*(Int32(#valueset)-1i)))
 		{
 			attribute<src> src_rel := classify(ID(.), firstResult);
 			attribute<string> valueset_name := MakeDefined(valueset/name[value(ID(.)-firstResult[src_rel], valueset)], 'xxx');
-			attribute<string> name        := replace(src/name        [src_rel], key, valueset_name);
-			attribute<string> actor       := replace(src/actor       [src_rel], key, valueset_name);
-			attribute<string> Expr        := replace(src/Expr        [src_rel], key, valueset_name);
-			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], key, valueset_name);
+			attribute<string> valueset_code := MakeDefined(valueset/code[value(ID(.)-firstResult[src_rel], valueset)], 'yyy');
+			attribute<string> name        := replace(src/name        [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> actor       := replace(src/actor       [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> Expr        := replace(src/Expr        [src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> PlanRegioRel:= replace(src/PlanRegioRel[src_rel], name_key, valueset_name, code_key, valueset_code);
+			attribute<string> EmissionExpr:= replace(src/EmissionExpr[src_rel], name_key, valueset_name, code_key, valueset_code);
 		}
 	}
 	template mut_table {
@@ -57,6 +62,7 @@ container Transformations: FreeData = "False"
 		unit<uint32>  Location;
 		parameter<Technology> Technology_rel;
 		unit<float64>      Quantity;
+		unit<float64>      EmissionFactorUnit;
 		
 		unit<uint32> mutatie := impl/mutatie;
 		unit<uint32> mut := subset(mutatie/technology_rel == Technology_rel)
@@ -91,7 +97,7 @@ container Transformations: FreeData = "False"
 		}
 		parameter<String> all_csv := 
 			'titel;quantity\n'
-			'[text];[GJ_Yr]\n'
+			'[text];[PJ_Yr]\n'
 			+ AsList(String(totals/name)+';'+String(totals/aggr_muts)+'\n', '')
 		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_' + Technology/values[Technology_rel]+'.csv'";
 	}
@@ -99,9 +105,10 @@ container Transformations: FreeData = "False"
 		// parameters
 		container          EnergyData;
 		unit<float64>      Quantity;
-		parameter<bool>    is_all;  // false: use fraction
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
+		parameter<string>  EmissionPrefix;
+		unit<float64>      EmissionFactorUnit;
 		// end parameters
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
@@ -111,19 +118,25 @@ container Transformations: FreeData = "False"
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)
 			{
-				attribute<string> name      := BC/name  [nr_OrgEntity];
+				attribute<string> name := BC/name[nr_OrgEntity];
+				attribute<string> code := BC/code[nr_OrgEntity];
 			}
-			container applyBC := subst(EnergyData/mutatie,'@BC@' , BC); 
-			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			unit<uint32> EnergyData_mutatie := EnergyData/mutatie
+			{
+				parameter<string> EmissionExprE:= (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
+				attribute<string> EmissionExpr := =EmissionExprE;
+			}
+			container applyBC := subst(EnergyData_mutatie,'@BC@' , '@BN@', BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@' , '@WKON@' ,WKOC); 
+			container applyRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<technology>  technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
 				attribute<location>    location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
 				attribute<string> entityRel := PlanRegioRel;
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
-				attribute<string> FinalExpr := is_all ? ExprSum : ExprSum +' * fraction';
+				attribute<string> FinalExpr := ExprSum +' * fraction' + (EmissionExpr == '' ? '' : ' * -value(' + EmissionExpr+',EmissionFactorUnit)');
 			}
 			unit<uint32> technology := unique(mutatie/name);
 			unit<uint32> location   := unique(mutatie/actor);
@@ -140,7 +153,7 @@ container Transformations: FreeData = "False"
 			}
 		}
 
-		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity)');
+		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity, EmissionFactorUnit)');
 		
 //*	
 		container matrix {
@@ -154,26 +167,34 @@ container Transformations: FreeData = "False"
 			unit<uint32> ColSet := impl/active_location;
 			unit<uint32> RowSet := impl/active_technology;
 			
-			container Table := for_each_nedv(ColSet/name, 
-//				'(1.0 / 1000000.0) * float64(int64   (1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
-				'(1.0 / 1000000.0) * float64(round_64(1000000.0*sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]))', 
+			container TableData := for_each_nedv(ColSet/name, 
+				'sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]', 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
-				attribute<MQuantity> Oj_Totaal(RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
-				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-'+ColSet/Name+', 0[MQuantity])')+')';
-//				attribute<MQuantity> Oj_Netto (RowSet) := (1.0 / 10000.0) * float64(round64(10000.0*(Oj_Totaal - Kj_Totaal)));
-				attribute<MQuantity> Oj_Netto (RowSet) := Oj_Totaal - Kj_Totaal;
+				attribute<MQuantity> Oj_Totaal(RowSet) := =' add('+AsItemList('max_elem(sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')';
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='-add('+AsItemList('-max_elem(-sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel], 0[MQuantity])')+')';
+				attribute<MQuantity> Oj_Netto (RowSet) := =' add('+AsItemList('sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]')+')';
+			}
+			
+			container Table := for_each_nedv(ColSet/name, 
+				'(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/'+ColSet/name+'))', 
+				RowSet, MQuantity)
+			{
+				attribute<string> name        (RowSet) := RowSet/name;
+				attribute<MQuantity> Oj_Totaal(RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Oj_Totaal))';
+				attribute<MQuantity> Kj_Totaal(RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Kj_Totaal))';
+				attribute<MQuantity> Oj_Netto (RowSet) := ='(1.0 / 1000000.0) * float64(round_64(1000000.0*TableData/Oj_Netto))';
 			}
 			
 			unit<uint32> RowSetWithTotal := union_unit(RowSet, void);
 			
-			container TableWithTotal := for_each_nedv(ColSet/name, replace('union_data(RowSetWithTotal,Table/@X,sum(Table/@X))','@X', ColSet/name), RowSetWithTotal, MQuantity)
+			container TableWithTotal := for_each_nedv(ColSet/name, replace('(1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal,TableData/@X,sum(TableData/@X))))','@X', ColSet/name), RowSetWithTotal, MQuantity)
 			{
 				attribute<string> name        (RowSetWithTotal) := union_data(RowSetWithTotal, RowSet/name, 'TOTAL');
-				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Totaal, sum(Table/Oj_Totaal));
-				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := union_data(RowSetWithTotal, Table/Kj_Totaal, sum(Table/Kj_Totaal));
-				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := union_data(RowSetWithTotal, Table/Oj_Netto , sum(Table/Oj_Netto ));
+				attribute<MQuantity> Oj_Totaal(RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Oj_Totaal, sum(TableData/Oj_Totaal))));
+				attribute<MQuantity> Kj_Totaal(RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Kj_Totaal, sum(TableData/Kj_Totaal))));
+				attribute<MQuantity> Oj_Netto (RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0*union_data(RowSetWithTotal, TableData/Oj_Netto , sum(TableData/Oj_Netto ))));
 			}
 
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';

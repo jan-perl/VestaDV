@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -39,7 +39,7 @@
 
 container UtilComponentOperaties
 {
-	container PerYear: IsTemplate = "True"
+	template PerYear
 	{
 		// begin case parameters
 		attribute<nrArbeidspl> BanenZichtjaar (Brondata/bebouwing/Utiliteit);
@@ -120,11 +120,10 @@ container UtilComponentOperaties
 			
 			container Criteria 
 			{
-				attribute<Bool> NietKlein(BebouwingsObject): Expr = "const(false, BebouwingsObject)";
 			}
 		}
 	}
-	container Unite: isTemplate = "True"
+	template Unite
 	{
 		// begin case parameters
 		container bron;
@@ -170,7 +169,6 @@ container UtilComponentOperaties
 			
 			container Criteria 
 			{
-				attribute<Bool> NietKlein(BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/UitlegUtil/Name + '/results/Criteria/ZZP') + ')'";
 			}
 		}
 	}

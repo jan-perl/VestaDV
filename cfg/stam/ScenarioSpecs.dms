@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -40,66 +40,19 @@
 
 container ScenarioSpecs: Using = "Units"
 {
-	container BebouwingsComponenten
-	{
-// 		container Util: 
-// 			Expr = "for_each_ne(Classifications/zichtjaar/name, "
-// 				   "            'CalculationSchemes/UtilComponentOperaties/PerYear(Brondata/bebouwing/Utiliteit/' + Classifications/zichtjaar/BanenAttrLISA + ')'"
-// 				   "           )";
-		#include<Uitleg.dms>
-		#include<GlasTuinbouwBijEnAf.dms>
-	}	
-	container bebouwing: Descr = "Blok 1"
-	{
-		container Huidig
-		{
-			container J2006:    Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,       BebouwingsComponenten/Uitleg/woning/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Utiliteit,    BebouwingsComponenten/Uitleg/Utiliteit/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Huidig/J2006/Uitleg, false, BronData"
-				")";
-		}
-		container Trend
-		{
-//* Alleen Uitleg uitbreiden; mutaties op huidige voorraad negeren; dit moet later als  mutatie op RunResults worden gebouwd
-			container J2010: Expr = 
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,       BebouwingsComponenten/Uitleg/woning/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Utiliteit,    BebouwingsComponenten/Uitleg/Utiliteit/Huidig/J2006/Results, false, BronData"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Huidig/J2006/Uitleg, false, BronData"
-				")";
-			container J2020: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2020/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2020"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2020/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2020"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2020/Uitleg, false, BronData"
-				")";
-			container J2030: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2030/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2030"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2030/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2030"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2030/Uitleg, false, BronData"
-				")";
-			container J2040: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2040/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2040"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2040/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2040"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2040/Uitleg, false, BronData"
-				")";
-			container J2050: Expr =
-				"CalculationSchemes/BebouwingsOperaties/Samenstelling("
-				"   BronData/Bebouwing/Woning,    BebouwingsComponenten/Uitleg/woning/Trend/J2050/results, true, BronData/Sloop/WoningResterendFactors/Trend/J2050"
-				",  BronData/Bebouwing/Utiliteit, BebouwingsComponenten/Uitleg/Utiliteit/Trend/J2050/results, true, BronData/Sloop/UtilResterendFactors/Trend/J2050"
-				",  BronData/Bebouwing/Glastuinbouw, BebouwingsComponenten/Glastuinbouw/Trend/J2050/Uitleg, false, BronData"
-				")";
-		}
-	}
-	container EnergieVraag: Descr = "Blok 2"
-	{
-		container BaseLine: Expr = "for_each_ne(Classifications/BebouwingsComponent/Name, 'BronData/energie/vraag/'+Classifications/BebouwingsComponent/ModelName+'/Results')";
-	}
+	#include<Uitleg.dms>
 	
+	container bebouwing := for_each_ne( Classifications/Zichtjaar/Name,
+			'CalculationSchemes/BebouwingsOperaties/Samenstelling('
+			'   BronData/Bebouwing/Woning,       Uitleg/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/WoningResterendFactors/'+Classifications/Zichtjaar/Name : '')+
+			',  BronData/Bebouwing/Utiliteit,    Uitleg/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/UtilResterendFactors/'+Classifications/Zichtjaar/Name : '')+
+			',  BronData/Bebouwing/Glastuinbouw, Uitleg/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
+			')'
+			);
+			
+	container EnergieVraag := for_each_ne(Classifications/BebouwingsComponent/Name, 'BronData/energie/vraag/'+Classifications/BebouwingsComponent/ModelName+'/Results');
 
 	container VestaRunOpties
 	{
@@ -138,8 +91,8 @@ container ScenarioSpecs: Using = "Units"
 				{
 					parameter<Ratio>   COP: [ 4.00 ];
 					parameter<Ratio>   DekkingsGraad: [ 0.80 ];
-					parameter<EUR_aansl> InvesteringsKosten_Min: [ 2600 ];
-					parameter<EUR_aansl> InvesteringsKosten_Max: [ 3600 ];
+					parameter<EUR_aansl> InvesteringsKosten_Min: [ 2500 ];
+					parameter<EUR_aansl> InvesteringsKosten_Max: [ 4300 ];
 				}
 			}
 			
@@ -171,7 +124,7 @@ container ScenarioSpecs: Using = "Units"
 					
 					container eWP
 					{
-						parameter<Ratio> COP: [ 4.00 ]; // tov rendement van Elektrische straalkachels
+						parameter<Ratio> COP: [ 3.00 ];
 						// Het minimum is gebaseerd op lucht/water systeem met LT-radiatoreen en het maximum op water/water systeem met vloerverwarming, 
 						// beide voor rijtjeshuis uit de periode 1960-1980 (CE-rapport, augustus 2013) met aftrek van het alternatief van de HR-ketel:
 						// 2000 euro ketelkosten bij minimale kosten
@@ -313,17 +266,25 @@ container ScenarioSpecs: Using = "Units"
 						parameter<units/EUR_m2> InvesteringsKosten_min: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
 						parameter<units/EUR_m2> InvesteringsKosten_max: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
 					}
-					container Opbengsten: Source= "geen nrAansluitingen voor GLTB";
+					container opbrengsten: Source= "http://www.mantis.objectvision.nl/view.php?id=841"
+					{
+						parameter<EUR_Yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
+						parameter<EUR_Yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
+						
+						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+					}
 				}
 				
 
 				container UitlegGlTb := Glastuinbouw
 				{
 					attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
-					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
+					container Opbrengsten: 
+						Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36 jo http://www.mantis.objectvision.nl/view.php?id=841"
 					{
-						attribute<EUR_kW> AansluitTarief_min(Classifications/UitlegUtil): [ 50, 50, 50, 50, 50, 50, 50, 50, 50 ];
-						attribute<EUR_kW> AansluitTarief_max(Classifications/UitlegUtil): [ 100, 100, 100, 100, 100, 100, 100, 100, 100 ];
+						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
 					}
 					container ZonneBoiler
 					{

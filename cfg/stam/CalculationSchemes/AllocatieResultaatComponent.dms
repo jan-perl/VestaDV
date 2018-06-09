@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -68,7 +68,6 @@ template AllocatieResultaatComponentTempl
 			VestaRunDataComponent/AandeelWarmteVraag * Float64(not(IsDefined(WarmteAllocatieComponent)))
 			+ VestaRunDataComponent/AandeelNietDeelnemers
 			- VestaRunDataComponent/AandeelElectric_mWKK;
-			// VestaRunDataComponent/AandeelWarmteVraag + VestaRunDataComponent/AandeelNietDeelnemers == 1.0;
 			
 		attribute<Float64> AardGasInclMicroWKK(BebouwingsObject) := AardGasExclMicroWKK  + mWKK;
 		attribute<Float64> AllElectric        (BebouwingsObject) := eWP + EWV + WKO;
@@ -76,25 +75,25 @@ template AllocatieResultaatComponentTempl
 		
 	container MeterVraag
 	{
-		attribute<GJ_Yr> RestWarmte(BebouwingsObject) := Aandelen/RestWarmte * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
-		attribute<GJ_Yr> GeoThermie(BebouwingsObject) := Aandelen/GeoThermie * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
-		attribute<GJ_Yr> WKO       (BebouwingsObject) := Aandelen/WKO        * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
-		attribute<GJ_Yr> WijkWKK   (BebouwingsObject) := Aandelen/WijkWKK    * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
-		attribute<GJ_Yr> BioWKK    (BebouwingsObject) := Aandelen/BioWKK     * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> RestWarmte  (BebouwingsObject) := Aandelen/RestWarmte * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> GeoThermie  (BebouwingsObject) := Aandelen/GeoThermie * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> WKO         (BebouwingsObject) := Aandelen/WKO        * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> WijkWKK     (BebouwingsObject) := Aandelen/WijkWKK    * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
+		attribute<GJ_Yr> BioWKK      (BebouwingsObject) := Aandelen/BioWKK     * VestaRunDataComponent/DragerOpties/Warmte/Warmte;
 		
 		attribute<GJ_Yr> GebiedsOptie(BebouwingsObject) := RestWarmte+GeoThermie+WKO+WijkWKK+BioWKK;
 		
 		attribute<GJ_Yr> AardGas_RV  (BebouwingsObject) := Aandelen/AardGasExclMicroWKK * VestaRunDataComponent/DragerOpties/Ruimteverwarming/AardGas * (1.0 - Aandelen/hWP  * Kengetallen/hWP/DekkingsGraad); // F85
 		attribute<GJ_Yr> AardGas_WW  (BebouwingsObject) := Aandelen/AardGasExclMicroWKK * VestaRunDataComponent/DragerOpties/WarmWater/AardGas;
 		attribute<GJ_Yr> AardGas_mWKK(BebouwingsObject) := Aandelen/mWKK                * VestaRunDataComponent/DragerOpties/Warmte/Warmte / (0.8 * 0.5); // rendement: 80% waarvan 50% voor warmte en 50% voor Elektriciteit
-		attribute<GJ_Yr> AardGas   (BebouwingsObject)   := AardGas_RV + AardGas_WW + AardGas_mWKK, Descr = "incl gas voor Micro WKK, excl gas voor WijkWKK en bijstook in WOS";
+		attribute<GJ_Yr> AardGas     (BebouwingsObject) := AardGas_RV + AardGas_WW + AardGas_mWKK, Descr = "incl gas voor Micro WKK, excl gas voor WijkWKK en bijstook in WOS";
 		
-		attribute<GJ_Yr> eWP (BebouwingsObject) :=Aandelen/eWP  * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
-		attribute<GJ_Yr> EWV (BebouwingsObject) :=Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/EWV; // COP is al toegepast in de DragerOptie
-		attribute<GJ_Yr> hWP (BebouwingsObject) :=Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
-		attribute<GJ_Yr> mWKK(BebouwingsObject) :=Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
-		attribute<GJ_Yr> CvPomp(BebouwingsObject):=VestaRunDataComponent/Functioneel/PompEnergie * (1.0 - Aandelen/eWP - Aandelen/EWV - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
-		attribute<GJ_Yr> Koude(BebouwingsObject) :=VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
+		attribute<GJ_Yr> eWP (BebouwingsObject)  := Aandelen/eWP  * VestaRunDataComponent/DragerOpties/Warmte/eWP; // COP is al toegepast in de DragerOptie
+		attribute<GJ_Yr> EWV (BebouwingsObject)  := Aandelen/EWV  * VestaRunDataComponent/DragerOpties/Warmte/EWV; // COP is al toegepast in de DragerOptie
+		attribute<GJ_Yr> hWP (BebouwingsObject)  := Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
+		attribute<GJ_Yr> mWKK(BebouwingsObject)  := Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
+		attribute<GJ_Yr> CvPomp(BebouwingsObject):= VestaRunDataComponent/Functioneel/PompEnergie * (Aandelen/AardGasExclMicroWKK - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
+		attribute<GJ_Yr> Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
 				
 		attribute<GJ_Yr> Elektriciteit(BebouwingsObject) :=
 			  VestaRunDataComponent/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
@@ -129,13 +128,14 @@ template AllocatieResultaatComponentTempl
 	container Elektriciteit {
 		attribute<EUR>    AansluitBijdrage(BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageE;
 		attribute<EUR_Yr> VastRecht       (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastRechtBijdrageE;
+		attribute<EUR_Yr> Heffingskorting (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/HeffingskortingE;
 
 		unit<uint8> ggk := VestaRunDataComponent/PrijzenElektriciteit; // gebruiksgrootte klasse
 		attribute<ggk>    ggk_rel        (BebouwingsObject) := classify(MeterVraag/Elektriciteit, ggk/ClassBreak);
 		attribute<EUR_Yr> eindgebruik_ex (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_eindgebruik_ex [ggk_rel];
 		attribute<EUR_Yr> maatschappelijk(BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_maatschappelijk[ggk_rel];
 		attribute<EUR_Yr> netwerk        (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_netwerk        [ggk_rel];
-		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel];
+		attribute<EUR_Yr> EnergieHeffing (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel] - Heffingskorting;
 		attribute<EUR_Yr> CO2Heffing     (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_CO2Heffing     [ggk_rel];
 	}
 	container CO2

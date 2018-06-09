@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container WijkTempl: IsTemplate = "True"
+template WijkTempl
 {
 	container BeginStatus;
 	container AanbodKentallen;
@@ -44,10 +44,7 @@ container WijkTempl: IsTemplate = "True"
 	parameter<PJ_Yr>   MaxTotalDemand;
 	
 	// end of case param
-	
-	parameter<Float64> CO2_Aardgas       := TypeInfo/RekenType/Aardgas_Factor;
-	parameter<Float64> CO2_Elektriciteit := TypeInfo/RekenType/Elektriciteit_Factor;
-	
+
 	unit<uint32> PlanRegio: Expr = "RunImpl/PlanRegio"
 	{
 		attribute<units/Jaar> StartJaar: Expr = "=StartJaarAttr != '' ? StartJaarAttr : 'const(2000[units/jaar], .)'";
@@ -68,14 +65,10 @@ container WijkTempl: IsTemplate = "True"
 		attribute<EUR> Oi_EIA   (PlanRegio) := Ki_Totaal * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel];
 		attribute<EUR> Ki_Netto (PlanRegio) := Ki_Totaal - Oi_EIA;
 		
-		parameter<EUR_GJ> K_GJ := 
-			(Jaar < 2020[Units/Jaar] ? TypeInfo/K_GJ10 :  
-			 Jaar < 2030[Units/Jaar] ? TypeInfo/K_GJ20 :  
-			 Jaar < 2040[Units/Jaar] ? TypeInfo/K_GJ30 :  
-			 Jaar < 2050[Units/Jaar] ? TypeInfo/K_GJ40 : TypeInfo/K_GJ50 );
+		parameter<EUR_GJ> K_GJ := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
 			
-		parameter<KG_GJ> CO2g_GJ := CO2_Aardgas * VestaRunData/Prijzen/AardGas/CO2_GJ;
-		parameter<KG_GJ> CO2e_GJ := CO2_Elektriciteit * VestaRunData/Prijzen/Elektriciteit/CO2_GJ;
+		parameter<KG_GJ> CO2g_GJ := TypeInfo/RekenType/Aardgas_Factor       * VestaRunData/Prijzen/AardGas/CO2_GJ;
+		parameter<KG_GJ> CO2e_GJ := TypeInfo/RekenType/Elektriciteit_Factor * VestaRunData/Prijzen/Elektriciteit/CO2_GJ;
 		parameter<KG_GJ> CO2_GJ := CO2g_GJ + CO2e_GJ, Source = "FO v7a C.5 WijkWKK";
 			
 		parameter<EUR_GJ> Km_GJ := K_GJ;
@@ -86,22 +79,20 @@ container WijkTempl: IsTemplate = "True"
 		attribute<EUR_Yr> Kj_WarmteWaarde(PlanRegio):= K_GJ  * KostenBaten/Vj_WarmtePrimairD;
 		attribute<EUR_Yr> Km_WarmteWaarde(PlanRegio):= Km_GJ * KostenBaten/Vj_WarmtePrimairD;
 		
-		attribute<EUR_Yr> Ke_Totaal      (PlanRegio):= CO2_Elektriciteit * KostenBaten/Vj_WarmtePrimairD * last(VestaRunData/prijzen/Elektriciteit/Staffel/KGJ_Commodity);
+		attribute<EUR_Yr> Ke_Totaal(PlanRegio) := TypeInfo/RekenType/Elektriciteit_Factor * KostenBaten/Vj_WarmtePrimairD * last(VestaRunData/prijzen/Elektriciteit/Staffel/KGJ_Commodity);
 
-		attribute<EUR_Yr> Kj_Totaal  (PlanRegio) := Kj_Base + Kj_WarmteWaarde;
+		attribute<EUR_Yr> Kj_Totaal(PlanRegio) := Kj_Base + Kj_WarmteWaarde;
 		attribute<EUR_Yr> Km_Totaal(PlanRegio) := Kj_Base + Km_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.
 	}
 
-	attribute<EUR   > Oi_Totaal(PlanRegio):= KostenBaten/Oi_Aansluitbijdrage ;
-	attribute<EUR   > Ki_Totaal(PlanRegio):= KostenBaten/Ki_wd_bruto + Kosten/Ki_Totaal;
-	attribute<EUR_Yr> Ke_Totaal(PlanRegio):= Kosten/Ke_Totaal;
-	
-//	attribute<EUR   > Ki_Netto (PlanRegio):= Ki_Totaal - NCW/wd28/StartDiscountFactor * Oi_Totaal;
+	attribute<EUR   > Oi_Totaal(PlanRegio) := KostenBaten/Oi_Aansluitbijdrage ;
+	attribute<EUR   > Ki_Totaal(PlanRegio) := KostenBaten/Ki_wd_bruto + Kosten/Ki_Totaal;
+	attribute<EUR_Yr> Ke_Totaal(PlanRegio) := Kosten/Ke_Totaal;
 	
 	attribute<EUR_Yr> Km_Totaal  (PlanRegio):= KostenBaten/Km_TotaalD + Kosten/Km_Totaal;
 	attribute<EUR_Yr> Oj_Netto   (PlanRegio):= KostenBaten/Oj_NettoD  - Kosten/Kj_Totaal;
 	attribute<kg_Yr>  CO2_Primair(PlanRegio):= KostenBaten/Vj_WarmtePrimairD * Kosten/CO2_GJ;
-	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * CO2_Elektriciteit;
+	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * TypeInfo/RekenType/Elektriciteit_Factor;
 	attribute<kg_Yr>  CO2_e      (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * Kosten/CO2e_GJ;
 	attribute<kg_Yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
 	
@@ -120,10 +111,10 @@ container WijkTempl: IsTemplate = "True"
 	attribute<Bool> NewGebruik   (PlanRegio) := RentabiliteitsAfweging && Afweging2 && not(OldGebruik);
 	attribute<Bool> GebruikOptie (PlanRegio) := NewGebruik || GebruiktOptie;
 	
-//	attribute<EUR_Yr> Kj_Netto (PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oj_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
-	
 	container Results := BeginStatus
 	{
+		container Factoren := TypeInfo/RekenType;
+		
 		container AanbodOpties := BeginStatus/AanbodOpties
 		{
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := 

@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -49,10 +49,10 @@ container Units:
 	unit<Float64> km2:          Expr = "km * km";
 	unit<Float64> ha:           Expr = "10000.0 * m2";
 	
-	unit<Float64> kg:           Expr = "BaseUnit('kg', Float64)", Descr = "SI base unit for mass";
-	unit<Float64> ton:          Expr = "1000.0 * kg";
+	unit<Float64> g   := BaseUnit('g', Float64);
+	unit<Float64> kg  := 1000.0*g, Descr = "SI base unit for mass";
+	unit<Float64> ton := 1000.0 * kg;
 	unit<Float64> kton:         Expr = "1000.0 * ton";
-	unit<Float64> gram:         Expr = "0.001 * kg";
 	
 	unit<Float64> s:            Expr = "baseunit('s', Float64)",  label = "second", Descr = "SI base unit for time";
 	unit<Float64> s2:           Expr = "s*s";
@@ -75,8 +75,8 @@ container Units:
 	unit<Float64> MJ_Yr_m2:     Expr = "MJ_Yr / m2";
 	unit<Float64> GJ:           Expr = "1000 * MJ";
 	unit<Float64> PJ:           Expr = "1000000 * GJ";
-	unit<Float64> GJ_Yr:        Expr = "GJ / Yr",                 label = "GigaJoule per Year", Descr = "unit for energy consumption (as opposed to power which indicates maximum capacity)";
-	unit<Float64> PJ_Yr:        Expr = "PJ / Yr",                 label = "PetaJoule per Year", Descr = "alternative unit for aggregated consumption";
+	unit<Float64> GJ_Yr:        Expr = "GJ / Yr", label = "GigaJoule per Year", Descr = "unit for energy consumption (as opposed to power which indicates maximum capacity)";
+	unit<Float64> PJ_Yr:        Expr = "PJ / Yr", label = "PetaJoule per Year", Descr = "alternative unit for aggregated consumption";
 	unit<Float64> GJ_Yr_Woning: Expr = "GJ_Yr / nrWoningen";
 	unit<Float64> GJ_Yr_m2:     Expr = "GJ_Yr / m2";
 	unit<Float64> GJ_Yr_ha:     Expr = "GJ_Yr / ha";
@@ -94,7 +94,7 @@ container Units:
 	unit<Float64> Percent:      = 100.0 * Ratio,     cdf = "Classifications/Percentage13K/Classes";
 	unit<Float64> Percent_yr:   = Percent / Yr;
 
-	unit<Float64> Eur         := BaseUnit('EURO', Float64), Descr = "Euro's prijspeil 2010";
+	unit<Float64> Eur         := BaseUnit('EURO', Float64), Descr = "Euro prijspeil 2010";
 	unit<Float64> Eur_Yr:      = EUR / Yr;
 	unit<Float64> Eur_Yr_m:    = Eur_Yr / m;
 	unit<Float64> Eur_ton:     = EUR / ton;
@@ -121,8 +121,10 @@ container Units:
 	unit<Float64> Eur_m:       = EUR / m;
 	unit<Float64> Eur_kWh:     = EUR / kWh;
 	unit<Float64> kg_GJ:       = kg / GJ, Descr = "Co2 effect van energieproductie";
+	unit<Float64> g_GJ:        = g / GJ, Descr = "andere effect van energieproductie";
 	unit<Float64> kg_Yr:       = kg / Yr, Descr = "Co2 effect per jaar";
-	unit<Float64> kton_Yr:     = kton / Yr;
+	unit<Float64> kton_Yr := kton / Yr;
+	unit<Float64> Ton_Yr  := ton  / Yr;
 
 // actor based units
 	unit<Float64> nrPersonen:   = BaseUnit('Inwoner', Float64), cdf = "Classifications/NrInwoners12K/Classes"; 

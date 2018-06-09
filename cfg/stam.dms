@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -45,6 +45,8 @@
 
 container Vesta: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 {
+	#include <ConfigSettings.dms>
+	#include <ExportSettings.dms>
 	#include <Units.dms>
 	#include <Geography.dms>
 	#include <Classifications.dms>
@@ -55,19 +57,18 @@ container Vesta: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 	#include <FlowData.dms>
 	#include <EnergyData.dms>
 	#include <InfraParams.dms>
-	container Exports {
-		container WarmteProductiePerBron {
-			container Table := for_each_nedv(Classifications/ZichtJaar/period_name 
-			,	replace(
-					'sum('
-						'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
-						'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], BronData/WarmteBronnen/MetaData/TypeInfoList/V/Onbekend)'
-					') / 1000000[Units/GJ / Units/PJ]'
-				,	'@RW@', 'RunContext/@YR@/GebiedsAllocatie/RestWarmte'
-				,	'@YR@', 'Y'+String(Classifications/ZichtJaar/Jaar)
-				)
-			,	BronData/WarmteBronnen/MetaData/TypeInfoList, Units/PJ_Yr
-			);
-		}
-	}
+	
+	container WarmteProductiePerBron {
+		container Table := for_each_nedv(Classifications/ZichtJaar/period_name 
+		,	replace(
+				'sum('
+					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
+					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], BronData/WarmteBronnen/MetaData/TypeInfoList/V/Onbekend)'
+				') / 1000000[Units/GJ / Units/PJ]'
+			,	'@RW@', 'RunContext/@YR@/GebiedsAllocatie/RestWarmte'
+			,	'@YR@', Classifications/ZichtJaar/Name
+			)
+		,	BronData/WarmteBronnen/MetaData/TypeInfoList, Units/PJ_Yr
+		);
+	}	
 }

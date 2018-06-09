@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -38,124 +38,14 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Container GlasTuinBouw:
-	Expr = "for_each_ne( Classifications/ScenarioZichtjaar/HasMutations ? Classifications/ScenarioZichtjaar/Name : '' "
-			",'MaakMutatieUitleg(BronData/GGSectorAfBij/Bij/' + Classifications/ScenarioZichtjaar/Name"
-				"+ ',BronData/GGSectorAfBij/Af/'  + Classifications/ScenarioZichtjaar/Name"
-				"+ ',value(' + String(Classifications/ScenarioZichtjaar/zichtjaar_jaar )+ ',Units/Jaar)'"
-//				"+ ','+MakeDefined(Classifications/ScenarioZichtjaar/Name[ID(Classifications/ScenarioZichtjaar)-1]+'/Uitleg/BebouwingsObject','Huidig/LegeUitleg/results/BebouwingsObject')"
-			"+')'"
-		")"
+Container GlasTuinBouw:= for_each_ne( Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/Name : '' 
+			,'MaakMutatieUitleg(BronData/GGSectorAfBij/Bij/' + Classifications/Zichtjaar/Name
+				+ ',BronData/GGSectorAfBij/Af/'  + Classifications/Zichtjaar/Name
+				+ ',value(' + String(Classifications/Zichtjaar/jaar )+ ',Units/Jaar)'
+//				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Uitleg/BebouwingsObject','Huidig/LegeUitleg/results/BebouwingsObject')
+			+')'
+		)
 {
-	container Huidig
-	{
-		container ComponentKoppelSamenstelling: Istemplate = "True"
-		{
-			container Mutaties; //: Expr = "BronData/bebouwing/glastuinbouw";
-			container Uitleg;
-		}
-		container LegeUitleg: Expr = "Uitleg/LegeSetFunc(Units/m2, classifications/GLTB)";
-		container J2006: Expr = "ComponentKoppelSamenstelling(BronData/bebouwing/glastuinbouw, LegeUitleg/results)";
-	}
-	container MaakMutatieUitleg: IsTemplate = "True"
-	{
-		// begin case parameters
-		attribute<bool> bij(Geography/rdc_100lu);
-		attribute<bool> af (Geography/rdc_100lu);
-		parameter<Units/Jaar>     zichtjaar;
-		
-		Unit<UInt32> bron: Expr = "BronData/bebouwing/glastuinbouw";
-		
-		// einde case parameters
-		
-		container CaseData
-		{
-			unit<uint32> lokatiesBij: Expr = "Subset(bij)"
-			{
-				attribute<Geography/rdc_meter>                point:        Expr = "Geography/rdc_100lu/point[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/PC4>      PC4_rel:      Expr = "Geography/rdc_100lu/PC4_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid500m> grid500m_rel: Expr = "Geography/rdc_100lu/grid500m_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel:  Expr = "Geography/rdc_100lu/grid1km_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel:  Expr = "Geography/rdc_100lu/grid2km_rel[nr_OrgEntity]";
-			}
-			
-			unit<UInt32> AggrReg: Expr = "Geography/RegioIndelingen/PC4"
-			{
-				attribute<AggrReg> rel(Geography/rdc_100lu): Expr = "Geography/rdc_100lu/PC4_rel";
-				attribute<Units/m2>    Oppervlakte_bij     := sum(bij ? 10000[units/m2] : 0[units/m2],rel);
-				attribute<Units/m2>    Oppervlakte_af_max  := sum(af  ? 10000[units/m2] : 0[units/m2],rel);
-				attribute<Units/m2>    Oppervlakte_huidig  : 
-					Expr = "sum(BronData/bebouwing/glastuinbouw/Opp_M2, BronData/bebouwing/glastuinbouw/PC4_rel)";
-				attribute<Units/ratio> behoudfactor        : Expr = "value(1, Units/Ratio) - min_elem(Oppervlakte_af_max / Oppervlakte_huidig, value(1, Units/ratio))";
-			}
-		}
-		unit<uint32>  Uitleg := combine(CaseData/lokatiesBij, Classifications/GLTB)
-			,	DialogType ="Map"
-			,	DialogData ="Point"
-		{
-			// units en attributen van BebouwingsComponent
-			unit<uint32>  BebouwingsObject := .;
-			attribute<Geography/rdc_meter> PointCopy(BebouwingsObject): Expr = "point";
-			attribute<String> Code := String(SubType)+ String(Bouwjaar) + String(Point);
-			attribute<string> Label := Code, DialogType = "LabelText";
-
-			unit<uint8>   KengetalTypeDomein: Expr = "Classifications/GLTB";
-			
-			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "CaseData/lokatiesBij/point[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "CaseData/lokatiesBij/PC4_rel     [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid500m_rel[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel  (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid1km_rel [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel  (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid2km_rel [BebouwingsObject/nr_1]";
-			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "GLTB_Code";
-			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
-			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
-			attribute<UInt8>                         SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
-			attribute<m2>                            NrJoinedUnits  (BebouwingsObject): Expr = "Oppervlakte";
-			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(0[nrAansl   ], BebouwingsObject), FreeData = "True";
-			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";
-			
-			// overige attributen 
-			attribute<Classifications/GLTB> GLTB_code  (BebouwingsObject): Expr = "BebouwingsObject/nr_2";
-			attribute<Units/ratio>          Verdeling  (BebouwingsObject): Expr = "BronData/GLTBverdeling/nl/GLTB[GLTB_code]";
-			attribute<m2>                   Oppervlakte(BebouwingsObject): Expr = "Verdeling * 10000[units/m2]";
-			attribute<Float64>       AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // geen AandeelWarmteVraag in de nieuwe glastuinbouw
-			
-			container Criteria;
-			container Gebied: FreeData = "True" // noodzakelijk voor Bebouwingscomponent interfact, hoewel gtb niet gebruikt wordt voor WKO.
-			{
-				attribute<Float64> n     (BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_x(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_y(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xx(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xy(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_yy(BebouwingsObject) := const(0.0, BebouwingsObject);
-			}
-		}
-		container Mutaties
-		{
-			// units en attributen van BebouwingsComponent
-			unit<uint32>  BebouwingsObject:   Expr = "BronData/bebouwing/glastuinbouw";
-			unit<uint8>   KengetalTypeDomein: Expr = "Classifications/GLTB";
-
-			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "bron/point";
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "bron/PC4_rel     ";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel (BebouwingsObject): Expr = "bron/grid500m_rel";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel  (BebouwingsObject): Expr = "bron/grid1km_rel ";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel  (BebouwingsObject): Expr = "bron/grid2km_rel ";
-			attribute<UInt8>                         SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
-			attribute<m2>                            NrJoinedUnits  (BebouwingsObject): Expr = "Oppervlakte";
-			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject): Expr = "bron/nrAansluitingen * (Oppervlakte / bron/Opp_m2)";
-
-			// overige attributen
-			attribute<Classifications/GLTB>          GLTB_code      (BebouwingsObject): Expr = "bron/GLTB_Code";
-			attribute<m2>                            Oppervlakte    (BebouwingsObject): Expr = "bron/Opp_m2 * CaseData/AggrReg/behoudfactor[PC4_rel] ";
-			
-			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "GLTB_Code";
-			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
-			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
-			attribute<Float64>                    AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // geen AandeelWarmteVraag in de nieuwe glastuinbouw
-			
-			container Criteria : Expr  = "bron/Criteria";
-		}
-	}
+	container J2010 := Uitleg/LegeSetFunc(Units/m2, classifications/GLTB);
+	
 }

@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -41,14 +41,14 @@
 container GGSectorAfBij
 {
 	container Af := 
-		for_each_ndva(Classifications/ScenarioZichtjaar/HasMutations ? Classifications/ScenarioZichtjaar/name : '',
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
 			Geography/rdc_100lu, bool,
-			Parameters/WloScenarioFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Af.tif'
+			Parameters/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Af.tif'
 		);
 	container Bij :=
-		for_each_ndva(Classifications/ScenarioZichtjaar/HasMutations ? Classifications/ScenarioZichtjaar/name : '',
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
 			Geography/rdc_100lu, bool,
-			Parameters/WloScenarioFolder+'/'+Classifications/ScenarioZichtjaar/period_name+'/GLTB/Bij.tif'
+			Parameters/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
 		);
 
 }

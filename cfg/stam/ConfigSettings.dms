@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -38,8 +38,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container ConfigSettings: isHidden = "True"
-, KeepData = "False" // HACK to avoid issue with GetInterestCount()
+container ConfigSettings: isHidden = "True", KeepData = "False" // HACK to avoid issue with GetInterestCount()
 {
 	container Overridable {
 		parameter<String> SourceDataProjDir: [ '%sourceDataDir%/Vesta' ];

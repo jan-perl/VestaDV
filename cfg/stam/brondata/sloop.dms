@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -51,7 +51,8 @@ container Sloop
 
 	container WoningResterendFactors :=
 		for_each_nedv(  CaseData/SZW/HasMutations ? CaseData/SZW/Name : ''
-			, 'Float64(WoningResterendTiffs/'+CaseData/SZW/Name+')'
+			, 'median(0.0, Float64(WoningResterendTiffs/'+CaseData/SZW/Name +'), '
+				+ (CaseData/SZW/Zichtjaar_jaar > 2020w ? CaseData/SZW/prev_name : '1.0')+')' 
 			, Geography/rdc_100lu, Float64
 		);
 
@@ -64,12 +65,15 @@ container Sloop
 
 	container UtilResterendFactors :=
 		for_each_nedv(  CaseData/SZU/HasMutations ? CaseData/SZU/Name : ''
-			, CaseData/SZU/Zichtjaar_jaar > 2010w && strlen(CaseData/SZU/wlo_filename_uitleg) > 0  ? 'median(0.0, Float64(UtilDeltaFactorTiffs/'+CaseData/SZU/Name +'), 1.0)' : 'const(1.0, Geography/rdc_100lu)'
+			, CaseData/SZU/Zichtjaar_jaar > 2010w && strlen(CaseData/SZU/wlo_filename_uitleg) > 0  
+					? 'median(0.0, Float64(UtilDeltaFactorTiffs/'+CaseData/SZU/Name +'), '
+						+ (CaseData/SZU/Zichtjaar_jaar > 2020w ? CaseData/SZU/prev_name : '1.0')+')' 
+					: 'const(1.0, Geography/rdc_100lu)'
 			, Geography/rdc_100lu, float64
 		);
 
 	container Totalen {
-		attribute<float32> WoningResterend (CaseData/SZW) := ='union_data(CaseData/SZW,'+AsItemList(CaseData/SZW/HasMutations ? 'sum(WoningResteredTiffs/' +CaseData/SZW/Name+')' : '0f / 0f')+')';
+		attribute<float32> WoningResterend (CaseData/SZW) := ='union_data(CaseData/SZW,'+AsItemList(CaseData/SZW/HasMutations ? 'sum(WoningResterendTiffs/' +CaseData/SZW/Name+')' : '0f / 0f')+')';
 		attribute<string>  ScenYearTypeW (CaseData/SZW) := CaseData/SZW/Name;		
 		attribute<float32> UtilDeltaFactorSum(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'sum(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';
 		attribute<float32> UtilDeltaFactorMean(CaseData/SZU) := ='union_data(CaseData/SZU,'+AsItemList(CaseData/SZU/HasMutations && strlen(CaseData/SZU/wlo_filename_uitleg) > 0 ? 'mean(UtilDeltaFactorTiffs/'+CaseData/SZU/Name+')' : '0f / 0f')+')';

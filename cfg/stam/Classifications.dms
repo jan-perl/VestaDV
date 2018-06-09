@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -539,6 +539,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		,	'Glastuinbouw'
 		,	'UitlegGlTb'
 		];
+		attribute<String> Code := string(ID(.));
 
 		attribute<String> Label: Expr = "Name", DialogType = "LabelText";
 		
@@ -583,6 +584,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	unit<uint8> WkoComponent := Subset(BebouwingsComponent/KanWKO)
 	{
 		attribute<String> Name := BebouwingsComponent/Name[nr_OrgEntity];
+		attribute<String> Code := BebouwingsComponent/Code[nr_OrgEntity];
 	}
 	unit<uint8> GasnetComponent := WkoComponent;
 
@@ -749,7 +751,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<Uint8> code: Expr = "ModelValue *  UInt8(#EnergieLabel) + CalcValue";
 		
 		attribute<LabelSprong>   CurrSprong: [ 0, 0, 1, 1, 1, 2, 2, 0, 1, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 2 ];
-		attribute<EnergieLabel>  CurrLabel : [ 6, 6, 3, 3, 3, 2, 2, 5, 3, 3, 3, 2, 2, 4, 4, 3, 3, 2, 2, 3, 3, 3, 2, 2, 3, 3, 2, 2, 3, 2, 2, 2, 2 ];
+		attribute<EnergieLabel>  CurrLabel : [ 6, 6, 3, 3, 2, 2, 2, 5, 3, 3, 2, 2, 2, 4, 4, 3, 2, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2 ];
 	}
 	
 	unit<uint8> AanbodOptie: nrofrows = 5 // volgorde niet hier instellen maar in ScenarioSpecs/VestaRunOpties/Voorkeuren/BaseLine/WarmteOpties
@@ -762,6 +764,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		,	'BioWKK'
 		,	'WKO'
 		];
+		attribute<string> code := string(id(.));
 		attribute<bool> IsPlanRegioOptie: [ true, true, true, true, false]; //, false ];
 		attribute<string> label: DialogType = "LabelText", Expr = "Name";
 		attribute<UInt32> Color: DialogType = "BrushColor",
@@ -776,93 +779,47 @@ container Classifications: Using = "Units", KeepData = "True"
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
 	
-	unit<uint8> KostenSoort: nrofrows = 14
+	unit<uint8> zichtjaar: nrofrows = 5
 	{
-		attribute<String> Name: Expr = "'R'+String(ID(.))";
-		attribute<String> Label: DialogType = "LabelText",
-		[
-			'GebouwVerbetering', 'LokaleOpwekking',
-			'Gas', 'Elektra',
-			'RestWarmte', 'GeoThermie', 'WKO', 'WijkWKK', 'BioWKK', 
-			'Onderhoud & Verbruik',
-			'CO2 Heffing',
-			'Energie heffing',
-			'BTW',
-			'RisicoPremie'
-		];
-		attribute<Bool> IsMaatschappelijk: [ true, true, true, true, false, false, false, false, false, true, true, false, false, false ];
-	}
-	
-	unit<UInt32> KostenPlaats: nrOfRows = 12
-	{
-		attribute<String> Name := union_data(., BebouwingsComponent/name, 'RestWarmte', 'GeoThermie', 'WKO', 'WijkWKK', 'BioWKK', 'Subsidie');
-		attribute<String> Label:= Name, DialogType = "LabelText";
-	}
-	
-	unit<uint8> scenario: nrofrows = 2
-	{
-		attribute<String> Name:   ['Huidig', 'Trend'];
-		parameter<.>      Huidig: Expr = "value(0, .)";
-		parameter<.>      Trend:  Expr = "value(1, .)";
-	}
-	unit<uint8> zichtjaar: nrofrows = 6
-	{
-		attribute<Units/Jaar> Jaar: [2006, 2010, 2020, 2030, 2040, 2050 ];
-		attribute<String>     Label: Expr = "String(Jaar)";
-		attribute<String>     Name:  Expr = "'J'+Label";
-		attribute<String>     period_name: Expr = "'Y'+Label[ID(.)-1[.]] + '_Y'+Label";
-		attribute<String>     BanenAttrLISA:  Expr = "'banen'+ String(Jaar- value(2000, Units/Jaar))";
+		attribute<Units/Jaar> Jaar: [2010, 2020, 2030, 2040, 2050 ];
+		attribute<bool>       HasMutations := Jaar > 2010[Units/Jaar];
+		attribute<String>     Label := String(Jaar);
+		attribute<String>     Name  := 'J'+Label;
+		attribute<String>     period_name := 'Y'+Label[ID(.)-1[.]] + '_Y'+Label;
 		
 		
-		parameter<.> J2006: Expr = "value(0, .)";
-		parameter<.> J2010: Expr = "value(1, .)";
-		parameter<.> J2020: Expr = "value(2, .)";
-		parameter<.> J2030: Expr = "value(3, .)";
-		parameter<.> J2040: Expr = "value(4, .)";
-		parameter<.> J2050: Expr = "value(5, .)";
+		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
-	unit<uint32> ScenarioZichtjaarCombined:  = combine(Scenario, zichtjaar);
-	unit<uint32> ScenarioZichtjaar:          = Subset((ScenarioZichtjaarCombined/nr_1 == scenario/Huidig) == (ScenarioZichtjaarCombined/nr_2 == zichtjaar/J2006))
+	unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningType) // wordt gebruikt om uitleg maps en ResterdFactorMaps te lezen.
 	{
-		attribute<Bool> HasMutations:  = ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] > Zichtjaar/j2010;
-		
-		attribute<String>     Scenario_Name  := Scenario/Name  [ScenarioZichtjaarCombined/nr_1[nr_OrgEntity] ];
-		attribute<String>     Zichtjaar_Name := zichtjaar/Name [ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     Zichtjaar_label:= zichtjaar/Label[ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<Units/Jaar> zichtjaar_jaar := zichtjaar/Jaar [ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     period_Name    := zichtjaar/period_Name[ScenarioZichtjaarCombined/nr_2[nr_OrgEntity] ];
-		attribute<String>     Name           := Scenario_Name + '/'+ Zichtjaar_name;
-
-		container V := for_each_nedv(name, 'value('+string(ID(.))+', ...)', void, .);
-	}
-	unit<uint32> ScenarioZichtjaarWonen := combine(ScenarioZichtjaar, WoningType) // wordt gebruikt om uitleg maps en ResterdFactorMaps te lezen.
-	{
-		attribute<Bool>       HasMutations      := ScenarioZichtjaar/HasMutations[nr_1];
-		attribute<String>     scenario_Name     := ScenarioZichtjaar/Scenario_Name[nr_1];
-		attribute<String>     zichtjaar_Label   := ScenarioZichtjaar/ZichtJaar_Label[nr_1];
-		attribute<String>     zichtjaar_name    := ScenarioZichtjaar/ZichtJaar_Name[nr_1];
-		attribute<Units/Jaar> zichtjaar_jaar    := ScenarioZichtjaar/ZichtJaar_Jaar[nr_1];
-		attribute<String>     period_name       := ScenarioZichtjaar/period_name[nr_1];
+		attribute<Bool>       HasMutations      := Zichtjaar/HasMutations[nr_1];
+		attribute<String>     zichtjaar_Label   := Zichtjaar/Label[nr_1];
+		attribute<String>     zichtjaar_name    := Zichtjaar/Name[nr_1];
+		attribute<String>     prev_zichtjaar_name := Zichtjaar/Name[nr_1-1b];
+		attribute<Units/Jaar> zichtjaar_jaar    := Zichtjaar/Jaar[nr_1];
+		attribute<String>     period_name       := Zichtjaar/period_name[nr_1];
 		attribute<String>     Wonen_Name        := WoningType/Name[nr_2];
 		attribute<String>     Wonen_wlo_FileName:= WoningType/wlo_FileName[nr_2];
 		attribute<WoningType> WoningType_rel    := nr_2;
-		attribute<String>     Name              := Scenario_Name + '/' + zichtjaar_Name + '/' + Wonen_Name;
+		attribute<String>     Name              := zichtjaar_Name + '/' + Wonen_Name;
+		attribute<String>     prev_name         := prev_zichtjaar_Name + '/' + wonen_Name;
 		attribute<string>     Label             := Name;
 
-		container V := for_each_nedv(name, 'value('+string(ID(.))+', ....)', void, .);
+		container V := for_each_nedv(name, 'value('+string(ID(.))+', ...)', void, .);
 	}
-	unit<uint32> ScenarioZichtjaarUtiliteit := combine(ScenarioZichtjaar, UitlegUtil)
+	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UitlegUtil)
 	{
-		attribute<Bool>       HasMutations   := ScenarioZichtjaar/HasMutations[nr_1];
-		attribute<String>     scenario_Name  := ScenarioZichtjaar/Scenario_Name[nr_1];
-		attribute<String>     zichtjaar_Label:= ScenarioZichtjaar/ZichtJaar_Label[nr_1];
-		attribute<String>     zichtjaar_name := ScenarioZichtjaar/ZichtJaar_Name[nr_1];
-		attribute<Units/Jaar> zichtjaar_jaar := ScenarioZichtjaar/ZichtJaar_Jaar[nr_1];
-		attribute<String>     period_name    := ScenarioZichtjaar/period_name[nr_1];
+		attribute<Bool>       HasMutations   := Zichtjaar/HasMutations[nr_1];
+		attribute<String>     zichtjaar_Label:= Zichtjaar/Label[nr_1];
+		attribute<String>     zichtjaar_name := Zichtjaar/Name[nr_1];
+		attribute<String>     prev_zichtjaar_name := Zichtjaar/Name[nr_1-1b];
+		attribute<Units/Jaar> zichtjaar_jaar := Zichtjaar/Jaar[nr_1];
+		attribute<String>     period_name    := Zichtjaar/period_name[nr_1];
 		attribute<String>     utiliteit_Name := UitlegUtil/Name[nr_2];
-		attribute<String>     wlo_filename_uitleg:  = UitlegUtil/wlo_filename_uitleg[nr_2];
-		attribute<String>     Name := Scenario_Name + '/' + zichtjaar_Name + '/' + utiliteit_Name;
-		attribute<string>     Label:= Name;
+		attribute<String>     wlo_filename_uitleg:= UitlegUtil/wlo_filename_uitleg[nr_2];
+		attribute<String>     Name           := zichtjaar_Name + '/' + utiliteit_Name;
+		attribute<String>     prev_name      := prev_zichtjaar_Name + '/' + utiliteit_Name;
+		attribute<string>     Label          := Name;
 	}
 	unit<uint8> ggWonen: nrofrows = 3
 	{

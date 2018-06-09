@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -44,6 +44,7 @@ container CalculationSchemes: Using = "Units;Geography"
 
 	#include <WoningComponentOperaties.dms> 
 	#include <UtilComponentOperaties.dms> 
+	#include <GlTbComponentOperaties.dms> 
 
 	container BebouwingsOperaties
 	{
@@ -150,10 +151,10 @@ container CalculationSchemes: Using = "Units;Geography"
 		}
 		container WKO
 		{
-			attribute<GJ_Yr>  V_Warmte    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte,     CaseData/GridCellID)';
-			attribute<GJ_Yr>  V_Koude     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude ,     CaseData/GridCellID)';
-			attribute<GJ_Yr> F_Elektrisch (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/F_Elec, CaseData/GridCellID)';
-			attribute<GJ_Yr>  Onttrekking (Geography/rdc_100lu) := V_Warmte - (V_Koude + F_Elektrisch);
+			attribute<GJ_Yr>  V_Warmte   (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte, CaseData/GridCellID)';
+			attribute<GJ_Yr>  V_Koude    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude , CaseData/GridCellID)';
+			attribute<GJ_Yr>  V_Elek     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_Yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Elek  , CaseData/GridCellID)';
+			attribute<GJ_Yr>  Onttrekking(Geography/rdc_100lu) := V_Warmte - (V_Koude + V_Elek);
 			
 			attribute<kW> Capaciteit(Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/P_Warmte,     CaseData/GridCellID)';
 		}
@@ -176,11 +177,6 @@ container CalculationSchemes: Using = "Units;Geography"
 	Template AggrComponent
 	{
 		container VestaRunDataComponent;
-		
-// 		parameter<EUR_GJ> WarmtePrijs_GasComponent;
-// 		parameter<EUR_GJ> WarmtePrijs_ElekComponent;
-// 		
-// 		parameter<EUR_GJ> WarmtePrijs := WarmtePrijs_GasComponent + WarmtePrijs_ElekComponent; // TODO: Verplaats berekening naar VeestaRunDataComponent
 		
 		unit<uint32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent(BebouwingsObject) := VestaRunDataComponent/WarmteAllocatie;
@@ -218,8 +214,8 @@ container CalculationSchemes: Using = "Units;Geography"
 	
 	container Rapportage {
 		#include <RegionaleRapportageTempl.dms>
-		#include <InputOutput.dms>
-	
+		#include <FlowTempl.dms>
+
 		template EindgebruikerComponentTempl
 		{
 			container AllocatieResultaatComponent;
@@ -370,7 +366,7 @@ container CalculationSchemes: Using = "Units;Geography"
 			unit<uint8> RapGroep;
 			parameter<String> fieldlist;
 			parameter<String> filename;
-			// begin case parameters
+			// end   case parameters
 	
 			container casedata
 			{
@@ -402,6 +398,20 @@ container CalculationSchemes: Using = "Units;Geography"
 			,	StorageName = "=filename"
 			,	StorageType = "str";
 		}
+		template ExportCsvT
+		{
+			// begin case parameters
+			unit<uint32> table;
+			unit<uint32> variabele;
+			parameter<string> filename;
+			// end   case parameters
+			
+			parameter<string> result_expr:= AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
+			attribute<string> result_att(table) := =result_expr;
+			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
+				Storagename = "=filename",
+				StorageType = "str";
+		}		
 	}
 	template BuisKosten
 	{

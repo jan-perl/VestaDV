@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                      //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -366,7 +366,7 @@ template VestaRunDataComponent
 			// kosten excl Investeringskosten eWP want deze moeten langs een andere leercurve gelegd worden.
 			attribute<EUR_ModelUnit> LTAS(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_max[ Model_rel ];
 			attribute<EUR_ModelUnit> eWP (BebouwingsObject) := const(Kengetallen/eWP/InvesteringsKosten_max, BebouwingsObject);
-			attribute<EUR_ModelUnit> EWV (BebouwingsObject) := (10[Percent] / 100[Percent]) * 352[EUR_m2] *  EnergieVraagModellen/area/max[ Model_rel ];
+			attribute<EUR_ModelUnit> EWV (BebouwingsObject) := (75[Percent] / 100[Percent]) * 352[EUR_m2] *  EnergieVraagModellen/area/max[ Model_rel ];
 		}
 		container VerbeterKosten_nu
 		{
@@ -727,6 +727,7 @@ template VestaRunDataComponent
 				)
 			;
 		}
+		attribute<Yr> TVT(BebouwingsObject) := Ki_gv_w * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_ex;
 	}
 	
 	container Efficiency

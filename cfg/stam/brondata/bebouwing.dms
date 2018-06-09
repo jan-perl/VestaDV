@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2011                                       //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -41,9 +41,7 @@
 container bebouwing
 : Descr = "zie FO $2, Blok 1"
 {
-	unit<uint32> Woning := BAG/vbo_woonfunctie
-	,	DialogData = "point"
-	,	DialogType = "Map"
+	unit<uint32> Woning := BAG/vbo_woonfunctie,	DialogData = "point", DialogType = "Map"
 	{
 		unit<uint32> BebouwingsObject:= .;
 		unit<uint8>  KengetalTypeDomein:= Classifications/WoningtypeGeoHoogte;
@@ -56,7 +54,6 @@ container bebouwing
 		attribute<RegioIndelingen/grid500m>           grid500m_rel       := RegioIndelingen/grid500m/BaseGrid[point[rdc_500m]];
 		attribute<RegioIndelingen/grid1km>            grid1km_rel        := RegioIndelingen/grid1km/BaseGrid[point[rdc_1km]];
 		attribute<RegioIndelingen/grid2km>            grid2km_rel        := RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]];
-		attribute<RegioIndelingen/Socrates>           Socrates_nr        := point_in_polygon(point, RegioIndelingen/Socrates/poly);
 		attribute<RegioIndelingen/buurt>              buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/poly);
 
 		attribute<nrAansl>                            nrAansluitingen    := Impl/nrWon * 1[ nrAansl / nrWoningen];
@@ -90,10 +87,9 @@ container bebouwing
 			attribute<Classifications/energielabel> AvgLabel  (..):= EnergieLabelData_rel;
 		}
 
-		container Criteria // REMOVE
+		container Criteria
 		{
 		}
-// REMOVE	
 //		attribute<Classifications/eigendom_woning  > Eigendom := rjoin(PC6code, GmpWoning/PC6code, GmpWoning/Eigendom); // wordt gebruikt bij BestaandeWoningRapGroep [ 4 ]
 //		attribute<Classifications/InkomensKlasse>    Inkomen  := rjoin(PC6code, GmpWoning/PC6code, GmpWoning/Inkomen ); // wordt gebruikt bij BestaandeWoningRapGroep [ 8 ]
 
@@ -118,13 +114,11 @@ container bebouwing
 
 	unit<uint32> Utiliteit:= BAG/vbo_utiliteit
 	{
-		unit<uint32>  BebouwingsObject:= .
-		{
-			attribute<.> code:= id(.);
-		}
+		unit<uint32>  BebouwingsObject:= .;
 		unit<uint8>   KengetalTypeDomein:= Classifications/utiliteitBAG;
 
 		// external key
+		attribute<string>                     code          := BAG/vbo_utiliteit/id;
 		attribute<String>                     POSTCODE      := BAG/vbo_utiliteit/PostCode;
 		attribute<String>                     PC6code       := POSTCODE;
 
@@ -230,13 +224,11 @@ container bebouwing
 		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
 		FreeData        = "False"
 	{
-		unit<uint32>  BebouwingsObject := ., FreeData = "True"
-		{
-			attribute<.> code: Expr="ID(.)";
-		}
+		unit<uint32>  BebouwingsObject := ., FreeData = "True";
 		unit<uint8>   KengetalTypeDomein := Classifications/GLTB;
 		
 		// external key
+		attribute<string>                     code  := string(ID(.));
 		attribute<UInt32>                     POSTCODE4;
 		attribute<String>                     Label := String(POSTCODE4), DialogType = "LabelText", FreeData = "True";
 		attribute<Classifications/GLTB>       GLTB_Code;
@@ -255,7 +247,7 @@ container bebouwing
 		attribute<RegioIndelingen/grid2km>    grid2km_rel:  Expr = "RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]]", FreeData = "True";
 		
 		attribute<m2>      Opp_M2;
-		attribute<nrAansl>    nrAansluitingen:= const(0[nrAansl   ], .), FreeData = "True";
+		attribute<nrAansl>    nrAansluitingen:= const(1[nrAansl   ], .), FreeData = "True";
 		attribute<nrWoningen> nrWoonUnits    := const(0[nrWoningen], .), FreeData = "True";
 		attribute<m2>      NrJoinedUnits := Opp_M2;
 

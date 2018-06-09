@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2013                                      //
+//                                  (C) VESTA 2018                                      //
 //        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
 //        tot de energievoorziening van de gebouwde omgeving.                           //
 //                                                                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                               FEBRUARI 2010                                          //
+//                                    JUNI 2018                                         //
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
@@ -40,7 +40,7 @@
 
 container UserInput1: Using = "Vesta/Units"
 {
-	container BebouwingsScenario  := Vesta/ScenarioSpecs/Bebouwing/Trend;
+	container BebouwingsScenario  := Vesta/ScenarioSpecs/Bebouwing;
 	container KlimaatScenario     := Vesta/Brondata/klimaat/scenario_knmi_g_plus;
 	
 	container VraagKentallen  := Vesta/ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine;
@@ -142,6 +142,8 @@ container UserInput1: Using = "Vesta/Units"
 	}
 	
 	container Beleidsopties {
+		parameter<EUR_Yr_Aansl> Heffingskorting := 284[EUR_Yr_Aansl];
+		
 		container EIA: Descr = "Energie Inversterings aftrek, zoals  MIA/VAMIL etc."
 		{
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
@@ -195,9 +197,8 @@ container UserInput1: Using = "Vesta/Units"
 		}
 	}
 	
-	parameter<String> PlanRegioNaam :=  // @USERINPUT
+	parameter<String> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in UserInput1.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
-//			'PC4';
 //			'grid500m';
 //			'grid1km';
 //			'grid2km';
@@ -205,6 +206,7 @@ container UserInput1: Using = "Vesta/Units"
 	container ReportOpties
 	{
 		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
+//		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/Provincie;
 		
 		//'0=geen onderverdeling',
 		//'1=woningtype',
