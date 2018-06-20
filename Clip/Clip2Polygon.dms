@@ -15,7 +15,7 @@
 //                                                                                                  //
 // 1:.Configure your shape file for item: SourceData/polygon/src,                                   //
 //    Also set the label for item: SourceData/polygon/src/Label,                                    //
-//    your shapefile may cotain of multiple records.                                                //
+//    your shapefile may contain of multiple records.                                               //
 //    With the results/prerun_tests/PolygonFileExits you can check if the file can be found         //
 //                                                                                                  //
 // 2: Configure the SourceDataFolder with the tiff files for item: SourceData/grid/folder,          //
@@ -25,7 +25,7 @@
 //                                                                                                  //
 // 3: Set the KeepOrgGridDomain paramater:                                                          //
 //    - True: The resulting tiffs will have the same domain as the original tiffs                   //
-//    - True: The resulting tiffs will have a new grid domain, based on the polygonset              //
+//    - False: The resulting tiffs will have a new grid domain, based on the polygonset             //
 //                                                                                                  //
 // 4: Update item: results/generate_all, this will result in the same set of files as in your       //
 //    Grid SourceDataFolder. The results will be written in the subfolder:                          //
