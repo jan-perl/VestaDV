@@ -1,0 +1,276 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                                                                                  //
+//                    Configuration to clip a set of grids with a polygon set                       //
+//                                                                                                  //
+//                                    Object Vision 2017                                            //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                           Root file                                              //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  //
+//                                            Guide                                                 //
+//                                                                                                  //
+// 1:.Configure your shape file for item: SourceData/polygon/src,                                   //
+//    Also set the label for item: SourceData/polygon/src/Label,                                    //
+//    your shapefile may cotain of multiple records.                                                //
+//    With the results/prerun_tests/PolygonFileExits you can check if the file can be found         //
+//                                                                                                  //
+// 2: Configure the SourceDataFolder with the tiff files for item: SourceData/grid/folder,          //
+//    all tiff files in this folder and subfolders will be processed                                //
+//    The current implementation support bool and float32 tiffs, see the logic for item:            //
+//    SourceData/grid/tif/ValuesUnit                                                                //
+//                                                                                                  //
+// 3: Set the KeepOrgGridDomain paramater:                                                          //
+//    - True: The resulting tiffs will have the same domain as the original tiffs                   //
+//    - True: The resulting tiffs will have a new grid domain, based on the polygonset              //
+//                                                                                                  //
+// 4: Update item: results/generate_all, this will result in the same set of files as in your       //
+//    Grid SourceDataFolder. The results will be written in the subfolder:                          //
+//    %LocalDataProjDir%/ + SourceData/polygon/src/Label                                            //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+container Clip2Polygon
+{
+	parameter<bool> KeepOrgGridDomain := False;
+
+	container eenheden
+	{
+		unit<float32> m := baseunit('m', float32);
+	}
+
+	container Geography
+	{
+		unit<fpoint> rdc_base;
+		unit<fpoint> rdc := range(rdc_base, point(300000f,0f), point(625000f,280000f));
+	}
+
+	container SourceData
+	{
+		container grid
+		{
+			parameter<string> folder := "D:/SourceData/Vesta/hoog_concentratie_231115";
+
+			container folderinfo
+			{
+				container impl
+				{
+					parameter<string> Slash           : [ '/' ];
+					parameter<string> BackSlash       : [ '\\' ];
+					parameter<string> NewLine         : [ '\n' ];
+
+					parameter<string> ComSpec         := Expand(., '%env:ComSpec%');
+					parameter<string> FileNameDirInfo := '%LocalDataProjDir%/dirinfo_' + polygon/src/Label +'.str';
+
+					parameter<string> DirCmdOrg       := Expand(., 'Dir '+ folder +'/*.tif > ' + FileNameDirInfo);
+					parameter<string> DirCmd          := Replace(DirCmdOrg, Slash, BackSlash) + ' /S /B';
+				}
+
+				container write_filelist  := exec(impl/ComSpec, '/c ' + impl/DirCmd, Expand(., '%LocalDataProjDir%'));
+				parameter<string> filelist: Storagename = "=impl/FileNameDirInfo", ExplicitSuppliers = "write_filelist";
+			}
+
+			unit<uint32> folderitems := range(uint32, 0, strcount(folderinfo/filelist, folderinfo/impl/NewLine))
+			{
+				attribute<string> fullfilename := readLines(folderinfo/filelist, ., 0);
+			}
+
+			unit<uint32> tif := Subset(Substr(lowercase(trim(folderitems/fullfilename)), strlen(lowercase(folderitems/fullfilename)) -3) = 'tif')
+			{
+				attribute<string> fullfilename := folderitems/fullfilename[nr_OrgEntity];
+				attribute<uint32> posLastSlash := strrpos(fullfilename,'\\');
+
+				attribute<string> filename     := substr(fullfilename, posLastSlash + 1);
+				attribute<string> valuesunit   := lowercase(filename) == 'af.tif' || lowercase(filename) == 'bij.tif' ? 'bool' : 'float32'; // Vesta Specfiek
+			}
+
+		}
+
+		container polygon
+		{
+			unit<uint32> src
+			:	StorageName     = "%SourceDataDir%/CBS/gem_HW/gemeente.shp"
+			,	StorageType     = "gdal.vect"
+			,	StorageReadOnly = "True"
+			,	DialogType      = "Map"
+			,	DialogData      = "geometry"
+			{
+				parameter<string>        Label := 'GrootHoekscheWaard';
+				attribute<Geography/rdc> geometry (poly);
+				attribute<Geography/rdc> lb    := lower_bound(geometry);
+				attribute<Geography/rdc> ub    := upper_bound(geometry);
+				parameter<eenheden/m>    x_min := min(pointCol(lb))[eenheden/m];
+				parameter<eenheden/m>    x_max := max(pointCol(ub))[eenheden/m];
+				parameter<eenheden/m>    y_min := min(pointRow(lb))[eenheden/m];
+				parameter<eenheden/m>    y_max := max(pointRow(ub))[eenheden/m];
+			}
+		}
+	}
+
+	container results
+	{
+		container prerun_tests
+		{
+			parameter<string> PolygonFileName  := expand(., PropValue(SourceData/polygon/src,'StorageName'));
+			parameter<bool>   PolygonFileExits := ExistingFile('missing', PolygonFileName) == PolygonFileName;
+		}
+
+		parameter<string> generate_all := 'ready'
+		,	ExplicitSuppliers = "= generate_all_expr";
+
+		parameter<string> generate_all_expr := AsList('tiffs/t' + string(id(SourceData/grid/tif)) + '/export/result',';');
+
+		container tiffs := for_each_ne(
+			 't' + string(id(SourceData/grid/tif))
+			,'templates/process_tif(' 
+				    + quote(SourceData/grid/tif/fullfilename) +
+				',' + quote(SourceData/grid/tif/valuesunit) +
+				',' + String(KeepOrgGridDomain) +
+			')'
+		);
+	}
+
+	container templates
+	{
+		template process_tif
+		{
+			// begin case parameters
+			parameter<string> src_filename;
+			parameter<string> values_unit_string;
+			parameter<bool> KeepOrgGridDomain;
+			// end case parameters
+
+			unit<spoint> tiff_domain: StorageName = "=src_filename" , DialogData  = "Geography/rdc";
+
+			container tif_data := = values_unit_string == 'float32' ? 'read_tif_float32(src_filename,tiff_domain)' : 'read_tif_bool(src_filename,tiff_domain)';
+			attribute<SourceData/polygon/src> polygrid (tiff_domain) := Poly2Grid(SourceData/polygon/src/geometry, tiff_domain), IntegrityCheck = "prerun_tests/PolygonFileExits";
+
+			parameter<string> target_filename := '%LocalDataProjDir%/' + SourceData/polygon/src/Label + replace(substr(src_filename, strlen(SourceData/grid/folder)),'\\','/');
+
+			parameter<string> export_subexpr := KeepOrgGridDomain ? 'tiff_domain, id(tiff_domain)' : 'grid_fits_poly/domain, grid_fits_poly/domain/extern_domain_rel';
+			container export := = 
+				values_unit_string == 'float32' 
+					? 'write_tif_float32(target_filename,tiff_domain, ' + export_subexpr + ', tif_data, polygrid)' 
+					: 'write_tif_bool   (target_filename,tiff_domain, ' + export_subexpr + ', tif_data, polygrid)';
+
+			parameter<dpoint>     projFactor := GetProjectionFactor(tiff_domain);
+			parameter<dpoint>     projOffSet := GetProjectionOffset(tiff_domain);
+			parameter<eenheden/m> gridsizeX  := PointCol(projFactor)[eenheden/m];
+			parameter<eenheden/m> gridsizeY  := PointRow(projFactor)[eenheden/m];
+			parameter<eenheden/m> OffSetX    := PointCol(projOffSet)[eenheden/m];
+			parameter<eenheden/m> OffSetY    := PointRow(projOffSet)[eenheden/m];
+
+			container bbox_polygon
+			{
+				parameter<eenheden/m> x_min := float32(roundDown(SourceData/polygon/src/x_min / abs(gridsizeX))) * abs(gridsizeX);
+				parameter<eenheden/m> x_max := float32(  roundUp(SourceData/polygon/src/x_max / abs(gridsizeX))) * abs(gridsizeX);
+				parameter<eenheden/m> y_min := float32(roundDown(SourceData/polygon/src/y_min / abs(gridsizeY))) * abs(gridsizeY);
+				parameter<eenheden/m> y_max := float32(  roundUp(SourceData/polygon/src/y_max / abs(gridsizeY))) * abs(gridsizeY);
+			}
+
+			container bbox_new_grid
+			{
+				parameter<eenheden/m> x_min := bbox_polygon/x_min - abs(gridsizeX) + OffSetX % gridsizeX; // modulo used to make the grids fully overlap
+				parameter<eenheden/m> x_max := bbox_polygon/x_max + abs(gridsizeX) + OffSetX % gridsizeX;
+				parameter<eenheden/m> y_min := bbox_polygon/y_min - abs(gridsizeY) + OffSetY % gridsizeY;
+				parameter<eenheden/m> y_max := bbox_polygon/y_max + abs(gridsizeY) + OffSetY % gridsizeY;
+			}
+
+			container grid_fits_poly := 
+				define_grid(
+					  gridsizeX, gridsizeY
+					, bbox_new_grid/x_max, bbox_new_grid/x_min, bbox_new_grid/y_max, bbox_new_grid/y_min
+					, tiff_domain
+				);
+		}
+
+		template read_tif_float32
+		{
+			// begin case parameters
+			parameter<string> src_filename;
+			unit<spoint> tiff_domain;
+			// end case parameters
+	
+			attribute<float32> GridData (tiff_domain): StorageName = "=src_filename";
+		}
+
+		template read_tif_bool
+		{
+			// begin case parameters
+			parameter<string> src_filename;
+			unit<spoint> tiff_domain;
+			// end case parameters
+
+			attribute<bool> GridData (tiff_domain): StorageName = "=src_filename";
+		}
+
+		template write_tif_float32
+		{
+			// begin case parameters
+			parameter<string> target_filename;
+			unit<spoint> source_domain;
+			unit<spoint> target_domain;
+			attribute<source_domain> source_domain_rel (target_domain);
+			container tif_data;
+			attribute<SourceData/polygon/src> polygrid (source_domain);
+			// end case parameters
+
+			attribute<bool>    in_poly (target_domain) := isDefined(polygrid[source_domain_rel]);
+			attribute<float32> result  (target_domain) := in_poly ? tif_data/GridData[source_domain_rel] : 0f / 0f
+			, StorageName = "=target_filename";
+		}
+
+		template write_tif_bool
+		{
+			// begin case parameters
+			parameter<string> target_filename;
+			unit<spoint> source_domain;
+			unit<spoint> target_domain;
+			attribute<source_domain> source_domain_rel (target_domain);
+			container tif_data;
+			attribute<SourceData/polygon/src> polygrid (source_domain);
+			// end case parameters
+
+			attribute<bool> in_poly (target_domain) := isDefined(polygrid[source_domain_rel]);
+			attribute<bool> result  (target_domain) := in_poly ? tif_data/GridData[source_domain_rel] : false
+			, StorageName = "=target_filename";
+		}
+	}
+
+	template define_grid: Using = "Geography;Eenheden"
+	{
+		// begin case parameters
+		parameter<m> gridsizeX;
+		parameter<m> gridsizeY;
+		parameter<m> x_max;
+		parameter<m> x_min;
+		parameter<m> y_max;
+		parameter<m> y_min;
+		unit<spoint> extern_domain;
+		// end case parameters
+
+		parameter<int16> nr_cols := int16(round((x_max - x_min) / gridsizeX));
+		parameter<int16> nr_rows := int16(round((y_max - y_min) / -gridsizeY));
+
+		unit<spoint> domain :=
+			range(
+				 gridset(
+					 Geography/rdc
+					,point(float32(gridsizeY), float32(gridsizeX), Geography/rdc)
+					,point(y_max, x_min, Geography/rdc)
+					,spoint
+				)
+				,point(0s, 0s)
+				,point(nr_rows, nr_cols)
+			)
+		{
+			attribute<uint32>        test              := const(1,.);
+			parameter<dpoint>        projFactor        := GetProjectionFactor(domain);
+			parameter<dpoint>        projOffSet        := GetProjectionOffset(domain);
+			attribute<extern_domain> extern_domain_rel := id(.)[extern_domain];
+		}
+	}
+}
