@@ -785,8 +785,8 @@ template VestaRunDataComponent
 	
 	container Opwekking
 	{
-		attribute<GJ_Yr> ZonneBoiler(BebouwingsObject):= Hoeveelheden/ZonneBoiler * Kengetallen/ZonneBoiler/Opbrengst;
-		attribute<GJ_Yr> Zon_PV     (BebouwingsObject):= Hoeveelheden/Zon_PV      * Kengetallen/Zon_PV/Opbrengst;
+		attribute<GJ_Yr> ZonneBoiler(BebouwingsObject) := Hoeveelheden/ZonneBoiler * Kengetallen/ZonneBoiler/Opbrengst;
+		attribute<GJ_Yr> Zon_PV     (BebouwingsObject) := Hoeveelheden/Zon_PV      * Kengetallen/Zon_PV/Opbrengst;
 
 		container LeerCurves
 		{
