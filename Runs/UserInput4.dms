@@ -46,7 +46,7 @@ container UserInput4 := UserInput1, using = "Vesta/Units"
 		{
 			container GenericBase := UserInput1/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase
 			{
-				container Verbeteringen
+				container Verbeteringen := UserInput1/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Verbeteringen
 				{
 					// Letters verwijzen naar kolomheaders in het "Dataset_woningen2013_200313.xls"-bestand
 					parameter<String> S_H_T:   [ 'Criteria/Always' ]; // was: Sprong A (een initiele sprong)
