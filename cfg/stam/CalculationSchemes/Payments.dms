@@ -111,13 +111,13 @@ container Payments: FreeData = "False" // DEBUG
 		unit<uint32> Kostensoort   := FlowData/KostenSoort;
 //		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
 		unit<uint32> BC := FlowData/BC;
-		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Voorkeuren/WarmteOpties)
+		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Classifications/AanbodOptie) //Voorkeuren/WarmteOpties)
 		{
-			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Voorkeuren/WarmteOpties/name);
-			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Voorkeuren/WarmteOpties/name);
+			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Classifications/AanbodOptie/name);
+			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Classifications/AanbodOptie/name);
 			attribute<string> full_name:= replace(name, '/', '_');
-			attribute<bool> IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BC), const(false, BC), const(false, Voorkeuren/WarmteOpties));
-			attribute<bool> IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Voorkeuren/WarmteOpties));
+			attribute<bool> IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
+			attribute<bool> IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
 		}
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)

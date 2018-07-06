@@ -130,6 +130,7 @@ container Transformations: FreeData = "False"
 			container applyWKO:= subst(applyBC/result , '@WKOC@' , '@WKON@' ,WKOC); 
 			container applyRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
 			container applyCO := subst(applyRO/result,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
+			
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<technology>  technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
@@ -151,6 +152,21 @@ container Transformations: FreeData = "False"
 				attribute<location> location_rel := nr_OrgEntity;
 				attribute<string> name := location/values[location_rel];
 			}
+			
+			// TODO: Move to classifications.dms
+			container applyAllRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Classifications/PlanRegioOptie);
+			container applyAllCO := subst(applyAllRO/result,  '@COC@' , '@CON@' , Classifications/ClusterOptie);
+			
+			unit<uint32> all_technology := unique(applyAllCO/result/name)
+			{
+				attribute<string> name := values;
+				attribute<technology> technology_rel := rlookup(name, technology/values);
+			}
+			unit<uint32> all_location := unique(applyAllCO/result/actor)
+			{
+				attribute<string> name := values;
+				attribute<location> location_rel := rlookup(name, location/values);
+			}
 		}
 
 		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity, EmissionFactorUnit)');
@@ -164,8 +180,8 @@ container Transformations: FreeData = "False"
 				attribute<impl/location> location_rel     := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels/values')+')';
 			}
 			
-			unit<uint32> ColSet := impl/active_location;
-			unit<uint32> RowSet := impl/active_technology;
+			unit<uint32> ColSet := impl/all_location; // impl/active_location;
+			unit<uint32> RowSet := impl/all_technology; //impl/active_technology;
 			
 			container TableData := for_each_nedv(ColSet/name, 
 				'sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]', 
@@ -204,15 +220,15 @@ container Transformations: FreeData = "False"
 				+ AsList(RowSet/name+';'+String(table/Oj_Totaal)+';'+String(table/Kj_Totaal)+';'+String(table/Oj_Netto)+rows+'\n', '')
 			,	StorageType = "str", StorageName = "=OutputSubFolder+'/Matrix.csv'";
 		}
-		attribute<MQuantity> mut_overview(impl/active_technology) := matrix/table/Oj_Netto;
+		attribute<MQuantity> mut_overview(impl/all_technology) := matrix/table/Oj_Netto;
 		
-		attribute<string> mut_herkomst  (impl/active_technology) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
-		attribute<string> mut_bestemming(impl/active_technology) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';
+		attribute<string> mut_herkomst  (impl/all_technology) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
+		attribute<string> mut_bestemming(impl/all_technology) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';
 		
 		parameter<String> GenerateAll := 'Ready',
 			ExplicitSuppliers =
 				"=  'matrix/csv'"
-				"+ ';' + AsList('mut_tables/'+impl/active_technology/name + '/all_csv',';')";
+				"+ ';' + AsList('mut_tables/'+impl/all_technology/name + '/all_csv',';')";
 //*/				
 	}
 }
