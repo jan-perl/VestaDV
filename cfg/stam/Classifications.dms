@@ -778,6 +778,22 @@ container Classifications: Using = "Units", KeepData = "True"
 		
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
+	unit<uint8> PlanRegioOptie_uint8 := subset(AanbodOptie/IsPlanRegioOptie) {
+		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
+		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
+	}
+	unit<uint8> CluseterOptie_uint8 := subset(!AanbodOptie/IsPlanRegioOptie) {
+		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
+		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
+	}
+	unit<uint32> PlanRegioOptie := range(uint32, 0, #PlanRegioOptie_uint8) {
+		attribute<string> code := union_data(PlanRegioOptie, PlanRegioOptie_uint8/code);
+		attribute<string> name := union_data(PlanRegioOptie, PlanRegioOptie_uint8/name);
+	}
+	unit<uint32> ClusterOptie := range(uint32, 0, #CluseterOptie_uint8) {
+		attribute<string> code := union_data(ClusterOptie, CluseterOptie_uint8/code);
+		attribute<string> name := union_data(ClusterOptie, CluseterOptie_uint8/name);
+	}
 	
 	unit<uint8> zichtjaar: nrofrows = 5
 	{
