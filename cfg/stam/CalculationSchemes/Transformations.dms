@@ -142,16 +142,8 @@ container Transformations: FreeData = "False"
 			unit<uint32> technology := unique(mutatie/name ) { attribute<string> name := values; attribute<string> label := values; }
 			unit<uint32> location   := unique(mutatie/actor) { attribute<string> name := values; attribute<string> label := values; }
 			
-			unit<uint32> active_technology := technology //subset(pcount(mutatie/technology_rel) > 0)
-			{
-				attribute<technology> technology_rel := ID(.); //nr_OrgEntity;
-//				attribute<string> name := technology/values[technology_rel];
-			}
-			unit<uint32> active_location := location // subset(pcount(mutatie/location_rel) > 0)
-			{
-				attribute<location> location_rel := ID(.); //nr_OrgEntity;
-//				attribute<string> name := location/values[location_rel];
-			}
+			unit<uint32> active_technology := technology { attribute<technology> technology_rel := ID(.); }
+			unit<uint32> active_location   := location   { attribute<location>   location_rel   := ID(.); }
 			
 			// TODO: Move to classifications.dms
 			container applyAllRO := subst(applyWKO/result,   '@ROC@', '@RON@' , Classifications/PlanRegioOptie);
@@ -174,7 +166,6 @@ container Transformations: FreeData = "False"
 		container active_mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology, impl/Location,'+String(impl/active_technology/technology_rel)+'[impl/technology], Quantity, EmissionFactorUnit)');		
 		container mut_tables        := for_each_ne(impl/all_technology/name,    'Transformations/mut_table(impl/Technology, impl/Location,'+MakeDefined(String(impl/all_technology/technology_rel), '(0 / 0)')+'[impl/technology], Quantity, EmissionFactorUnit)');
 		
-//*	
 		container matrix {
 			unit<uint32> aggr := ='union_unit('+AsItemList('mut_tables/'+impl/technology/name+'/location_rels')+')'
 			{
@@ -187,7 +178,7 @@ container Transformations: FreeData = "False"
 			unit<uint32> RowSet := impl/all_technology; //impl/active_technology;
 			
 			container TableData := for_each_nedv(ColSet/name, 
-				'sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]', 
+				MakeDefined('sum(aggr/Saldo * Float64(aggr/location_rel == '+string(ColSet/location_rel)+'), aggr/technology_rel)[RowSet/technology_rel]', 'const(0[MQuantity], RowSet)'), 
 				RowSet, MQuantity)
 			{
 				attribute<string> name        (RowSet) := RowSet/name;
@@ -232,6 +223,5 @@ container Transformations: FreeData = "False"
 			ExplicitSuppliers =
 				"=  'matrix/csv'"
 				"+ ';' + AsList('mut_tables/'+impl/all_technology/name + '/all_csv',';')";
-//*/				
 	}
 }
