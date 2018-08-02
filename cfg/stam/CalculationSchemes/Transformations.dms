@@ -86,13 +86,13 @@ container Transformations: FreeData = "False"
 		unit<uint32> ActorEntity := PlanRegio;
 //		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(UInt32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
 		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/Expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
-		attribute<Quantity> Saldo(ActorEntity) := ='add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')';
+		attribute<Quantity> Saldo(ActorEntity) := =#location_rels>0 ? 'add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')' : 'const(0[Quantity], ActorEntity)';
 		
 		container totals: KeepData = "True" 
 		{
 			attribute<string>  name(location_rels)     := location_rels/name;
 //			attribute<MQuantity> all_muts (mut)       := ='union_data(mut, '+AsItemList('sum(../all_muts/'+mut/full_name+')')+')[MQuantity]';
-			attribute<MQuantity> aggr_muts(location_rels) := ='union_data(location_rels, '+AsItemList('sum(../aggr_muts/'+location_rels/name+')')+')[MQuantity]';
+			attribute<MQuantity> aggr_muts(location_rels) := =#location_rels>0 ? 'union_data(location_rels, '+AsItemList('sum(../aggr_muts/'+location_rels/name+')')+')[MQuantity]' : 'const(0[MQuantity], location_rels)';
 			parameter<MQuantity> saldo :=sum(aggr_muts);
 		}
 		parameter<String> all_csv := 
@@ -126,8 +126,8 @@ container Transformations: FreeData = "False"
 				parameter<string> EmissionExprE:= (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 				attribute<string> EmissionExpr := =EmissionExprE;
 			}
-			container applyBC := subst(EnergyData_mutatie,'@BC@' , '@BN@', BC); 
-			container applyWKO:= subst(applyBC/result , '@WKOC@' , '@WKON@' ,WKOC); 
+			container applyBC := subst(EnergyData_mutatie,'@BC@', '@BN@'  ,  BC); 
+			container applyWKO:= subst(applyBC/result , '@WKOC@', '@WKON@',WKOC); 
 			container applyRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
 			container applyCO := subst(applyRO/result,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
 			
@@ -139,45 +139,48 @@ container Transformations: FreeData = "False"
 				attribute<string> ExprSum   := entityRel <> '' ? 'sum('+expr + ', '+entityRel+')' : expr;
 				attribute<string> FinalExpr := ExprSum +' * fraction' + (EmissionExpr == '' ? '' : ' * -value(' + EmissionExpr+',EmissionFactorUnit)');
 			}
-			unit<uint32> technology := unique(mutatie/name);
-			unit<uint32> location   := unique(mutatie/actor);
+			unit<uint32> technology := unique(mutatie/name ) { attribute<string> name := values; attribute<string> label := values; }
+			unit<uint32> location   := unique(mutatie/actor) { attribute<string> name := values; attribute<string> label := values; }
 			
-			unit<uint32> active_technology := subset(pcount(mutatie/technology_rel) > 0)
+			unit<uint32> active_technology := technology //subset(pcount(mutatie/technology_rel) > 0)
 			{
-				attribute<technology> technology_rel := nr_OrgEntity;
-				attribute<string> name := technology/values[technology_rel];
+				attribute<technology> technology_rel := ID(.); //nr_OrgEntity;
+//				attribute<string> name := technology/values[technology_rel];
 			}
-			unit<uint32> active_location := subset(pcount(mutatie/location_rel) > 0)
+			unit<uint32> active_location := location // subset(pcount(mutatie/location_rel) > 0)
 			{
-				attribute<location> location_rel := nr_OrgEntity;
-				attribute<string> name := location/values[location_rel];
+				attribute<location> location_rel := ID(.); //nr_OrgEntity;
+//				attribute<string> name := location/values[location_rel];
 			}
 			
 			// TODO: Move to classifications.dms
-			container applyAllRO := subst(applyWKO/result, '@ROC@' , '@RON@' , Classifications/PlanRegioOptie);
-			container applyAllCO := subst(applyAllRO/result,  '@COC@' , '@CON@' , Classifications/ClusterOptie);
+			container applyAllRO := subst(applyWKO/result,   '@ROC@', '@RON@' , Classifications/PlanRegioOptie);
+			container applyAllCO := subst(applyAllRO/result, '@COC@', '@CON@' , Classifications/ClusterOptie);
 			
 			unit<uint32> all_technology := unique(applyAllCO/result/name)
 			{
 				attribute<string> name := values;
+				attribute<string> label := values;
 				attribute<technology> technology_rel := rlookup(name, technology/values);
 			}
 			unit<uint32> all_location := unique(applyAllCO/result/actor)
 			{
 				attribute<string> name := values;
+				attribute<string> label := values;
 				attribute<location> location_rel := rlookup(name, location/values);
 			}
 		}
 
-		container mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology,impl/Location,'+String(impl/active_technology/nr_OrgEntity)+'[impl/technology], Quantity, EmissionFactorUnit)');
+		container active_mut_tables := for_each_ne(impl/active_technology/name, 'Transformations/mut_table(impl/Technology, impl/Location,'+String(impl/active_technology/technology_rel)+'[impl/technology], Quantity, EmissionFactorUnit)');		
+		container mut_tables        := for_each_ne(impl/all_technology/name,    'Transformations/mut_table(impl/Technology, impl/Location,'+MakeDefined(String(impl/all_technology/technology_rel), '(0 / 0)')+'[impl/technology], Quantity, EmissionFactorUnit)');
 		
 //*	
 		container matrix {
-			unit<uint32> aggr := ='union_unit('+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels')+')'
+			unit<uint32> aggr := ='union_unit('+AsItemList('mut_tables/'+impl/technology/name+'/location_rels')+')'
 			{
-				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/totals/aggr_muts')+')';
-				attribute<impl/technology> technology_rel := ='union_data(.,'+AsItemList('const(mut_tables/'+impl/active_technology/name+'/Technology_rel, mut_tables/'+impl/active_technology/name+'/location_rels)')+')';
-				attribute<impl/location> location_rel     := ='union_data(.,'+AsItemList('mut_tables/'+impl/active_technology/name+'/location_rels/values')+')';
+				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('mut_tables/'+impl/technology/name+'/totals/aggr_muts')+')';
+				attribute<impl/technology> technology_rel := ='union_data(.,'+AsItemList('const(mut_tables/'+impl/technology/name+'/Technology_rel, mut_tables/'+impl/technology/name+'/location_rels)')+')';
+				attribute<impl/location> location_rel     := ='union_data(.,'+AsItemList('mut_tables/'+impl/technology/name+'/location_rels/values')+')';
 			}
 			
 			unit<uint32> ColSet := impl/all_location; // impl/active_location;
