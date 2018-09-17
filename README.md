@@ -25,6 +25,6 @@ Voordat u aan de slag gaat met Vesta, willen we u vragen om wat eenvoudige gegev
 Dit is geheel vrijblijvend, maar u zou ons er wel mee helpen. 
 
 # Links:
-* http://www.pbl.nl/publicaties/het-vesta-mais-ruimtelijk-energiemodel-voor-de-gebouwde-omgeving-algemene-beschrijving
+* http://pbl.nl/vesta 
 * http://www.objectvision.nl/gallery/products/vesta
 * http://www.ce.nl/publicatie/vesta_2.0_-_uitbreidingen_en_dataverificaties/1427
