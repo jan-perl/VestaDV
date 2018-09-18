@@ -202,7 +202,8 @@ container UserInput1: Using = "Vesta/Units"
 //			'grid500m';
 //			'grid1km';
 //			'grid2km';
-	
+	parameter<bool> HasStartingArcSet:= True;
+
 	container ReportOpties
 	{
 		unit<UInt32> RapportageRegio := Vesta/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'

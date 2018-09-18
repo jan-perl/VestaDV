@@ -57,8 +57,6 @@ template RegionaleRapportageTempl
 	unit<uint32>               BebouwingsObject         := BebouwingscomponentGebiedsData/BebouwingsObject;
 	// end of ex-case param
 	
-	unit<uint32>               PlanRegio := RunImpl/PlanRegio;
-
 	attribute<RapportageRegio> PlanRegioRapportageRegio_rel           (PlanRegio)       := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
 	attribute<PlanRegio>       BebouwingscomponentPlanRegio_rel       (BebouwingsObject):= VestaRunDataComponent/PlanRegio_rel;
 	attribute<RapportageRegio> BebouwingscomponentRapportageRegio_rel (BebouwingsObject):=  PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];

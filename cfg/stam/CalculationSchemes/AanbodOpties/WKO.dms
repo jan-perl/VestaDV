@@ -40,8 +40,6 @@ container WKO: IsTemplate = "True"
 	
 	// end of case param
 	
-	unit<uint32> PlanRegio := RunImpl/PlanRegio;
-	
 	container KostenBaten  := BeginStatus/KostenBaten;
 	container VestaRunData := KostenBaten/VestaRunData;
 	

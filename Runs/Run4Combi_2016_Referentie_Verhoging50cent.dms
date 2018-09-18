@@ -166,6 +166,7 @@ container VestaRun
 			}
 		}
 	}
+	unit<UInt32> PlanRegio:= ='Vesta/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 	
 	container UserInput2010 := UserInput1 { parameter<Vesta/Units/Percent> VAT := 19[Vesta/Units/Percent]; } // tot 2010 geldt nog het lagere BTW-percentage
 	container UserInput2020 := UserInput4;

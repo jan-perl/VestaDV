@@ -39,8 +39,6 @@ template FlowTempl: using = "Classifications"
 	parameter<RapportageRegio> RapportageRegio_sel;
 	// end case param
 	
-	unit<uint32> PlanRegio := RunImpl/PlanRegio;
-	
 	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
 	
 	attribute<RapportageRegio> PlanRegioRapportageRegio_rel(PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';

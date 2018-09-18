@@ -183,8 +183,6 @@ container CalculationSchemes: Using = "Units;Geography"
 		
 		parameter<EUR_GJ> WarmtePrijs := VestaRunDataComponent/Warmtewet/WarmtePrijs;
 		
-		unit<UInt32> PlanRegio: Expr = "RunImpl/PlanRegio";
-		
 		container CaseData: IsHidden = "True"
 		{
 			unit<Float64> ModelUnit:             = VestaRunDataComponent/EnergieVraagModellen/ModelUnit;
@@ -230,8 +228,6 @@ container CalculationSchemes: Using = "Units;Geography"
 			
 			container Pc4KaartComponent;
 			
-			unit<uint32> PlanRegio := RunImpl/PlanRegio;
-	
 			container VestaRunDataComponent    := AllocatieResultaatComponent/VestaRunDataComponent;
 			container RuimtelijkeVraagComponent:= AllocatieResultaatComponent/RuimtelijkeVraagComponent;
 			unit<uint32> BebouwingsObject      := VestaRunDataComponent/BebouwingsObject;

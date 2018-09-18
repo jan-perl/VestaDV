@@ -44,8 +44,6 @@ template KostenBatenSchema
 		,	'CalculationSchemes/AggrComponent(VestaRunData/'+Classifications/BebouwingsComponent/name+')'
 		);
 		
-	unit<UInt32> PlanRegio := RunImpl/PlanRegio;
-		
 	attribute<Units/GJ_Yr> WarmteVraagD(PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/VerbruikD')+')';
 	
 	container Opbrengsten

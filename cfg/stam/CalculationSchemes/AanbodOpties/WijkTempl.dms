@@ -45,7 +45,7 @@ template WijkTempl
 	
 	// end of case param
 
-	unit<uint32> PlanRegio: Expr = "RunImpl/PlanRegio"
+	unit<uint32> PlanRegio:= /PlanRegio
 	{
 		attribute<units/Jaar> StartJaar: Expr = "=StartJaarAttr != '' ? StartJaarAttr : 'const(2000[units/jaar], .)'";
 	}
