@@ -115,8 +115,8 @@ template VestaRun
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
 // onderste regel aanzetten voor lege startstate Restwarmte en bovenste regel uitzetten
-				unit<Uint32> CumulatedArcSet := GivenStartArcSet;
-//				unit<Uint32> CumulatedArcSet := EmptyArcSet;
+//				unit<Uint32> CumulatedArcSet := GivenStartArcSet;
+				unit<Uint32> CumulatedArcSet := EmptyArcSet;
 				
 				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc): 
 					 = points2sequence_ps(

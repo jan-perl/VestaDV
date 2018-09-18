@@ -51,10 +51,10 @@ container ngr_layer {
 	}
 
 	// Different examples of tested layers
-//	parameter<string> layer  := 'brtachtergrondkaartgrijs';
+	parameter<string> layer  := 'brtachtergrondkaartgrijs';
 //	parameter<string> layer  := 'brtachtergrondkaart';
 //	parameter<string> layer  := 'opentopo';
-	parameter<string> layer  := 'opentopoachtergrondkaart';
+//	parameter<string> layer  := 'opentopoachtergrondkaart';
 //	parameter<string> layer  := '2016_ortho25'; // NYI due to jpeg format
 
 	parameter<string> host   := 'geodata.nationaalgeoregister.nl';

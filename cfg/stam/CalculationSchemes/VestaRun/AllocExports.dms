@@ -38,6 +38,8 @@ container AllocExports
 		}
 
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/PR.csv');
+		
+		#include<MapGallery.dms>
 	}
 
 	template BebouwingsComponentTempl
