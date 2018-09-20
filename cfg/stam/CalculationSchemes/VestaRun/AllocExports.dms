@@ -7,19 +7,19 @@ container AllocExports
 			attribute<string> BU_CODE                                       := Vesta/Geography/RegioIndelingen/buurt/BU_CODE;
 			attribute<Classifications/AanbodOptie> AanbodOptie              := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
 
-			attribute<Vesta/Units/kg_Yr> CO2_gebouwen_AardGas_totaal        := indicatoren/CO2/gebouwen/AardGas/totaal;
-			attribute<Vesta/Units/kg_Yr> CO2_gebouwen_Elektriciteit_totaal  := indicatoren/CO2/gebouwen/Elektriciteit/totaal;
-			attribute<Vesta/Units/kg_Yr> CO2_gebouwen_totaal                := indicatoren/CO2/gebouwen/totaal;
-			attribute<Vesta/Units/kg_Yr> CO2_totaal                         := indicatoren/CO2/totaal;
-			attribute<Vesta/Units/Eur_Yr> netverzwaring                     := indicatoren/netwerk/Elektriciteit/netverzwaring;
+			attribute<Vesta/Units/kg_yr> CO2_gebouwen_AardGas_totaal        := indicatoren/CO2/gebouwen/AardGas/totaal;
+			attribute<Vesta/Units/kg_yr> CO2_gebouwen_Elektriciteit_totaal  := indicatoren/CO2/gebouwen/Elektriciteit/totaal;
+			attribute<Vesta/Units/kg_yr> CO2_gebouwen_totaal                := indicatoren/CO2/gebouwen/totaal;
+			attribute<Vesta/Units/kg_yr> CO2_totaal                         := indicatoren/CO2/totaal;
+			attribute<Vesta/Units/Eur_yr> netverzwaring                     := indicatoren/netwerk/Elektriciteit/netverzwaring;
 
 			attribute<Vesta/Units/kW> Woning_CapaciteitWarmteD              := Initieel/KostenBaten/PlanRegioKaarten/Woning/CapaciteitWarmteD;
 			attribute<Vesta/Units/nrAansl>Woning_nrAanslWarmteD             := Initieel/KostenBaten/PlanRegioKaarten/Woning/nrAanslWarmteD;
 			attribute<Float64>Woning_nrModelUnitsWarmteD                    := Initieel/KostenBaten/PlanRegioKaarten/Woning/nrModelUnitsWarmteD;
-			attribute<Vesta/Units/GJ_Yr> Woning_VerbruikA                   := Initieel/KostenBaten/PlanRegioKaarten/Woning/VerbruikA;
-			attribute<Vesta/Units/Eur_Yr>Woning_WarmteVraagA                := Initieel/KostenBaten/PlanRegioKaarten/Woning/WarmteVraagA;
-			attribute<Vesta/Units/GJ_Yr> Vj_WarmtePrimairD                  := Initieel/KostenBaten/Vj_WarmtePrimairD;
-			attribute<Vesta/Units/GJ_Yr> WarmteVraagD                       := Initieel/KostenBaten/WarmteVraagD;
+			attribute<Vesta/Units/GJ_yr> Woning_VerbruikA                   := Initieel/KostenBaten/PlanRegioKaarten/Woning/VerbruikA;
+			attribute<Vesta/Units/Eur_yr>Woning_WarmteVraagA                := Initieel/KostenBaten/PlanRegioKaarten/Woning/WarmteVraagA;
+			attribute<Vesta/Units/GJ_yr> Vj_WarmtePrimairD                  := Initieel/KostenBaten/Vj_WarmtePrimairD;
+			attribute<Vesta/Units/GJ_yr> WarmteVraagD                       := Initieel/KostenBaten/WarmteVraagD;
 
 			attribute<Vesta/Units/Percent> Eigendom_Koopwoningen                  := Vesta/Geography/RegioIndelingen/buurt/Eigendom/p_koopw;
 			attribute<Vesta/Units/Percent> Eigendom_Huurwoningen_totaal           := Vesta/Geography/RegioIndelingen/buurt/Eigendom/p_huurw;
@@ -32,9 +32,9 @@ container AllocExports
 			attribute<Vesta/Units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Vesta/Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
 			attribute<Vesta/Units/Percent> Inkomen_p_checksum                     := Vesta/Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<Vesta/Units/GJ_Yr> GebiedsOptie_totaal                      := RunContext/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
-			attribute<Vesta/Units/GJ_Yr> Aardgas_totaal                           := RunContext/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
-			attribute<Vesta/Units/GJ_Yr> Elektriciteit_totaal                     := RunContext/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<Vesta/Units/GJ_yr> GebiedsOptie_totaal                      := RunContext/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
+			attribute<Vesta/Units/GJ_yr> Aardgas_totaal                           := RunContext/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<Vesta/Units/GJ_yr> Elektriciteit_totaal                     := RunContext/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/PR.csv');
@@ -59,33 +59,33 @@ container AllocExports
 
 			attribute<Classifications/AanbodOptie> AanbodOptie: = AllocatieResultaatComponent/WarmteAllocatie;
 
-			attribute<GJ_Yr> MV_RW   := AllocatieResultaatComponent/MeterVraag/RestWarmte;
-			attribute<GJ_Yr> MV_GT   := AllocatieResultaatComponent/MeterVraag/GeoThermie;
-			attribute<GJ_Yr> MV_WKO  := AllocatieResultaatComponent/MeterVraag/WKO;
-			attribute<GJ_Yr> MV_WKK  := AllocatieResultaatComponent/MeterVraag/WijkWKK;
-			attribute<GJ_Yr> MV_BIOWKK  := AllocatieResultaatComponent/MeterVraag/BioWKK;
-			attribute<GJ_Yr> MV_GAS  := AllocatieResultaatComponent/MeterVraag/AardGas;
-			attribute<GJ_Yr> MV_ELEK := AllocatieResultaatComponent/MeterVraag/Elektriciteit;
-			attribute<GJ_Yr> MV_TOTL := AllocatieResultaatComponent/MeterVraag/Totaal;
+			attribute<GJ_yr> MV_RW   := AllocatieResultaatComponent/MeterVraag/RestWarmte;
+			attribute<GJ_yr> MV_GT   := AllocatieResultaatComponent/MeterVraag/GeoThermie;
+			attribute<GJ_yr> MV_WKO  := AllocatieResultaatComponent/MeterVraag/WKO;
+			attribute<GJ_yr> MV_WKK  := AllocatieResultaatComponent/MeterVraag/WijkWKK;
+			attribute<GJ_yr> MV_BIOWKK  := AllocatieResultaatComponent/MeterVraag/BioWKK;
+			attribute<GJ_yr> MV_GAS  := AllocatieResultaatComponent/MeterVraag/AardGas;
+			attribute<GJ_yr> MV_ELEK := AllocatieResultaatComponent/MeterVraag/Elektriciteit;
+			attribute<GJ_yr> MV_TOTL := AllocatieResultaatComponent/MeterVraag/Totaal;
 
-			attribute<KG_Yr> CO2_GAS:  = AllocatieResultaatComponent/CO2/AardGas;
-			attribute<KG_Yr> CO2_ELEK: = AllocatieResultaatComponent/CO2/Elektriciteit;
+			attribute<KG_yr> CO2_GAS:  = AllocatieResultaatComponent/CO2/AardGas;
+			attribute<KG_yr> CO2_ELEK: = AllocatieResultaatComponent/CO2/Elektriciteit;
 			
 			attribute<Vesta/Units/Eur> AansluitBijdrage_Gas              := AllocatieResultaatComponent/AardGas/AansluitBijdrage;
 			attribute<Vesta/Units/Eur> AansluitBijdrage_Elek             := AllocatieResultaatComponent/Elektriciteit/AansluitBijdrage;
-			attribute<Vesta/Units/Eur_Yr> CO2Heffing_Gas                 := AllocatieResultaatComponent/AardGas/CO2Heffing;
-			attribute<Vesta/Units/Eur_Yr> CO2Heffing_Elek                := AllocatieResultaatComponent/Elektriciteit/CO2Heffing;
-			attribute<Vesta/Units/Eur_Yr> Eindgebruik_ex_Gas             := AllocatieResultaatComponent/AardGas/eindgebruik_ex;
-			attribute<Vesta/Units/Eur_Yr> Eindgebruik_ex_Elek            := AllocatieResultaatComponent/Elektriciteit/eindgebruik_ex;
-			attribute<Vesta/Units/Eur_Yr> EnergieHeffing_Gas             := AllocatieResultaatComponent/AardGas/EnergieHeffing;
-			attribute<Vesta/Units/Eur_Yr> EnergieHeffing_Elek            := AllocatieResultaatComponent/Elektriciteit/EnergieHeffing;
+			attribute<Vesta/Units/Eur_yr> CO2Heffing_Gas                 := AllocatieResultaatComponent/AardGas/CO2Heffing;
+			attribute<Vesta/Units/Eur_yr> CO2Heffing_Elek                := AllocatieResultaatComponent/Elektriciteit/CO2Heffing;
+			attribute<Vesta/Units/Eur_yr> Eindgebruik_ex_Gas             := AllocatieResultaatComponent/AardGas/eindgebruik_ex;
+			attribute<Vesta/Units/Eur_yr> Eindgebruik_ex_Elek            := AllocatieResultaatComponent/Elektriciteit/eindgebruik_ex;
+			attribute<Vesta/Units/Eur_yr> EnergieHeffing_Gas             := AllocatieResultaatComponent/AardGas/EnergieHeffing;
+			attribute<Vesta/Units/Eur_yr> EnergieHeffing_Elek            := AllocatieResultaatComponent/Elektriciteit/EnergieHeffing;
 			attribute<uint8> ggk_rel_Gas                                 := AllocatieResultaatComponent/AardGas/ggk_rel;
 			attribute<uint8> ggk_rel_Elek                                := AllocatieResultaatComponent/Elektriciteit/ggk_rel;
 
-			attribute<Vesta/Units/Eur_Yr> Maatschappelijk_Gas  := AllocatieResultaatComponent/AardGas/maatschappelijk;
-			attribute<Vesta/Units/Eur_Yr> Maatschappelijk_Elek := AllocatieResultaatComponent/Elektriciteit/maatschappelijk;
-			attribute<Vesta/Units/Eur_Yr> Netwerk_Gas          := AllocatieResultaatComponent/AardGas/netwerk;
-			attribute<Vesta/Units/Eur_Yr> Netwerk_Elek         := AllocatieResultaatComponent/Elektriciteit/netwerk;
+			attribute<Vesta/Units/Eur_yr> Maatschappelijk_Gas  := AllocatieResultaatComponent/AardGas/maatschappelijk;
+			attribute<Vesta/Units/Eur_yr> Maatschappelijk_Elek := AllocatieResultaatComponent/Elektriciteit/maatschappelijk;
+			attribute<Vesta/Units/Eur_yr> Netwerk_Gas          := AllocatieResultaatComponent/AardGas/netwerk;
+			attribute<Vesta/Units/Eur_yr> Netwerk_Elek         := AllocatieResultaatComponent/Elektriciteit/netwerk;
 
 			attribute<classifications/EnergieLabel> EL_LV := VestaRunDataComponent/energielabel/LastValue;
 			attribute<classifications/EnergieLabel> EL_CV := VestaRunDataComponent/energielabel/CurrValue;
@@ -98,14 +98,14 @@ container AllocExports
 			attribute<Vesta/Units/nrAansl> mWKK_aantal    := VestaRunDataComponent/Hoeveelheden/mWKK;
 			attribute<Vesta/Units/nrAansl> hWP_aantal     := VestaRunDataComponent/Hoeveelheden/hWP;
 
-			attribute<EUR> Ki_Totaal          := VestaRunDataComponent/Kosten/Ki_Totaal;
-			attribute<EUR> Ki_ZonneBoiler     := VestaRunDataComponent/Kosten/Ki_ZonneBoiler;
-			attribute<EUR> Ki_Zon_PV          := VestaRunDataComponent/Kosten/Ki_Zon_PV;
-			attribute<EUR> Ki_mWKK            := VestaRunDataComponent/Kosten/Ki_mWKK;
-			attribute<EUR> Ki_hWP             := VestaRunDataComponent/Kosten/Ki_hWP;
-			attribute<EUR> Ki_eWP             := VestaRunDataComponent/Kosten/Ki_eWP;
-			attribute<EUR> Ki_EWV             := VestaRunDataComponent/Kosten/Ki_EWV;
-			attribute<Eur_Yr> Kj_gv_incentive := VestaRunDataComponent/Kosten/Kj_gv_incentive;
+			attribute<Eur> Ki_Totaal          := VestaRunDataComponent/Kosten/Ki_Totaal;
+			attribute<Eur> Ki_ZonneBoiler     := VestaRunDataComponent/Kosten/Ki_ZonneBoiler;
+			attribute<Eur> Ki_Zon_PV          := VestaRunDataComponent/Kosten/Ki_Zon_PV;
+			attribute<Eur> Ki_mWKK            := VestaRunDataComponent/Kosten/Ki_mWKK;
+			attribute<Eur> Ki_hWP             := VestaRunDataComponent/Kosten/Ki_hWP;
+			attribute<Eur> Ki_eWP             := VestaRunDataComponent/Kosten/Ki_eWP;
+			attribute<Eur> Ki_EWV             := VestaRunDataComponent/Kosten/Ki_EWV;
+			attribute<Eur_yr> Kj_gv_incentive := VestaRunDataComponent/Kosten/Kj_gv_incentive;
 		}
 		
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/'+ComponentName+'.csv');

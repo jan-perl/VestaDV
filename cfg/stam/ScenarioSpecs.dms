@@ -62,37 +62,37 @@ container ScenarioSpecs: Using = "Units"
 			{
 				container Zon_PV
 				{
-					parameter<units/KWh_Yr_m2> OpbrengstKWh:       [150.0];
-					parameter<units/GJ_Yr_m2>  Opbrengst: Expr = "OpbrengstKWh * value (3600, Units/s / Units/hr) / value(1000000, Units/kJ / Units/GJ)";
-					parameter<units/EUR_m2>    InvesteringsKosten_Min: [  265 ], Source = "Wensenlijst";
-					parameter<units/EUR_m2>    InvesteringsKosten_Max: [  595 ], Source = "Wensenlijst";
+					parameter<units/KWh_yr_m2> OpbrengstKWh:       [150.0];
+					parameter<units/GJ_yr_m2>  Opbrengst: Expr = "OpbrengstKWh * value (3600, Units/s / Units/hr) / value(1000000, Units/kJ / Units/GJ)";
+					parameter<units/Eur_m2>    InvesteringsKosten_Min: [  265 ], Source = "Wensenlijst";
+					parameter<units/Eur_m2>    InvesteringsKosten_Max: [  595 ], Source = "Wensenlijst";
 				}
 				container ZonneBoiler
 				{
-					parameter<units/GJ_Yr_m2> Opbrengst: [1.5];
-					parameter<units/EUR_m2>   InvesteringsKosten_Min: [  950 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft juni 2013 CE-Delft pagina 19 onder";
-					parameter<units/EUR_m2>   InvesteringsKosten_Max: [ 1050 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft juni 2013 CE-Delft pagina 19 onder";
+					parameter<units/GJ_yr_m2> Opbrengst: [1.5];
+					parameter<units/Eur_m2>   InvesteringsKosten_Min: [  950 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft juni 2013 CE-Delft pagina 19 onder";
+					parameter<units/Eur_m2>   InvesteringsKosten_Max: [ 1050 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft juni 2013 CE-Delft pagina 19 onder";
 				}
 				container mWKK
 				{
-				// huidige investeringskosten van microWKK zijn 7500-10000 euro. Rekening houdend met alternatief van ketelkosten:
-				// 2000 euro ketelkosten bij minimale kosten
-				// 1200 euro ketelkosten bij maximale kosten
-					parameter<EUR_aansl> InvesteringsKosten_Min: [ 5500 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft augustus 2013 CE-Delft paragraaf 2.2.2";
-					parameter<EUR_aansl> InvesteringsKosten_Max: [ 8800 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft augustus 2013 CE-Delft paragraaf 2.2.2";
+				// huidige investeringskosten van microWKK zijn 7500-10000 Euro. Rekening houdend met alternatief van ketelkosten:
+				// 2000 Euro ketelkosten bij minimale kosten
+				// 1200 Euro ketelkosten bij maximale kosten
+					parameter<Eur_Aansl> InvesteringsKosten_Min: [ 5500 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft augustus 2013 CE-Delft paragraaf 2.2.2";
+					parameter<Eur_Aansl> InvesteringsKosten_Max: [ 8800 ], Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft augustus 2013 CE-Delft paragraaf 2.2.2";
 				}
 				container EWV
 				{
 					parameter<Ratio>   COP: [ 1.00 ];
-					parameter<units/EUR_aansl> InvesteringsKosten_Min: [ 10000 ];
-					parameter<units/EUR_aansl> InvesteringsKosten_Max: [ 20000 ];
+					parameter<units/Eur_Aansl> InvesteringsKosten_Min: [ 10000 ];
+					parameter<units/Eur_Aansl> InvesteringsKosten_Max: [ 20000 ];
 				}
 				container hWP: Source = "Rapport Vesta 3.0 F85"
 				{
 					parameter<Ratio>   COP: [ 4.00 ];
 					parameter<Ratio>   DekkingsGraad: [ 0.80 ];
-					parameter<EUR_aansl> InvesteringsKosten_Min: [ 2500 ];
-					parameter<EUR_aansl> InvesteringsKosten_Max: [ 4300 ];
+					parameter<Eur_Aansl> InvesteringsKosten_Min: [ 2500 ];
+					parameter<Eur_Aansl> InvesteringsKosten_Max: [ 4300 ];
 				}
 			}
 			
@@ -127,23 +127,23 @@ container ScenarioSpecs: Using = "Units"
 						parameter<Ratio> COP: [ 3.00 ];
 						// Het minimum is gebaseerd op lucht/water systeem met LT-radiatoreen en het maximum op water/water systeem met vloerverwarming, 
 						// beide voor rijtjeshuis uit de periode 1960-1980 (CE-rapport, augustus 2013) met aftrek van het alternatief van de HR-ketel:
-						// 2000 euro ketelkosten bij minimale kosten
-						// 1200 euro ketelkosten bij maximale kosten
-						// email Ruud 260813: Minimale investeringskosten = 8006 euro  en maximale investeringskosten 21546 euro. 
+						// 2000 Euro ketelkosten bij minimale kosten
+						// 1200 Euro ketelkosten bij maximale kosten
+						// email Ruud 260813: Minimale investeringskosten = 8006 Euro  en maximale investeringskosten 21546 Euro. 
 						// De kosten zijn als volgt opgebouwd:
 						// LT-systeem (1506; 8246 = 7635*1,08), eWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
 						// EWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
 						// 061113 Ruud en Bas - PBL: Splitsen van WKO-kosten. LT-systeem kosten niet meer meegenomen
-						parameter<units/EUR_Woning> InvesteringsKosten_min: [ 6500.0 ];
-						parameter<units/EUR_Woning> InvesteringsKosten_max: [ 13300.0 ];
+						parameter<units/Eur_Woning> InvesteringsKosten_min: [ 6500.0 ];
+						parameter<units/Eur_Woning> InvesteringsKosten_max: [ 13300.0 ];
 					}
 					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
-						parameter<EUR_Yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
-						parameter<EUR_Yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
+						parameter<Eur_yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
+						parameter<Eur_yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
 						
-						attribute<EUR_aansl>    AansluitTarief_min(Classifications/WoningtypeGeoHoogte ):= const(Warmtewet/Aansluitbijdrage/Maximum2010, Classifications/WoningtypeGeoHoogte);
-						attribute<EUR_aansl>    AansluitTarief_max(Classifications/WoningtypeGeoHoogte ):= AansluitTarief_min;
+						attribute<Eur_Aansl>    AansluitTarief_min(Classifications/WoningtypeGeoHoogte ):= const(Warmtewet/Aansluitbijdrage/Maximum2010, Classifications/WoningtypeGeoHoogte);
+						attribute<Eur_Aansl>    AansluitTarief_max(Classifications/WoningtypeGeoHoogte ):= AansluitTarief_min;
 					}
 				}
 				container UitlegWoning:= Woning
@@ -163,13 +163,13 @@ container ScenarioSpecs: Using = "Units"
 
 					container eWP := Woning/eWP
 					{
-						parameter<units/EUR_Woning> InvesteringsKosten_Min: [5000.0], Source = "Cor CE";
-						parameter<units/EUR_Woning> InvesteringsKosten_Max: [5000.0], Source = "Cor CE";
+						parameter<units/Eur_Woning> InvesteringsKosten_Min: [5000.0], Source = "Cor CE";
+						parameter<units/Eur_Woning> InvesteringsKosten_Max: [5000.0], Source = "Cor CE";
 					}
 					container Opbrengsten := Woning/Opbrengsten, Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
-						attribute<EUR_aansl> AansluitTarief_min(Classifications/woningtype2006): [ 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500 ];
-						attribute<EUR_aansl> AansluitTarief_max(Classifications/woningtype2006): [ 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500 ];
+						attribute<Eur_Aansl> AansluitTarief_min(Classifications/woningtype2006): [ 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500 ];
+						attribute<Eur_Aansl> AansluitTarief_max(Classifications/woningtype2006): [ 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500 ];
 					}
 				}
 				container Utiliteit:= ComponentBase
@@ -197,13 +197,13 @@ container ScenarioSpecs: Using = "Units"
 					container eWP
 					{
 						parameter<Ratio>        COP: [ 4.00 ];
-						parameter<units/EUR_m2> InvesteringsKosten_min: [42.0];
-						parameter<units/EUR_m2> InvesteringsKosten_max: [42.0];
+						parameter<units/Eur_m2> InvesteringsKosten_min: [42.0];
+						parameter<units/Eur_m2> InvesteringsKosten_max: [42.0];
 					}
 					container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
-						attribute<EUR_kW> AansluitTarief_min(Classifications/utiliteitBAG):= const( 50[EUR_kW],Classifications/utiliteitBAG);
-						attribute<EUR_kW> AansluitTarief_max(Classifications/utiliteitBAG):= const(100[EUR_kW],Classifications/utiliteitBAG);
+						attribute<Eur_kW> AansluitTarief_min(Classifications/utiliteitBAG):= const( 50[Eur_kW],Classifications/utiliteitBAG);
+						attribute<Eur_kW> AansluitTarief_max(Classifications/utiliteitBAG):= const(100[Eur_kW],Classifications/utiliteitBAG);
 					}
 				}
 				container UitlegUtil := Utiliteit
@@ -231,13 +231,13 @@ container ScenarioSpecs: Using = "Units"
 					}
 					container Opbrengsten := Utiliteit/Opbrengsten,  Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
-						attribute<EUR_kW> AansluitTarief_min(Classifications/UitlegUtil):= const( 50[EUR_kW],Classifications/UitlegUtil);
-						attribute<EUR_kW> AansluitTarief_max(Classifications/UitlegUtil):= const(100[EUR_kW],Classifications/UitlegUtil);
+						attribute<Eur_kW> AansluitTarief_min(Classifications/UitlegUtil):= const( 50[Eur_kW],Classifications/UitlegUtil);
+						attribute<Eur_kW> AansluitTarief_max(Classifications/UitlegUtil):= const(100[Eur_kW],Classifications/UitlegUtil);
 					}
 					container mWKK := Utiliteit/mWKK
 					{
-						parameter<EUR_aansl> InvesteringsKosten_Min: [12000.0], Source = "memo kostencijfer 20101110";
-						parameter<EUR_aansl> InvesteringsKosten_Max: [12000.0], Source = "memo kostencijfer 20101110";
+						parameter<Eur_Aansl> InvesteringsKosten_Min: [12000.0], Source = "memo kostencijfer 20101110";
+						parameter<Eur_Aansl> InvesteringsKosten_Max: [12000.0], Source = "memo kostencijfer 20101110";
 					}
  				}
 				container Glastuinbouw := ComponentBase
@@ -263,16 +263,16 @@ container ScenarioSpecs: Using = "Units"
 					{
 						parameter<Ratio>   COP: [ 4.00 ]; 
 						//Onbekende kosten aan gebouw
-						parameter<units/EUR_m2> InvesteringsKosten_min: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
-						parameter<units/EUR_m2> InvesteringsKosten_max: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
+						parameter<units/Eur_m2> InvesteringsKosten_min: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
+						parameter<units/Eur_m2> InvesteringsKosten_max: [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
 					}
 					container opbrengsten: Source= "http://www.mantis.objectvision.nl/view.php?id=841"
 					{
-						parameter<EUR_Yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
-						parameter<EUR_Yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
+						parameter<Eur_yr_Aansl> VastrechtTarief_min := Warmtewet/Vastrecht/Maximum2010;
+						parameter<Eur_yr_Aansl> VastrechtTarief_max := Warmtewet/Vastrecht/Maximum2010;
 						
-						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
-						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<Eur_Aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[Eur_Aansl],Classifications/GLTB);
+						attribute<Eur_Aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[Eur_Aansl],Classifications/GLTB);
 					}
 				}
 				
@@ -283,8 +283,8 @@ container ScenarioSpecs: Using = "Units"
 					container Opbrengsten := Glastuinbouw/Opbrengsten,
 						Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36 jo http://www.mantis.objectvision.nl/view.php?id=841"
 					{
-						attribute<EUR_aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
-						attribute<EUR_aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[EUR_aansl],Classifications/GLTB);
+						attribute<Eur_Aansl> AansluitTarief_min(Classifications/GLTB):= const( 0[Eur_Aansl],Classifications/GLTB);
+						attribute<Eur_Aansl> AansluitTarief_max(Classifications/GLTB):= const( 0[Eur_Aansl],Classifications/GLTB);
 					}
 					container ZonneBoiler := Glastuinbouw/ZonneBoiler
 					{
@@ -299,21 +299,21 @@ container ScenarioSpecs: Using = "Units"
 				{
 					container Zon_PV
 					{
-						parameter<units/KWh_Yr_m2> Opbr := Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_opbrengst;
+						parameter<units/KWh_yr_m2> Opbr := Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_opbrengst;
 					}
 				}
 				container Utiliteit := BaseLine/Utiliteit
 				{
 					container Zon_PV
 					{
-						parameter<units/KWh_Yr_m2> Opbr := Woning/Zon_PV/Opbr;
+						parameter<units/KWh_yr_m2> Opbr := Woning/Zon_PV/Opbr;
 					}
 				}				
 				container Glastuinbouw := BaseLine/Glastuinbouw
 				{
 					container Zon_PV
 					{
-						parameter<units/KWh_Yr_m2> Opbr := Woning/Zon_PV/Opbr;
+						parameter<units/KWh_yr_m2> Opbr := Woning/Zon_PV/Opbr;
 					}
 				}
 			}

@@ -126,7 +126,7 @@ container UserInput1: Using = "Vesta/Units"
 		}
 	}
 	
-	container Voorkeuren: Descr = "Blok 4"
+	container VoorkEuren: Descr = "Blok 4"
 	{
 		container AanbodOpties
 		{
@@ -135,14 +135,14 @@ container UserInput1: Using = "Vesta/Units"
 		
 		parameter<float64> MinderDanAndersFactor := 1.0; // niet minder dan anders; zet op bijvoorbeeld 0.9 voor 10% korting op de volgens de WarmteWet berekende prijs.
 		
-		parameter<bool>   IsVasteWarmtePrijs := false; // impl vaste warmteprijs in EUR_GJ.?
-		parameter<EUR_GJ> VasteWarmtePrijs := 25[EUR_GJ]; // wordt alleen gebruikt indien IsVasteWarmtePrijs
+		parameter<bool>   IsVasteWarmtePrijs := false; // impl vaste warmteprijs in Eur_GJ.?
+		parameter<Eur_GJ> VasteWarmtePrijs := 25[Eur_GJ]; // wordt alleen gebruikt indien IsVasteWarmtePrijs
 		
 		parameter<float64> GroenGasFactor := 0.10; // 90% reguier gas en 10% groen gas (zonder Co2 uitstoot).
 	}
 	
 	container Beleidsopties {
-		parameter<EUR_Yr_Aansl> Heffingskorting := 284[EUR_Yr_Aansl];
+		parameter<Eur_yr_Aansl> Heffingskorting := 284[Eur_yr_Aansl];
 		
 		container EIA: Descr = "Energie Inversterings aftrek, zoals  MIA/VAMIL etc."
 		{
@@ -172,7 +172,7 @@ container UserInput1: Using = "Vesta/Units"
 		}
 		container EEA: Descr = "Energie Exploitatie aftrek"
 		{
-			//	Exploitatiesubsidies: per geleverde GJ of per verkochte EUR.per zichtjaar in te stellen"
+			//	Exploitatiesubsidies: per geleverde GJ of per verkochte Eur.per zichtjaar in te stellen"
 			container Kosten
 			{
 				// percentage op totale kosten (kapitaallasten + O&M) per actor aan actor
@@ -189,11 +189,11 @@ container UserInput1: Using = "Vesta/Units"
 			parameter<Float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
 			parameter<Float64> pt := 0.0; // primair transport
 			parameter<Float64> WKO := 0.0; // exploitatie subsidie op Ki_A (doublet) als fractie van de kapitaallasten
-			parameter<EUR_GJ> SDE_WKO := 0.0[EUR_GJ]; // exploitatie subsidie op WKO per GJ.
+			parameter<Eur_GJ> SDE_WKO := 0.0[Eur_GJ]; // exploitatie subsidie op WKO per GJ.
 			
 			attribute<Float64> ow(Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList);
-			// SDE: subsidie [EUR per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.
-			attribute<EUR_GJ> SDE(Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0[EUR_GJ], Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			// SDE: subsidie [Eur per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.
+			attribute<Eur_GJ> SDE(Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0[Eur_GJ], Vesta/BronData/WarmteBronnen/MetaData/TypeInfoList);
 		}
 	}
 	

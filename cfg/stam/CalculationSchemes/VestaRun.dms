@@ -98,7 +98,7 @@ template VestaRun
 				{
 					attribute<Geography/RegioIndelingen/buurt> PlanRegio_rel := linkset/BU_rel;
 					attribute<rdc_meter> PrevPoint := nodeset/Point[linkset/F1];
-//					attribute<EUR>                             Ki_Netto;
+//					attribute<Eur>                             Ki_Netto;
 					attribute<WarmteBronnen>                   Bron_rel := value(rjoin(value(ID(linkset), nodeset), nodeset/e/DstZone_rel, nodeset/e/OrgZone_rel), WarmteBronnen);
 					attribute<rdc_meter>                       BronPoint := WarmteBronnen/P[Bron_rel];
 					
@@ -110,7 +110,7 @@ template VestaRun
 					attribute<rdc_meter> PrevPoint    :  = Point;
 					attribute<rdc_meter> BronPoint    :  = Point;
 					attribute<PlanRegio> PlanRegio_rel:  = const(0[PlanRegio], .);
-					attribute<EUR>       Ki_Netto:       = const(value(0, EUR), .);
+					attribute<Eur>       Ki_Netto:       = const(value(0, Eur), .);
 					
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
@@ -124,43 +124,43 @@ template VestaRun
 			}
 			unit<uint32> WkoCluster: NrOfRows = 0
 			{
-				attribute<EUR>       Ki_A := const(0[EUR], .);
-				attribute<EUR>       Ki_B := const(0[EUR], .);
+				attribute<Eur>       Ki_A := const(0[Eur], .);
+				attribute<Eur>       Ki_B := const(0[Eur], .);
 				attribute<String>    Label:= const('', .);
 				attribute<rdc_meter> Point:= const(Point(0.0, 0.0, rdc_meter), .);
 			}
 		}
 		container Stock {
-			attribute<EUR> Ki_ge_ov(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Ki_ge_pm(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Ki_id(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Ki_wd(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Ki_pt(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Ki_ow(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oi_ge_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oi_id_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oi_wd_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oi_pt_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oi_ow_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
-			attribute<EUR> Oe_ow_subsidie(PlanRegio) := const(0[EUR], PlanRegio);
+			attribute<Eur> Ki_ge_ov(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_ge_pm(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_id(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_wd(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_pt(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_ow(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_ge_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_id_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_wd_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_pt_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_ow_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oe_ow_subsidie(PlanRegio) := const(0[Eur], PlanRegio);
 		}
 		container Wko := Stock {
-	 		container Oi_Aansl    := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[EUR]   , PlanRegio)', PlanRegio, EUR);
-	 		container Oj_Verbruik := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[EUR_Yr], PlanRegio)', PlanRegio, EUR_Yr);
-	 		container Om_comfort  := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[EUR_Yr], PlanRegio)', PlanRegio, EUR_Yr);
+	 		container Oi_Aansl    := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur]   , PlanRegio)', PlanRegio, Eur);
+	 		container Oj_Verbruik := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+	 		container Om_comfort  := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
 	 		
-			attribute<EUR_Yr> Kj_ge    (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_wd_pr (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Km_ow_e  (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_ow_e  (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> KEH_ow_e (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> KCO2_ow_e(PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_ow_o  (PlanRegio) := const(0[EUR_Yr], PlanRegio);
+			attribute<Eur_yr> Kj_ge    (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_wd_pr (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Km_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> KEH_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> KCO2_ow_e(PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_o  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 			
-			attribute<EUR_Yr> Se       (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<GJ_Yr> GJw_totaal(PlanRegio) := const(0[GJ_Yr], PlanRegio);
-			attribute<GJ_Yr> GJe_totaal(PlanRegio) := const(0[GJ_Yr], PlanRegio);
-			attribute<KG_Yr> CO2       (PlanRegio) := const(0[KG_Yr], PlanRegio);
+			attribute<Eur_yr> Se       (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<GJ_yr> GJw_totaal(PlanRegio) := const(0[GJ_yr], PlanRegio);
+			attribute<GJ_yr> GJe_totaal(PlanRegio) := const(0[GJ_yr], PlanRegio);
+			attribute<KG_yr> CO2       (PlanRegio) := const(0[KG_yr], PlanRegio);
 		}
 	}
 	
@@ -175,7 +175,7 @@ template VestaRun
 
 	unit<UInt32> WarmteBronnen:  = ScenarioSpecs/VestaRunOpties/WarmteBronnen/alleBRonnen;
 
-	container Voorkeuren := UserInput/Voorkeuren
+	container VoorkEuren := UserInput/VoorkEuren
 	{
 		unit<UInt32> WarmteOpties_Org := Range(UInt32, 0, AanbodOpties/Aantal) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
 		{
@@ -281,35 +281,35 @@ template VestaRun
 				container prijzenbron  := Vesta/BronData/energie/prijzen/AardGas/results;
 				parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
 			
-				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
+				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - VoorkEuren/GroenGasFactor);
 				
 				unit<uint8> Staffel := classifications/gebruiksgrootteklasse 
 				{
-					attribute<GJ_Yr>  ClassBreak := gas_break;
-					attribute<EUR_GJ> KGJ_Commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
+					attribute<GJ_yr>  ClassBreak := gas_break;
+					attribute<Eur_GJ> KGJ_Commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
 				}
 				
 				unit<uint8>  Glastuinbouw: nrofrows = 1
 				{
-					attribute<GJ_Yr>  ClassBreak := union_data(., first(staffel/Classbreak));
-					attribute<EUR_GJ> KGJ_eindgebruik_ex  := prijzenbron/Glastuinbouw/eindgebruik_ex [const(JaarIndex,.)];
-					attribute<EUR_GJ> KGJ_maatschappelijk := prijzenbron/Glastuinbouw/maatschappelijk[const(JaarIndex,.)];
-					attribute<EUR_GJ> KGJ_netwerk         := prijzenbron/Glastuinbouw/netwerk        [const(JaarIndex,.)];
-					attribute<EUR_GJ> KGJ_EnergieHeffing  := prijzenbron/Glastuinbouw/EnergieHeffing [const(JaarIndex,.)];
-					attribute<EUR_GJ> KGJ_CO2Heffing      := prijzenbron/Glastuinbouw/CO2Heffing     [const(JaarIndex,.)];
+					attribute<GJ_yr>  ClassBreak := union_data(., first(staffel/Classbreak));
+					attribute<Eur_GJ> KGJ_eindgebruik_ex  := prijzenbron/Glastuinbouw/eindgebruik_ex [const(JaarIndex,.)];
+					attribute<Eur_GJ> KGJ_maatschappelijk := prijzenbron/Glastuinbouw/maatschappelijk[const(JaarIndex,.)];
+					attribute<Eur_GJ> KGJ_netwerk         := prijzenbron/Glastuinbouw/netwerk        [const(JaarIndex,.)];
+					attribute<Eur_GJ> KGJ_EnergieHeffing  := prijzenbron/Glastuinbouw/EnergieHeffing [const(JaarIndex,.)];
+					attribute<Eur_GJ> KGJ_CO2Heffing      := prijzenbron/Glastuinbouw/CO2Heffing     [const(JaarIndex,.)];
 				}
 				container Bijstook := prijzenbron/KleinMiddelGebruik
 				{
-					parameter<EUR_GJ> KGJ_eindgebruik_ex  := eindgebruik_ex [JaarIndex];
-					parameter<EUR_GJ> KGJ_maatschappelijk := maatschappelijk[JaarIndex];
-					parameter<EUR_GJ> KGJ_netwerk         := netwerk        [JaarIndex];
-					parameter<EUR_GJ> KGJ_CO2Heffing      := CO2Heffing     [JaarIndex];
-					parameter<EUR_GJ> KGJ_EnergieHeffing  := EnergieHeffing [JaarIndex];
+					parameter<Eur_GJ> KGJ_eindgebruik_ex  := eindgebruik_ex [JaarIndex];
+					parameter<Eur_GJ> KGJ_maatschappelijk := maatschappelijk[JaarIndex];
+					parameter<Eur_GJ> KGJ_netwerk         := netwerk        [JaarIndex];
+					parameter<Eur_GJ> KGJ_CO2Heffing      := CO2Heffing     [JaarIndex];
+					parameter<Eur_GJ> KGJ_EnergieHeffing  := EnergieHeffing [JaarIndex];
 				}
 			}
 			container Elektriciteit
@@ -323,30 +323,30 @@ template VestaRun
 				
 				unit<uint8> Staffel := classifications/gebruiksgrootteklasse
 				{
-					attribute<GJ_Yr>  ClassBreak := elek_break_kWh [GJ_Yr];
-					attribute<EUR_GJ> KGJ_commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
-					attribute<EUR_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
+					attribute<GJ_yr>  ClassBreak := elek_break_kWh [GJ_yr];
+					attribute<Eur_GJ> KGJ_commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
+					attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
 				}
 			}
 		}
 		container Onderhoud: Source = "Fo v7a C.3.1"
 		{
-			parameter<_Yr> Rj_WOS         := 0.03 [_yr] / R_Onderhoud;
-			parameter<_Yr> Rj_OnderStation:= 0.03 [_yr] / R_Onderhoud;
-			parameter<_Yr> Rj_PrimairNet  := 0.01 [_yr] / R_Onderhoud; // Wordt gebruikt bij Restwarmte en Geothermie voor pijpen, excl Precario
-			parameter<_Yr> Rj_SecundairNet:= 0.01 [_yr] / R_Onderhoud; // excl Precario
-			parameter<_Yr> Rj_wd          := 0.025[_yr] / R_Onderhoud; // excl Precario
-			parameter<_Yr> Rj_id          := 0.025[_yr]; // geen Admin.
-			parameter<_Yr> Rj_Installatie:     [ 0.00 ]; // @@@ Moet dit echt nul zijn?
-			parameter<_Yr> Rj_GebouwVerbetering:[ 0.00 ];
-			parameter<_Yr> Rj_LokaleOpwekking: [ 0.05 ];   // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, eWP, hWP en EWV
+			parameter<_yr> Rj_WOS         := 0.03 [_yr] / R_Onderhoud;
+			parameter<_yr> Rj_OnderStation:= 0.03 [_yr] / R_Onderhoud;
+			parameter<_yr> Rj_PrimairNet  := 0.01 [_yr] / R_Onderhoud; // Wordt gebruikt bij Restwarmte en Geothermie voor pijpen, excl Precario
+			parameter<_yr> Rj_SecundairNet:= 0.01 [_yr] / R_Onderhoud; // excl Precario
+			parameter<_yr> Rj_wd          := 0.025[_yr] / R_Onderhoud; // excl Precario
+			parameter<_yr> Rj_id          := 0.025[_yr]; // geen Admin.
+			parameter<_yr> Rj_Installatie:     [ 0.00 ]; // @@@ Moet dit echt nul zijn?
+			parameter<_yr> Rj_GebouwVerbetering:[ 0.00 ];
+			parameter<_yr> Rj_LokaleOpwekking: [ 0.05 ];   // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, eWP, hWP en EWV
 			// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden. 
 			// TODO: onderzoeken bij WKO: onderhoudskosten, min-max kosten en leercurvetoepassing, toepassing NMDA tariefswijziging
-			parameter<Eur_Yr_m> Rj_Precario_m := 4.3[Eur_Yr_m], Source = "email Gijs de Man dd 22-02-2016", Descr = "Precario als prijs per meter pijp per jaar",
+			parameter<Eur_yr_m> Rj_Precario_m := 4.3[Eur_yr_m], Source = "email Gijs de Man dd 22-02-2016", Descr = "Precario als prijs per meter pijp per jaar",
 				url = "http://decentrale.regelgeving.overheid.nl/cvdr/xhtmloutput/Historie/Leiden/386935/386935_1.html";
 			
 			parameter<Ratio> R_lv_Admin:  [ 0.1 ]; // Fractie van vastrecht dat de leveancier aan administratiekosten besteedt.
@@ -372,22 +372,22 @@ template VestaRun
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
-				attribute<EUR>     AansluitBijdrageE  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
-				attribute<EUR>     AansluitBijdrageD  (Domains/Woning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<EUR>     AansluitBijdrageA  (Domains/Woning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/Woning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/Woning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 //
 				parameter<Float64> VastRechtTarief := 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<EUR_Yr> HeffingskortingE  (Domains/Woning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/Woning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR_Yr> VastRechtBijdrage (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageD(Domains/Woning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageA(Domains/Woning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrage (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageD(Domains/Woning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageA(Domains/Woning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 		container UitlegWoning
@@ -399,22 +399,22 @@ template VestaRun
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_NW;
-				attribute<EUR>     AansluitBijdrageE  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_NW;
-				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_NW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_NW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 				
 				parameter<Float64> VastRechtTarief:  = 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin + 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 					
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegWoning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegWoning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR_Yr>  VastRechtBijdrage (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr>  VastRechtBijdrageD(Domains/UitlegWoning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr>  VastRechtBijdrageA(Domains/UitlegWoning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrage (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageD(Domains/UitlegWoning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageA(Domains/UitlegWoning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 		container Utiliteit // specific AansluitTarief (per AansluitCapaciteit)
@@ -426,24 +426,24 @@ template VestaRun
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 
-				attribute<EUR>     AansluitBijdrageD  (Domains/Utiliteit) := AansluitTarief    * WarmteVraagD/AansluitCapaciteit;
-				attribute<EUR>     AansluitBijdrageA  (Domains/Utiliteit) := AansluitTarief    * WarmteVraagA/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageD  (Domains/Utiliteit) := AansluitTarief    * WarmteVraagD/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageA  (Domains/Utiliteit) := AansluitTarief    * WarmteVraagA/AansluitCapaciteit;
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_BU;
-				attribute<EUR>     AansluitBijdrageE  (Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_BU;
+				attribute<Eur>     AansluitBijdrageG  (Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_BU;
+				attribute<Eur>     AansluitBijdrageE  (Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_BU;
 
-				attribute<Float64> VastRechtTarief (Domains/Utiliteit) := 96.84[EUR_kW_Yr] * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
-				attribute<Float64> VastRechtTariefA(Domains/Utiliteit) := 96.84[EUR_kW_Yr] * Min_elem(WarmteVraagA/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
-				attribute<Float64> VastRechtTariefD(Domains/Utiliteit) := 96.84[EUR_kW_Yr] * Min_elem(WarmteVraagD/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+				attribute<Float64> VastRechtTarief (Domains/Utiliteit) := 96.84[Eur_kW_yr] * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+				attribute<Float64> VastRechtTariefA(Domains/Utiliteit) := 96.84[Eur_kW_yr] * Min_elem(WarmteVraagA/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+				attribute<Float64> VastRechtTariefD(Domains/Utiliteit) := 96.84[Eur_kW_yr] * Min_elem(WarmteVraagD/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
 				
-				attribute<EUR_Yr> VastRechtBijdrage (Domains/Utiliteit) := RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
-				attribute<Eur_Yr> VastRechtBijdrageD(Domains/Utiliteit) := WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
-				attribute<Eur_Yr> VastRechtBijdrageA(Domains/Utiliteit) := WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
+				attribute<Eur_yr> VastRechtBijdrage (Domains/Utiliteit) := RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageD(Domains/Utiliteit) := WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
+				attribute<Eur_yr> VastRechtBijdrageA(Domains/Utiliteit) := WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
 				
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/Utiliteit) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
 				
-				attribute<EUR_Yr> HeffingskortingE  (Domains/Utiliteit) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (Domains/Utiliteit) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 		container UitlegUtil
@@ -455,26 +455,26 @@ template VestaRun
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
-				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
-				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagA/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagA/AansluitCapaciteit;
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_NU;
-				attribute<EUR>     AansluitBijdrageE  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_NU;
+				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_NU;
+				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_NU;
 				
 				attribute<Float64> VastRechtTarief(Domains/UitlegUtil): Source = "F 11",
-					 = value(96.84, EUR_kW_Yr) * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, value(4000, kW ))^Float64(- 0.22);
+					 = value(96.84, Eur_kW_yr) * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, value(4000, kW ))^Float64(- 0.22);
 				attribute<Float64> VastRechtTariefD(Domains/UitlegUtil): Source = "F 11",
-					 = value(96.84, EUR_kW_Yr) * Min_elem(WarmteVraagD/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
+					 = value(96.84, Eur_kW_yr) * Min_elem(WarmteVraagD/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
 				attribute<Float64> VastRechtTariefA(Domains/UitlegUtil): Source = "F 11",
-					 = value(96.84, EUR_kW_Yr) * Min_elem(WarmteVraagA/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
-				attribute<EUR_Yr>  VastRechtBijdrage (Domains/UitlegUtil):                          = RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
-				attribute<EUR_Yr>  VastRechtBijdrageD(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
-				attribute<EUR_Yr>  VastRechtBijdrageA(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
+					 = value(96.84, Eur_kW_yr) * Min_elem(WarmteVraagA/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
+				attribute<Eur_yr>  VastRechtBijdrage (Domains/UitlegUtil):                          = RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageD(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
+				attribute<Eur_yr>  VastRechtBijdrageA(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
 				
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
 				
-				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegUtil) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegUtil) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}		
 		container GlasTuinbouw // specific Bijdragen
@@ -485,22 +485,22 @@ template VestaRun
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
-				attribute<EUR>     AansluitBijdrageE  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
-				attribute<EUR>     AansluitBijdrageD  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<EUR>     AansluitBijdrageA  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/GlasTuinbouw) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 //
 				parameter<Float64> VastRechtTarief := 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<EUR_Yr> HeffingskortingE  (Domains/GlasTuinbouw) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/GlasTuinbouw) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR_Yr> VastRechtBijdrage (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageD(Domains/GlasTuinbouw) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageA(Domains/GlasTuinbouw) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrage (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageD(Domains/GlasTuinbouw) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageA(Domains/GlasTuinbouw) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 		container UitlegGlTb // specific Bijdragen
@@ -511,22 +511,22 @@ template VestaRun
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<EUR>     AansluitBijdrageG  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
-				attribute<EUR>     AansluitBijdrageE  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
-				attribute<EUR>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<EUR>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 //
 				parameter<Float64> VastRechtTarief := 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 
-				attribute<EUR_Yr> VastRechtBijdrageG(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<EUR_Yr> VastRechtBijdrageE(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<EUR_Yr> HeffingskortingE  (Domains/UitlegGlTb) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegGlTb) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<EUR_Yr> VastRechtBijdrage (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageD(Domains/UitlegGlTb) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<EUR_Yr> VastRechtBijdrageA(Domains/UitlegGlTb) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrage (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageD(Domains/UitlegGlTb) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageA(Domains/UitlegGlTb) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 	}
@@ -584,31 +584,31 @@ template VestaRun
 		container WKO := StartingState/WKO;
 
 		container Flow {
-			attribute<EUR_Yr> Kj_pt_onderhoud(PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_pt_admin    (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_pt_precario (PlanRegio) := const(0[EUR_Yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_onderhoud(PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_admin    (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_precario (PlanRegio) := const(0[Eur_yr], PlanRegio);
 			
-			attribute<EUR_Yr> Kj_ow_onderhoud(PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_ow_admin    (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kj_ow_verbruik (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Km_ow_verbruik (PlanRegio) := const(0[EUR_Yr], PlanRegio);
-			attribute<EUR_Yr> Kc_ow_verbruik (PlanRegio) := const(0[EUR_Yr], PlanRegio); // CO2 emission right
-			attribute<EUR_Yr> Oj_SDE         (PlanRegio) := const(0[EUR_Yr], PlanRegio); // allocated SDE
+			attribute<Eur_yr> Kj_ow_onderhoud(PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_admin    (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kc_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
+			attribute<Eur_yr> Oj_SDE         (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 		}
 		container KostenBaten:  = KostenBatenSchema(VestaRunData, Energieprijzen, RunJaar);		
 	}
 
 	container GebiedsAllocatie :=
 			for_each_ne(
-				Voorkeuren/WarmteOpties/Name, 
-				'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
-					'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1]+'/Results', 'Initieel')+',
-					AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
+				VoorkEuren/WarmteOpties/Name, 
+				'CalculationSchemes/AanbodOptieTemplates/'+VoorkEuren/WarmteOpties/SchemaName+'(
+					'+MakeDefined(VoorkEuren/WarmteOpties/Name[ID(VoorkEuren/WarmteOpties)-1]+'/Results', 'Initieel')+',
+					AanbodKentallen/'+VoorkEuren/WarmteOpties/SchemaName+', 
 					EnergiePrijzen, RunJaar
 				)'
 			);
 			
-	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(VoorkEuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	container EndState := FinalState
 	{
 		attribute<Bool>   GebiedsOptie   (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
@@ -616,90 +616,90 @@ template VestaRun
 		container Stock := FinalState/Stock
 		{
 			// gebiedsmaatregelen
-			attribute<EUR> Ki_ge_ov      (PlanRegio) := StartingState/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * Float64(NewGebruik);
-			attribute<EUR> Ki_ge_pm      (PlanRegio) := StartingState/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * Float64(NewGebruik);
-			attribute<EUR> Ki_ge         (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
-			attribute<EUR> Ki_id         (PlanRegio) := StartingState/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * Float64(NewGebruik);
-			attribute<EUR> Ki_wd         (PlanRegio) := StartingState/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * Float64(NewGebruik);
-			attribute<EUR> Oi_ge_subsidie(PlanRegio) := StartingState/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * Float64(NewGebruik);
-			attribute<EUR> Oi_id_subsidie(PlanRegio) := StartingState/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * Float64(NewGebruik);
-			attribute<EUR> Oi_wd_subsidie(PlanRegio) := StartingState/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * Float64(NewGebruik);
-			attribute<EUR> Oi_wd_Aansluitbijdrage(PlanRegio) := KostenBaten/Oi_Aansluitbijdrage * Float64(GebiedsOptie);
+			attribute<Eur> Ki_ge_ov      (PlanRegio) := StartingState/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * Float64(NewGebruik);
+			attribute<Eur> Ki_ge_pm      (PlanRegio) := StartingState/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * Float64(NewGebruik);
+			attribute<Eur> Ki_ge         (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
+			attribute<Eur> Ki_id         (PlanRegio) := StartingState/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * Float64(NewGebruik);
+			attribute<Eur> Ki_wd         (PlanRegio) := StartingState/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * Float64(NewGebruik);
+			attribute<Eur> Oi_ge_subsidie(PlanRegio) := StartingState/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * Float64(NewGebruik);
+			attribute<Eur> Oi_id_subsidie(PlanRegio) := StartingState/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * Float64(NewGebruik);
+			attribute<Eur> Oi_wd_subsidie(PlanRegio) := StartingState/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * Float64(NewGebruik);
+			attribute<Eur> Oi_wd_Aansluitbijdrage(PlanRegio) := KostenBaten/Oi_Aansluitbijdrage * Float64(GebiedsOptie);
 			
-			attribute<EUR> Ki_Totaal   (PlanRegio) := Ki_ge + Ki_id + Ki_wd + Ki_pt + Ki_ow;
+			attribute<Eur> Ki_Totaal   (PlanRegio) := Ki_ge + Ki_id + Ki_wd + Ki_pt + Ki_ow;
 		}	
 		container Flow := FinalState/Flow {
-			attribute<EUR_Yr> Kj_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
-			attribute<EUR_Yr> Kj_id_KL(PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
-			attribute<EUR_Yr> Kj_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
-			attribute<EUR_Yr> Kj_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
-			attribute<EUR_Yr> Kj_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_id_KL(PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
 			
-			attribute<EUR_Yr> Kj_KL(PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
+			attribute<Eur_yr> Kj_KL(PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
 
-			attribute<EUR_Yr> Km_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
-			attribute<EUR_Yr> Km_id_KL(PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
-			attribute<EUR_Yr> Km_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
-			attribute<EUR_Yr> Km_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
-			attribute<EUR_Yr> Km_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Km_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Km_id_KL(PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Km_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Km_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Km_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
 			
-			attribute<EUR_Yr> Km_KL(PlanRegio) := Km_ge_KL + Km_id_KL + Km_wd_KL + Km_pt_KL + Km_ow_KL;
+			attribute<Eur_yr> Km_KL(PlanRegio) := Km_ge_KL + Km_id_KL + Km_wd_KL + Km_pt_KL + Km_ow_KL;
 			
-			attribute<EUR_Yr> Kj_ge_hv       (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_ge_hv       (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * Float64(GebiedsOptie);
 			
-			attribute<EUR_Yr> Kj_id_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_id_Onderhoud * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_id_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_id_Onderhoud * Float64(GebiedsOptie);
 			
-			attribute<EUR_Yr> Kj_ge_Total    (PlanRegio) := Kj_ge_KL + Kj_ge_hv;
-			attribute<EUR_Yr> Km_ge_Total    (PlanRegio) := Km_ge_KL + Kj_ge_hv;
-			attribute<EUR_Yr> Oe_ge_subsidie (PlanRegio) := KostenBaten/Oe_ge_subsidie * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Oj_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
-			attribute<EUR_Yr> Om_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
-			attribute<EUR_Yr> Kj_ge_Netto    (PlanRegio) := Kj_ge_Total - Oj_ge_subsidie;
+			attribute<Eur_yr> Kj_ge_Total    (PlanRegio) := Kj_ge_KL + Kj_ge_hv;
+			attribute<Eur_yr> Km_ge_Total    (PlanRegio) := Km_ge_KL + Kj_ge_hv;
+			attribute<Eur_yr> Oe_ge_subsidie (PlanRegio) := KostenBaten/Oe_ge_subsidie * Float64(GebiedsOptie);
+			attribute<Eur_yr> Oj_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
+			attribute<Eur_yr> Om_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
+			attribute<Eur_yr> Kj_ge_Netto    (PlanRegio) := Kj_ge_Total - Oj_ge_subsidie;
 			
-			attribute<EUR_Yr> Kj_id_Total    (PlanRegio) := Kj_id_KL + Kj_id_onderhoud;
-			attribute<EUR_Yr> Km_id_Total    (PlanRegio) := Km_id_KL + Kj_id_onderhoud;
-			attribute<EUR_Yr> Oe_id_subsidie (PlanRegio) := KostenBaten/Oe_id_subsidie * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Oj_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
-			attribute<EUR_Yr> Om_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
-			attribute<EUR_Yr> Kj_id_Netto    (PlanRegio) := Kj_id_Total - Oj_id_subsidie;
+			attribute<Eur_yr> Kj_id_Total    (PlanRegio) := Kj_id_KL + Kj_id_onderhoud;
+			attribute<Eur_yr> Km_id_Total    (PlanRegio) := Km_id_KL + Kj_id_onderhoud;
+			attribute<Eur_yr> Oe_id_subsidie (PlanRegio) := KostenBaten/Oe_id_subsidie * Float64(GebiedsOptie);
+			attribute<Eur_yr> Oj_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
+			attribute<Eur_yr> Om_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
+			attribute<Eur_yr> Kj_id_Netto    (PlanRegio) := Kj_id_Total - Oj_id_subsidie;
 			
-			attribute<EUR_Yr> Kj_wd_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_wd_Onderhoud * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Kj_wd_admin    (PlanRegio) := KostenBaten/KostenD/Kj_wd_Admin     * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Kj_wd_precario (PlanRegio) := KostenBaten/KostenD/Kj_Precario     * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Kj_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Kj_Verbruik     * Float64(GebiedsOptie); // gas van bijstook
-			attribute<EUR_Yr> Km_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Km_Verbruik     * Float64(GebiedsOptie); // gas van bijstook
+			attribute<Eur_yr> Kj_wd_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_wd_Onderhoud * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_wd_admin    (PlanRegio) := KostenBaten/KostenD/Kj_wd_Admin     * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_wd_precario (PlanRegio) := KostenBaten/KostenD/Kj_Precario     * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Kj_Verbruik     * Float64(GebiedsOptie); // gas van bijstook
+			attribute<Eur_yr> Km_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Km_Verbruik     * Float64(GebiedsOptie); // gas van bijstook
 			
-			attribute<EUR_Yr> Kj_wd_Total    (PlanRegio) := Kj_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik;
-			attribute<EUR_Yr> Km_wd_Total    (PlanRegio) := Km_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik;
-			attribute<EUR_Yr> Oe_wd_subsidie (PlanRegio) := KostenBaten/Oe_wd_subsidie          * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Oj_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie;
-			attribute<EUR_Yr> Om_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/mr28/AnnualisationFactor + Oe_wd_subsidie;
-			attribute<EUR_Yr> Kj_wd_Netto    (PlanRegio) := Kj_wd_Total - Oj_wd_subsidie;
+			attribute<Eur_yr> Kj_wd_Total    (PlanRegio) := Kj_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik;
+			attribute<Eur_yr> Km_wd_Total    (PlanRegio) := Km_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik;
+			attribute<Eur_yr> Oe_wd_subsidie (PlanRegio) := KostenBaten/Oe_wd_subsidie          * Float64(GebiedsOptie);
+			attribute<Eur_yr> Oj_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie;
+			attribute<Eur_yr> Om_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/mr28/AnnualisationFactor + Oe_wd_subsidie;
+			attribute<Eur_yr> Kj_wd_Netto    (PlanRegio) := Kj_wd_Total - Oj_wd_subsidie;
 			
-			attribute<EUR_Yr> Kj_pt_Total    (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Km_pt_Total    (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
-			attribute<EUR_Yr> Oj_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
-			attribute<EUR_Yr> Om_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
-			attribute<EUR_Yr> Kj_pt_Netto    (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;
+			attribute<Eur_yr> Kj_pt_Total    (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * Float64(GebiedsOptie);
+			attribute<Eur_yr> Km_pt_Total    (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * Float64(GebiedsOptie);
+			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
+			attribute<Eur_yr> Oj_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
+			attribute<Eur_yr> Om_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
+			attribute<Eur_yr> Kj_pt_Netto    (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;
 			
-			attribute<EUR_Yr> Kj_ow_Total    (PlanRegio) := (Kj_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik) * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Km_ow_Total    (PlanRegio) := (Km_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik) * Float64(GebiedsOptie);
-			attribute<EUR_Yr> Oe_ow_subsidie (PlanRegio) := Stock/Oe_ow_subsidie * NCW/ow28/AnnualisationFactor + Oj_SDE; // exploitatie-subsidie over gehele kapitaallasten
-			attribute<EUR_Yr> Oj_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie;
-			attribute<EUR_Yr> Om_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/mr28/AnnualisationFactor + Oe_ow_subsidie;
-			attribute<EUR_Yr> Kj_ow_Netto    (PlanRegio) := Kj_ow_Total - Oj_ow_subsidie;
+			attribute<Eur_yr> Kj_ow_Total    (PlanRegio) := (Kj_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik) * Float64(GebiedsOptie);
+			attribute<Eur_yr> Km_ow_Total    (PlanRegio) := (Km_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik) * Float64(GebiedsOptie);
+			attribute<Eur_yr> Oe_ow_subsidie (PlanRegio) := Stock/Oe_ow_subsidie * NCW/ow28/AnnualisationFactor + Oj_SDE; // exploitatie-subsidie over gehele kapitaallasten
+			attribute<Eur_yr> Oj_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie;
+			attribute<Eur_yr> Om_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/mr28/AnnualisationFactor + Oe_ow_subsidie;
+			attribute<Eur_yr> Kj_ow_Netto    (PlanRegio) := Kj_ow_Total - Oj_ow_subsidie;
 			
-			attribute<EUR_Yr> Kj_lv_admin    (PlanRegio) := KostenBaten/KostenD/Kj_lv_Admin * Float64(GebiedsOptie);
+			attribute<Eur_yr> Kj_lv_admin    (PlanRegio) := KostenBaten/KostenD/Kj_lv_Admin * Float64(GebiedsOptie);
 			
-			attribute<EUR_Yr> Kj_Total       (PlanRegio) := Kj_ge_Total + Kj_id_Total + Kj_wd_Total + Kj_pt_Total + Kj_ow_Total + Kj_lv_admin;
-			attribute<EUR_Yr> Km_Total       (PlanRegio) := Km_ge_Total +Km_id_Total + Km_wd_Total + Km_pt_Total + Km_ow_Total + Kj_lv_admin;
-			attribute<EUR_Yr> Kj_Precario    (PlanRegio) := Kj_wd_precario + Kj_pt_precario;
+			attribute<Eur_yr> Kj_Total       (PlanRegio) := Kj_ge_Total + Kj_id_Total + Kj_wd_Total + Kj_pt_Total + Kj_ow_Total + Kj_lv_admin;
+			attribute<Eur_yr> Km_Total       (PlanRegio) := Km_ge_Total +Km_id_Total + Km_wd_Total + Km_pt_Total + Km_ow_Total + Kj_lv_admin;
+			attribute<Eur_yr> Kj_Precario    (PlanRegio) := Kj_wd_precario + Kj_pt_precario;
 			
-			attribute<EUR_Yr> Oj_subsidie    (PlanRegio) := Oj_id_subsidie + Oj_wd_subsidie + Oj_pt_subsidie + Oj_ow_subsidie;
-			attribute<EUR_Yr> Om_subsidie    (PlanRegio) := Om_id_subsidie + Om_wd_subsidie + Om_pt_subsidie + Om_ow_subsidie;
-			attribute<EUR_Yr> Kj_Netto       (PlanRegio) := Kj_Total - Oj_subsidie;
-			attribute<EUR_Yr> Km_Netto       (PlanRegio) := Km_Total - Om_subsidie;
+			attribute<Eur_yr> Oj_subsidie    (PlanRegio) := Oj_id_subsidie + Oj_wd_subsidie + Oj_pt_subsidie + Oj_ow_subsidie;
+			attribute<Eur_yr> Om_subsidie    (PlanRegio) := Om_id_subsidie + Om_wd_subsidie + Om_pt_subsidie + Om_ow_subsidie;
+			attribute<Eur_yr> Kj_Netto       (PlanRegio) := Kj_Total - Oj_subsidie;
+			attribute<Eur_yr> Km_Netto       (PlanRegio) := Km_Total - Om_subsidie;
 		}
 	}
 
@@ -720,7 +720,7 @@ template VestaRun
 			for_each_ne(Classifications/BebouwingsComponent/name, 
 				'CalculationSchemes/GridAggrComponent(
 					AllocatieResultaat/'+Classifications/BebouwingsComponent/name+
-					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie))
+					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, VoorkEuren/WarmteOpties/AanbodOptie))
 						? Quote('GebiedsAllocatie/WKO/ObjectResults/'+Classifications/BebouwingsComponent/name) 
 						: Quote(''))+
 				')'
@@ -730,14 +730,14 @@ template VestaRun
 		{
 			container Vraag
 			{
-				attribute<GJ_Yr> AardGas      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
-				attribute<GJ_Yr> RestWarmte   (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
-				attribute<GJ_Yr> GeoThermie   (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
-				attribute<GJ_Yr> WijkWKK      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
-				attribute<GJ_Yr> WKO          (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
-				attribute<GJ_Yr> Warmte       (Geography/rdc_100lu):  = AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
-				attribute<GJ_Yr> Elektriciteit(Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
-				attribute<GJ_Yr> Totaal       (Geography/rdc_100lu):  = Warmte + Elektriciteit;
+				attribute<GJ_yr> AardGas      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
+				attribute<GJ_yr> RestWarmte   (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
+				attribute<GJ_yr> GeoThermie   (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
+				attribute<GJ_yr> WijkWKK      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
+				attribute<GJ_yr> WKO          (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
+				attribute<GJ_yr> Warmte       (Geography/rdc_100lu):  = AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
+				attribute<GJ_yr> Elektriciteit(Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
+				attribute<GJ_yr> Totaal       (Geography/rdc_100lu):  = Warmte + Elektriciteit;
 			}
 			container AansluitCapaciteit
 			{
@@ -747,10 +747,10 @@ template VestaRun
 			}
 			container WKO
 			{
-				attribute<GJ_Yr> V_Warmte    (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
-				attribute<GJ_Yr> V_Koude     (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
-				attribute<GJ_Yr> V_Elek      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
-				attribute<GJ_Yr> Onttrekking (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
+				attribute<GJ_yr> V_Warmte    (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
+				attribute<GJ_yr> V_Koude     (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
+				attribute<GJ_yr> V_Elek      (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
+				attribute<GJ_yr> Onttrekking (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
 				attribute<kW>    Capaciteit  (Geography/rdc_100lu):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
 			}
 		}

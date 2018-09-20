@@ -510,8 +510,8 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<m3_yr>   gas_break_m3 : [-1e+10, 0,  5000, 170000,  1000000 ];
 		attribute<kwh_yr> elek_break_kwh: [-1e+10, 0, 10000,  50000, 10000000 ];
 		
-		attribute<GJ_Yr> gas_break  := gas_break_m3  * BronData/FysiekeConstanten/GasEnergie;
-		attribute<GJ_Yr> elek_break := elek_break_kwh [GJ_Yr];
+		attribute<GJ_yr> gas_break  := gas_break_m3  * BronData/FysiekeConstanten/GasEnergie;
+		attribute<GJ_yr> elek_break := elek_break_kwh [GJ_yr];
 	}
 	unit<uint8> InkomensKlasse: nrofrows = 7
 	{
@@ -605,7 +605,7 @@ container Classifications: Using = "Units", KeepData = "True"
 
 	unit<uint8> UitlegUtil: nrofrows = 9
 	{
-		attribute<utiliteit_EK> ExternalKey:     [1,2,3,4,5,6,7,8,9], isHidden = "True";
+//		attribute<utiliteit_EK> ExternalKey:     [1,2,3,4,5,6,7,8,9], isHidden = "True";
 		attribute<String>       Label:           ['kantoor', 'winkel', 'groothandel', 'autohandel_reperatie','verzorging_verpleging', 'ziekenhuis', 'onderwijs', 'horeca' , 'overig'], DialogType = "LabelText";
 		attribute<String>       Label_key:       ['kantoren', 'winkels', 'Groothandel', 'Autohandel en reparatie', 'Verpleging en verzorging', 'Ziekenhuizen', 'Onderwijs','Horeca','Overige dienstverlening'], isHidden = "True";
 		attribute<String>       filename_uitleg: ['kantoren', 'winkels', 'groothandel', 'autohandel', 'verpleging', 'ziekenhuis', 'onderwijs','horeca','overig'], isHidden = "True";
@@ -754,7 +754,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<EnergieLabel>  CurrLabel : [ 6, 6, 3, 3, 2, 2, 2, 5, 3, 3, 2, 2, 2, 4, 4, 3, 2, 2, 2, 3, 3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2 ];
 	}
 	
-	unit<uint8> AanbodOptie: nrofrows = 5 // volgorde niet hier instellen maar in ScenarioSpecs/VestaRunOpties/Voorkeuren/BaseLine/WarmteOpties
+	unit<uint8> AanbodOptie: nrofrows = 5 // volgorde niet hier instellen maar in ScenarioSpecs/VestaRunOpties/VoorkEuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -845,11 +845,11 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<woningtype2006> WoningType:[5,3,1];
 	}
 
-	// =========  Classificatie voor  Monetaire eenheid (EUR per m^2)
+	// =========  Classificatie voor  Monetaire eenheid (Eur per m^2)
 
 	unit<uint8> Eur_M2_15K: nrofrows = 15
 	{
-		attribute<EUR_M2> Classes: DialogType = "Classification",
+		attribute<Eur_M2> Classes: DialogType = "Classification",
 			[	-500,-25, -15
 			,	-5, -0.01, 0.01
 			,	2, 3, 4
@@ -868,7 +868,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 	unit<uint8> Eur_M2_0_1_15K: nrofrows = 15
 	{
-		attribute<EUR_M2> Classes: DialogType = "Classification",
+		attribute<Eur_M2> Classes: DialogType = "Classification",
 		[	0.00, 0.07
 		,	0.14, 0.21
 		,	0.28, 0.35

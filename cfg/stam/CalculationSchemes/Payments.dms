@@ -93,7 +93,7 @@ container Payments: FreeData = "False" // DEBUG
 		}
 		parameter<String> all_csv := 
 			'titel;bedrag\n'
-			'[text];'+(is_flow ? '[MEUR/Yr]' : '[MEUR]')+'\n'
+			'[text];'+(is_flow ? '[MEur/Yr]' : '[MEur]')+'\n'
 			+ AsList(String(totals/all_mut_names)+';'+String(totals/all_muts)+'\n', '')
 		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_'+Actor/name[actor_rel]+'.csv'";
 	}
@@ -111,7 +111,7 @@ container Payments: FreeData = "False" // DEBUG
 		unit<uint32> Kostensoort   := FlowData/KostenSoort;
 //		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
 		unit<uint32> BC := FlowData/BC;
-		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Classifications/AanbodOptie) //Voorkeuren/WarmteOpties)
+		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Classifications/AanbodOptie) //VoorkEuren/WarmteOpties)
 		{
 			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Classifications/AanbodOptie/name);
 			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Classifications/AanbodOptie/name);
@@ -126,8 +126,8 @@ container Payments: FreeData = "False" // DEBUG
 			}
 			container applyBC := subst(FlowData/mutatie,'@BC@' , BC); 
 			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+			container applyRO := subst(applyWKO/result, '@RO@' , VoorkEuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result,  '@CO@' , VoorkEuren/ClusterOptie);
 			unit<uint32> mutatie := applyCO/result
 			{
 				attribute<Actor>  Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
@@ -183,7 +183,7 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<String> rows(RowSet) := ='add('+AsItemList(quote(';')+'+String(Table/'+ColSet/Name+')')+')';
 			parameter<String> csv := 
 				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+
-				'[text];[MEUR/Yr];[MEUR/Yr];[MEUR/Yr];'+AsList(const('[MEUR/Yr]', ColSet),';')+'\n'
+				'[text];[MEur/Yr];[MEur/Yr];[MEur/Yr];'+AsList(const('[MEur/Yr]', ColSet),';')+'\n'
 				+ AsList(RowSet/name+';'+String(table/Oj_Totaal)+';'+String(table/Kj_Totaal)+';'+String(table/Oj_Netto)+rows+'\n', '')
 			,	StorageType = "str", StorageName = "=OutputSubFolder+'/Matrix.csv'";
 		}

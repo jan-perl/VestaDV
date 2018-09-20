@@ -63,23 +63,23 @@ container GeoThermie: IsTemplate = "True"
 	}
 	container Kosten
 	{
-		attribute<EUR> Installatie(PlanRegio) := 
+		attribute<Eur> Installatie(PlanRegio) := 
 			(TypeInfo/K_kW_min * Schuiven/KostenMin + TypeInfo/K_kW_max * Schuiven/KostenMax)
 			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) * 1000[kW / MW]
 			* LeerCurves/Curve2
 		;
 
-		attribute<EUR> PijpKosten(PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/aK_m * bron/dist;
+		attribute<Eur> PijpKosten(PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/aK_m * bron/dist;
 			
-		attribute<EUR> Ki_Totaal(PlanRegio) := Installatie + Pijpkosten;
+		attribute<Eur> Ki_Totaal(PlanRegio) := Installatie + Pijpkosten;
 				
-		parameter<EUR_GJ> K_GJ :=
+		parameter<Eur_GJ> K_GJ :=
 			(Jaar < value(2020, Units/Jaar) ? TypeInfo/K_GJ10 :  
 			 Jaar < value(2030, Units/Jaar) ? TypeInfo/K_GJ20 :  
 			 Jaar < value(2040, Units/Jaar) ? TypeInfo/K_GJ30 :  
 			 Jaar < value(2050, Units/Jaar) ? TypeInfo/K_GJ40 :  
 			               TypeInfo/K_GJ50 )  ;
-		parameter<EUR_GJ> Km_GJ := K_GJ;
+		parameter<Eur_GJ> Km_GJ := K_GJ;
 			
 		attribute<Eur_yr> Kj_pt_Base     (PlanRegio) := PijpKosten * VestaRunData/Onderhoud/Rj_PrimairNet;
 		attribute<Eur_yr> Kj_pt_Admin    (PlanRegio) := Kj_pt_Base * VestaRunData/Onderhoud/R_Admin;
@@ -90,34 +90,34 @@ container GeoThermie: IsTemplate = "True"
 		attribute<Eur_yr> Kj_ow_Admin    (PlanRegio) := Kj_ow_Base * VestaRunData/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_ow_Onderhoud(PlanRegio) := Kj_ow_Base - Kj_ow_Admin;
 		
-		attribute<EUR_Yr> Kj_WarmteWaarde(PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;
-		attribute<EUR_Yr> Km_WarmteWaarde(PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr> Kj_WarmteWaarde(PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr> Km_WarmteWaarde(PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
 				
 		attribute<Eur_yr> Kj_Totaal(PlanRegio) := Kj_pt_Base + Kj_ow_Base + Kj_WarmteWaarde + Kj_pt_Precario;
 		attribute<Eur_yr> Km_Totaal(PlanRegio) := Kj_pt_Base + Kj_ow_Base + Km_WarmteWaarde;
-		attribute<EUR_Yr> Oj_SDE   (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
+		attribute<Eur_yr> Oj_SDE   (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	}
 
-	attribute<EUR   > Oi_Totaal  (PlanRegio):= KostenBaten/Oi_Aansluitbijdrage;
-	attribute<EUR   > Ki_Totaal  (PlanRegio):= KostenBaten/Ki_wd_bruto + Kosten/Ki_Totaal; // eenmalige bruto maatschappelijke investeringskosten (dus zonder aftrenk van aansluitbijdrage)
-	attribute<EUR   > Ki_Netto   (PlanRegio):= Ki_Totaal - NCW/ow28/StartDiscountFactor * Oi_Totaal; // : eenmalige investering minus netto aansluitbijdrage
-	attribute<EUR_Yr> Km_Totaal  (PlanRegio):= KostenBaten/Km_TotaalD + Kosten/Km_Totaal; // jaarlijkse bruto kosten zonder aftrek van vastrecht en verbruiksvergoeding
-	attribute<EUR_Yr> Oj_Netto   (PlanRegio):= KostenBaten/Oj_NettoD  - Kosten/Kj_Totaal; // Rentabiliteit: jaarlijkse opbrengst
+	attribute<Eur   > Oi_Totaal  (PlanRegio):= KostenBaten/Oi_Aansluitbijdrage;
+	attribute<Eur   > Ki_Totaal  (PlanRegio):= KostenBaten/Ki_wd_bruto + Kosten/Ki_Totaal; // eenmalige bruto maatschappelijke investeringskosten (dus zonder aftrenk van aansluitbijdrage)
+	attribute<Eur   > Ki_Netto   (PlanRegio):= Ki_Totaal - NCW/ow28/StartDiscountFactor * Oi_Totaal; // : eenmalige investering minus netto aansluitbijdrage
+	attribute<Eur_yr> Km_Totaal  (PlanRegio):= KostenBaten/Km_TotaalD + Kosten/Km_Totaal; // jaarlijkse bruto kosten zonder aftrek van vastrecht en verbruiksvergoeding
+	attribute<Eur_yr> Oj_Netto   (PlanRegio):= KostenBaten/Oj_NettoD  - Kosten/Kj_Totaal; // Rentabiliteit: jaarlijkse opbrengst
 	parameter<kg_GJ>  CO2_GJb     := 0[kg_GJ];
 	parameter<g_GJ>   NOx_GJb     := 0[g_GJ];
 	parameter<g_GJ>   SO2_GJb     := 0[g_GJ];
 	parameter<g_GJ>   VOS_GJb     := 0[g_GJ];
 	parameter<g_GJ>   TS_GJb      := 0[g_GJ];
-	attribute<kg_Yr>  CO2_Primair(PlanRegio):= const(0[kg_Yr], PlanRegio);
-	attribute<kg_Yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
-	attribute<EUR_Yr> Ke_Totaal  (PlanRegio):= const(0[EUR_Yr], PlanRegio);
-	attribute<GJ_Yr>  GJe_Totaal (PlanRegio):= const(0[GJ_Yr], PlanRegio);
-	attribute<KG_Yr>  CO2_e      (PlanRegio):= const(0[KG_Yr], PlanRegio);
-	attribute<EUR_Yr> Oj_Afweging(PlanRegio) := 
+	attribute<kg_yr>  CO2_Primair(PlanRegio):= const(0[kg_yr], PlanRegio);
+	attribute<kg_yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
+	attribute<Eur_yr> Ke_Totaal  (PlanRegio):= const(0[Eur_yr], PlanRegio);
+	attribute<GJ_yr>  GJe_Totaal (PlanRegio):= const(0[GJ_yr], PlanRegio);
+	attribute<KG_yr>  CO2_e      (PlanRegio):= const(0[KG_yr], PlanRegio);
+	attribute<Eur_yr> Oj_Afweging(PlanRegio) := 
 		Oj_Netto + kosten/Oj_SDE
 		- Kosten/Installatie * NCW/ow28/AnnualisationFactor * ((1.0 - UserInput/BeleidsOpties/EIA/ow)*(1.0 - UserInput/BeleidsOpties/EEA/ow))[TypeInfo/TypeInfoList_rel]
 		- Kosten/PijpKosten  * NCW/pt28/AnnualisationFactor * ((1.0 - UserInput/BeleidsOpties/EIA/pt)*(1.0 - UserInput/BeleidsOpties/EEA/pt));
-	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := Oj_Afweging > 0[EUR_Yr];
+	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := Oj_Afweging > 0[Eur_yr];
 	attribute<Bool> Afweging2    (PlanRegio) := bron/IsInContour;
 	
 	attribute<Bool> OldGebruik   (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
@@ -125,7 +125,7 @@ container GeoThermie: IsTemplate = "True"
 	attribute<Bool> NewGebruik   (PlanRegio) := RentabiliteitsAfweging && Afweging2 && not(OldGebruik);
 	attribute<Bool> GebruikOptie (PlanRegio) := NewGebruik || GebruiktOptie;
 	
-	attribute<EUR_YR> Kj_Netto(PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oj_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
+	attribute<Eur_yr> Kj_Netto(PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oj_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
 	
 	container Results := BeginStatus
 	{
@@ -147,26 +147,26 @@ container GeoThermie: IsTemplate = "True"
 		}
 		container Stock := BeginStatus/Stock
 		{
-			attribute<EUR> Ki_ow(PlanRegio) := BeginStatus/Stock/Ki_ow + iif(NewGebruik, Kosten/Installatie, 0[EUR]);
-			attribute<EUR> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, 
-				Kosten/Installatie * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel], 0[EUR]);
+			attribute<Eur> Ki_ow(PlanRegio) := BeginStatus/Stock/Ki_ow + iif(NewGebruik, Kosten/Installatie, 0[Eur]);
+			attribute<Eur> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, 
+				Kosten/Installatie * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
 				
-			attribute<EUR> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik,(Ki_ow - Oi_ow_subsidie) * UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[EUR]);
+			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik,(Ki_ow - Oi_ow_subsidie) * UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
 				
-			attribute<EUR> Ki_pt(PlanRegio) := BeginStatus/Stock/Ki_pt + iif(NewGebruik, Kosten/PijpKosten, 0[EUR]);
-			attribute<EUR> Oi_pt_subsidie(PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, Kosten/Installatie * UserInput/BeleidsOpties/EIA/pt, 0[EUR]);
+			attribute<Eur> Ki_pt(PlanRegio) := BeginStatus/Stock/Ki_pt + iif(NewGebruik, Kosten/PijpKosten, 0[Eur]);
+			attribute<Eur> Oi_pt_subsidie(PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, Kosten/Installatie * UserInput/BeleidsOpties/EIA/pt, 0[Eur]);
 		}
 		container Flow := BeginStatus/Flow
 		{
-			attribute<EUR_Yr> Kj_pt_Admin    (PlanRegio) := BeginStatus/Flow/Kj_pt_admin     + iif(GebruikOptie, Kosten/Kj_pt_admin    , 0[EUR_Yr]);
-			attribute<EUR_Yr> Kj_pt_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_pt_Onderhoud + iif(GebruikOptie, Kosten/Kj_pt_Onderhoud, 0[EUR_Yr]);
-			attribute<EUR_Yr> Kj_pt_Precario (PlanRegio) := BeginStatus/Flow/Kj_pt_Precario  + iif(GebruikOptie, Kosten/Kj_pt_Precario , 0[EUR_Yr]);
+			attribute<Eur_yr> Kj_pt_Admin    (PlanRegio) := BeginStatus/Flow/Kj_pt_admin     + iif(GebruikOptie, Kosten/Kj_pt_admin    , 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_pt_Onderhoud + iif(GebruikOptie, Kosten/Kj_pt_Onderhoud, 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_Precario (PlanRegio) := BeginStatus/Flow/Kj_pt_Precario  + iif(GebruikOptie, Kosten/Kj_pt_Precario , 0[Eur_yr]);
 			
-			attribute<EUR_Yr> Kj_ow_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_ow_Onderhoud + iif(GebruikOptie, Kosten/Kj_ow_Onderhoud, 0[EUR_Yr]);
-			attribute<EUR_Yr> Kj_ow_admin    (PlanRegio) := BeginStatus/Flow/Kj_ow_Admin     + iif(GebruikOptie, Kosten/Kj_ow_admin    , 0[EUR_Yr]);
-			attribute<EUR_Yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, Kosten/Kj_WarmteWaarde, 0[EUR_Yr]);
-			attribute<EUR_Yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, Kosten/Km_WarmteWaarde, 0[EUR_Yr]);
-			attribute<EUR_Yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, kosten/Oj_SDE         , 0[EUR_Yr]);
+			attribute<Eur_yr> Kj_ow_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_ow_Onderhoud + iif(GebruikOptie, Kosten/Kj_ow_Onderhoud, 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_admin    (PlanRegio) := BeginStatus/Flow/Kj_ow_Admin     + iif(GebruikOptie, Kosten/Kj_ow_admin    , 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, Kosten/Kj_WarmteWaarde, 0[Eur_yr]);
+			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, Kosten/Km_WarmteWaarde, 0[Eur_yr]);
+			attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, kosten/Oj_SDE         , 0[Eur_yr]);
 		}
 	}
 }

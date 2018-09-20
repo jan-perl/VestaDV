@@ -34,116 +34,100 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
 //       Deze DMS-file wordt aangeroepen door stam.dms                                  //
-//       In deze configuratiefile worden de eenheden geconfigureerd.                    //
+//       In deze configuratiefile worden de eenheden (values units) geconfigureerd.     //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Units:
-	isHidden       = "True",
-	DisableStorage = "True"
+container Units: isHidden = "True"
 {
-	unit<Float64> m:            Expr = "BaseUnit('m', Float64)", Label = "Meter", Descr = "SI base unit for length";
-	unit<Float64> dm :=         0.1 * m;
-	unit<Float64> km:           Expr = "1000.0 * m",             cdf = "Classifications/km_7k/Classes";
-	unit<Float64> m2:           Expr = "m * m";
-	unit<Float64> km2:          Expr = "km * km";
-	unit<Float64> ha:           Expr = "10000.0 * m2";
-	
-	unit<Float64> g   := BaseUnit('g', Float64);
-	unit<Float64> kg  := 1000.0*g, Descr = "SI base unit for mass";
-	unit<Float64> ton := 1000.0 * kg;
-	unit<Float64> kton:         Expr = "1000.0 * ton";
-	
-	unit<Float64> s:            Expr = "baseunit('s', Float64)",  label = "second", Descr = "SI base unit for time";
-	unit<Float64> s2:           Expr = "s*s";
-	unit<Float64> hr:           Expr = "60 * 60 * s",              label = "hour";
-	unit<Float64> yr:           Expr = "BaseUnit('Yr', Float64)",  label = "year",  Descr = "alternative unit for time duration";
-	unit<Float64> _yr:          Expr = "1 / Yr",                   label = "year",  Descr = "alternative unit for time duration";
-	unit<UInt16>  Jaar:         Expr = "BaseUnit('Jaar', UInt16)", Descr = "aanduiding van een tijdsperiode of moment";
-	unit<Float64> J:            Expr = "baseUnit('J', Float64)",   label = "Joule", Descr = "SI unit for energy";
-//	unit<Float64> J:            Expr = "kg * m2 / s2",             label = "Joule", Descr = "SI unit for energy";
-	unit<Float64> W:            Expr = "J / s",                    label = "Watt",  Descr = "SI unit for power";
-	unit<Float64> kW:           Expr = "1000 * W";
-	unit<Float64> MW:           Expr = "1000 * kW";
-	unit<Float64> kWh:          Expr = "kW * hr";
-	unit<Float64> kWh_Yr:       Expr = "kWh / yr";
-	unit<Float64> kWh_Yr_Woning:Expr = "kWh_Yr / nrWoningen";
-	unit<Float64> kWh_Yr_m2:    Expr = "kWh_Yr / m2";
-	unit<Float64> kJ:           Expr = "1000 * J";
-	unit<Float64> MJ:           Expr = "1000 * kJ";
-	unit<Float64> MJ_Yr:        Expr = "MJ / Yr";
-	unit<Float64> MJ_Yr_m2:     Expr = "MJ_Yr / m2";
-	unit<Float64> GJ:           Expr = "1000 * MJ";
-	unit<Float64> PJ:           Expr = "1000000 * GJ";
-	unit<Float64> GJ_Yr:        Expr = "GJ / Yr", label = "GigaJoule per Year", Descr = "unit for energy consumption (as opposed to power which indicates maximum capacity)";
-	unit<Float64> PJ_Yr:        Expr = "PJ / Yr", label = "PetaJoule per Year", Descr = "alternative unit for aggregated consumption";
-	unit<Float64> GJ_Yr_Woning: Expr = "GJ_Yr / nrWoningen";
-	unit<Float64> GJ_Yr_m2:     Expr = "GJ_Yr / m2";
-	unit<Float64> GJ_Yr_ha:     Expr = "GJ_Yr / ha";
+	// length
+	unit<float64> m             := BaseUnit('m', float64), Label = "Meter", Descr = "SI base unit for length";
+	unit<float64> dm            := 0.1 * m;
+	unit<float64> km            := 1000.0 * m, cdf = "Classifications/km_7k/Classes";
 
-	unit<Float64> m3:           Expr = "m*m*m";
-	unit<Float64> GJ_m3:        Expr = "GJ / m3";
-	unit<Float64> m3_GJ:        Expr = "m3 / GJ";
-	unit<Float64> kWh_GJ:       Expr = "kWh / GJ";
-	unit<Float64> m3_Yr := m3 / yr;
+	// area
+	unit<float64> m2            := m * m;
+	unit<float64> km2           := km * km;
+	unit<float64> ha            := 10000.0 * m2;
 
-	unit<Float64> ggHa:         = ha, cdf = "Classifications/GrondgebruikHa9K/Classes";
-	unit<uint8>   ggSector:     nrofrows = 14, Source = "Ruimtescanner";
+	//mass
+	unit<float64> kg            := 1000.0*g, Descr = "SI base unit for mass";
+	unit<float64> g             := BaseUnit('g', float64);
+	unit<float64> ton           := 1000.0 * kg;
 
-	unit<Float64> Ratio:        = Range(1.0 * ggHa / ggHa, Float64(0), Float64(1)), cdf = "Classifications/Ratio9K/Classes";
-	unit<Float64> Percent:      = 100.0 * Ratio,     cdf = "Classifications/Percentage13K/Classes";
-	unit<Float64> Percent_yr:   = Percent / Yr;
+	// time
+	unit<float64> s             := baseunit('s', float64),   label = "second", descr = "SI base unit for time";
+	unit<float64> hr            := 60 * 60 * s,              label = "hour";
+	unit<float64> yr            := BaseUnit('yr', float64) , label = "year", descr = "alternative unit for time duration";
+	unit<float64> _yr           := 1 / yr,                   label = "per year";
+	unit<uint16>  Jaar          := BaseUnit('Jaar', uint16), descr = "aanduiding van een tijdsperiode of moment"; // ?? Vraag is er een reden voor een Jaar en een yr unit
 
-	unit<Float64> Eur         := BaseUnit('EURO', Float64), Descr = "Euro prijspeil 2010";
-	unit<Float64> Eur_Yr:      = EUR / Yr;
-	unit<Float64> Eur_Yr_m:    = Eur_Yr / m;
-	unit<Float64> Eur_ton:     = EUR / ton;
-	unit<Float64> Eur_Woning:  = Eur / nrWoningen;
-	unit<Float64> Eur_Yr_Woning:= Eur_Yr / nrWoningen;
-	unit<Float64> Eur_aansl:   = EUR / nrAansl;
-	unit<Float64> Eur_Yr_aansl:= EUR / Yr / nrAansl;
-	unit<Float64> Eur_Yr_m2:   = EUR / Yr / m2;
-	unit<Float64> Eur_kW:      = Eur / kW;
-	unit<Float64> Eur_kW_Yr:   = Eur_kW / Yr; // gebruikt voor aansluitwaarden
-	unit<Float64> EUR_MW:      = EUR / MW;
-	unit<Float64> EUR_MW_Yr:   = EUR_MW / Yr; // gebruikt voor ranking van planregio's voor restwarmtetoewijzing.
-	unit<Float64> kEur:        = 1000.0 * Eur;
-	unit<Float64> mEur:        = 1000.0 * kEur;
-	unit<Float64> Eur_Ha:      = EUR / ggHa;
-	unit<Float64> kEur_Ha:     = 1000.0 * EUR_Ha;
-	unit<Float64> mEur_Ha:     = 1000.0 * KEUR_Ha;
-	unit<Float64> Eur_M2:      = EUR / m2, cdf = "Classifications/Eur_M2_15K/Classes";
-	unit<Float64> kEur_yr:     = kEur / yr;
-	unit<Float64> mEur_yr:     = mEur / yr;
+	// volume
+	unit<float64> m3            := m * m * m;
+	unit<float64> m3_yr         := m3 / yr;
 
-	unit<Float64> Eur_GJ:      = EUR / GJ;
-	unit<Float64> Eur_GJ_Yr:   = EUR / GJ_Yr; // gebruikt voor investeringskosten van EWV per FunctioneleVraag eenheid
-	unit<Float64> Eur_m:       = EUR / m;
-	unit<Float64> Eur_kWh:     = EUR / kWh;
-	unit<Float64> kg_GJ:       = kg / GJ, Descr = "Co2 effect van energieproductie";
-	unit<Float64> g_GJ:        = g / GJ, Descr = "andere effect van energieproductie";
-	unit<Float64> kg_Yr:       = kg / Yr, Descr = "Co2 effect per jaar";
-	unit<Float64> kton_Yr := kton / Yr;
-	unit<Float64> Ton_Yr  := ton  / Yr;
+	// energy
+	unit<float64> J             := BaseUnit('J', float64),   label = "Joule", descr = "SI unit for energy";
+//	unit<float64> J             := kg * m2 / (s * s), label = "Joule", descr = "SI unit for energy";
 
-// actor based units
-	unit<Float64> nrPersonen:   = BaseUnit('Inwoner', Float64), cdf = "Classifications/NrInwoners12K/Classes"; 
-	unit<Float64> nrArbeidspl:  = BaseUnit('FTE', Float64),     cdf = "Classifications/Nrarbeidspl12K/Classes";
-	unit<Float64> nrWoningen:   = BaseUnit('Woning', Float64);
-	unit<Float64> nrAansl:      = BaseUnit('Aansluiting', Float64);
-	unit<Float64> Bouwlaag:     = BaseUnit('Bouwlaag', Float64);
-	unit<Float64> PC6:          = BaseUnit('PC6', Float64);
-	unit<Float64> PC4:          = BaseUnit('PC4', Float64);
-	unit<Float64> kW_km2:       = kW / km2;
-	unit<Float64> MW_PC4:       = MW / PC4;
-	unit<Float64> kW_Woning:    = kW / nrWoningen;
-	unit<Float64> kW_m2:        = kW / m2;
-	unit<Float64> m2_aansl:     = m2 / nrAansl;
-	unit<Float64> m2_Woning:    = m2 / nrWoningen;
+	// power
+	unit<float64> W             := J / s, label = "Watt",  descr = "SI unit for power";
+	unit<float64> kW            := 1000 * W;
+	unit<float64> MW            := 1000 * kW;
 
-	unit<float64> Attractiviteit;
-	unit<Float64> Potentiaal: cdf = "Classifications/Potentiaal10K/Classes";
+	// energy
+	unit<float64> kWh           := kW * hr;
+	unit<float64> kWh_yr        := kWh / yr;
+	unit<float64> kWh_yr_m2     := kWh_yr / m2;
+	unit<float64> kJ            := 1000 * J;
+	unit<float64> MJ            := 1000 * kJ;
+	unit<float64> MJ_yr         := MJ / yr;
+	unit<float64> GJ            := 1000 * MJ;
+	unit<float64> PJ            := 1000000 * GJ;
+	unit<float64> GJ_yr         := GJ / yr, label = "GigaJoule per Year", Descr = "unit for energy consumption (as opposed to power which indicates maximum capacity)";
+	unit<float64> PJ_yr         := PJ / yr, label = "PetaJoule per Year", Descr = "alternative unit for aggregated consumption";
+	unit<float64> GJ_yr_m2      := GJ_yr / m2;
+	unit<float64> GJ_m3         := GJ / m3;
 
-// External Keys
-	unit<uint8> utiliteit_EK: Range = "[0, 10)";
+	// effects of energyproduction
+	unit<float64> kg_GJ         := kg / GJ, Descr = "Co2 effect van energieproductie";
+	unit<float64> g_GJ          :=  g / GJ, Descr = "andere effect van energieproductie";
+	unit<float64> kg_yr         := kg / yr, Descr = "Co2 effect per jaar";
+
+	// actor based
+	unit<float64> nrArbeidspl   := BaseUnit('FTE', float64),     cdf = "Classifications/Nrarbeidspl12K/Classes";
+	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
+	unit<float64> nrAansl       := BaseUnit('Aansluiting', float64);
+	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);
+	unit<float64> kW_Woning     := kW / nrWoningen;
+	unit<float64> kW_m2         := kW / m2;
+	unit<float64> m2_Aansl      := m2 / nrAansl;
+	unit<float64> m2_Woning     := m2 / nrWoningen;
+
+	// financial
+	unit<float64> Eur           := BaseUnit('EurO', float64), Descr = "Euro prijspeil 2010";
+	unit<float64> kEur          := 1000.0 * Eur;
+	unit<float64> mEur          := 1000.0 * kEur;
+	unit<float64> Eur_m         := Eur / m;
+	unit<float64> Eur_M2        := Eur / m2, cdf = "Classifications/Eur_M2_15K/Classes";
+	unit<float64> Eur_Ha        := Eur / ha;
+	unit<float64> Eur_yr        := Eur / yr;
+	unit<float64> kEur_yr       := kEur / yr;
+	unit<float64> mEur_yr       := mEur / yr;
+	unit<float64> Eur_yr_m      := Eur_yr / m;
+	unit<float64> Eur_yr_m2     := Eur / yr / m2;
+	unit<float64> Eur_kW        := Eur / kW;
+	unit<float64> Eur_kW_yr     := Eur_kW / yr; // gebruikt voor aansluitwaarden
+	unit<float64> Eur_MW        := Eur / MW;
+	unit<float64> Eur_MW_yr     := Eur_MW / yr; // gebruikt voor ranking van planregio's voor restwarmtetoewijzing.
+	unit<float64> Eur_GJ        := Eur / GJ;
+	unit<float64> Eur_Woning    := Eur / nrWoningen;
+	unit<float64> Eur_Aansl     := Eur / nrAansl;
+	unit<float64> Eur_yr_Aansl  := Eur / yr / nrAansl;
+
+	// no metric
+	unit<float64> Ratio         := range(1.0 * ha / ha, 0.0, 1.0), cdf = "Classifications/Ratio9K/Classes";
+	unit<float64> Percent       := 100.0 * Ratio, cdf = "Classifications/Percentage13K/Classes";
+	unit<float64> Percent_yr    := Percent / yr;
+	unit<float64> Potentiaal    : cdf = "Classifications/Potentiaal10K/Classes";
 }

@@ -124,12 +124,12 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				{
 					container Verbeteringen
 					{
-						container S_H_T := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'A');
-						container S_H_B := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'B');
-						container S_H_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'C');
-						container S_T_B := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'D');
-						container S_T_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'E');
-						container S_B_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
+						container S_H_T := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
+						container S_H_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
+						container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
+						container S_T_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'D');
+						container S_T_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'E');
+						container S_B_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
 					}
 				}
 			}
@@ -143,11 +143,11 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				container results {
 					container Verbeteringen
 					{
-						container S_X_X := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'X');
+						container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 						
 						container S_H_T := S_X_X;
 						container S_H_B := S_X_X;
-						container S_H_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'C');
+						container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
 						container S_T_B := S_X_X;
 						container S_T_AP:= S_X_X;
 						container S_B_AP:= S_H_AP;
@@ -164,14 +164,14 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				container results {
 					container Verbeteringen
 					{
-						container S_X_X := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'X');
+						container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 						
 						container S_H_T := S_X_X;
-						container S_H_B := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'B');
-						container S_H_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'C');
+						container S_H_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
+						container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
 						container S_T_B := S_X_X;
 						container S_T_AP:= S_X_X;
-						container S_B_AP:= GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
+						container S_B_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
 					}
 				}
 			}
@@ -186,7 +186,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				container results {
 					container Verbeteringen
 					{
-						container S_X_X := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'X');
+						container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 						
 						container S_H_T := S_X_X;
 						container S_H_B := S_X_X;
@@ -208,7 +208,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				container results {
 					container Verbeteringen
 					{
-						container S_X_X := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'X');
+						container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 						
 						container S_H_T := S_X_X;
 						container S_H_B := S_X_X;
@@ -230,7 +230,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				container results {
 					container Verbeteringen
 					{
-						container S_X_X := GebouwTempl(ModelObject, GJ_Yr_per_Eenheid, EUR_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_Yr_Per_Eenheid], ModelObject), 'X');
+						container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 						
 						container S_H_T := S_X_X;
 						container S_H_B := S_X_X;
@@ -244,10 +244,10 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			Template GebouwTempl
 			{
 				unit<UInt32>  ModelObject;
-				unit<Float64> GJ_Yr_per_Eenheid;
-				unit<Float64> EUR_per_eenheid;
-				attribute<GJ_Yr_per_Eenheid> verbruik_prev(ModelObject); // alleen ruimteverwarming
-				attribute<GJ_Yr_per_Eenheid> comfort_prev (ModelObject);
+				unit<Float64> GJ_yr_per_Eenheid;
+				unit<Float64> Eur_per_eenheid;
+				attribute<GJ_yr_per_Eenheid> verbruik_prev(ModelObject); // alleen ruimteverwarming
+				attribute<GJ_yr_per_Eenheid> comfort_prev (ModelObject);
 				parameter<String> VerbeterCode;
 
 				// =================== ReboundFactor
@@ -263,31 +263,31 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					: 'const(0 / 0, ModelObject, Ratio)';
 				
 				// de volgende kenmerken betreffen ook aleen RuimteVerwarming
-				attribute<GJ_Yr_per_Eenheid> verbruik(ModelObject) := 
+				attribute<GJ_yr_per_Eenheid> verbruik(ModelObject) := 
 					=(VerbeterCode!='X') 
-					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG, GJ_Yr_per_Eenheid), Functioneel/Ruimteverwarming)' 
-					: 'const(0 / 0, ModelObject, GJ_Yr_per_Eenheid)';
+					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG, GJ_yr_per_Eenheid), Functioneel/Ruimteverwarming)' 
+					: 'const(0 / 0, ModelObject, GJ_yr_per_Eenheid)';
 
-				attribute<GJ_Yr_per_Eenheid> energie_verbetering_stap(ModelObject) :=  verbruik - verbruik_prev;
-				attribute<GJ_Yr_per_Eenheid> totale_verbetering_stap (ModelObject) :=  energie_verbetering_stap / (1.0 - ReboundFactor_stap);
-				attribute<GJ_Yr_per_Eenheid> comfort_verbetering_stap (ModelObject) :=  totale_verbetering_stap - energie_verbetering_stap;
+				attribute<GJ_yr_per_Eenheid> energie_verbetering_stap(ModelObject) :=  verbruik - verbruik_prev;
+				attribute<GJ_yr_per_Eenheid> totale_verbetering_stap (ModelObject) :=  energie_verbetering_stap / (1.0 - ReboundFactor_stap);
+				attribute<GJ_yr_per_Eenheid> comfort_verbetering_stap (ModelObject) :=  totale_verbetering_stap - energie_verbetering_stap;
 				
 				
 				attribute<Ratio> efficiency (ModelObject) := Functioneel/Ruimteverwarming / verbruik;
 				attribute<Ratio> ComfortFactor_stap(ModelObject) := 1.0 / (1.0 - ReboundFactor_stap) - 1.0;
 				
-				attribute<GJ_Yr_per_Eenheid> energie_verbetering_tov_h(ModelObject) :=  Functioneel/Ruimteverwarming - verbruik;
-				attribute<GJ_Yr_per_Eenheid> comfort_verbetering_tov_h(ModelObject) :=  comfort_prev + comfort_verbetering_stap;
-				attribute<GJ_Yr_per_Eenheid> totale_verbetering_tov_h (ModelObject) :=  energie_verbetering_tov_h + comfort_verbetering_tov_h;
+				attribute<GJ_yr_per_Eenheid> energie_verbetering_tov_h(ModelObject) :=  Functioneel/Ruimteverwarming - verbruik;
+				attribute<GJ_yr_per_Eenheid> comfort_verbetering_tov_h(ModelObject) :=  comfort_prev + comfort_verbetering_stap;
+				attribute<GJ_yr_per_Eenheid> totale_verbetering_tov_h (ModelObject) :=  energie_verbetering_tov_h + comfort_verbetering_tov_h;
 					
-				attribute<EUR_per_eenheid> kosten_min (ModelObject) := 
+				attribute<Eur_per_eenheid> kosten_min (ModelObject) := 
 					=(VerbeterCode!='X') 
-					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG_EUR_MIN, EUR_per_eenheid), value(0.0, EUR_per_eenheid))' 
-					: 'const(0 / 0, ModelObject, EUR_per_eenheid)';
-				attribute<EUR_per_eenheid> kosten_max (ModelObject) := 
+					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG_Eur_MIN, Eur_per_eenheid), value(0.0, Eur_per_eenheid))' 
+					: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
+				attribute<Eur_per_eenheid> kosten_max (ModelObject) := 
 					=(VerbeterCode!='X') 
-					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG_EUR_MAX, EUR_per_eenheid), value(0.0, EUR_per_eenheid))' 
-					: 'const(0 / 0, ModelObject, EUR_per_eenheid)';
+					? 'MakeDefined(value(table/MV'+VerbeterCode+'_EG_Eur_MAX, Eur_per_eenheid), value(0.0, Eur_per_eenheid))' 
+					: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
 			}
 		}
 		
@@ -297,7 +297,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		// c	Glastuinbouw (per hectare, per type )
 		// d	Onderdelen distributie warmte.
 		// e	Transport warmte (prijs per km rechte afstand; gedifferentieerd naar capaciteit; + 'omwegfactor')
-		container prijzen: Expr = "CalculationSchemes/EnergiePrijzen/All(Parameters/prijzenBron, log(1.00)[_Yr])", Descr = "zie FO $3.5";
+		container prijzen: Expr = "CalculationSchemes/EnergiePrijzen/All(Parameters/prijzenBron, log(1.00)[_yr])", Descr = "zie FO $3.5";
 	}
 	container WarmteBronnen
 	{
@@ -305,19 +305,19 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		{
 			unit<uint32> aardgas_tabel := AardGas/Table;
 			attribute<aardgas_tabel> aardgas_tabel_rel(classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, UInt16(aardgas_tabel/jaar));
-			attribute<EUR_GJ> Gas_GJ             (classifications/zichtjaar) := prijzen/AardGas/results/GrootGebruik/eindgebruik_ex[aardgas_tabel_rel], Descr = "M10";
+			attribute<Eur_GJ> Gas_GJ             (classifications/zichtjaar) := prijzen/AardGas/results/GrootGebruik/eindgebruik_ex[aardgas_tabel_rel], Descr = "M10";
 			
 			unit<uint32> elek_tabel := Elektriciteit/Table;
 			attribute<elek_tabel> elek_tabel_rel(classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, UInt16(elek_tabel/jaar));
-			attribute<EUR_GJ> ElekEnGros_GJ     (classifications/zichtjaar) := prijzen/Elektriciteit/results/GrootGebruik/CommodityPrice[elek_tabel_rel];
-			attribute<EUR_GJ> ElekKMG_GJ        (classifications/zichtjaar) := prijzen/Elektriciteit/results/KleinMiddelGebruik/eindgebruik_ex[elek_tabel_rel];
+			attribute<Eur_GJ> ElekEnGros_GJ     (classifications/zichtjaar) := prijzen/Elektriciteit/results/GrootGebruik/CommodityPrice[elek_tabel_rel];
+			attribute<Eur_GJ> ElekKMG_GJ        (classifications/zichtjaar) := prijzen/Elektriciteit/results/KleinMiddelGebruik/eindgebruik_ex[elek_tabel_rel];
 			
 			unit<uint32> overig_tabel := Overig/Table;
 			container    overig_results := Overig/Results;
 			attribute<overig_tabel> overig_tabel_rel(classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, overig_results/jaar);
-			attribute<EUR_GJ> BioMassa_GJ           (classifications/zichtjaar) := overig_results/BioMassa    [overig_tabel_rel];
-			attribute<EUR_GJ> Kolen_GJ              (classifications/zichtjaar) := overig_results/Kolen_Excl  [overig_tabel_rel];
-			attribute<EUR_GJ> KolenCO2_GJ           (classifications/zichtjaar) := overig_results/Kolen_CO2   [overig_tabel_rel];
+			attribute<Eur_GJ> BioMassa_GJ           (classifications/zichtjaar) := overig_results/BioMassa    [overig_tabel_rel];
+			attribute<Eur_GJ> Kolen_GJ              (classifications/zichtjaar) := overig_results/Kolen_Excl  [overig_tabel_rel];
+			attribute<Eur_GJ> KolenCO2_GJ           (classifications/zichtjaar) := overig_results/Kolen_CO2   [overig_tabel_rel];
 		}
 		container MetaData
 		{
@@ -335,19 +335,19 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			{
 				attribute<String > Type;
 				attribute<String > Label := Type, DialogType = "LabelString";
-				attribute<String > K_kW_min;   // [EUR_kW]
-				attribute<String > K_kW_max;   // [EUR_kW]
+				attribute<String > K_kW_min;   // [Eur_kW]
+				attribute<String > K_kW_max;   // [Eur_kW]
 				attribute<String> MWth_min;   // [MWth]
-				attribute<String> JaarKosten; // [_Yr]
+				attribute<String> JaarKosten; // [_yr]
 				
 				attribute<TypeInfoList> TypeInfoList_rel := rlookup(Type, TypeInfoList/Naam);
 				attribute<RekenType> RekenType_rel := TypeInfoList/RekenType_rel[TypeInfoList_rel];
 
-				attribute<EUR_GJ>  K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2010]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2020]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ30 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2030]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ40 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2040]')+')[RekenType_rel]';
- 				attribute<EUR_GJ>  K_GJ50 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2050]')+')[RekenType_rel]';
+				attribute<Eur_GJ>  K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2010]')+')[RekenType_rel]';
+ 				attribute<Eur_GJ>  K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2020]')+')[RekenType_rel]';
+ 				attribute<Eur_GJ>  K_GJ30 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2030]')+')[RekenType_rel]';
+ 				attribute<Eur_GJ>  K_GJ40 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2040]')+')[RekenType_rel]';
+ 				attribute<Eur_GJ>  K_GJ50 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2050]')+')[RekenType_rel]';
  				attribute<string>   CO2_2010;
  				attribute<string>   CO2_2020;
  				attribute<string>   CO2_2030;
@@ -397,24 +397,24 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			container RekenTypes {
 				container STEG
 				{
-					// obv (0.20/0.30) * M10[EUR/GJ];
+					// obv (0.20/0.30) * M10[Eur/GJ];
 					// obj M10 = 1000[MJ/GJ]*L10/ 31.65 [MJ/m3], 
-					// obv L10 = gasprijs in [EUR/m3] commodity incl CO2, SDE-heffing, energiebel, excl BTW, geen distributie en transport.
-					attribute<EUR_GJ> K_GJ  (classifications/zichtjaar) := (0.20/0.30) * prijzen/Gas_GJ;
+					// obv L10 = gasprijs in [Eur/m3] commodity incl CO2, SDE-heffing, energiebel, excl BTW, geen distributie en transport.
+					attribute<Eur_GJ> K_GJ  (classifications/zichtjaar) := (0.20/0.30) * prijzen/Gas_GJ;
 				}
 				container Kolen
 				{
-					// obv (0.20/0.30) * P10[EUR/GJ]
+					// obv (0.20/0.30) * P10[Eur/GJ]
 					// obv P10 = O10+0,105[ton/GJ]*B10 
-					// obv O10= Kolenprijs = 2.20 [EUR/GJ] CONSTANT!
-					// en B10[EUR/ton]=CO2-prijs die varieert met de tijd, 
-					attribute<EUR_GJ> P   (classifications/zichtjaar) := prijzen/Kolen_GJ + prijzen/KolenCO2_GJ;
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (0.20/0.30) * P;
+					// obv O10= Kolenprijs = 2.20 [Eur/GJ] CONSTANT!
+					// en B10[Eur/ton]=CO2-prijs die varieert met de tijd, 
+					attribute<Eur_GJ> P   (classifications/zichtjaar) := prijzen/Kolen_GJ + prijzen/KolenCO2_GJ;
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := (0.20/0.30) * P;
 				}
 				container Gasmotor
 				{
 					// M10/0.45 - Q10*1 
-					// obv Q10[EUR/GJ] = elektriciteitsprijs en gros
+					// obv Q10[Eur/GJ] = elektriciteitsprijs en gros
 					// (Gasprijs/(totaalrendement WKK (0.9)*Percentage warmteoutput WKK (0.75)) - (Elektriciteitsprijs (per GJ) * ((totaalrendement WKK (0.9)* Percentage elektriciteits-output WKK (0.25) )/(totaalrendement WKK (0.9)* Percentage warmte-output WKK (0.75) )))
 					parameter<Float64> WarmteAandeel:= 0.75;
 					parameter<Float64> Rendement    := 0.90;
@@ -425,37 +425,37 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					parameter<Float64> Biovast_Factor := 0.0;
 					parameter<Float64> Ondergrond_Factor := 0.0;
 					parameter<Float64> Opwekking_Factor := 0.0;
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) :=Aardgas_Factor * prijzen/Gas_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
-					// attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (prijzen/Gas_GJ/(0.9*0.75))-(prijzen/ElekEnGros_GJ*((0.9*0.25)/(0.9*0.75)))
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) :=Aardgas_Factor * prijzen/Gas_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
+					// attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := (prijzen/Gas_GJ/(0.9*0.75))-(prijzen/ElekEnGros_GJ*((0.9*0.25)/(0.9*0.75)))
 				}
 				container Industrie
 				{
-					// obv 0.0000025 [GJ/GJ] * R10[EUR/GJ]
-					// obv R10 = S10[EUR/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := 0.0000025 [GJ / GJ] * prijzen/ElekKMG_GJ;
+					// obv 0.0000025 [GJ/GJ] * R10[Eur/GJ]
+					// obv R10 = S10[Eur/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := 0.0000025 [GJ / GJ] * prijzen/ElekKMG_GJ;
 				}
 				container GeoThermie
 				{
-					// obv 0.0000025 [GJ/GJ] * R10[EUR/GJ]
-					// obv R10 = S10[EUR/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
+					// obv 0.0000025 [GJ/GJ] * R10[Eur/GJ]
+					// obv R10 = S10[Eur/kWh] * 1000000[kJ/GJ] / 3600[sec/h]
 					parameter<Float64> Elektriciteit_Factor := (1GJ / 30GJ);
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := Elektriciteit_Factor * prijzen/ElekKMG_GJ;
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := Elektriciteit_Factor * prijzen/ElekKMG_GJ;
 				}
 				container AVI
 				{
-					// 0.18 * Q10[EUR/GJ] 
-					// obv Q10 = 0.058[EUR/kWh] * 1000/3.6 [kWh/GJ] die varieert met de tijd.
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := 0.18 * prijzen/ElekEnGros_GJ; // en gros prijs als kosten, is deze prijs nu excl of incl distributiekosten en heffingen?
+					// 0.18 * Q10[Eur/GJ] 
+					// obv Q10 = 0.058[Eur/kWh] * 1000/3.6 [kWh/GJ] die varieert met de tijd.
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := 0.18 * prijzen/ElekEnGros_GJ; // en gros prijs als kosten, is deze prijs nu excl of incl distributiekosten en heffingen?
 				}
 				container BMC
 				{
-					// obv (0.20 / 0.30) * N10[EUR/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := (0.20 / 0.30) * prijzen/BioMassa_GJ;
+					// obv (0.20 / 0.30) * N10[Eur/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := (0.20 / 0.30) * prijzen/BioMassa_GJ;
 				}
 				
 				container BioWKK
 				{
-					// obv (0.20 / 0.30) * N10[EUR/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
+					// obv (0.20 / 0.30) * N10[Eur/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
 					parameter<Float64> WarmteAandeel:= 0.75;
 					parameter<Float64> Rendement    := 0.80;
 					parameter<Float64> ElektriciteitAandeel := 1.0 - WarmteAandeel;
@@ -467,7 +467,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					parameter<Float64> Ondergrond_Factor := 0.0;
 					parameter<Float64> Opwekking_Factor := 0.0;
 					
-					attribute<EUR_GJ> K_GJ(classifications/zichtjaar) := Warmte_Factor *  prijzen/BioMassa_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
+					attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := Warmte_Factor *  prijzen/BioMassa_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
 				}
 			}
 		}
@@ -498,15 +498,15 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				
 				attribute<MW>      MWth_max;
 				attribute<MW>      MWth_min := value(MetaData/TypeInfoData/MWth_min[TypeInfo_rel],MW);
-				attribute<EUR_kW>  K_kW_min := value(MetaData/TypeInfoData/K_kW_min[TypeInfo_rel], EUR / kW);
-				attribute<EUR_kW>  K_kW_max := value(MetaData/TypeInfoData/K_kW_max[TypeInfo_rel], EUR / kW);
+				attribute<Eur_kW>  K_kW_min := value(MetaData/TypeInfoData/K_kW_min[TypeInfo_rel], Eur / kW);
+				attribute<Eur_kW>  K_kW_max := value(MetaData/TypeInfoData/K_kW_max[TypeInfo_rel], Eur / kW);
 				
- 				attribute<_Yr>  Rj_Onderhoud := value(MetaData/TypeInfoData/JaarKosten[ TypeInfo_rel ], _Yr);
- 				attribute<EUR_GJ>  K_GJ10 : = MetaData/TypeInfoData/K_GJ10[TypeInfo_rel];
- 				attribute<EUR_GJ>  K_GJ20 : = MetaData/TypeInfoData/K_GJ20[TypeInfo_rel];
- 				attribute<EUR_GJ>  K_GJ30 : = MetaData/TypeInfoData/K_GJ30[TypeInfo_rel];
- 				attribute<EUR_GJ>  K_GJ40 : = MetaData/TypeInfoData/K_GJ40[TypeInfo_rel];
- 				attribute<EUR_GJ>  K_GJ50 : = MetaData/TypeInfoData/K_GJ50[TypeInfo_rel];
+ 				attribute<_yr>  Rj_Onderhoud := value(MetaData/TypeInfoData/JaarKosten[ TypeInfo_rel ], _yr);
+ 				attribute<Eur_GJ>  K_GJ10 : = MetaData/TypeInfoData/K_GJ10[TypeInfo_rel];
+ 				attribute<Eur_GJ>  K_GJ20 : = MetaData/TypeInfoData/K_GJ20[TypeInfo_rel];
+ 				attribute<Eur_GJ>  K_GJ30 : = MetaData/TypeInfoData/K_GJ30[TypeInfo_rel];
+ 				attribute<Eur_GJ>  K_GJ40 : = MetaData/TypeInfoData/K_GJ40[TypeInfo_rel];
+ 				attribute<Eur_GJ>  K_GJ50 : = MetaData/TypeInfoData/K_GJ50[TypeInfo_rel];
 				attribute<kg_GJ>   CO2_2010 := value(MetaData/TypeInfoData/CO2_2010[TypeInfo_rel],KG_GJ);
 				attribute<kg_GJ>   CO2_2020 := value(MetaData/TypeInfoData/CO2_2020[TypeInfo_rel],KG_GJ);
 				attribute<kg_GJ>   CO2_2030 := value(MetaData/TypeInfoData/CO2_2030[TypeInfo_rel],KG_GJ);
@@ -556,11 +556,11 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		
 					attribute<rdc_meter>  Point:        Expr = "WarmteBronnen/P         [nr_OrgEntity]";
 					attribute<MW>         MWTh_min:     Expr = "WarmteBronnen/MWth_min  [nr_OrgEntity]";
-					attribute<EUR_kW>     K_kW_min:     Expr = "WarmteBronnen/K_kW_min  [nr_OrgEntity]";
-					attribute<EUR_kW>     K_kW_max:     Expr = "WarmteBronnen/K_kW_max  [nr_OrgEntity]";
-					attribute<_Yr>        Rj_Onderhoud: Expr = "WarmteBronnen/Rj_Onderhoud[nr_OrgEntity]";
+					attribute<Eur_kW>     K_kW_min:     Expr = "WarmteBronnen/K_kW_min  [nr_OrgEntity]";
+					attribute<Eur_kW>     K_kW_max:     Expr = "WarmteBronnen/K_kW_max  [nr_OrgEntity]";
+					attribute<_yr>        Rj_Onderhoud: Expr = "WarmteBronnen/Rj_Onderhoud[nr_OrgEntity]";
 					attribute<MW>         MWth_max:     Expr = "WarmteBronnen/MWth_max  [nr_OrgEntity]";
-					attribute<EUR_GJ>     K_GJ:         Expr = 
+					attribute<Eur_GJ>     K_GJ:         Expr = 
 						"(Jaar < value(2020, Units/Jaar) ? WarmteBronnen/K_GJ10 :  "
 						" Jaar < value(2030, Units/Jaar) ? WarmteBronnen/K_GJ20 :  "
 						" Jaar < value(2040, Units/Jaar) ? WarmteBronnen/K_GJ30 :  "
@@ -584,12 +584,12 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					attribute<MetaData/TypeInfoList> TypeInfoList_rel := modus_weighted(BronElementen/TypeInfoList_rel, BronElementen/MWth_max, per_BronElementen);
 					
 					attribute<rdc_meter>  Point:        Expr = "Values";
-					attribute<EUR_kW>     K_kW_min:     Expr = "sum(BronElementen/K_kW_min * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
-					attribute<EUR_kW>     K_kW_max:     Expr = "sum(BronElementen/K_kW_max * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<Eur_kW>     K_kW_min:     Expr = "sum(BronElementen/K_kW_min * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<Eur_kW>     K_kW_max:     Expr = "sum(BronElementen/K_kW_max * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
 					attribute<MW>         MWth_max:     Expr = "sum(BronElementen/MWth_max, per_BronElementen)";
 					attribute<MW>         MWth_min:     Expr = "sum(BronElementen/MWth_min, per_BronElementen)";
-					attribute<_Yr>        Rj_Onderhoud: Expr = "sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
-					attribute<EUR_GJ>     K_GJ:         Expr = "sum(BronElementen/K_GJ         * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<_yr>        Rj_Onderhoud: Expr = "sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
+					attribute<Eur_GJ>     K_GJ:         Expr = "sum(BronElementen/K_GJ         * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen)";
 					attribute<KG_GJ >     CO2_GJ := sum(BronElementen/CO2_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
 					attribute<G_GJ >      NOx_GJ := sum(BronElementen/NOx_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
 					attribute<G_GJ >      SO2_GJ := sum(BronElementen/SO2_GJ * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
@@ -599,8 +599,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					attribute<MW>         cumulP:       Expr = "const(0[MW], .)";
 					attribute<Bronnen>    Bronnen_rel:  Expr = "ID(.)";
 					
-					attribute<EUR_kW>    Ki_kW_min := K_kW_min;
-					attribute<EUR_kW>    Ki_kW_max := K_kW_max;
+					attribute<Eur_kW>    Ki_kW_min := K_kW_min;
+					attribute<Eur_kW>    Ki_kW_max := K_kW_max;
 				}
 			}
 			container BronSelecties := for_each_ne(Classifications/zichtjaar/name, 'BronSelectieTempl('+String(Classifications/zichtjaar/Jaar)+'[units/jaar])');
@@ -613,14 +613,14 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			parameter<MetaData/TypeInfoList> TypeInfoList_rel := MetaData/TypeInfoData/TypeInfoList_rel[TypeInfo_rel];
 			parameter<MetaData/RekenType>    RekenType_rel    := MetaData/TypeInfoData/RekenType_rel   [TypeInfo_rel];
 			parameter<MW>      MWth_min := value(MetaData/TypeInfoData/MWth_min[ TypeInfo_rel ], MW);
-			parameter<EUR_kW > K_kW_min := value(MetaData/TypeInfoData/K_kW_min[ TypeInfo_rel ], EUR_kW);
-			parameter<EUR_kW > K_kW_max := value(MetaData/TypeInfoData/K_kW_max[ TypeInfo_rel ], EUR_kW);
-			parameter<_Yr>     Rj_Onderhoud := value(MetaData/TypeInfoData/JaarKosten[ TypeInfo_rel ], _Yr);
-			parameter<EUR_GJ > K_GJ10   := value(MetaData/TypeInfoData/K_GJ10[ TypeInfo_rel ], EUR_GJ);
-			parameter<EUR_GJ > K_GJ20   := value(MetaData/TypeInfoData/K_GJ20[ TypeInfo_rel ], EUR_GJ);
-			parameter<EUR_GJ > K_GJ30   := value(MetaData/TypeInfoData/K_GJ30[ TypeInfo_rel ], EUR_GJ);
-			parameter<EUR_GJ > K_GJ40   := value(MetaData/TypeInfoData/K_GJ40[ TypeInfo_rel ], EUR_GJ);
-			parameter<EUR_GJ > K_GJ50   := value(MetaData/TypeInfoData/K_GJ50[ TypeInfo_rel ], EUR_GJ);
+			parameter<Eur_kW > K_kW_min := value(MetaData/TypeInfoData/K_kW_min[ TypeInfo_rel ], Eur_kW);
+			parameter<Eur_kW > K_kW_max := value(MetaData/TypeInfoData/K_kW_max[ TypeInfo_rel ], Eur_kW);
+			parameter<_yr>     Rj_Onderhoud := value(MetaData/TypeInfoData/JaarKosten[ TypeInfo_rel ], _yr);
+			parameter<Eur_GJ > K_GJ10   := value(MetaData/TypeInfoData/K_GJ10[ TypeInfo_rel ], Eur_GJ);
+			parameter<Eur_GJ > K_GJ20   := value(MetaData/TypeInfoData/K_GJ20[ TypeInfo_rel ], Eur_GJ);
+			parameter<Eur_GJ > K_GJ30   := value(MetaData/TypeInfoData/K_GJ30[ TypeInfo_rel ], Eur_GJ);
+			parameter<Eur_GJ > K_GJ40   := value(MetaData/TypeInfoData/K_GJ40[ TypeInfo_rel ], Eur_GJ);
+			parameter<Eur_GJ > K_GJ50   := value(MetaData/TypeInfoData/K_GJ50[ TypeInfo_rel ], Eur_GJ);
 			
 			container RekenType := ='MetaData/RekenTypes/'+MetaData/RekenType/Naam[RekenType_rel];
 		}

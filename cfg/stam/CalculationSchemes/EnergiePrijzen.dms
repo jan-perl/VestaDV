@@ -42,14 +42,14 @@ container EnergiePrijzen {
 	{
 		unit<UInt32> Table;
 		parameter<string> code;
-		attribute<EUR_GJ> distr_trans    (table) := ='(Table/'+code+'_PC_DIS[EUR_per_eenheid] + Table/'+code+'_PC_TRANS[EUR_per_eenheid]) * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> netwerk        (table) := ='Table/'+code+'_PC_NET[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> CommodityPrice (table) := ='Table/'+code+'_PC_COM_EXCL_CO2[EUR_per_eenheid] * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> CO2Heffing     (table) := ='Table/'+code+'_PC_CO2         [EUR_per_eenheid] * OmrekenFactor * InflationFactor';
-		attribute<EUR_GJ> EnergieHeffing (table) := ='(Table/'+code+'_PC_BEL_EL[EUR_per_eenheid] + Table/'+code+'_PC_SDE[EUR_per_eenheid]) * OmrekenFactor * InflationFactor';
+		attribute<Eur_GJ> distr_trans    (table) := ='(Table/'+code+'_PC_DIS[Eur_per_eenheid] + Table/'+code+'_PC_TRANS[Eur_per_eenheid]) * OmrekenFactor * InflationFactor';
+		attribute<Eur_GJ> netwerk        (table) := ='Table/'+code+'_PC_NET[Eur_per_eenheid] * OmrekenFactor * InflationFactor';
+		attribute<Eur_GJ> CommodityPrice (table) := ='Table/'+code+'_PC_COM_EXCL_CO2[Eur_per_eenheid] * OmrekenFactor * InflationFactor';
+		attribute<Eur_GJ> CO2Heffing     (table) := ='Table/'+code+'_PC_CO2         [Eur_per_eenheid] * OmrekenFactor * InflationFactor';
+		attribute<Eur_GJ> EnergieHeffing (table) := ='(Table/'+code+'_PC_BEL_EL[Eur_per_eenheid] + Table/'+code+'_PC_SDE[Eur_per_eenheid]) * OmrekenFactor * InflationFactor';
 		
-		attribute<EUR_GJ> maatschappelijk(table) := CommodityPrice + CO2Heffing + netwerk;
-		attribute<EUR_GJ> eindgebruik_ex (table) := maatschappelijk + EnergieHeffing;
+		attribute<Eur_GJ> maatschappelijk(table) := CommodityPrice + CO2Heffing + netwerk;
+		attribute<Eur_GJ> eindgebruik_ex (table) := maatschappelijk + EnergieHeffing;
 	}
 	template ImportElekGas
 	{
@@ -57,10 +57,10 @@ container EnergiePrijzen {
 		unit<Float64>     model_eenheid;
 		unit<Float64>     eenheid_GJ;
 		parameter<eenheid_GJ> OmrekenFactor;		
-		parameter<_Yr> AnnualPriceInflationFactor;
+		parameter<_yr> AnnualPriceInflationFactor;
 		parameter<string>   GlastuinbouwExpr;
 		
-		unit<Float64> EUR_per_eenheid := units/EUR / model_eenheid;
+		unit<Float64> Eur_per_eenheid := units/Eur / model_eenheid;
 	
 		unit<UInt32> Table
 		:	StorageName = "='%datadir%/'+ FileName + '.csv'"
@@ -77,14 +77,14 @@ container EnergiePrijzen {
 			container Teruglevering {
 				parameter<string> code := 'TL';
 				
-				attribute<EUR_GJ> distr_trans    (table) := const(0[EUR_GJ], table);
-				attribute<EUR_GJ> netwerk        (table) := const(0[EUR_GJ], table);
-				attribute<EUR_GJ> CommodityPrice (table) := KleinGebruik/CommodityPrice;
-				attribute<EUR_GJ> CO2Heffing     (table) := const(0[EUR_GJ], table);
-				attribute<EUR_GJ> EnergieHeffing (table) := const(0[EUR_GJ], table);
+				attribute<Eur_GJ> distr_trans    (table) := const(0[Eur_GJ], table);
+				attribute<Eur_GJ> netwerk        (table) := const(0[Eur_GJ], table);
+				attribute<Eur_GJ> CommodityPrice (table) := KleinGebruik/CommodityPrice;
+				attribute<Eur_GJ> CO2Heffing     (table) := const(0[Eur_GJ], table);
+				attribute<Eur_GJ> EnergieHeffing (table) := const(0[Eur_GJ], table);
 				
-				attribute<EUR_GJ> maatschappelijk(table) := CommodityPrice + CO2Heffing + netwerk;
-				attribute<EUR_GJ> eindgebruik_ex (table) := maatschappelijk + EnergieHeffing;
+				attribute<Eur_GJ> maatschappelijk(table) := CommodityPrice + CO2Heffing + netwerk;
+				attribute<Eur_GJ> eindgebruik_ex (table) := maatschappelijk + EnergieHeffing;
 			}
 			
 			container KleinGebruik       := GebruiksSectie(table, 'KG');
@@ -98,7 +98,7 @@ container EnergiePrijzen {
 	{
 		parameter<String> FileName;
 		
-		parameter<_Yr> AnnualPriceInflationFactor;
+		parameter<_yr> AnnualPriceInflationFactor;
 		
 		unit<UInt32> Table
 		:	StorageName = "='%datadir%/'+ FileName + '.csv'"
@@ -110,15 +110,15 @@ container EnergiePrijzen {
 		{
 			attribute<Units/Jaar> Jaar      (table) := Table/Jaar[ Units/Jaar ];
 			attribute<Ratio> InflationFactor(table) := exp(Float64(Jaar - 2010[ Units/Jaar ]) * AnnualPriceInflationFactor);
-			attribute<EUR_GJ> BioMassa      (table) := TABLE/KGJ_BioMassa    [EUR_GJ] * InflationFactor;
-			attribute<EUR_GJ> Kolen_Excl    (table) := TABLE/KGJ_Kolen_Excl  [EUR_GJ] * InflationFactor;
-			attribute<EUR_GJ> Kolen_CO2     (table) := TABLE/KGJ_Kolen_CO2   [EUR_GJ] * InflationFactor;
+			attribute<Eur_GJ> BioMassa      (table) := TABLE/KGJ_BioMassa    [Eur_GJ] * InflationFactor;
+			attribute<Eur_GJ> Kolen_Excl    (table) := TABLE/KGJ_Kolen_Excl  [Eur_GJ] * InflationFactor;
+			attribute<Eur_GJ> Kolen_CO2     (table) := TABLE/KGJ_Kolen_CO2   [Eur_GJ] * InflationFactor;
 		}
 	}
 	template All
 	{
 		parameter<String> FileName;
-		parameter<_Yr> AnnualPriceInflationFactor;
+		parameter<_yr> AnnualPriceInflationFactor;
 		
 		container Elektriciteit := ImportElekGas(FileName + '_Elek',   kwh, Kwh / GJ, value( 1000000.0 / 3600.0, kWh / GJ),        AnnualPriceInflationFactor, 'GrootGebruik' );
 		container AardGas       := ImportElekGas(FileName + '_Gas',     m3,  m3 / GJ, 1.0 / BronData/FysiekeConstanten/GasEnergie, AnnualPriceInflationFactor, 'GebruiksSectie(table, ''GLAST'')');

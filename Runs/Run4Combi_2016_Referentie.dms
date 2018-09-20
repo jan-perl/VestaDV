@@ -83,9 +83,9 @@ container VestaRun
 		container Discontovoeten {
 			parameter<Percent_yr> DiscontoVoet_mr  := 4.0 [Percent_yr], Descr = "Maatschappelijke discontovoet";
 			parameter<Percent_yr> DiscontoVoet_ow  := 6.0 [Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
-			parameter<Percent_yr> DiscontoVoet_wd  := 6.0 [Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
-			parameter<Percent_yr> DiscontoVoet_pt  := 6.0 [Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
-			parameter<Percent_yr> DiscontoVoet_id  := 6.0 [Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
+			parameter<Percent_yr> DiscontoVoet_wd  := 6.0 [Percent_yr], Descr = "Discontovoet voor wijkdistributEurs";
+			parameter<Percent_yr> DiscontoVoet_pt  := 6.0 [Percent_yr], Descr = "Discontovoet voor primaire transportEurs";
+			parameter<Percent_yr> DiscontoVoet_id  := 6.0 [Percent_yr], Descr = "Discontovoet voor inpandige distributEurs";
 			parameter<Percent_yr> DiscontoVoet_ebw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
 			parameter<Percent_yr> DiscontoVoet_enw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
 			parameter<Percent_yr> DiscontoVoet_ebu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
@@ -99,15 +99,15 @@ container VestaRun
 			
 			container Aansluitbijdrage
 			{
-				parameter<EUR_aansl> Maximum2014 := 753.53[EUR_aansl]; // excl BTW in EURO's van 31-08-2013
-				parameter<EUR_aansl> Maximum2016 := 795.83[EUR_aansl]; // excl BTW in EURO's van 31-08-2015.
-				parameter<EUR_aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+				parameter<Eur_Aansl> Maximum2014 := 753.53[Eur_Aansl]; // excl BTW in EurO's van 31-08-2013
+				parameter<Eur_Aansl> Maximum2016 := 795.83[Eur_Aansl]; // excl BTW in EurO's van 31-08-2015.
+				parameter<Eur_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
 			}
 			container Vastrecht
 			{
-				parameter<EUR_Yr_Aansl> Maximum2014 := 209.92[EUR_Yr_Aansl]; // excl BTW in EURO's van 31-08-2013.
-				parameter<EUR_Yr_Aansl> Maximum2016 := 228.21[EUR_Yr_Aansl]; // excl BTW in EURO's van 31-08-2015.
-				parameter<EUR_Yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+				parameter<Eur_yr_Aansl> Maximum2014 := 209.92[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2013.
+				parameter<Eur_yr_Aansl> Maximum2016 := 228.21[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2015.
+				parameter<Eur_yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
 			}
 		}
 		container CollectieveOpwekking {
@@ -135,7 +135,7 @@ container VestaRun
 			unit<Float64> m2_Dak       := m2 / (nrWoningen / Bouwlaag);
 			
 			container Woning_bestaand {
-				parameter<KWh_Yr_m2> Zon_PV_opbrengst  := 150[KWh_Yr_m2];
+				parameter<KWh_yr_m2> Zon_PV_opbrengst  := 150[KWh_yr_m2];
 				attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeGeoHoogte ) := const(30[m2_Dak],Classifications/WoningtypeGeoHoogte);
 				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeGeoHoogte ) := const(3.0[m2_woning],Classifications/WoningtypeGeoHoogte);
 			}
