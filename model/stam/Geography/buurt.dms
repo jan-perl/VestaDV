@@ -1,0 +1,127 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile wordt de regio indeling buurt met eigendommen etc.    //
+//       geconfigureerd                                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+unit<uint32> buurt:
+	StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.dbf",
+	DialogData      = "poly",
+	DialogType      = "Map",
+	StorageReadOnly = "True",
+	url             = "%sourceDataProjDir%/hulpbestanden/buurt/CBS wijk- en buurtkaart 2014 - buurten - DataPortaal Explorer_xml.mht"
+//			SyncMode        = "None"
+{
+	
+	attribute<rdc_meter> poly(polygon):
+		label           = "De buurtkaart 2014 CBS",
+		StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/CBS_buurt_2014.shp",
+		StorageReadOnly = "True";
+	
+	
+	attribute<String> BU_CODE; 
+	attribute<string> codeorg := BU_CODE;
+	
+	attribute<string> codeorgtmp:= substr(codeorg,2,8);
+	attribute<uint32> code:= codeorgtmp[uint32];
+
+	attribute<rdc_meter> Point    := centroid_or_mid(poly);
+	attribute<m2>        Area     := Area(poly, m2);
+	attribute<km2>       AreaInKm2:= Area / value(1000000, m2 / km2);
+	
+	attribute<NL>        NL_rel   := const(0[NL],.);
+	attribute<Gemeente>  Gemeente_rel  := rlookup(GEMNR2017, Gemeente/Values);
+	attribute<Provincie> Provincie_rel := rlookup(PROVNR, provincie/Values);
+	
+	attribute<yr_uint16>      BioWKK_Start:= const(2020[yr_uint16], .); // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
+	
+	// =========== sociaal economische kenmerken obv laatst bekenden CBS buurtgegevens
+	container Eigendom {
+		
+		// Koopwoningen
+		attribute<Percent> p_koopw(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_koopw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_koopw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_koopw[Percent])
+		);
+		
+		// Huurwoningen totaal
+		attribute<Percent> p_huurw(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_huurw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_huurw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_huurw[Percent])
+		);
+		
+		// In bezit woningcorporatie
+		attribute<Percent> p_wcorpw(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_wcorpw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_wcorpw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_wcorpw[Percent])
+		);
+		
+		// In bezit overige verhuurders
+		attribute<Percent> p_ov_hw(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_ov_hw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_ov_hw[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_ov_hw[Percent])
+		);
+		// Eigendom onbekend
+		attribute<Percent> p_e_o_w(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_e_o_w[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_e_o_w[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_e_o_w[Percent])
+		);
+		attribute<Percent> p_checksum(..) := p_koopw + p_wcorpw + p_ov_hw + p_e_o_w;
+	}
+	container Inkomen{
+		attribute<Percent> p_hh_li(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_hh_li[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_hh_li[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_hh_li[Percent])
+		);
+		attribute<Percent> p_hh_hi(..) := MakeDefined(
+			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_hh_hi[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_hh_hi[Percent])
+		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_hh_hi[Percent])
+		);
+		
+		attribute<Percent> p_hh_mi(..) := 100[Percent] - (p_hh_li + p_hh_hi);
+		
+		attribute<Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
+	}
+}

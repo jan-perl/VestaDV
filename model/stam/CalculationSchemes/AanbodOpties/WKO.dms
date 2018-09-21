@@ -1,0 +1,673 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template WKO
+{
+	container BeginStatus;
+	container AanbodKentallen;
+	container EnergiePrijzen;
+	parameter<units/yr_uint16> RunJaar;
+	
+	// end of case param
+	
+	container KostenBaten  := BeginStatus/KostenBaten;
+	container VestaRunData := KostenBaten/VestaRunData;
+	
+	unit<uint8> WkoComponent := Classifications/WkoComponent;
+	
+	container impl
+	{
+		parameter<Eur_kW>     Ki_Doublet:= Leercurves/Curve2 * 1133[Eur_kW], Descr = "bron zonder distributiekosten";
+		parameter<Eur_m2>     Ki_distr  := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2], Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
+
+		//Seasonal Performance Factor 
+		parameter<Ratio>      SPF_coll: [ 3.5 ];
+		
+		//ASW AanSluitWaarde
+		parameter<Float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
+		parameter<Float64> ASW_kc := 2[kW_Woning];
+		parameter<Float64> ASW_wa := 5[kW_Woning]; // appartement
+		parameter<Float64> ASW_ka := 2[kW_Woning];
+		parameter<Float64> ASW_wu := 0.05[kW_m2]; // utiliteit
+		parameter<Float64> ASW_ku := 0.06[kW_m2];
+		
+		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442.";
+		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
+
+		template WoningDataTempl
+		{
+			container VestaRunDataComponent;     // := VestaRunData/Woning;
+			parameter<Eur_GJ> WarmtePrijs;      //  := BeginStatus/KostenBaten/PlanRegioKaarten/Woning/WarmtePrijs;
+			unit<uint8> Type;
+			container KostenBase;
+			
+			unit<UInt32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
+			
+			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[VestaRunDataComponent/RuimtelijkeVraagComponent/KengetalType];
+			
+			attribute<GJ_yr>   Lq2        (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/Verbruik; // + Vraag/UitlegWoning/Totaal/Warmte; // WarmteVraag
+			attribute<NrWoningen> Lw1     (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/UitlegWoning/Totaal/Warmte;
+			attribute<GJ_yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>   V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
+			attribute<GJ_yr>   V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_yr>   V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
+			attribute<GJ_yr>   V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
+			
+			attribute<kW>     P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * Lw1;
+			attribute<kW>     P_Koude     (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * Lw1;
+			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
+			
+
+			container Kosten
+			// excl doublet en distributie, excl kosten LTAS
+			{
+				attribute<Eur_Woning> K_wv(BebouwingsObject):  = IsAppt ? K_wvwa : K_wvwc, Source = "F 54..56";
+				attribute<Eur> Ki_id(BebouwingsObject) := K_wv * Lw1, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
+				attribute<Eur> Ki_ge_pm(BebouwingsObject) := KostenBase/Ki_ge_pm_o;
+				attribute<Eur> Ki_ge_ov(BebouwingsObject) := KostenBase/Ki_ge_ov_o;
+				attribute<Eur> Ki_ge(BebouwingsObject) := Ki_ge_ov + Ki_ge_pm;
+				
+				attribute<Eur_yr> Kj_ge_netto(BebouwingsObject) := KostenBase/Kj_ge_netto;
+
+				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
+				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
+				attribute<Eur_yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * Lw1;
+				
+				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+				
+			}
+			
+			container Opbrengsten
+			{
+				attribute<Eur_yr> Warmte     (BebouwingsObject) := Lq2 * WarmtePrijs, Source = "F 66 jo F 8";
+				attribute<Eur_yr> koude      (BebouwingsObject) := 250 [ Eur_yr / NrWoningen] * Lw1, Source = "F 63";
+				
+				attribute<Eur>    AansluitBijdrage(BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageD;
+				attribute<Eur_yr> Vastrecht       (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastrechtBijdrageD, Source = "F 60+64 jo F 6";
+				attribute<Eur_yr> Om_comfort      (BebouwingsObject) := Koude;
+			}
+		}
+		
+		container WoningData := 
+			WoningDataTempl(
+				VestaRunData/Woning, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/Woning/WarmtePrijs, 
+				Entiteiten/WoningType,
+				BeginStatus/KostenBaten/KostenD/Wonen/bbw
+			);
+
+		container UitlegWoningData := 
+			WoningDataTempl(
+				VestaRunData/UitlegWoning, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/UitlegWoning/WarmtePrijs, 
+				Entiteiten/UitlegWoningType,
+				BeginStatus/KostenBaten/KostenD/Wonen/nbw
+			);
+
+		template UtilDataTempl
+		{
+			container VestaRunDataComponent;    // := VestaRunData/UitlegUtil;
+			parameter<Eur_GJ> WarmtePrijs;      // := BeginStatus/KostenBaten/PlanRegioKaarten/UitlegUtil/WarmtePrijs;
+			
+			unit<UInt32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
+			
+			attribute<GJ_yr> Lq4   (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/Verbruik, Descr = "Warmtevraag"; // + Vraag/UitlegWoning/Totaal/Warmte";
+			attribute<GJ_yr> Lq4bis(BebouwingsObject):= VestaRunDataComponent/AandeelWarmteVraag * VestaRunDataComponent/Functioneel/Koude, Descr = "KoudeVraag";
+			attribute<m2>    Lu    (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/NrModelUnits;
+			
+			attribute<GJ_yr>  V_Warmte(BebouwingsObject) := Lq4;
+			attribute<GJ_yr>  V_Koude (BebouwingsObject) := Lq4bis;
+			attribute<GJ_yr>  F_Elek  (BebouwingsObject) := V_Warmte + V_Koude;
+			attribute<GJ_yr>  V_ElekW (BebouwingsObject) := V_Warmte / SPF_coll;
+			attribute<GJ_yr>  V_ElekK (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_yr>  V_Elek  (BebouwingsObject) := V_ElekW + V_ElekK;
+			attribute<GJ_yr>  V_WKO   (BebouwingsObject) := F_Elek - V_Elek;
+			
+			attribute<kW>     P_Warmte(BebouwingsObject) := 0.95[Ratio] * ASW_wu[kW_m2] * Lu;
+			attribute<kW>     P_Koude (BebouwingsObject) := 0.95[Ratio] * ASW_ku[kW_m2] * Lu;
+			
+			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := 
+				classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
+			attribute<Eur_GJ> KGJj_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex[gebruiksgrootteklasse_rel];
+			attribute<Eur_GJ> KGJm_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel];
+				
+			container Kosten
+			{
+				attribute<Eur_m2> K_wvu(BebouwingsObject):= 
+					Lu > 7500[m2] ?  0[Eur_m2] : 
+					Lu < 100[m2]  ? 20[Eur_m2] : 
+					20[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),
+					Descr = "kosten warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
+				
+				attribute<Eur>  Ki_id(BebouwingsObject) := Leercurves/Curve2 * K_wvu * Lu, Descr = "Investeringskosten systeem bij utiliteit, F 64";
+				attribute<Eur>  Ki_ge_pm(BebouwingsObject) := const(0[Eur], BebouwingsObject);
+				attribute<Eur>  Ki_ge_ov(BebouwingsObject) := const(0[Eur], BebouwingsObject);
+				attribute<Eur>  Ki_ge(BebouwingsObject) := const(0[Eur], BebouwingsObject);
+// 				attribute<Eur_yr> Kj_ge_hv   (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
+				attribute<Eur_yr> Kj_ge_netto(BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
+			
+				attribute<Eur_yr> Kj_ow_e  (BebouwingsObject) := V_Elek * KGJj_Elek, Descr = "F 65"; 
+				attribute<Eur_yr> Kj_ow_o  (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_yr / m2] * Lu;
+				attribute<Eur_yr> Km_ow_e  (BebouwingsObject) := V_Elek * KGJm_Elek;
+				
+				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+			}
+			
+			container Opbrengsten
+			{
+				attribute<Eur_GJ> KoudePrijs(BebouwingsObject) := KGJj_Elek / VestaRunDataComponent/Efficiency/Koude/Elektriciteit;
+				
+				attribute<Eur>    AansluitBijdrage(BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageD, Source = "F 65 jo F 10";
+				attribute<Eur_yr> VastRecht       (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/VastRechtBijdrageD, Source = "F 11";
+			
+				attribute<Eur_yr> Warmte    (BebouwingsObject) := Lq4 * WarmtePrijs, Source = "F 70 jo F 8";
+				attribute<Eur_yr> koude     (BebouwingsObject) := KoudePrijs * Lq4bis, Source = "F 71";
+				attribute<Eur_yr> Om_comfort(BebouwingsObject) := const(0[Eur_yr], BebouwingsObject); // Waardeer het maatschappelijk nut van de aan util geleverde koude niet, aangezien util al koude inkocht.
+			}
+		}
+		
+		container UtiliteitData := 
+			UtilDataTempl(
+				VestaRunData/Utiliteit, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/Utiliteit/WarmtePrijs
+			);
+		
+		container UitlegUtilData := 
+			UtilDataTempl(
+				VestaRunData/UitlegUtil, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/UitlegUtil/WarmtePrijs
+			);
+		
+		template WkoDataTempl
+		{
+			container WkoDataComponent;
+			parameter<String> ComponentNaam;
+	
+			container VestaRunDataComponent := WkoDataComponent/VestaRunDataComponent;
+			container RuimtelijkeVraagComponent := VestaRunDataComponent/RuimtelijkeVraagComponent;
+			container BeginStatusComponent := ='BeginStatus/'+ComponentNaam;
+				
+			unit<UInt32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
+		
+			container Gebied
+			{
+				// accumulators
+				attribute<Float64> n     (BebouwingsObject) := value(VestaRunDataComponent/Bebouwing/Gebied/n, Float64);
+
+				attribute<Float64> MEAN_x(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/MEAN_x + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
+				attribute<Float64> MEAN_y(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/MEAN_y + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
+				attribute<Float64> SSD_xx(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_xx;
+				attribute<Float64> SSD_xy(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_xy;
+				attribute<Float64> SSD_yy(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_yy;
+			}
+			
+			attribute <Bool> InContour  (BebouwingsObject) := IsDefined( BronData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
+			attribute <Bool> GeoGeschikt(BebouwingsObject) := =AanbodKentallen/BuitenContour ? 'const(true, BebouwingsObject)' : 'InContour';
+			
+			attribute <Bool> LtVerwarmingGeschikt(BebouwingsObject) := VestaRunDataComponent/LtVerwarmingGeschikt;
+			attribute <Bool> Geschikt            (BebouwingsObject) := GeoGeschikt && LtVerwarmingGeschikt;
+			
+			 // kosten excl distributie
+			attribute<Eur   > Ki_A     (BebouwingsObject) := Ki_Doublet * min_elem(WkoDataComponent/P_Warmte, WkoDataComponent/P_Koude);
+			attribute<Eur   > Ki_LTAS  (BebouwingsObject) := VestaRunDataComponent/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur   > Ki_C     (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
+			attribute<Eur   > Ki_D     (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
+			attribute<Eur_yr> Kj_D     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_netto;
+			attribute<Eur   > Ki_ge_pm (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
+			attribute<Eur   > Ki_ge_ov (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
+// 			attribute<Eur_yr> Kj_ge_hv (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
+			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * VestaRunData/Onderhoud/Rj_Precario_m;
+
+			attribute<Eur   > Oi_Aansl (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
+			attribute<Eur_yr> Oj_Aansl (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
+			attribute<Eur_yr> Oj_verbruik(BebouwingsObject) := 
+				  WkoDataComponent/Opbrengsten/Vastrecht
+				+ WkoDataComponent/Opbrengsten/Warmte
+				+ WkoDataComponent/Opbrengsten/Koude;
+				
+			attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_o;
+			attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_e;
+			attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_ow_e;
+			attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_ow_e;
+			attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_ow_e;
+			
+			attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
+			attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
+			
+			attribute<GJ_yr > GJe(BebouwingsObject) := WkoDataComponent/V_Elek;
+			attribute<GJ_yr > GJw(BebouwingsObject) := WkoDataComponent/V_WKO;
+			attribute<KG_yr>  CO2(BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/CO2_GJ * GJe;
+			attribute<Eur_yr >SDE(BebouwingsObject) := GJw * UserInput/BeleidsOpties/EEA/SDE_WKO;
+			
+			attribute<Eur_yr> AC_Netto(BebouwingsObject) := 
+				Oj_Aansl + Oj_verbruik + SDE
+				-	Kj_D
+				-	Kj_ow_totaal
+				-	Kj_wd_pr
+				-	Ki_C * (NCW/id28/AnnualisationFactor  * (1.0 - UserInput/BeleidsOpties/EIA/id ) * (1.0 - UserInput/BeleidsOpties/EEA/id))
+				-	Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - UserInput/BeleidsOpties/EIA/WKO) * (1.0 - UserInput/BeleidsOpties/EEA/WKO));
+			attribute<Bool> RentabiliteitsAfweging(BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
+
+			attribute<Bool> MarginaleAfweging(BebouwingsObject) := geschikt && RentabiliteitsAfweging;
+			attribute<Bool> WasAllocated  (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie[VestaRunDataComponent/PlanRegio_rel]);
+			attribute<Bool> AllowWKO      (BebouwingsObject) := MarginaleAfweging && !WasAllocated;
+			
+			unit<uint32> AllowedObjects := Subset(AllowWKO)
+			{
+				attribute<String> Label := '(' + VestaRunDataComponent/Bebouwing/Label[nr_OrgEntity]+')';
+			}
+		}
+		container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoDataTempl('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+')');
+		
+		unit <UInt32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
+			,	DialogType = "Map", DialogData = "Point"
+		{
+			attribute<String> Label := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AllowedObjects/Label') + ')', DialogType = "LabelText";
+			attribute<.> Partitioning := ID(.);
+			attribute<rdc_meter> Point := Point(MEAN_Y, MEAN_X, rdc_meter);
+			
+			attribute<Eur_yr> Oj_verbruik:= ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Oj_verbruik[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+ 			attribute<Eur_yr> AC_Netto  := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AC_Netto  [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+ 			attribute<kW    > P_Warmte  := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+ 			attribute<kW    > P_Koude   := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+
+			attribute<Float64> n      := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/n     [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+			attribute<Float64> MEAN_x := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/MEAN_x[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+			attribute<Float64> MEAN_y := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/MEAN_y[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+			attribute<Float64> SSD_xx := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/SSD_xx[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+			attribute<Float64> SSD_xy := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/SSD_xy[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+			attribute<Float64> SSD_yy := ='Union_Data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/SSD_yy[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		}
+		template IterTempl
+		{
+			unit <UInt32> Candidates;
+			
+			unit <UInt32> UniqueUnitedCandidates := Unique(Candidates/Point), // dit moet omdat connect_points anders weigert.
+				DialogType = "Map", DialogData = "Point"
+			{
+				attribute<rdc_meter> Point := Values;
+				attribute<.> RelPartitioning(Candidates) := rlookup(Candidates/Point, Values);
+				attribute<.> Partitioning(UnitedCandidates) := RelPartitioning[Candidates/Partitioning];
+				
+				attribute<String> Label := AsItemList(Candidates/Label,RelPartitioning), DialogType = "LabelText";
+				
+				attribute<Eur_yr> AC_Netto  := sum(Candidates/AC_Netto,  RelPartitioning);
+				attribute<Eur_yr> Oj_verbruik:= sum(Candidates/Oj_verbruik,RelPartitioning);
+				attribute<kW    > P_Warmte  := sum(Candidates/P_Warmte,  RelPartitioning);
+				attribute<kW    > P_Koude   := sum(Candidates/P_Koude ,  RelPartitioning);
+				
+				attribute<Float64> n      := sum(Candidates/n, RelPartitioning);
+				attribute<Float64> MEAN_x := sum(Candidates/n * Candidates/MEAN_x, RelPartitioning) / n;
+				attribute<Float64> MEAN_y := sum(Candidates/n * Candidates/MEAN_y, RelPartitioning) / n;
+				attribute<Float64> SSD_xx := sum(Candidates/SSD_xx, RelPartitioning);
+				attribute<Float64> SSD_xy := sum(Candidates/SSD_xy, RelPartitioning);
+				attribute<Float64> SSD_yy := sum(Candidates/SSD_yy, RelPartitioning);
+				
+				attribute<Float64> SqrtDetSSD := MakeDefined(Sqrt(SSD_xx*SSD_yy-SSD_xy*SSD_xy), 0.0);
+				attribute<m2>      AreaProxy := (PI() * SqrtDetSSD / n)[m2];
+
+				attribute<Eur   > Ki_A := Ki_Doublet * max_elem(P_Warmte, P_Koude);
+				attribute<Eur   > Ki_B := AreaProxy * Ki_distr;
+				
+				//attribute<Eur_yr> Oj_ABC:= Oj_totaal;
+				
+				// Rentabiliteitsafweging:
+				// max(Ki_ABC, 400000) <= Oj_Netto * DurationFactor
+				// samenvoegen verhoogt rhs additief, lhs minder dan additief als Ki_ABC onder de 400.000 ligt en Ki_Distr niet te veel stijgt, anders ligt het aan de ontwikkeling van Ki_Distr
+				// het door samenvoegen behalen van een positieve afweging wordt verondersteld alleen mogelijk te zijn als  de onderdelen nog onder de 400000 opleveren, maar meer dan de ongerestricteerde Ki_ABC.
+
+				attribute<Bool> MarginaleAfweging:= 
+					Ki_B * (NCW/wd28/AnnualisationFactor * (1.0 - UserInput/BeleidsOpties/EIA/wd ) * (1.0 - UserInput/BeleidsOpties/EEA/wd ))
+				< 	AC_Netto;
+				attribute<Bool> ClusterAfweging := Oj_verbruik < 400000[Eur] * NCW/ow28/AnnualisationFactor;
+				attribute<Bool> SelectAfweging  := MarginaleAfweging && !ClusterAfweging; // cluster is klaar
+				attribute<Bool> CombiAfweging   := MarginaleAfweging &&  ClusterAfweging; // er moet verder geclusterd worden om aan het minimum te gaan voldoen.
+			}
+			
+			unit<uint32> Selected := Subset(UniqueUnitedCandidates/SelectAfweging), DialogType = "Map", DialogData = "Point"
+			{
+				attribute<rdc_meter> Point := UniqueUnitedCandidates/Point[nr_OrgEntity];
+				attribute<String>    Label := UniqueUnitedCandidates/Label[nr_OrgEntity], DialogType = "LabelText";
+				attribute<.> Partitioning(impl/UnitedCandidates) := invert(nr_OrgEntity)[UniqueUnitedCandidates/Partitioning];
+				attribute<Eur> Ki_A := UniqueUnitedCandidates/Ki_A[nr_OrgEntity];
+				attribute<Eur> Ki_B := UniqueUnitedCandidates/Ki_B[nr_OrgEntity];
+			}
+			unit<uint32> ClusterSet := Subset(UniqueUnitedCandidates/CombiAfweging), DialogType = "Map", DialogData = "Point"
+			{
+				attribute<rdc_meter> Point := UniqueUnitedCandidates/Point[nr_OrgEntity];
+				attribute<ClusterSet> Neighbour := connect_neighbour(Point);
+				attribute<Bool> InCluster    := ClusterSet/Neighbour[ClusterSet/Neighbour] == ID(ClusterSet);
+				attribute<Bool> CanCluster   := ClusterSet/Neighbour > ID(ClusterSet) && InCluster;
+				attribute<Bool> NotInCluster := Not(InCluster);
+			}
+			
+			unit <UInt32> JoinedClusters := Subset(ClusterSet/CanCluster), DialogType = "Map", DialogData = "Point"
+			{
+				unit<uint32> Candidates := UniqueUnitedCandidates;
+				
+				attribute<Candidates> src1 := ClusterSet/nr_OrgEntity[nr_OrgEntity];
+				attribute<Candidates> src2 := ClusterSet/nr_OrgEntity[ClusterSet/Neighbour[nr_OrgEntity]];
+				
+				attribute<.> Partitioning(impl/UnitedCandidates) := MakeDefined(invert(src1)[Candidates/Partitioning], invert(src2)[Candidates/Partitioning]);
+				
+				attribute<String> Label := '['+Candidates/Label[src1] + ';' + Candidates/Label[src2]+']', DialogType = "LabelText";
+ 				attribute<Eur_yr> Oj_verbruik:= Candidates/Oj_verbruik[src1] + Candidates/Oj_verbruik[src2];
+ 				attribute<Eur_yr> AC_Netto  := Candidates/AC_Netto  [src1] + Candidates/AC_Netto  [src2];
+ 				attribute<kW    > P_Warmte  := Candidates/P_Warmte [src1] + Candidates/P_Warmte [src2];
+ 				attribute<kW    > P_Koude   := Candidates/P_Koude  [src1] + Candidates/P_Koude  [src2];
+				
+				attribute<Float64>   n1     := Candidates/n[src1];
+				attribute<Float64>   n2     := Candidates/n[src2];
+				attribute<Float64>   n      := n1+n2;
+				attribute<Float64> MEAN_x:   = (n1*Candidates/MEAN_x[src1] + n2*Candidates/MEAN_x[src2]) / n;
+				attribute<Float64> MEAN_y:   = (n1*Candidates/MEAN_y[src1] + n2*Candidates/MEAN_y[src2]) / n;
+				attribute<Float64> DIFF_x:   = Candidates/MEAN_x[src1] - Candidates/MEAN_x[src2];
+				attribute<Float64> DIFF_y:   = Candidates/MEAN_y[src1] - Candidates/MEAN_y[src2];
+				attribute<Float64> SSD_xx := Candidates/SSD_xx[src1] + Candidates/SSD_xx[src2] + (n1*n2 / n) * DIFF_x * DIFF_x;
+				attribute<Float64> SSD_xy := Candidates/SSD_xy[src1] + Candidates/SSD_xy[src2] + (n1*n2 / n) * DIFF_x * DIFF_y;
+				attribute<Float64> SSD_yy := Candidates/SSD_yy[src1] + Candidates/SSD_yy[src2] + (n1*n2 / n) * DIFF_y * DIFF_y;
+				
+				attribute<rdc_meter> point := point(MEAN_y, MEAN_x, rdc_meter);
+			}
+			unit <UInt32> InheritedClusters := Subset(ClusterSet/NotInCluster), DialogType = "Map", DialogData = "Point"
+			{
+				unit<uint32> Candidates := UniqueUnitedCandidates;
+				attribute<Candidates> src1 := ClusterSet/nr_OrgEntity[nr_OrgEntity];
+				attribute<.> Partitioning(impl/UnitedCandidates) := invert(src1)[Candidates/Partitioning];
+				
+				attribute<String> Label     := Candidates/Label    [src1], DialogType = "LabelText";
+				attribute<Eur_yr> Oj_verbruik:= Candidates/Oj_verbruik[src1];
+				attribute<Eur_yr> AC_Netto  := Candidates/AC_Netto[src1];
+ 				attribute<kW    > P_Warmte  := Candidates/P_Warmte [src1];
+ 				attribute<kW    > P_Koude   := Candidates/P_Koude  [src1];
+				
+				attribute<Float64> n        := Candidates/n     [src1];
+				attribute<Float64> MEAN_x   := Candidates/MEAN_x[src1];
+				attribute<Float64> MEAN_y   := Candidates/MEAN_y[src1];
+				attribute<Float64> SSD_xx   := Candidates/SSD_xx[src1];
+				attribute<Float64> SSD_xy   := Candidates/SSD_xy[src1];
+				attribute<Float64> SSD_yy   := Candidates/SSD_yy[src1];
+				
+				attribute<rdc_meter> point := Candidates/point[src1];
+			}
+			unit <UInt32> SelectedClusters := union_unit(InheritedClusters, JoinedClusters), DialogType = "Map", DialogData = "Point"
+			{
+				attribute<.> Partitioning(impl/UnitedCandidates) := MakeDefined(InheritedClusters/Partitioning, JoinedClusters/Partitioning + #InheritedClusters)[.];
+				attribute<String> Label     := union_data(., InheritedClusters/Label,     JoinedClusters/Label), DialogType = "LabelText";
+				
+ 				attribute<Eur_yr> Oj_verbruik:= union_data(., InheritedClusters/Oj_verbruik, JoinedClusters/Oj_verbruik);
+ 				attribute<Eur_yr> AC_Netto  := union_data(., InheritedClusters/AC_Netto  , JoinedClusters/AC_Netto);
+ 				attribute<kW    > P_Warmte  := union_data(., InheritedClusters/P_Warmte,  JoinedClusters/P_Warmte);
+ 				attribute<kW    > P_Koude   := union_data(., InheritedClusters/P_Koude,   JoinedClusters/P_Koude);
+				
+				attribute<Float64> n        := union_data(., InheritedClusters/n, JoinedClusters/n);
+				attribute<Float64> MEAN_x   := union_data(., InheritedClusters/MEAN_x, JoinedClusters/MEAN_x);
+				attribute<Float64> MEAN_y   := union_data(., InheritedClusters/MEAN_y, JoinedClusters/MEAN_y);
+				attribute<Float64> SSD_xx   := union_data(., InheritedClusters/SSD_xx, JoinedClusters/SSD_xx);
+				attribute<Float64> SSD_xy   := union_data(., InheritedClusters/SSD_xy, JoinedClusters/SSD_xy);
+				attribute<Float64> SSD_yy   := union_data(., InheritedClusters/SSD_yy, JoinedClusters/SSD_yy);
+				
+				attribute<rdc_meter> point := union_data(., InheritedClusters/point, JoinedClusters/point);
+			}
+		}
+		
+		parameter<UInt32> NrIterations: [ 25 ];
+		unit<UInt32> Iteration := Range(UInt32, 0, NrIterations) { 
+			attribute<String> Name := 'I'+String(ID(.)); 
+			attribute<String> Prev := MakeDefined(Name[ID(.)-1]+'/SelectedClusters', 'UnitedCandidates');
+		}
+		
+		container Iterations := for_each_ne(Iteration/Name, 'IterTempl('+Iteration/Prev+')');
+		
+		// decouple the cluster to the individual object level to support reporting of the allocation result
+	}
+	
+	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
+	{
+		attribute<.> NrSelectedObjects(impl/Iteration) := ='union_data(impl/Iteration, '+AsItemList('#impl/Iterations/'+impl/Iteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects(impl/Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects)-NrSelectedObjects;
+		
+		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/point')+')';
+		attribute<String> Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Label')+')';
+ 		attribute<Eur> Ki_A := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_A')+')';
+ 		attribute<Eur> Ki_B := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_B')+')';
+		attribute<.> Partitioning(impl/UnitedCandidates) := ='value(MakeDefined('+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+String(ID(impl/Iteration))+']')+'),.)';
+	}
+	
+	attribute<UInt32> NrAllowedObjects(WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#impl/CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
+	attribute<UInt32> NrAllObjects    (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#impl/CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
+	attribute<UInt32> CumulNrPrevAllowedObjects(WkoComponent) := cumulate(NrAllowedObjects)-NrAllowedObjects;
+	attribute<UInt32> CumulNrPrevAllObjects    (WkoComponent) := cumulate(NrAllObjects)-NrAllObjects;
+	
+	template WkoResultsTempl
+	{
+		unit<uint32> UnitedCandidates;
+		unit<uint32> Cluster;
+		container WkoData;
+		parameter<UInt32> NrPrevAllowedObjects;
+		parameter<UInt32> NrPrevAllObjects;
+		
+		container WkoDataComponent := WkoData/WkoDataComponent;
+		parameter<String> ComponentNaam:= WkoData/ComponentNaam;
+		container BeginStatusComponent:= ='BeginStatus/'+ComponentNaam;
+		
+		container VestaRunDataComponent:= WkoDataComponent/VestaRunDataComponent;
+		container RuimtelijkeVraagComponent:= VestaRunDataComponent/RuimtelijkeVraagComponent;
+		unit<UInt32> BebouwingsObject:= VestaRunDataComponent/BebouwingsObject;
+		
+		attribute<AllObjects> AllObjects_rel(BebouwingsObject):= value(ID(BebouwingsObject) + NrPrevAllObjects, AllObjects);
+		
+		unit<UINt32> AllowedObjects:= WkoData/AllowedObjects
+		{
+			attribute<UnitedCandidates> UnitedCandidates_rel:= value(ID(.) + NrPrevAllowedObjects, UnitedCandidates);
+			attribute<Cluster> Cluster_Rel:= Cluster/Partitioning[UnitedCandidates_rel];
+		}
+		attribute<Cluster> Cluster_RelNow(BebouwingsObject):= AllowedObjects/Cluster_rel[invert(AllowedObjects/nr_OrgEntity)];
+		attribute<Cluster> Cluster_Rel(BebouwingsObject):= MakeDefined(Cluster_RelNow, VestaRunDataComponent/WkoCluster_rel);
+		attribute<Bool> StartWKO(BebouwingsObject):= IsDefined(Cluster_RelNow);
+		attribute<Bool> WasWKO  (BebouwingsObject):= (BeginStatusComponent/WarmteAllocatie == Classifications/AanbodOptie/V/WKO);
+		attribute<bool> HasWKO  (BebouwingsObject):= StartWKO || WasWKO;
+		
+		attribute<GJ_yr> V_Warmte (BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(StartWKO); // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_Koude  (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_ElekW  (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekW  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_ElekK  (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekK  * Float64(StartWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_Elek   (BebouwingsObject):= V_ElekW + V_ElekK;
+		attribute<GJ_yr> V_WarmteC(BebouwingsObject):= WkoData/WkoDataComponent/V_Warmte * Float64(HasWKO); // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_KoudeC (BebouwingsObject):= WkoData/WkoDataComponent/V_Koude  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_ElekWC (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekW  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_ElekKC (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekK  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+		attribute<GJ_yr> V_ElekC  (BebouwingsObject):= V_ElekWC + V_ElekKC;
+		
+		attribute<kW>     P_Warmte (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit * Float64(StartWKO);
+		
+		container BC {
+			attribute<Eur>    Ki_ow    (BebouwingsObject):= AllObjects/Ki_A_Part[AllObjects_rel] * Float64(StartWKO);
+			attribute<Eur>    Ki_wd    (BebouwingsObject):= AllObjects/Ki_B_Part[AllObjects_rel] * Float64(StartWKO);
+		}
+		container PR {
+			attribute<Eur>    Ki_ow      (PlanRegio):= sum(BC/Ki_ow    , VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur>    Ki_wd      (PlanRegio):= sum(BC/Ki_wd    , VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur>    Ki_id      (PlanRegio):= sum(WkoData/Ki_C       * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur>    Ki_ge_pm   (PlanRegio):= sum(WkoData/Ki_ge_pm   * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur>    Ki_ge_ov   (PlanRegio):= sum(WkoData/Ki_ge_ov   * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+// 			attribute<Eur_yr> Kj_ge_hv   (PlanRegio):= sum(WkoData/Kj_ge_hv   * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			
+			attribute<Eur>    Oi_Aansl   (PlanRegio):= sum(WkoData/Oi_Aansl   * Float64(StartWKO), VestaRunDataComponent/PlanRegio_rel); // accumulate
+			attribute<Eur_yr> Oj_verbruik(PlanRegio):= sum(WkoData/Oj_verbruik* Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> Om_comfort (PlanRegio):= sum(WkoData/Om_comfort * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			
+			attribute<Eur_yr> Kj_ge      (PlanRegio):= sum(WkoData/Kj_D       * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> Kj_wd_pr   (PlanRegio):= sum(WkoData/Kj_wd_pr   * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> Km_ow_e    (PlanRegio):= sum(WkoData/Km_ow_e    * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> Kj_ow_e    (PlanRegio):= sum(WkoData/Kj_ow_e    * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> Kj_ow_o    (PlanRegio):= sum(WkoData/Kj_ow_o    * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> KEH_ow_e   (PlanRegio):= sum(WkoData/KEH_ow_e   * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<Eur_yr> KCO2_ow_e  (PlanRegio):= sum(WkoData/KCO2_ow_e  * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<KG_yr>  CO2        (PlanRegio):= sum(WkoData/CO2        * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<GJ_yr>  GJe        (PlanRegio):= sum(WkoData/GJe        * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+			attribute<GJ_yr>  GJw        (PlanRegio):= sum(WkoData/GJw        * Float64(HasWKO), VestaRunDataComponent/PlanRegio_rel);
+		}
+		container Result:= VestaRunDataComponent
+		{
+			unit<UInt32> BebouwingsObject:= VestaRunDataComponent/BebouwingsObject;
+			
+			attribute<Classifications/AanbodOptie> WarmteAllocatie(BebouwingsObject):= StartWKO ? Classifications/AanbodOptie/V/WKO      : BeginStatusComponent/WarmteAllocatie;
+			attribute<Eur_yr>                      KoudeAllocatie (BebouwingsObject):= StartWKO ? WkoDataComponent/Opbrengsten/Koude     : BeginStatusComponent/KoudeAllocatie;
+			attribute<Eur_yr>                      Om_comfort     (BebouwingsObject):= StartWKO ? WkoDataComponent/Opbrengsten/Om_comfort: BeginStatusComponent/Om_comfort;
+			attribute<Cluster>                     WkoCluster_rel (BebouwingsObject):= Cluster_rel;
+		}
+	}
+		
+	container ObjectResults := 
+		for_each_ne(WkoComponent/Name, 
+			'WkoResultsTempl('
+				'impl/UnitedCandidates, Selected, impl/CandidateSets/'+WkoComponent/Name+','
+				'CumulNrPrevAllowedObjects['+String(ID(WkoComponent))+'[WkoComponent]],'
+				'CumulNrPrevAllObjects['+String(ID(WkoComponent))+'[WkoComponent]]'
+			')'
+		);
+	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
+	{
+		attribute<String> Label := ='Union_Data(., ' + asItemList('VestaRunData/' + WkoComponent/Name + '/Bebouwing/Label') + ')', DialogType = "LabelText";
+		
+		attribute<Selected> Cluster_rel:= ='union_data(., '+AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<Eur> Ki_C      := ='union_data(., '+AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_C')+')';
+		attribute<Eur> Ki_A_Part := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Selected/Ki_A);
+		attribute<Eur> Ki_B_Part := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Selected/Ki_B);
+	}
+	
+	container Results: = 
+		for_each_ne(Classifications/BebouwingsComponent/Name
+			, Classifications/BebouwingsComponent/KanWKO 
+				? 'ObjectResults/'+Classifications/BebouwingsComponent/Name+'/Result' 
+				: 'BeginStatus/'+Classifications/BebouwingsComponent/Name
+		)
+	{
+		container Prijzen  : = BeginStatus/Prijzen;
+		container Onderhoud: = BeginStatus/Onderhoud;
+		container Domains  : = BeginStatus/Domains;
+		
+		container impl: = ../impl;
+		
+		container AanbodOpties : = BeginStatus/AanbodOpties
+		{
+			unit<uint32> WkoCluster := Selected;
+		}
+		
+ 		container Stock := BeginStatus/Stock;
+ 		container Flow := BeginStatus/Flow;
+ 		container Wko {
+	 		// accumulated capital
+	 		container Oi_Aansl    := for_each_nedv(WkoComponent/Name, replace('BeginStatus/Wko/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);
+	 		
+	 		// recalculated stock
+			attribute<Eur>    Ki_id      (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_id')+')';
+			attribute<Eur>    Ki_ge_pm   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_pm;
+			attribute<Eur>    Ki_ge_ov   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_ov;
+			
+			// recalculated Flow
+	 		container Oj_Verbruik := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Oj_Verbruik', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
+	 		container Om_comfort  := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Om_comfort', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
+			attribute<Eur_yr> Kj_wd_pr   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Kj_wd_pr')+')';
+			attribute<Eur_yr> Km_ow_e    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Km_ow_e')+')';
+			attribute<Eur_yr> Kj_ow_e    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Kj_ow_e')+')';
+			attribute<Eur_yr> Kj_ow_o    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Kj_ow_o')+')';
+//			attribute<Eur_yr> Oj_verbruik(PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Oj_verbruik')+')';
+//			attribute<Eur_yr> Om_comfort (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Om_comfort')+')';
+			attribute<Eur_yr> KEH_ow_e   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/KEH_ow_e')+')';
+			attribute<Eur_yr> Kj_ge      (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Kj_ge')+')';
+	 		
+	 		// accumulated stock
+			attribute<Eur>    Ki_ow      (PlanRegio) := ='BeginStatus/Wko/Ki_ow + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_ow')+')';
+			attribute<Eur>    Ki_wd      (PlanRegio) := ='BeginStatus/Wko/Ki_wd + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_wd')+')';
+		// 	attribute<Eur_yr> Kj_ge_hv   (PlanRegio) := BeginStatus/Wko/Kj_ge_hv + ObjectResults/Woning/PR/Kj_ge_hv;
+//			attribute<Eur>    Oi_Aansl   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Oi_Aansl')+')';
+			
+		
+			attribute<Eur_yr> Kj_ge_Bruto(PlanRegio):=                     Ki_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_id_Bruto(PlanRegio):=                     Ki_id * NCW/id28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_wd_Bruto(PlanRegio):= Kj_wd_pr          + Ki_wd * NCW/wd28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_ow_Bruto(PlanRegio):= Kj_ow_o + Kj_ow_e + Ki_ow * NCW/ow28/AnnualisationFactor;
+			
+			attribute<Eur>    Ki_ge      (PlanRegio):= Ki_ge_pm + Ki_ge_ov;
+			attribute<Eur>    Ki_Totaal  (PlanRegio):= Ki_ow + Ki_wd + Ki_id + Ki_ge;
+			
+			attribute<Eur_yr> Km_Totaal  (PlanRegio): = Km_ow_e + Kj_ow_o;
+			
+			attribute<Eur>    Si_ow(PlanRegio) : = Ki_ow * UserInput/BeleidsOpties/EIA/wko;
+			attribute<Eur>    Si_wd(PlanRegio) : = Ki_wd * UserInput/BeleidsOpties/EIA/wd;
+			attribute<Eur>    Si_id(PlanRegio) : = Ki_id * UserInput/BeleidsOpties/EIA/id;
+			attribute<Eur>    Si_ge(PlanRegio) : = Ki_ge_pm * UserInput/BeleidsOpties/EIA/bwe/S_ProjectManagement + Ki_ge_ov * UserInput/BeleidsOpties/EIA/bwe/S_OngeriefsVergoeding;
+			attribute<Eur>    Si_T(PlanRegio) : = Si_ow + Si_wd + Si_id + Si_ge;
+			
+			attribute<Eur>    Ki_ow_Netto(PlanRegio) : = Ki_ow - Si_ow;
+			attribute<Eur>    Ki_wd_Netto(PlanRegio) : = Ki_wd - Si_wd;
+			attribute<Eur>    Ki_id_Netto(PlanRegio) : = Ki_id - Si_id;
+			attribute<Eur>    Ki_ge_Netto(PlanRegio) : = Ki_ge - Si_ge;
+			
+			attribute<Eur_yr> Sj  (PlanRegio) := Si_ow * NCW/ow28/AnnualisationFactor + Si_wd * NCW/wd28/AnnualisationFactor + Si_id * NCW/id28/AnnualisationFactor + Si_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr> Sm  (PlanRegio) := Si_T * NCW/mr28/AnnualisationFactor;
+			
+			attribute<Eur_yr> SDE  (PlanRegio) := GJw_Totaal * UserInput/BeleidsOpties/EEA/SDE_WKO;
+			attribute<Eur_yr> Se_ow(PlanRegio) := Ki_ow_Netto * NCW/ow28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/wko + SDE;
+			attribute<Eur_yr> Se_wd(PlanRegio) := Ki_wd_Netto * NCW/wd28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/wd;
+			attribute<Eur_yr> Se_id(PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/id;
+			attribute<Eur_yr> Se_ge(PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/ge;
+			attribute<Eur_yr> Se   (PlanRegio) := Sj + Se_ow + Se_wd + Se_id + Se_ge;
+			attribute<Eur_yr> Sme  (PlanRegio) := Sm + Se_ow + Se_wd + Se_id + Se_ge;
+			
+			attribute<Eur_yr> Kj_ge_netto(PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor - Se_ge;
+			attribute<Eur_yr> Kj_id_netto(PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor - Se_id;
+			attribute<Eur_yr> Kj_wd_netto(PlanRegio) := Kj_wd_pr + Ki_wd_Netto * NCW/wd28/AnnualisationFactor - Se_wd;
+			attribute<Eur_yr> Kj_ow_netto(PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow_Netto * NCW/ow28/AnnualisationFactor - Se_ow;
+			attribute<Eur_yr> Kj_netto   (PlanRegio) := Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
+			attribute<Eur   > Oi_AanslT  (PlanRegio) := ='add('+AsItemList('Oi_Aansl/'+WkoComponent/Name)+')';
+			attribute<Eur_yr> Oj_VerbrT  (PlanRegio) := ='add('+AsItemList('Oj_Verbruik/'+WkoComponent/Name)+')';
+			attribute<Eur_yr> Oj_totaal  (PlanRegio) := Oj_VerbrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+			
+			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
+			attribute<Eur_yr> KCO2_ow_e  (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/KCO2_ow_e')+')';
+			attribute<KG_yr>  CO2        (PlanRegio): = GJe_Totaal * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+
+			attribute<GJ_yr>  GJe_Totaal (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/GJe')+')';
+			attribute<GJ_yr>  GJw_Totaal (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/GJw')+')';
+		}
+
+		container KostenBaten := KostenBatenSchema(., Energieprijzen, RunJaar);
+	}
+}

@@ -1,0 +1,130 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door ScenarioSpecs.dms.                        //
+//       In deze configuratiefile wordt de uitleg geconfigureerd.                       //
+//       Uitleg is gedefinieerd als nieuwe bebouwing in nieuwe gebieden).               //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Container Uitleg
+{
+	template LegeSetFunc
+	{
+		unit<Float64> JoinedUnit;
+		unit<uint8>   KengetalTypeDomeinArg;
+		
+		container results
+		{
+			unit<UInt32> BebouwingsObject: Expr = "Range(UInt32, 0, 0)"
+			{
+				attribute<Geography/rdc_meter> PointCopy: Expr = "point";
+				attribute<String> Code := const('', .);
+				attribute<String> Label := Code, DialogType = "LabelText";
+			}
+			unit<uint8>   KengetalTypeDomein: Expr = "KengetalTypeDomeinArg";
+			
+			attribute<Geography/rdc_meter> point(BebouwingsObject): Expr = "point(const(Float64(0), BebouwingsObject), const(Float64(0), BebouwingsObject), Geography/rdc_meter)";
+			
+			attribute<JoinedUnit>          NrJoinedUnits(BebouwingsObject): Expr = "const(0[JoinedUnit], BebouwingsObject)";
+			
+			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/PC4],      BebouwingsObject)";
+			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel(BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/grid500m], BebouwingsObject)";
+			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/grid1km],  BebouwingsObject)";
+			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/grid2km],  BebouwingsObject)";
+			
+			attribute<UInt8>                    SubType        (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
+			attribute<KengetalTypeDomein>       KengetalType   (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
+			attribute<Classifications/BouwJaar> BouwJaar       (BebouwingsObject): Expr = "const(Classifications/BouwJaar/Onbekend, BebouwingsObject)";
+			attribute<nrAansl>                  nrAansluitingen(BebouwingsObject): Expr = "const(0, BebouwingsObject, nrAansl)";
+			attribute<nrWoningen>               nrWoonUnits    (BebouwingsObject) := const(0.0[nrWoningen], BebouwingsObject);
+
+			attribute<bool>                     KanBesparen    (BebouwingsObject): Expr = "const(false, BebouwingsObject)";
+			attribute<Float64>                  AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(0.0), BebouwingsObject)";
+			attribute<String>                   Label          (BebouwingsObject): Expr= "BebouwingsObject/Label";
+			
+			container Criteria;
+			container Gebied
+			{
+				attribute<Float64> n     (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<Float64> MEAN_x(BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<Float64> MEAN_y(BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<Float64> SSD_xx(BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<Float64> SSD_xy(BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<Float64> SSD_yy(BebouwingsObject) := const(0.0, BebouwingsObject);
+			}
+		}
+		
+	}
+	
+	Container Woning := for_each_ne(Classifications/Zichtjaar/Name
+			,  Classifications/Zichtjaar/HasMutations
+			?  'CalculationSchemes/WoningComponentOperaties/Unite(PerGrid/' + Classifications/Zichtjaar/Name+ ')'
+			:  'LegeSetFunc(Units/NrWoningen, Classifications/WoningType)'
+			)
+	{
+		container PerGrid := for_each_ne(Classifications/ZichtjaarWonen/HasMutations ? Classifications/ZichtjaarWonen/Name : ''
+				,  'CalculationSchemes/WoningComponentOperaties/Select(BronData/bebouwing/UitlegWoning/' + Classifications/ZichtjaarWonen/Name + 
+				   ', value(' + String(Classifications/ZichtjaarWonen/WoningType_rel) + ', Classifications/woningtype) '+
+				   ', value(' + String(Classifications/ZichtjaarWonen/zichtjaar_jaar )+ ',units/yr_uint16)'+
+				   ')'
+				);
+	}
+	Container Utiliteit := for_each_ne(Classifications/Zichtjaar/Name
+			,  Classifications/Zichtjaar/HasMutations
+			?  'CalculationSchemes/UtilComponentOperaties/Unite(PerGrid/' + Classifications/Zichtjaar/Name+ ')'
+			:  'LegeSetFunc(Units/m2, Classifications/UitlegUtil)'
+			)
+	{
+		container PerGrid := for_each_ne(Classifications/ZichtjaarUtiliteit/HasMutations ?  Classifications/ZichtjaarUtiliteit/Name : ''
+				,  'CalculationSchemes/UtilComponentOperaties/Select(BronData/bebouwing/UitlegUtil/' + Classifications/ZichtjaarUtiliteit/Name + 
+				   ', ' + quote(Classifications/ZichtjaarUtiliteit/utiliteit_Name) + 
+				   ', value(' + String(Classifications/ZichtjaarUtiliteit/zichtjaar_jaar)+ ',units/yr_uint16)'+
+				   ')'
+				);
+	}
+	
+	Container GlasTuinBouw:= for_each_ne( Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/Name : '' 
+			,'CalculationSchemes/GlTbComponentOperaties/MaakMutatieUitleg(BronData/GGSectorAfBij/Bij/' + Classifications/Zichtjaar/Name
+				+ ',BronData/GGSectorAfBij/Af/'  + Classifications/Zichtjaar/Name
+				+ ',value(' + String(Classifications/Zichtjaar/jaar )+ ',units/yr_uint16)'
+//				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Uitleg/BebouwingsObject','Huidig/LegeUitleg/results/BebouwingsObject')
+			+')'
+		)
+	{
+		container J2010 := LegeSetFunc(Units/m2, classifications/GLTB);
+	}
+	
+}
