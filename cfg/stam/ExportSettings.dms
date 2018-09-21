@@ -41,33 +41,34 @@
 
 container ExportSettings: url = "='#'+ExportSettings/Docdata +'/ExportSettings.adms'", IsHidden = "True"
 {
-	parameter<String> FileNameBase: Expr = "'results/result'";
+	parameter<String> FileNameBase         := 'results/result';
 
-	parameter<String>  DocData:             Expr = "expand(.,'%projdir%/html')";
-	parameter<Float64> width:               [null];
-	parameter<Float64> height:              [null];
-	parameter<DPoint>  PaperSize:           Expr = "Point(width / 100.0 , height / 100.0)";
-	parameter<Float64> ScaleDenom:          [null];
-	parameter<Float64> Scale:               Expr = "1.0 / ScaleDenom";
-	parameter<Float64> dwsc:                [null];
-	parameter<DPoint>  DotWorldSize:        Expr = "Point(dwsc,dwsc)";
-	parameter<UInt32>  NrSubDotsPerDot:     [2];
-	parameter<Float64> dpi:                 [200];
-	parameter<DPoint>  DotSize:             Expr = " Point(0.0254/dpi,0.0254/dpi)";
-	parameter<Float64> ViewFactor:          [1];
-	parameter<IPoint>  MaxNrSubDotsPerTile: [{8192, 8192}];
+	parameter<String>  DocData             := expand(.,'%projdir%/html');
+	parameter<Float64> width               :[null];
+	parameter<Float64> height              :[null];
+	parameter<DPoint>  PaperSize           := Point(width / 100.0 , height / 100.0);
+	parameter<Float64> ScaleDenom          :[null];
+	parameter<Float64> Scale               := 1.0 / ScaleDenom;
+	parameter<Float64> dwsc                :[null];
+	parameter<DPoint>  DotWorldSize        := Point(dwsc,dwsc);
+	parameter<UInt32>  NrSubDotsPerDot     :[2];
+	parameter<Float64> dpi                 :[200];
+	parameter<DPoint>  DotSize             := Point(0.0254/dpi,0.0254/dpi);
+	parameter<Float64> ViewFactor          :[1];
+	parameter<IPoint>  MaxNrSubDotsPerTile :[{8192, 8192}];
 
 	container GitImpl {
-		parameter<String> PD := Expand(., '%projDir%');
-		parameter<String> DOS_PD := Replace(PD, '/', '\\');
-		
+		parameter<String> PD             := Expand(., '%projDir%');
+		parameter<String> DOS_PD         := Replace(PD, '/', '\\');
+
 		parameter<String> SwitchDriveCmd := substr(DOS_PD, 0, 2);
-		parameter<String> CdCmd := 'cd '+DOS_PD;
-		parameter<String> DescrCmd := 'git describe --all > git.txt';
-		parameter<String> StatusCmd := 'git status >> git.txt';
-		parameter<String> Cmds := SwitchDriveCmd + ' && ' + CdCmd + ' && ' + DescrCmd + ' && ' + StatusCmd;
+		parameter<String> CdCmd          := 'cd '+DOS_PD;
+		parameter<String> DescrCmd       := 'git describe --all > git.txt';
+		parameter<String> StatusCmd      := 'git status >> git.txt';
+		parameter<String> Cmds           := SwitchDriveCmd + ' && ' + CdCmd + ' && ' + DescrCmd + ' && ' + StatusCmd;
 		container Writer := exec(Expand(., '%env:ComSpec%'), '/c ' + Cmds, PD);
-	}	
+	}
+
 	container MetaInfo {
 		parameter<String> FileName: ='%storageBaseName%.xml';
 		parameter<String> FileType: ='xml'; // default is 'ini' but ini files cannot be used well to store multi-line properties such as error messages of inproperly configured properties

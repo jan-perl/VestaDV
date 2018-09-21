@@ -58,10 +58,10 @@ template KostenBatenSchema
 		{
 			attribute<Eur_yr> WarmteVraag (PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/WarmteVraagD')+')';
 			
-			attribute<Eur_yr> Woning      (PlanRegio): Source = "F 6",  Expr = "sum(VestaRunData/Woning/Opbrengsten/VastRechtBijdrageD       * Float64(Not(IsDefined(VestaRunData/Woning/WarmteAllocatie))),       PlanRegioKaarten/Woning/CaseData/PlanRegio_rel )";
-			attribute<Eur_yr> UitlegWoning(PlanRegio): Source = "F 6",  Expr = "sum(VestaRunData/UitlegWoning/Opbrengsten/VastRechtBijdrageD * Float64(Not(IsDefined(VestaRunData/UitlegWoning/WarmteAllocatie))), PlanRegioKaarten/UitlegWoning/CaseData/PlanRegio_rel)";
-			attribute<Eur_yr> Utiliteit   (PlanRegio): Source = "F 11", Expr = "sum(VestaRunData/utiliteit/Opbrengsten/VastRechtBijdrageD * Float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie))),  PlanRegioKaarten/utiliteit/CaseData/PlanRegio_rel )";
-			attribute<Eur_yr> UitlegUtil  (PlanRegio): Source = "F 11", Expr = "sum(VestaRunData/UitlegUtil/Opbrengsten/VastRechtBijdrageD* Float64(Not(IsDefined(VestaRunData/UitlegUtil/WarmteAllocatie))), PlanRegioKaarten/UitlegUtil/CaseData/PlanRegio_rel)";
+			attribute<Eur_yr> Woning      (PlanRegio): Source = "F 6",  Expr = "sum(VestaRunData/Woning/Opbrengsten/VastRechtBijdrageD       * Float64(Not(IsDefined(VestaRunData/Woning/WarmteAllocatie))),       PlanRegioKaarten/Woning/impl/PlanRegio_rel )";
+			attribute<Eur_yr> UitlegWoning(PlanRegio): Source = "F 6",  Expr = "sum(VestaRunData/UitlegWoning/Opbrengsten/VastRechtBijdrageD * Float64(Not(IsDefined(VestaRunData/UitlegWoning/WarmteAllocatie))), PlanRegioKaarten/UitlegWoning/impl/PlanRegio_rel)";
+			attribute<Eur_yr> Utiliteit   (PlanRegio): Source = "F 11", Expr = "sum(VestaRunData/utiliteit/Opbrengsten/VastRechtBijdrageD * Float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie))),  PlanRegioKaarten/utiliteit/impl/PlanRegio_rel )";
+			attribute<Eur_yr> UitlegUtil  (PlanRegio): Source = "F 11", Expr = "sum(VestaRunData/UitlegUtil/Opbrengsten/VastRechtBijdrageD* Float64(Not(IsDefined(VestaRunData/UitlegUtil/WarmteAllocatie))), PlanRegioKaarten/UitlegUtil/impl/PlanRegio_rel)";
 			attribute<Eur_yr> GlasTuinbouw(PlanRegio): Expr = "const(0[Eur_yr], PlanRegio)";
 			attribute<Eur_yr> UitlegGlTb  (PlanRegio): Expr = "const(0[Eur_yr], PlanRegio)";
 					
@@ -186,26 +186,26 @@ template KostenBatenSchema
 					  VestaRunData/Utiliteit/WarmteVraagD/nrAansluitingen 
 						* Float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
 						* Float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit <= value(100, kW)) 
-					, PlanRegioKaarten/Utiliteit/CaseData/PlanRegio_rel
+					, PlanRegioKaarten/Utiliteit/impl/PlanRegio_rel
 					) + 
 					sum(
 					  VestaRunData/UitlegUtil/WarmteVraagD/nrAansluitingen 
 						* Float64(Not(IsDefined(VestaRunData/UitlegUtil/WarmteAllocatie)))
 						* Float64(VestaRunData/UitlegUtil/WarmteVraagD/AansluitCapaciteit <= value(100, kW)) 
-					, PlanRegioKaarten/UitlegUtil/CaseData/PlanRegio_rel
+					, PlanRegioKaarten/UitlegUtil/impl/PlanRegio_rel
 					);
 				attribute<nrAansl> Groot(PlanRegio) := 
 					sum(
 					  VestaRunData/Utiliteit/WarmteVraagD/nrAansluitingen 
 						* Float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
 						* Float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit > value(100, kW)) 
-					, PlanRegioKaarten/Utiliteit/CaseData/PlanRegio_rel
+					, PlanRegioKaarten/Utiliteit/impl/PlanRegio_rel
 					) + 
 					sum(
 					  VestaRunData/UitlegUtil/WarmteVraagD/nrAansluitingen 
 						* Float64(Not(IsDefined(VestaRunData/UitlegUtil/WarmteAllocatie)))
 						* Float64(VestaRunData/UitlegUtil/WarmteVraagD/AansluitCapaciteit > value(100, kW)) 
-						, PlanRegioKaarten/UitlegUtil/CaseData/PlanRegio_rel
+						, PlanRegioKaarten/UitlegUtil/impl/PlanRegio_rel
 					);
 				attribute<nrAansl> Totaal(PlanRegio) := Klein + Groot;
 			}
@@ -288,16 +288,16 @@ template KostenBatenSchema
 			{
 				attribute<m2> Areaal(PlanRegio): Expr = "sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits"
 						"* Float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))"
-						", PlanRegioKaarten/GlasTuinbouw/CaseData/PlanRegio_rel)";
+						", PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
 				
 				attribute<m> SqrtAreaal(PlanRegio): Expr = "sum(Sqrt(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits)"
 						"* Float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))"
-						", PlanRegioKaarten/GlasTuinbouw/CaseData/PlanRegio_rel)";
+						", PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
 				
 				attribute<nrAansl> NrAansluitingen(PlanRegio): Expr = 
 						"sum(VestaRunData/GlasTuinbouw/WarmteVraagD/nrAansluitingen "
 						"* Float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))"
-						", PlanRegioKaarten/GlasTuinbouw/CaseData/PlanRegio_rel)";
+						", PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
 				attribute<kW> CapaciteitsVraag(PlanRegio): Expr = 
 						"sum(  VestaRunData/GlasTuinbouw/WarmteVraagD/AansluitCapaciteit "
 						"* Float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))"
@@ -310,7 +310,7 @@ template KostenBatenSchema
 				attribute<Eur> Ki_OnderStation(PlanRegio): Expr = "(Schuiven/KostenMin * Ki_OS_min + Schuiven/KostenMax * Ki_OS_max) * LeerCurves/Curve1", Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 	 			
 	 			attribute<Eur> K_dienstleidingen(PlanRegio): Source = "F 47b",
-	 				Expr = "sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/GlasTuinbouw/KengetalType], PlanRegioKaarten/GlasTuinbouw/CaseData/PlanRegio_rel)";
+	 				Expr = "sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/GlasTuinbouw/KengetalType], PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
 	
 				attribute<Float64> n_Zijwegparen(PlanRegio) := Sqrt(2.0) * SqrtAreaal / GroenteKasLengteFactor, Descr = "F 48";
 					
@@ -332,12 +332,12 @@ template KostenBatenSchema
  			}
 			container nieuw
 			{
-				attribute<m2> Areaal   (PlanRegio) := sum(     VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits , PlanRegioKaarten/UitlegGlTb/CaseData/PlanRegio_rel);
-				attribute<m> SqrtAreaal(PlanRegio) := sum(Sqrt(VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits), PlanRegioKaarten/UitlegGlTb/CaseData/PlanRegio_rel);
+				attribute<m2> Areaal   (PlanRegio) := sum(     VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits , PlanRegioKaarten/UitlegGlTb/impl/PlanRegio_rel);
+				attribute<m> SqrtAreaal(PlanRegio) := sum(Sqrt(VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits), PlanRegioKaarten/UitlegGlTb/impl/PlanRegio_rel);
 				
 				attribute<nrAansl> NrAansluitingen(PlanRegio) := 
 						sum(  VestaRunData/UitlegGlTb/WarmteVraagD/nrAansluitingen * Float64(Not(IsDefined(VestaRunData/UitlegGlTb/WarmteAllocatie)))
-						, PlanRegioKaarten/UitlegGlTb/CaseData/PlanRegio_rel  );
+						, PlanRegioKaarten/UitlegGlTb/impl/PlanRegio_rel  );
 				attribute<kW> CapaciteitsVraag(PlanRegio) := 
 						sum(  VestaRunData/UitlegGlTb/WarmteVraagD/AansluitCapaciteit * Float64(Not(IsDefined(VestaRunData/UitlegGlTb/WarmteAllocatie)))
 						, VestaRunData/UitlegGlTb/PlanRegio_rel);
@@ -349,7 +349,7 @@ template KostenBatenSchema
 				attribute<Eur> Ki_OnderStation(PlanRegio): Expr = "(Schuiven/KostenMin * Ki_OS_min + Schuiven/KostenMax * Ki_OS_max) * LeerCurves/Curve1", Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 					
 				attribute<Eur> K_dienstleidingen(PlanRegio): Source = "F 47b",
-					Expr = "sum(VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/UitlegGlTb/KengetalType], PlanRegioKaarten/UitlegGlTb/CaseData/PlanRegio_rel)";
+					Expr = "sum(VestaRunData/UitlegGlTb/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/UitlegGlTb/KengetalType], PlanRegioKaarten/UitlegGlTb/impl/PlanRegio_rel)";
 	
 				attribute<Float64> n_Zijwegparen(PlanRegio) := Sqrt(2.0) * SqrtAreaal / GroenteKasLengteFactor, Descr = "F 48";
 					

@@ -51,7 +51,7 @@ container Units: isHidden = "True"
 	unit<float64> ha            := 10000.0 * m2;
 
 	//mass
-	unit<float64> kg            := 1000.0*g, Descr = "SI base unit for mass";
+	unit<float64> kg            := 1000.0 * g, Descr = "SI base unit for mass";
 	unit<float64> g             := BaseUnit('g', float64);
 	unit<float64> ton           := 1000.0 * kg;
 
@@ -67,11 +67,11 @@ container Units: isHidden = "True"
 	unit<float64> m3_yr         := m3 / yr;
 
 	// energy
-	unit<float64> J             := BaseUnit('J', float64),   label = "Joule", descr = "SI unit for energy";
+	unit<float64> J             := BaseUnit('J', float64), label = "Joule", descr = "SI unit for energy";
 //	unit<float64> J             := kg * m2 / (s * s), label = "Joule", descr = "SI unit for energy";
 
 	// power
-	unit<float64> W             := J / s, label = "Watt",  descr = "SI unit for power";
+	unit<float64> W             := J / s, label = "Watt", descr = "SI unit for power";
 	unit<float64> kW            := 1000 * W;
 	unit<float64> MW            := 1000 * kW;
 
@@ -95,7 +95,7 @@ container Units: isHidden = "True"
 	unit<float64> kg_yr         := kg / yr, Descr = "Co2 effect per jaar";
 
 	// actor based
-	unit<float64> nrArbeidspl   := BaseUnit('FTE', float64),     cdf = "Classifications/Nrarbeidspl12K/Classes";
+	unit<float64> nrArbeidspl   := BaseUnit('FTE', float64), cdf = "Classifications/Nrarbeidspl12K/Classes";
 	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
 	unit<float64> nrAansl       := BaseUnit('Aansluiting', float64);
 	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);

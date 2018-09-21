@@ -125,38 +125,38 @@ container CalculationSchemes: Using = "Units;Geography"
 		container AllocatieResultaatComponent;
 		parameter<String> WkoResultsRef; 
 		
-		container CaseData: IsHidden = "True"
+		container impl: IsHidden = "True"
 		{
-			container VestaRunDataComponent: Expr = "AllocatieResultaatComponent/VestaRunDataComponent";
-			container RuimtelijkeVraagComponent: Expr = "AllocatieResultaatComponent/RuimtelijkeVraagComponent";
-			unit<UInt32> BebouwingsObject:       Expr = "AllocatieResultaatComponent/BebouwingsObject";
+			container VestaRunDataComponent     := AllocatieResultaatComponent/VestaRunDataComponent;
+			container RuimtelijkeVraagComponent := AllocatieResultaatComponent/RuimtelijkeVraagComponent;
+			unit<UInt32> BebouwingsObject       := AllocatieResultaatComponent/BebouwingsObject;
 			
 			attribute<Geography/rdc_100lu> GridCellID(BebouwingsObject): Expr = "RuimtelijkeVraagComponent/GridCellID";
 		}
 		container Vraag
 		{
-			attribute<GJ_yr> AardGas      (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/AardGas      , CaseData/GridCellID);
-			attribute<GJ_yr> RestWarmte   (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/RestWarmte   , CaseData/GridCellID);
-			attribute<GJ_yr> GeoThermie   (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/GeoThermie   , CaseData/GridCellID);
-			attribute<GJ_yr> WijkWKK      (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/WijkWKK      , CaseData/GridCellID);
-			attribute<GJ_yr> WKO          (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/WKO          , CaseData/GridCellID);
-			attribute<GJ_yr> Elektriciteit(Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/Elektriciteit, CaseData/GridCellID);
+			attribute<GJ_yr> AardGas      (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/AardGas      , impl/GridCellID);
+			attribute<GJ_yr> RestWarmte   (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/RestWarmte   , impl/GridCellID);
+			attribute<GJ_yr> GeoThermie   (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/GeoThermie   , impl/GridCellID);
+			attribute<GJ_yr> WijkWKK      (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/WijkWKK      , impl/GridCellID);
+			attribute<GJ_yr> WKO          (Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/WKO          , impl/GridCellID);
+			attribute<GJ_yr> Elektriciteit(Geography/rdc_100lu) := sum(AllocatieResultaatComponent/MeterVraag/Elektriciteit, impl/GridCellID);
 			attribute<GJ_yr> Totaal       (Geography/rdc_100lu) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO + Elektriciteit;
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW> Totaal (Geography/rdc_100lu) := sum(CaseData/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   CaseData/GridCellID);
-			attribute<kW> AardGas(Geography/rdc_100lu) := sum(CaseData/VestaRunDataComponent/WarmteVraagA/AansluitCapaciteit, CaseData/GridCellID);
+			attribute<kW> Totaal (Geography/rdc_100lu) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/GridCellID);
+			attribute<kW> AardGas(Geography/rdc_100lu) := sum(impl/VestaRunDataComponent/WarmteVraagA/AansluitCapaciteit, impl/GridCellID);
 			attribute<kW> Overig (Geography/rdc_100lu) := Totaal - AardGas;
 		}
 		container WKO
 		{
-			attribute<GJ_yr>  V_Warmte   (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte, CaseData/GridCellID)';
-			attribute<GJ_yr>  V_Koude    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude , CaseData/GridCellID)';
-			attribute<GJ_yr>  V_Elek     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Elek  , CaseData/GridCellID)';
+			attribute<GJ_yr>  V_Warmte   (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Warmte, impl/GridCellID)';
+			attribute<GJ_yr>  V_Koude    (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Koude , impl/GridCellID)';
+			attribute<GJ_yr>  V_Elek     (Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/V_Elek  , impl/GridCellID)';
 			attribute<GJ_yr>  Onttrekking(Geography/rdc_100lu) := V_Warmte - (V_Koude + V_Elek);
 			
-			attribute<kW> Capaciteit(Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/P_Warmte,     CaseData/GridCellID)';
+			attribute<kW> Capaciteit(Geography/rdc_100lu) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_100lu)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/GridCellID)';
 		}
 	}
 	
@@ -178,30 +178,30 @@ container CalculationSchemes: Using = "Units;Geography"
 	{
 		container VestaRunDataComponent;
 		
-		unit<uint32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
+		unit<uint32>                           BebouwingsObject                           := VestaRunDataComponent/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent(BebouwingsObject) := VestaRunDataComponent/WarmteAllocatie;
 		
 		parameter<Eur_GJ> WarmtePrijs := VestaRunDataComponent/Warmtewet/WarmtePrijs;
 		
-		container CaseData: IsHidden = "True"
+		container impl: IsHidden = "True"
 		{
-			unit<Float64> ModelUnit:             = VestaRunDataComponent/EnergieVraagModellen/ModelUnit;
-			attribute<PlanRegio> PlanRegio_rel(BebouwingsObject): = VestaRunDataComponent/PlanRegio_rel;
-			attribute<Float64> BeschikbaarheidsFactor (BebouwingsObject): = Float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * Float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
+			unit<Float64>        ModelUnit                                := VestaRunDataComponent/EnergieVraagModellen/ModelUnit;
+			attribute<PlanRegio> PlanRegio_rel          (BebouwingsObject):= VestaRunDataComponent/PlanRegio_rel;
+			attribute<Float64>   BeschikbaarheidsFactor (BebouwingsObject):= Float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * Float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
 		}
 
-		attribute<nrAansl>            nrAanslWarmteD     (PlanRegio):= sum(CaseData/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/nrAansluitingen,    CaseData/PlanRegio_rel);
-		attribute<CaseData/ModelUnit> nrModelUnitsWarmteD(PlanRegio):= sum(CaseData/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/nrModelUnits,       CaseData/PlanRegio_rel);
-		attribute<Units/kW>           CapaciteitWarmteD  (PlanRegio):= sum(CaseData/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit, CaseData/PlanRegio_rel);
+		attribute<nrAansl>        nrAanslWarmteD     (PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/nrAansluitingen,    impl/PlanRegio_rel);
+		attribute<impl/ModelUnit> nrModelUnitsWarmteD(PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/nrModelUnits,       impl/PlanRegio_rel);
+		attribute<Units/kW>       CapaciteitWarmteD  (PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit, impl/PlanRegio_rel);
 		
-		attribute<Units/GJ_yr>        VerbruikD_obj      (BebouwingsObject): = VestaRunDataComponent/WarmteVraagD/Verbruik;
-		attribute<Units/Eur_yr>       WarmteVraagD_obj   (BebouwingsObject): = WarmtePrijs      * VerbruikD_obj, Source = "FO v7a F 8-10";
+		attribute<Units/GJ_yr>    VerbruikD_obj      (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/Verbruik;
+		attribute<Units/Eur_yr>   WarmteVraagD_obj   (BebouwingsObject) := WarmtePrijs      * VerbruikD_obj, Source = "FO v7a F 8-10";
 		
-		attribute<Units/GJ_yr>        VerbruikD          (PlanRegio): = sum(CaseData/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/Verbruik,         CaseData/PlanRegio_rel);
-		attribute<Units/Eur_yr>       WarmteVraagD       (PlanRegio): = WarmtePrijs        * VerbruikD, Source = "FO v7a F 8-10";
+		attribute<Units/GJ_yr>    VerbruikD          (PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/Verbruik,         impl/PlanRegio_rel);
+		attribute<Units/Eur_yr>   WarmteVraagD       (PlanRegio) := WarmtePrijs        * VerbruikD, Source = "FO v7a F 8-10";
 		
-		attribute<Units/GJ_yr>        VerbruikA          (PlanRegio): = sum(CaseData/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagA/Verbruik,         CaseData/PlanRegio_rel);
-		attribute<Units/Eur_yr>       WarmteVraagA       (PlanRegio): = WarmtePrijs        * VerbruikA, Source = "FO v7a F 8-10";
+		attribute<Units/GJ_yr>    VerbruikA          (PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagA/Verbruik,         impl/PlanRegio_rel);
+		attribute<Units/Eur_yr>   WarmteVraagA       (PlanRegio) := WarmtePrijs        * VerbruikA, Source = "FO v7a F 8-10";
 	}
 
 	#include <EnergiePrijzen.dms>
@@ -364,7 +364,7 @@ container CalculationSchemes: Using = "Units;Geography"
 			parameter<String> filename;
 			// end   case parameters
 	
-			container casedata
+			container impl
 			{
 				unit<uint32> Field := range(uint32,0,strcount(fieldlist,';')+1)
 				{
@@ -375,22 +375,22 @@ container CalculationSchemes: Using = "Units;Geography"
 				}
 				parameter<string> NewLine := '\n';
 			}
-			parameter<String> Header := AsList(CaseData/Field/Name, ';');
-	
+			parameter<String> Header := AsList(impl/Field/Name, ';');
+
 			parameter<String> Metric := 
 				=asList(
-					Quote('[')+'+PropValue(ValuesUnit(context/' + casedata/Field/NameInTable +'),' + quote('metric') + ')+'+Quote(']')
+					Quote('[')+'+PropValue(ValuesUnit(context/' + impl/Field/NameInTable +'),' + quote('metric') + ')+'+Quote(']')
 					, '+'+Quote(';')+'+'
 				);
-	
+
 			attribute<String> Body (RapGroep) := 
 				='union_data(RapGroep, '
-					+AsList('String(context/'+casedata/Field/NameInTable+')'
+					+AsList('String(context/'+impl/Field/NameInTable+')'
 						,'+' + quote(';') + '+'
 					)
 				+')';
-	
-			parameter<String> Result := Header + CaseData/NewLine + Metric + CaseData/NewLine + AsList(Body+CaseData/NewLine,'')
+
+			parameter<String> Result := Header + impl/NewLine + Metric + impl/NewLine + AsList(Body+impl/NewLine,'')
 			,	StorageName = "=filename"
 			,	StorageType = "str";
 		}

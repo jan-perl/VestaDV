@@ -45,7 +45,7 @@ container WKO: IsTemplate = "True"
 	
 	unit<uint8> WkoComponent := Classifications/WkoComponent;
 	
-	container CaseData
+	container impl
 	{
 		parameter<Eur_kW>     Ki_Doublet:= Leercurves/Curve2 * 1133[Eur_kW], Descr = "bron zonder distributiekosten";
 		parameter<Eur_m2>     Ki_distr  := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2], Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
@@ -362,7 +362,7 @@ container WKO: IsTemplate = "True"
 			{
 				attribute<rdc_meter> Point := UniqueUnitedCandidates/Point[nr_OrgEntity];
 				attribute<String>    Label := UniqueUnitedCandidates/Label[nr_OrgEntity], DialogType = "LabelText";
-				attribute<.> Partitioning(CaseData/UnitedCandidates) := invert(nr_OrgEntity)[UniqueUnitedCandidates/Partitioning];
+				attribute<.> Partitioning(impl/UnitedCandidates) := invert(nr_OrgEntity)[UniqueUnitedCandidates/Partitioning];
 				attribute<Eur> Ki_A := UniqueUnitedCandidates/Ki_A[nr_OrgEntity];
 				attribute<Eur> Ki_B := UniqueUnitedCandidates/Ki_B[nr_OrgEntity];
 			}
@@ -382,7 +382,7 @@ container WKO: IsTemplate = "True"
 				attribute<Candidates> src1 := ClusterSet/nr_OrgEntity[nr_OrgEntity];
 				attribute<Candidates> src2 := ClusterSet/nr_OrgEntity[ClusterSet/Neighbour[nr_OrgEntity]];
 				
-				attribute<.> Partitioning(CaseData/UnitedCandidates) := MakeDefined(invert(src1)[Candidates/Partitioning], invert(src2)[Candidates/Partitioning]);
+				attribute<.> Partitioning(impl/UnitedCandidates) := MakeDefined(invert(src1)[Candidates/Partitioning], invert(src2)[Candidates/Partitioning]);
 				
 				attribute<String> Label := '['+Candidates/Label[src1] + ';' + Candidates/Label[src2]+']', DialogType = "LabelText";
  				attribute<Eur_yr> Oj_verbruik:= Candidates/Oj_verbruik[src1] + Candidates/Oj_verbruik[src2];
@@ -407,7 +407,7 @@ container WKO: IsTemplate = "True"
 			{
 				unit<uint32> Candidates := UniqueUnitedCandidates;
 				attribute<Candidates> src1 := ClusterSet/nr_OrgEntity[nr_OrgEntity];
-				attribute<.> Partitioning(CaseData/UnitedCandidates) := invert(src1)[Candidates/Partitioning];
+				attribute<.> Partitioning(impl/UnitedCandidates) := invert(src1)[Candidates/Partitioning];
 				
 				attribute<String> Label     := Candidates/Label    [src1], DialogType = "LabelText";
 				attribute<Eur_yr> Oj_verbruik:= Candidates/Oj_verbruik[src1];
@@ -426,7 +426,7 @@ container WKO: IsTemplate = "True"
 			}
 			unit <UInt32> SelectedClusters := union_unit(InheritedClusters, JoinedClusters), DialogType = "Map", DialogData = "Point"
 			{
-				attribute<.> Partitioning(CaseData/UnitedCandidates) := MakeDefined(InheritedClusters/Partitioning, JoinedClusters/Partitioning + #InheritedClusters)[.];
+				attribute<.> Partitioning(impl/UnitedCandidates) := MakeDefined(InheritedClusters/Partitioning, JoinedClusters/Partitioning + #InheritedClusters)[.];
 				attribute<String> Label     := union_data(., InheritedClusters/Label,     JoinedClusters/Label), DialogType = "LabelText";
 				
  				attribute<Eur_yr> Oj_verbruik:= union_data(., InheritedClusters/Oj_verbruik, JoinedClusters/Oj_verbruik);
@@ -456,20 +456,20 @@ container WKO: IsTemplate = "True"
 		// decouple the cluster to the individual object level to support reporting of the allocation result
 	}
 	
-	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
+	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
-		attribute<.> NrSelectedObjects(CaseData/Iteration) := ='union_data(CaseData/Iteration, '+AsItemList('#CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects(CaseData/Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects)-NrSelectedObjects;
+		attribute<.> NrSelectedObjects(impl/Iteration) := ='union_data(impl/Iteration, '+AsItemList('#impl/Iterations/'+impl/Iteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects(impl/Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects)-NrSelectedObjects;
 		
-		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected/point')+')';
-		attribute<String> Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected/Label')+')';
- 		attribute<Eur> Ki_A := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A, '+AsItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected/Ki_A')+')';
- 		attribute<Eur> Ki_B := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B, '+AsItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected/Ki_B')+')';
-		attribute<.> Partitioning(CaseData/UnitedCandidates) := ='value(MakeDefined('+asItemList('CaseData/Iterations/'+CaseData/Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+String(ID(CaseData/Iteration))+']')+'),.)';
+		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/point')+')';
+		attribute<String> Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Label')+')';
+ 		attribute<Eur> Ki_A := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_A')+')';
+ 		attribute<Eur> Ki_B := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_B')+')';
+		attribute<.> Partitioning(impl/UnitedCandidates) := ='value(MakeDefined('+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+String(ID(impl/Iteration))+']')+'),.)';
 	}
 	
-	attribute<UInt32> NrAllowedObjects(WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CaseData/CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
-	attribute<UInt32> NrAllObjects    (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CaseData/CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
+	attribute<UInt32> NrAllowedObjects(WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#impl/CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
+	attribute<UInt32> NrAllObjects    (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#impl/CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
 	attribute<UInt32> CumulNrPrevAllowedObjects(WkoComponent) := cumulate(NrAllowedObjects)-NrAllowedObjects;
 	attribute<UInt32> CumulNrPrevAllObjects    (WkoComponent) := cumulate(NrAllObjects)-NrAllObjects;
 	
@@ -556,7 +556,7 @@ container WKO: IsTemplate = "True"
 	container ObjectResults := 
 		for_each_ne(WkoComponent/Name, 
 			'WkoResultsTempl('
-				'CaseData/UnitedCandidates, Selected, CaseData/CandidateSets/'+WkoComponent/Name+','
+				'impl/UnitedCandidates, Selected, impl/CandidateSets/'+WkoComponent/Name+','
 				'CumulNrPrevAllowedObjects['+String(ID(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+String(ID(WkoComponent))+'[WkoComponent]]'
 			')'
@@ -582,7 +582,7 @@ container WKO: IsTemplate = "True"
 		container Onderhoud: = BeginStatus/Onderhoud;
 		container Domains  : = BeginStatus/Domains;
 		
-		container CaseData: = ../CaseData;
+		container impl: = ../impl;
 		
 		container AanbodOpties : = BeginStatus/AanbodOpties
 		{

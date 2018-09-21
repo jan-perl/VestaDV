@@ -50,7 +50,7 @@ container GlTbComponentOperaties
 		
 		// einde case parameters
 		
-		container CaseData
+		container impl
 		{
 			unit<uint32> lokatiesBij := Subset(bij)
 			{
@@ -71,7 +71,7 @@ container GlTbComponentOperaties
 				attribute<Units/ratio> behoudfactor        : Expr = "value(1, Units/Ratio) - min_elem(Oppervlakte_af_max / Oppervlakte_huidig, value(1, Units/ratio))";
 			}
 		}
-		unit<uint32>  results := combine(CaseData/lokatiesBij, Classifications/GLTB)
+		unit<uint32>  results := combine(impl/lokatiesBij, Classifications/GLTB)
 			,	DialogType ="Map"
 			,	DialogData ="Point"
 		{
@@ -83,11 +83,11 @@ container GlTbComponentOperaties
 
 			unit<uint8>   KengetalTypeDomein: Expr = "Classifications/GLTB";
 			
-			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "CaseData/lokatiesBij/point[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "CaseData/lokatiesBij/PC4_rel     [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid500m_rel[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel  (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid1km_rel [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel  (BebouwingsObject): Expr = "CaseData/lokatiesBij/grid2km_rel [BebouwingsObject/nr_1]";
+			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "impl/lokatiesBij/point[BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "impl/lokatiesBij/PC4_rel     [BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel (BebouwingsObject): Expr = "impl/lokatiesBij/grid500m_rel[BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/grid1km_rel [BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/grid2km_rel [BebouwingsObject/nr_1]";
 			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "GLTB_Code";
 			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
 			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";

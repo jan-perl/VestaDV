@@ -52,7 +52,7 @@ container indicatoren
 			}
 			attribute<KG_yr> Totaal(PlanRegio) := Elektriciteit/Totaal + AardGas/Totaal;
 		}
-		container CaseData
+		container impl
 		{
 			attribute<String> BronExpr(Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie, 
 				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte ? GebiedsAllocatie/RestWarmte/CO2   : 0.0[KG_yr]',
@@ -62,7 +62,7 @@ container indicatoren
 				'EndState/WKO/CO2'
 			);
 		}
-		container CentraleWarmteBronnen := for_each_nedv(VoorkEuren/WarmteOpties/Name, CaseData/BronExpr[VoorkEuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
+		container CentraleWarmteBronnen := for_each_nedv(VoorkEuren/WarmteOpties/Name, impl/BronExpr[VoorkEuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
 		{
 			attribute<KG_yr> Totaal(PlanRegio) := =iif(#VoorkEuren/WarmteOpties=0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(VoorkEuren/WarmteOpties/Name)+')');
 		}
@@ -97,7 +97,7 @@ container indicatoren
 	
 	container Maatschappelijk: Source = "FO v7a C6"
 	{
-		container CaseData: IsHidden = "true"
+		container impl: IsHidden = "true"
 		{
 			attribute<String> BronExpr(Classifications/AanbodOptie) := 
 				union_data(Classifications/AanbodOptie,
@@ -158,7 +158,7 @@ container indicatoren
 			attribute<Eur_yr> Kj_Admin      (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Kj_admin_excl')+')';
 			attribute<Eur_yr> Km_Totaal     (PlanRegio) := Ki_Totaal30 * NCW/mr30/AnnualisationFactor + Ki_Totaal15 * NCW/mr15/AnnualisationFactor + Kj_Onderhoud + Kj_Admin;
 		}
-		container CentraleWarmteBronnen := for_each_nedv(VoorkEuren/WarmteOpties/Name, CaseData/BronExpr[VoorkEuren/WarmteOpties/AanbodOptie], PlanRegio, Eur_yr)  // overrule the following defaults
+		container CentraleWarmteBronnen := for_each_nedv(VoorkEuren/WarmteOpties/Name, impl/BronExpr[VoorkEuren/WarmteOpties/AanbodOptie], PlanRegio, Eur_yr)  // overrule the following defaults
 		{
 			attribute<Eur_yr> RestWarmte(PlanRegio) := const(0[Eur_yr], PlanRegio);
 			attribute<Eur_yr> GeoThermie(PlanRegio) := const(0[Eur_yr], PlanRegio);

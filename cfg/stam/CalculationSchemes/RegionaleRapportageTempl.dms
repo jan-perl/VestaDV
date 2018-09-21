@@ -64,7 +64,7 @@ template RegionaleRapportageTempl
 
 	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
 	
-	container CaseData
+	container impl
 	{
 		unit<uint32> RegioSelectie := Subset(BebouwingscomponentRapportageRegio_rel == RapportageRegio_sel)
 		{

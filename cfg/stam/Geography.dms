@@ -64,7 +64,7 @@ container Geography: Using = "Units"
 		
 		attribute<RegioIndelingen/PC4> PC4_rel_org:  Expr = "point_in_polygon(Point, RegioIndelingen/PC4/Geometry)";
 		attribute<bool> PC4_org_defined: Expr = "IsDefined(PC4_rel_org)";
-		unit<uint32> NearPC4: Expr = "Subset(potential(Float32(PC4_org_defined), DistMatrices/CaseData/pot1000m/potrange/Cilindrical) >= Float32(0.000001) && !PC4_org_defined)";
+		unit<uint32> NearPC4: Expr = "Subset(potential(Float32(PC4_org_defined), DistMatrices/impl/pot1000m/potrange/Cilindrical) >= Float32(0.000001) && !PC4_org_defined)";
 		container Connect: Expr = "connect_info( RegioIndelingen/PC4/Geometry, Point[NearPC4/nr_OrgEntity])";
 		attribute<RegioIndelingen/PC4> PC4_rel: Expr = "MakeDefined(PC4_rel_org, Connect/ArcID[invert(NearPC4/nr_OrgEntity)])", FreeData = "False";
 		attribute<RegioIndelingen/grid500m> grid500m_rel: Expr = "RegioIndelingen/grid500m/BaseGrid[ ID(.)[rdc_500m] ]";
@@ -439,14 +439,14 @@ container Geography: Using = "Units"
 			}
 		}
 		
-		Container CaseData
+		Container impl
 		{
-			container pot1000m:  expr = "potrange(value(100, m), value( 1000, m))";
-			container pot5000m:  expr = "potrange(value(100, m), value( 5000, m))";
-			container pot10000m: expr = "potrange(value(100, m), value(10000, m))";
+			container pot1000m  := potrange(100[m],  1000[m]);
+			container pot5000m  := potrange(100[m],  5000[m]);
+			container pot10000m := potrange(100[m], 10000[m]);
 		}
-		unit<spoint> pot1000mRange:  expr = "CaseData/pot1000m/potrange";
-		unit<spoint> pot5000mRange:  expr = "CaseData/pot5000m/potrange";
-		unit<spoint> pot10000mRange: expr = "CaseData/pot10000m/potrange";
+		unit<spoint> pot1000mRange := impl/pot1000m/potrange;
+		unit<spoint> pot5000mRange := impl/pot5000m/potrange;
+		unit<spoint> pot10000mRange:= impl/pot10000m/potrange;
 	}
 }

@@ -1,4 +1,4 @@
-container BebouwingsRapportage:Using = "CaseData/RegioSelectie"
+container BebouwingsRapportage:Using = "impl/RegioSelectie"
 {
 	container Gebouw
 	{
@@ -7,7 +7,7 @@ container BebouwingsRapportage:Using = "CaseData/RegioSelectie"
 			container table
 			{
 				attribute<string>       Label            (RapGroep): Expr = "RapGroep/Label";
-				attribute<QuantityUnit> Aantal           (RapGroep): Expr = "CaseData/Aantal";
+				attribute<QuantityUnit> Aantal           (RapGroep): Expr = "impl/Aantal";
 				attribute<QuantityUnit> Schil            (RapGroep): Expr = "sum(Float64(VestaRunDataComponent/Sprongen/KanVerbeteren[nr_OrgEntity])* RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)";
 				attribute<QuantityUnit> RuimteVerwarming (RapGroep): Expr = "sum(Float64(VestaRunDataComponent/Sprongen/RuimteVerwarming/KanVerbeteren[nr_OrgEntity] ) * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)";
 
@@ -26,7 +26,7 @@ container BebouwingsRapportage:Using = "CaseData/RegioSelectie"
 			container table
 			{
 				attribute<string>       Label       (RapGroep): Expr = "RapGroep/Label";
-				attribute<QuantityUnit> Aantal      (RapGroep): Expr = "CaseData/Aantal";
+				attribute<QuantityUnit> Aantal      (RapGroep): Expr = "impl/Aantal";
 				attribute<QuantityUnit> Zon_PV      (RapGroep): Expr = "sum(VestaRunDataComponent/OpwekkingsOpties/capaciteit/Zon_PV     [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)";
 				attribute<QuantityUnit> Zonneboiler (RapGroep): Expr = "sum(VestaRunDataComponent/OpwekkingsOpties/capaciteit/Zonneboiler[nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)";
 				
@@ -49,7 +49,7 @@ container BebouwingsRapportage:Using = "CaseData/RegioSelectie"
 		container table
 		{
 			attribute<string>       Label      (RapGroep) := RapGroep/Label;
-			attribute<QuantityUnit> Aantal     (RapGroep) := CaseData/Aantal;
+			attribute<QuantityUnit> Aantal     (RapGroep) := impl/Aantal;
 			attribute<QuantityUnit> Restwarmte (RapGroep) := sum(BebouwingscomponentGebiedsData/Aandelen/RestWarmte         [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
 			attribute<QuantityUnit> GeoThermie (RapGroep) := sum(BebouwingscomponentGebiedsData/Aandelen/GeoThermie         [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
 			attribute<QuantityUnit> WijkWKK    (RapGroep) := sum(BebouwingscomponentGebiedsData/Aandelen/WijkWKK            [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
