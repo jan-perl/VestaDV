@@ -61,9 +61,9 @@ container WoningComponentOperaties
 			attribute<Units/nrWoningen>              NrWoningen (BebouwingsObject): Expr = "NrWoningenGrid[BebouwingsObject/nr_OrgEntity]";
 
 			attribute<Geography/RegioIndelingen/PC4>        PC4_rel     (BebouwingsObject): Expr = "Geography/rdc_grids/m100/PC4_rel     [BebouwingsObject/nr_OrgEntity]";
-			attribute<Geography/RegioIndelingen/grid500m>   grid500m_rel(BebouwingsObject): Expr = "Geography/rdc_grids/m100/grid500m_rel[BebouwingsObject/nr_OrgEntity]";
-			attribute<Geography/RegioIndelingen/grid1km>    grid1km_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/grid1km_rel [BebouwingsObject/nr_OrgEntity]";
-			attribute<Geography/RegioIndelingen/grid2km>    grid2km_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/grid2km_rel [BebouwingsObject/nr_OrgEntity]";
+			attribute<Geography/RegioIndelingen/blok500m>   blok500m_rel(BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok500m_rel[BebouwingsObject/nr_OrgEntity]";
+			attribute<Geography/RegioIndelingen/blok1km>    blok1km_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok1km_rel [BebouwingsObject/nr_OrgEntity]";
+			attribute<Geography/RegioIndelingen/blok2km>    blok2km_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok2km_rel [BebouwingsObject/nr_OrgEntity]";
 
 			attribute<Geography/rdc_meter>           Point      (BebouwingsObject): Expr = "Geography/rdc_grids/m100/Point  [BebouwingsObject/nr_OrgEntity]";
 			attribute<Classifications/woningtype>    woningtype (BebouwingsObject): Expr = "const(type, BebouwingsObject, Classifications/woningtype)";
@@ -113,9 +113,9 @@ container WoningComponentOperaties
 			
 			attribute<Units/nrWoningen>              NrJoinedUnits  (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/NrWoningen') + ')'";
 			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/PC4_rel') + ')'";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel(BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/grid500m_rel') + ')'";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/grid1km_rel') + ')'";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/grid2km_rel') + ')'";
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel(BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/blok500m_rel') + ')'";
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/blok1km_rel') + ')'";
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/blok2km_rel') + ')'";
 			attribute<Geography/rdc_meter>           Point          (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/Point') + ')'";
 			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/woningtype') + ')'";
 			attribute<Classifications/BouwJaar>      Bouwjaar       (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/Bouwjaar') + ')'";

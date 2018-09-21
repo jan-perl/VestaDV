@@ -85,9 +85,9 @@ container CalculationSchemes: Using = "Units;Geography"
 			
 			attribute<JoinedUnit>                      NrJoinedUnits  (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/NrJoinedUnits, Nieuwbouw/NrJoinedUnits);
 			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/PC4_rel, Nieuwbouw/PC4_rel);
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel(BebouwingsObject) := union_data(BebouwingsObject, Bestaand/grid500m_rel, Nieuwbouw/grid500m_rel);
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/grid1km_rel, Nieuwbouw/grid1km_rel);
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/grid2km_rel, Nieuwbouw/grid2km_rel);
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel(BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok500m_rel, Nieuwbouw/blok500m_rel);
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok1km_rel, Nieuwbouw/blok1km_rel);
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok2km_rel, Nieuwbouw/blok2km_rel);
 			attribute<Geography/rdc_meter>           Point            (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Point, Nieuwbouw/Point);
 			attribute<KengetalTypeDomein>            KengetalType     (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/KengetalType, Nieuwbouw/KengetalType);
 			attribute<Classifications/BouwJaar>      Bouwjaar         (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Bouwjaar, Nieuwbouw/Bouwjaar);

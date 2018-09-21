@@ -63,7 +63,7 @@ template VestaRunDataComponent
 	
 	container Bebouwing := =IsUitleg ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent, ExtraBebouwing)' : 'ExtraBebouwing'
 	{
-		attribute<Geography/RegioIndelingen/buurt> buurt_rel(BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/poly), FreeData = "False";
+		attribute<Geography/RegioIndelingen/buurt> buurt_rel(BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
 	}
 	unit<uint32>  BebouwingsObject:   Expr = "Bebouwing/BebouwingsObject";
 	
@@ -93,7 +93,7 @@ template VestaRunDataComponent
 		attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject) := Bebouwing/KengetalType;
 		attribute<Classifications/BouwJaar>      BouwJaar       (BebouwingsObject) := Bebouwing/BouwJaar;
 		attribute<Geography/rdc_meter>           Point          (BebouwingsObject) := Bebouwing/point;
-		attribute<Geography/rdc_grids/m100>           GridCellID     (BebouwingsObject) := point[Geography/rdc_grids/m100];
+		attribute<Geography/rdc_grids/m100>      GridCellID     (BebouwingsObject) := point[Geography/rdc_grids/m100];
 		
 		attribute<Ratio> ResterendFactorBase(BebouwingsObject) := =HasFactors 
 			? 'MakeDefined(merge(KengetalType, Ratio, '+AsItemList('ResterendFactorMaps/'+KengetalTypeDomein/ResterendFactorName+'[GridCellID]')+'), 1.0)'

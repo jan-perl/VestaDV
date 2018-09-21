@@ -56,9 +56,9 @@ container GlTbComponentOperaties
 			{
 				attribute<Geography/rdc_meter>                point:        Expr = "Geography/rdc_grids/m100/point[nr_OrgEntity]";
 				attribute<Geography/RegioIndelingen/PC4>      PC4_rel:      Expr = "Geography/rdc_grids/m100/PC4_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid500m> grid500m_rel: Expr = "Geography/rdc_grids/m100/grid500m_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel:  Expr = "Geography/rdc_grids/m100/grid1km_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel:  Expr = "Geography/rdc_grids/m100/grid2km_rel[nr_OrgEntity]";
+				attribute<Geography/RegioIndelingen/blok500m> blok500m_rel: Expr = "Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity]";
+				attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel:  Expr = "Geography/rdc_grids/m100/blok1km_rel[nr_OrgEntity]";
+				attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel:  Expr = "Geography/rdc_grids/m100/blok2km_rel[nr_OrgEntity]";
 			}
 			
 			unit<UInt32> AggrReg := Geography/RegioIndelingen/PC4
@@ -85,9 +85,9 @@ container GlTbComponentOperaties
 			
 			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "impl/lokatiesBij/point[BebouwingsObject/nr_1]";
 			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "impl/lokatiesBij/PC4_rel     [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid500m> grid500m_rel (BebouwingsObject): Expr = "impl/lokatiesBij/grid500m_rel[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid1km>  grid1km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/grid1km_rel [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/grid2km>  grid2km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/grid2km_rel [BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel (BebouwingsObject): Expr = "impl/lokatiesBij/blok500m_rel[BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok1km_rel [BebouwingsObject/nr_1]";
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok2km_rel [BebouwingsObject/nr_1]";
 			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "GLTB_Code";
 			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
 			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";

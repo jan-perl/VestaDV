@@ -199,9 +199,9 @@ container UserInput1: Using = "Model/Units"
 	
 	parameter<String> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in UserInput1.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
-//			'grid500m';
-//			'grid1km';
-//			'grid2km';
+//			'blok500m';
+//			'blok1km';
+//			'blok2km';
 	parameter<bool> HasStartingArcSet:= True;
 
 	container ReportOpties

@@ -51,10 +51,10 @@ container bebouwing
 		attribute<string>                             code               := BAG/vbo_woonfunctie/id;
 		attribute<String>                             PC6code            := PostCode;
 		attribute<RegioIndelingen/PC4>                PC4_rel            := MakeDefined(Impl/PC4_coderel,Impl/PC4_georel);
-		attribute<RegioIndelingen/grid500m>           grid500m_rel       := RegioIndelingen/grid500m/BaseGrid[point[rdc_grids/m500]];
-		attribute<RegioIndelingen/grid1km>            grid1km_rel        := RegioIndelingen/grid1km/BaseGrid[point[rdc_1km]];
-		attribute<RegioIndelingen/grid2km>            grid2km_rel        := RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]];
-		attribute<RegioIndelingen/buurt>              buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/poly);
+		attribute<RegioIndelingen/blok500m>           blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
+		attribute<RegioIndelingen/blok1km>            blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_1km]];
+		attribute<RegioIndelingen/blok2km>            blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_2km]];
+		attribute<RegioIndelingen/buurt>              buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/geometry);
 
 		attribute<nrAansl>                            nrAansluitingen    := Impl/nrWon * 1[ nrAansl / nrWoningen];
 		attribute<nrWoningen>                         nrJoinedUnits      := Impl/nrWon;
@@ -129,12 +129,12 @@ container bebouwing
 		attribute<RegioIndelingen/PC4>        PC4_georel    := point_in_polygon(point, RegioIndelingen/PC4/Geometry);  // contains 70 null values(2009)
 		attribute<RegioIndelingen/PC4>        PC4_rel       := MakeDefined(PC4_coderel,PC4_georel);                    // contains  0 null values(2009)
 
-		attribute<RegioIndelingen/buurt>      Buurt_rel     := point_in_polygon(point, RegioIndelingen/buurt/poly);
+		attribute<RegioIndelingen/buurt>      Buurt_rel     := point_in_polygon(point, RegioIndelingen/buurt/geometry);
 		
 		attribute<rdc_meter>                  point         := BAG/vbo_utiliteit/locatie;
-		attribute<RegioIndelingen/grid500m>   grid500m_rel  := RegioIndelingen/grid500m/BaseGrid[point[rdc_grids/m500]];
-		attribute<RegioIndelingen/grid1km>    grid1km_rel   := RegioIndelingen/grid1km/BaseGrid[point[rdc_1km]];
-		attribute<RegioIndelingen/grid2km>    grid2km_rel   := RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]];
+		attribute<RegioIndelingen/blok500m>   blok500m_rel  := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
+		attribute<RegioIndelingen/blok1km>    blok1km_rel   := RegioIndelingen/blok1km/BaseGrid[point[rdc_1km]];
+		attribute<RegioIndelingen/blok2km>    blok2km_rel   := RegioIndelingen/blok2km/BaseGrid[point[rdc_2km]];
 
 		attribute<Classifications/BouwJaar>   BouwJaar      := Classify(BAG/vbo_utiliteit/bouwjaar, Classifications/BouwJaar/ClassBreak);
 
@@ -242,9 +242,9 @@ container bebouwing
 		attribute<UInt32>                     Buurt_nr           := value(buurtcode,  UInt32), FreeData = "True";
 		attribute<RegioIndelingen/buurt>      Buurt_rel          := rlookup(Buurt_nr, RegioIndelingen/buurt/code);
 
-		attribute<RegioIndelingen/grid500m>   grid500m_rel: Expr = "RegioIndelingen/grid500m/BaseGrid[point[rdc_grids/m500]]", FreeData = "True";
-		attribute<RegioIndelingen/grid1km>    grid1km_rel:  Expr = "RegioIndelingen/grid1km/BaseGrid[point[rdc_1km]]", FreeData = "True";
-		attribute<RegioIndelingen/grid2km>    grid2km_rel:  Expr = "RegioIndelingen/grid2km/BaseGrid[point[rdc_2km]]", FreeData = "True";
+		attribute<RegioIndelingen/blok500m>   blok500m_rel: Expr = "RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]]", FreeData = "True";
+		attribute<RegioIndelingen/blok1km>    blok1km_rel:  Expr = "RegioIndelingen/blok1km/BaseGrid[point[rdc_1km]]", FreeData = "True";
+		attribute<RegioIndelingen/blok2km>    blok2km_rel:  Expr = "RegioIndelingen/blok2km/BaseGrid[point[rdc_2km]]", FreeData = "True";
 		
 		attribute<m2>      Opp_M2;
 		attribute<nrAansl>    nrAansluitingen:= const(1[nrAansl   ], .), FreeData = "True";

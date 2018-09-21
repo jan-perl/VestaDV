@@ -42,6 +42,23 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 {
 	#include <BAG.dms>
 	#include <Uitleg.dms>
+	
+	container CBS {
+		unit<uint32> kwb2013:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2013.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+		
+		unit<uint32> kwb2014:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2014.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+		
+		unit<uint32> kwb2015:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2015.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+	}
 
 	unit<uint32> EnergieLabelData_src
 	:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
@@ -633,9 +650,9 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 					StorageReadOnly = "True",
 					url             = "%sourceDataProjDir%/aanbod/GeoThermie/GT_GTB_zone_1_2.txt",
 					DialogType      = "Map",
-					DialogData      = "Polygon"
+					DialogData      = "geometry"
 				{
-					attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/aanbod/GeoThermie/GT_GTB_zone_1_2.shp", StorageReadOnly = "True";
+					attribute<rdc_meter> geometry (poly): StorageName = "%sourceDataProjDir%/aanbod/GeoThermie/GT_GTB_zone_1_2.shp", StorageReadOnly = "True";
 	//				attribute<string>    GEOTHERMIE;
 					attribute<Int32>    ID;
 				}
@@ -644,8 +661,8 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			
 			unit<UInt32> ContourSet :=  Subset(import/ContourSet/ID != 0i), FreeData = "False"
 			{
-				attribute<rdc_meter>  Polygon(poly): Expr = "import/ContourSet/Polygon[nr_OrgEntity]";
-				attribute<ContourSet> Grid     (Geography/rdc_grids/m100) := poly2grid(Polygon, Geography/rdc_grids/m100), FreeData = "True";
+				attribute<rdc_meter>  geometry(poly): Expr = "import/ContourSet/geometry[nr_OrgEntity]";
+				attribute<ContourSet> Grid     (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100), FreeData = "True";
 				unit<UInt32> PointSet: Expr = "SubSet(IsDefined(Grid))", FreeData = "False"
 				{
 					attribute<rdc_meter> Point: Expr = "rdc_grids/m100/point[nr_OrgEntity]";
@@ -659,9 +676,9 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				StorageReadOnly = "True",
 				url             = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2_PMV_Utr.txt",
 				DialogType      = "Map",
-				DialogData      = "Polygon"
+				DialogData      = "geometry"
 			{
-				attribute<rdc_meter> Polygon(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2_PMV_Utr.shp", StorageReadOnly = "True";
+				attribute<rdc_meter> geometry(poly): StorageName = "%sourceDataProjDir%/Aanbod/WKO/OS_WARM_900_4560_GJ_hectare_jaar_Grondwaterbeschermingsgebieden_2008_PBL_GWB_1_2_PMV_Utr.shp", StorageReadOnly = "True";
 				attribute<string>    WKO;
 				attribute<Bool>      Geschikt: Expr = "WKO == 'geschikt' || WKO == 'zeer geschikt'";
 			}
@@ -669,7 +686,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			{
 				container impl : FreeData = "True"
 				{
-					attribute<rdc_meter> geometry  (poly, GeschikteContour) := ContourSet/Polygon[nr_OrgEntity];
+					attribute<rdc_meter> geometry  (poly, GeschikteContour) := ContourSet/geometry[nr_OrgEntity];
 				}
 				attribute<ContourSet> Grid(Geography/rdc_grids/m100) := poly2grid(impl/geometry, Geography/rdc_grids/m100), FreeData = "False";
 			}
@@ -691,7 +708,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 				DialogData      = "Leidingen",
 				url             = "%sourceDataProjDir%/Aanbod/Gas/Gasvervangingsdata _ Stedin Zakelijk.htm",
 				Source          = "download van website op 29 maart 2017: https://www.stedin.net/zakelijk/open-data/gasvervangingsdata/#gasvervangingsbestand"
-								  "conversie van Polygon ZM-bestand naar normaal Polygon-bestand in ArcGIS 10.3 mbv Copy features", 
+								  "conversie van geometry ZM-bestand naar normaal geometry-bestand in ArcGIS 10.3 mbv Copy features", 
 				SyncMode        = "All"
 				{
 					attribute<rdc_meter> Leidingen(arc): StorageName = "%sourceDataProjDir%/Aanbod/Gas/Leidingen.shp";

@@ -35,7 +35,7 @@ container MapGallery
 	}
 	unit<wpoint> m100 := Model/Geography/rdc_grids/m100
 	{
-		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/poly,.);
+		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/geometry,.);
 
 		attribute<Classifications/AanbodOptie> AanbodOptie          := Table/AanbodOptie[buurt_rel]
 		,	StorageName = "='%LocalDataProjDir%/website/MG/' + FolderInfo/RunName + '/' + string(Runjaar) + '/AanbodOptie_100m.tif'";
@@ -57,7 +57,7 @@ container MapGallery
 	}
 	unit<wpoint> m500 := Model/Geography/rdc_grids/m500
 	{
-		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/poly,.);
+		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/geometry,.);
 
 		attribute<Classifications/AanbodOptie> AanbodOptie          := Table/AanbodOptie[buurt_rel]
 		,	StorageName = "='%LocalDataProjDir%/website/MG/' + FolderInfo/RunName + '/' + string(Runjaar) + '/AanbodOptie_500m.tif'";
@@ -77,7 +77,7 @@ container MapGallery
 	/*
 	unit<wpoint> km2 := Model/Geography/rdc_2km
 	{
-		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/poly,.);
+		attribute<Model/Geography/RegioIndelingen/buurt> buurt_rel  := poly2grid(Model/Geography/RegioIndelingen/buurt/geometry,.);
 
 		attribute<Classifications/AanbodOptie> AanbodOptie          := Table/AanbodOptie[buurt_rel]
 		,	StorageName = "='%LocalDataProjDir%/website/MG/' + string(Runjaar) + '/AanbodOptie_2000m.tif'";

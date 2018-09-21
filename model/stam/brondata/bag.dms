@@ -168,11 +168,11 @@ container BAG
 		,	StorageName     = "= SourceDir + '/pand.fss'"
 		,	StorageReadOnly = "True"
 		{
-			attribute<geography/rdc_mm> geometry_mm(poly);
+			attribute<geography/rdc_mm> geometry_mm (poly);
 			attribute<string> identificatie;
 			
 			// backward compatibility
-			attribute<geography/rdc_meter_f32> geometry(poly) := geometry_mm[geography/rdc_meter_f32];
+			attribute<geography/rdc_meter_f32> geometry (poly) := geometry_mm[geography/rdc_meter_f32];
 			attribute<string>   PAND_ID := identificatie;
 			attribute<uint16>   BOUWJAAR;
 			attribute<units/Yr> BOUWJAAR_GECORRIGEERD :=

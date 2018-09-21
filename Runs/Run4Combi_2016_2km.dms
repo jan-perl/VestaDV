@@ -169,7 +169,7 @@ container VestaRun
 
 	container UserInput := UserInput1
 	{
-		parameter<String>  PlanRegioNaam := 'grid2km';
+		parameter<String>  PlanRegioNaam := 'blok2km';
 		parameter<bool>    HasStartingArcSet := false; // Need to be always false if buurt is not used.
 	}
 
