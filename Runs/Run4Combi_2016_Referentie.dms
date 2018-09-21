@@ -33,23 +33,23 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-// Deze file bevat een basis voor de Vesta instellingen die vanuit iedere run           //
-// geincludeerd wordt en per run per Zichtjaar kan worden overreden                     //
+//       Deze file bevat de specificatie voor de referentie Run die met het             //
+//       Vesta Model gedraaid wordt                                                     //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container VestaRun
+container Vesta
 {
 //	INCLUDE MODEL AND FIXED SETTINGS SECTION	
-	#include <%projDir%/cfg/stam.dms>
-	container ConfigSettings := Vesta/ConfigSettings;
-	container ExportSettings := Vesta/ExportSettings;
+	#include <%projDir%/model/stam.dms>
+	container ConfigSettings := Model/ConfigSettings;
+	container ExportSettings := Model/ExportSettings;
 	
-	#include <%projDir%/Runs/UserInput1.dms>
-	#include <%projDir%/Runs/UserInput4.dms>
+	#include <%projDir%/Runs/DefaultSettings/UserInput1.dms>
+	#include <%projDir%/Runs/DefaultSettings/UserInput4.dms>
 //	END OF INCLUDE SECTION
 
-	container Parameters : using = Vesta/Units
+	container Parameters : using = Model/Units
 	{
 		// parameter: prijzenbron
 		//
@@ -167,14 +167,14 @@ container VestaRun
 		}
 	}
 	container UserInput := UserInput1;
-	unit<UInt32> PlanRegio:= ='Vesta/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+	unit<UInt32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 
-	container UserInput2010 := UserInput1 { parameter<Vesta/Units/Percent> VAT := 19[Vesta/Units/Percent]; } // tot 2010 geldt nog het lagere BTW-percentage
+	container UserInput2010 := UserInput1 { parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; } // tot 2010 geldt nog het lagere BTW-percentage
 	container UserInput2020 := UserInput4;
 	container UserInput2030 := UserInput2020;
 	container UserInput2040 := UserInput2030;
 	container UserInput2050 := UserInput2040;
 	
-	#include <%projDir%/cfg/RunContext.dms>
-	#include <%projDir%/cfg/meta.dms>
+	#include <%projDir%/model/RunContext.dms>
+	#include <%projDir%/model/meta.dms>
 }
