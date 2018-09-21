@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container RestWarmte: IsTemplate = "True"
+template RestWarmte
 {
 	container BeginStatus;
 	container AanbodKentallen;

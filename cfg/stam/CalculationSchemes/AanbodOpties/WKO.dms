@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container WKO: IsTemplate = "True"
+template WKO
 {
 	container BeginStatus;
 	container AanbodKentallen;

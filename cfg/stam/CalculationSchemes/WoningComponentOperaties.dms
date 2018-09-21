@@ -39,7 +39,7 @@
 
 container WoningComponentOperaties
 {
-	container Select: IsTemplate = "True"
+	template Select
 	{
 		// begin case parameters
 		attribute<Units/nrWoningen>           NrWoningenGrid(Geography/rdc_100lu);
@@ -82,7 +82,7 @@ container WoningComponentOperaties
 			}
 		}
 	}
-	container Unite: isTemplate = "True"
+	template Unite
 	{
 		// begin case parameters
 		container bron;

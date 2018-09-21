@@ -72,7 +72,7 @@ container UtilComponentOperaties
 			container Criteria := BebouwingsObject/Criteria;
 		}
 	}
-	container Select: IsTemplate = "True"
+	template Select
 	{
 		// begin case parameters
 		attribute<int32>      att (Geography/rdc_100lu);

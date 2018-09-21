@@ -420,7 +420,7 @@ container Geography: Using = "Units"
 	{
 		unit<uint32> Dist2Range;
 		
-		container potrange: isTemplate = "true"
+		template potrange
 		{
 			// ===================== Begin Case Parameters
 			parameter<m>       gridsize;

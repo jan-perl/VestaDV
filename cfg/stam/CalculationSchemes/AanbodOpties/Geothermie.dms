@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container GeoThermie: IsTemplate = "True"
+template GeoThermie
 {
 	container BeginStatus;
 	container AanbodKentallen;

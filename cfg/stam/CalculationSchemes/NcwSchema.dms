@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container NcwSchema: IsTemplate = "True"
+template NcwSchema
 {
 	parameter<Percent_yr> DiscontoVoet;
 	parameter<Yr> StartJaar;
