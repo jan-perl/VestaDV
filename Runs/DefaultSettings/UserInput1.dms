@@ -49,6 +49,14 @@ container UserInput1: Using = "Model/Units"
 	parameter<Percent> VAT := 21[Percent]; // @USERINPUT, zie ook: /UserInput1/Beleidsopties/EIA/gebouw/bwe
 	parameter<Percent> VAT_gv := 0.5*(21.0+6.0)[Percent]; // BTW op gebouwverbetering
 	
+	container BAG
+	{
+		parameter<uint8> IndustrieDoetMee := 1b;
+		// 0: in Utilitiet doet alle industrie doet niet mee (dus ook alle vbo die industrie in combinatie met een andere gebruikdoel hebben)
+		// 1: in Utiliteit doen vbo's niet mee die alleen een industriefunctie hebben.
+		// 2: in Utilitiet doet alle industrie doet mee
+	}
+	
 	container RuimtelijkeVraagOpties
 	{
 		container DragerSpecifiekeOpties

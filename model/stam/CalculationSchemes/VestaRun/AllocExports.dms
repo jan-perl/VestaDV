@@ -52,7 +52,7 @@ container AllocExports: Using = "Units"
 
 		Unit<UInt32>  table := AllocatieResultaatComponent/BebouwingsObject
 		{
-			//attribute<String> BAG_id := /Model/BronData/BAG/vbo_woonfunctie/id;
+			//attribute<String> BAG_id := /Model/BronData/BAG/vbo_woonfunctie/identificatie;
 			attribute<string> id := code;
 			attribute<string> Label := VestaRunDataComponent/bebouwing/label;
 			attribute<nrAansl> nrAansluitingen :=RuimtelijkeVraagComponent/nrAansluitingen;

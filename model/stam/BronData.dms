@@ -89,7 +89,7 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 	unit<uint32> EnergieLabelData:= unique(EnergieLabelData_src/adres_key)
 	{
 		attribute<string> nummeraanduiding_id := BAG/import/nummeraanduiding/identificatie[rlookup(values, BAG/import/nummeraanduiding/adres_key)];
-		attribute<string> VBO_ID    := rjoin(nummeraanduiding_id, BAG/import/vbo/H_ADRES, BAG/import/vbo/VBO_ID), FreeData = "False";
+		attribute<string> VBO_ID    := rjoin(nummeraanduiding_id, BAG/import/vbo/nummeraanduiding_id, BAG/import/vbo/identificatie), FreeData = "False";
 		
 		attribute<uint32>                       datum_laatste        := max(EnergieLabelData_src/datum_numeriek, rlookup(EnergieLabelData_src/adres_key, values));
 		attribute<Classifications/energielabel> energielabel_rel     := rjoin(values + '_' + string(datum_laatste), EnergieLabelData_src/adres_key + '_' + string(EnergieLabelData_src/datum_numeriek), EnergieLabelData_src/energielabel_rel), FreeData = "False";

@@ -48,8 +48,8 @@ container bebouwing
 		unit<uint8>  BouwjaarDomein:= Classifications/BouwJaarBAG;
 		unit<uint8>  SubtypeDomein:= Classifications/WoningtypeBouwJaarBAG;
 
-		attribute<string>                             code               := BAG/vbo_woonfunctie/id;
-		attribute<String>                             PC6code            := PostCode;
+		attribute<string>                             code               := BAG/vbo_woonfunctie/identificatie;
+		attribute<String>                             PC6code            := postcode;
 		attribute<RegioIndelingen/PC4>                PC4_rel            := MakeDefined(Impl/PC4_coderel,Impl/PC4_georel);
 		attribute<RegioIndelingen/blok500m>           blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
 		attribute<RegioIndelingen/blok1km>            blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_1km]];
@@ -66,7 +66,7 @@ container bebouwing
 		attribute<UInt8>                              SubType            := value(KengetalType *  UInt8(#(Classifications/BouwJaarBAG)) + Impl/BouwjaarBag_rel, classifications/WoningTypeBouwjaarBAG);
 		attribute<BouwjaarDomein>                     BouwJaar:           = Classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwJaarBAG/ClassBreak);
 
-		attribute<rdc_meter> point := BAG/vbo_woonfunctie/locatie
+		attribute<rdc_meter> point := BAG/vbo_woonfunctie/geometry
 		{
 			parameter<float64> SymbolSize     := 14.0,  DialogType = "SymbolSize";
 			parameter<m>       SymbolWorldSize:= 30[m], DialogType = "SymbolWorldSize";
@@ -118,9 +118,9 @@ container bebouwing
 		unit<uint8>   KengetalTypeDomein:= Classifications/utiliteitBAG;
 
 		// external key
-		attribute<string>                     code          := BAG/vbo_utiliteit/id;
-		attribute<String>                     POSTCODE      := BAG/vbo_utiliteit/PostCode;
-		attribute<String>                     PC6code       := POSTCODE;
+		attribute<string>                     code          := BAG/vbo_utiliteit/identificatie;
+		attribute<String>                     postcode      := BAG/vbo_utiliteit/postcode;
+		attribute<String>                     PC6code       := postcode;
 
 		attribute<String>                     PC4code       := substr(PC6code,0,4);
 		attribute<uint16>                     PC4_nr        := uint16(PC4code);
@@ -229,11 +229,11 @@ container bebouwing
 		
 		// external key
 		attribute<string>                     code  := string(ID(.));
-		attribute<UInt32>                     POSTCODE4;
-		attribute<String>                     Label := String(POSTCODE4), DialogType = "LabelText", FreeData = "True";
+		attribute<UInt32>                     postcode4;
+		attribute<String>                     Label := String(postcode4), DialogType = "LabelText", FreeData = "True";
 		attribute<Classifications/GLTB>       GLTB_Code;
 
-		attribute<UInt32>                     PC4code:= POSTCODE4, FreeData = "True";
+		attribute<UInt32>                     PC4code:= postcode4, FreeData = "True";
 		attribute<UInt16>                     PC4_nr := value(PC4code, UInt16), FreeData = "True";
 		attribute<RegioIndelingen/PC4>        PC4_rel:= rlookup(PC4_nr, RegioIndelingen/PC4/code);
 			

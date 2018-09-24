@@ -43,8 +43,8 @@ container Vesta
 //	INCLUDE MODEL AND FIXED SETTINGS SECTION	
 	#include <%projDir%/model/stam.dms>
 	container ConfigSettings := Model/ConfigSettings;
-	container ExportSettings := Model/ExportSettings;
-	
+	container ExportSettings := Model/ExportSettings, IsHidden = "True";
+
 	#include <%projDir%/Runs/DefaultSettings/UserInput1.dms>
 	#include <%projDir%/Runs/DefaultSettings/UserInput4.dms>
 //	END OF INCLUDE SECTION
