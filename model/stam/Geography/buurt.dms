@@ -65,59 +65,59 @@ unit<uint32> buurt:
 	attribute<yr_uint16> BioWKK_Start  := const(2020[yr_uint16], .); // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 	
 	// =========== sociaal economische kenmerken obv laatst bekenden CBS buurtgegevens
-	container Eigendom: Using = Brondata/CBS {
+	container Eigendom: Using = Brondata/CBSWijkEnBuurt {
 		
 		// Koopwoningen
-		attribute<Percent> p_koopw(..) := MakeDefined(
-			rjoin(BU_CODE, kwb2015/GWB_CODE_10, kwb2015/p_koopw[Percent])
-		,	rjoin(BU_CODE, kwb2014/GWB_CODE_10, kwb2014/p_koopw[Percent])
-		,	rjoin(BU_CODE, kwb2013/GWB_CODE_10, kwb2013/p_koopw[Percent])
+		attribute<Units/Percent> p_koopw(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_koopw[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_koopw[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_koopw[Units/Percent])
 		);
 
 		// Huurwoningen totaal
-		attribute<Percent> p_huurw(..) := MakeDefined(
-			rjoin(BU_CODE, kwb2015/GWB_CODE_10, kwb2015/p_huurw[Percent])
-		,	rjoin(BU_CODE, kwb2014/GWB_CODE_10, kwb2014/p_huurw[Percent])
-		,	rjoin(BU_CODE, kwb2013/GWB_CODE_10, kwb2013/p_huurw[Percent])
+		attribute<Units/Percent> p_huurw(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_huurw[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_huurw[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_huurw[Units/Percent])
 		);
 
 		// In bezit woningcorporatie
-		attribute<Percent> p_wcorpw(..) := MakeDefined(
-			rjoin(BU_CODE, kwb2015/GWB_CODE_10, kwb2015/p_wcorpw[Percent])
-		,	rjoin(BU_CODE, kwb2014/GWB_CODE_10, kwb2014/p_wcorpw[Percent])
-		,	rjoin(BU_CODE, kwb2013/GWB_CODE_10, kwb2013/p_wcorpw[Percent])
+		attribute<Units/Percent> p_wcorpw(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_wcorpw[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_wcorpw[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_wcorpw[Units/Percent])
 		);
 
 		// In bezit overige verhuurders
-		attribute<Percent> p_ov_hw(..) := MakeDefined(
-			rjoin(BU_CODE, kwb2015/GWB_CODE_10, kwb2015/p_ov_hw[Percent])
-		,	rjoin(BU_CODE, kwb2014/GWB_CODE_10, kwb2014/p_ov_hw[Percent])
-		,	rjoin(BU_CODE, kwb2013/GWB_CODE_10, kwb2013/p_ov_hw[Percent])
+		attribute<Units/Percent> p_ov_hw(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_ov_hw[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_ov_hw[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_ov_hw[Units/Percent])
 		);
 
 		// Eigendom onbekend
-		attribute<Percent> p_e_o_w(..) := MakeDefined(
-			rjoin(BU_CODE, kwb2015/GWB_CODE_10, kwb2015/p_e_o_w[Percent])
-		,	rjoin(BU_CODE, kwb2014/GWB_CODE_10, kwb2014/p_e_o_w[Percent])
-		,	rjoin(BU_CODE, kwb2013/GWB_CODE_10, kwb2013/p_e_o_w[Percent])
+		attribute<Units/Percent> p_e_o_w(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_e_o_w[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_e_o_w[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_e_o_w[Units/Percent])
 		);
 
-		attribute<Percent> p_checksum(..) := p_koopw + p_wcorpw + p_ov_hw + p_e_o_w;
+		attribute<Units/Percent> p_checksum(..) := p_koopw + p_wcorpw + p_ov_hw + p_e_o_w;
 	}
-	container Inkomen : Using = Brondata/CBS {
-		attribute<Percent> p_hh_li(..) := MakeDefined(
-			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_hh_li[Percent])
-		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_hh_li[Percent])
-		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_hh_li[Percent])
+	container Inkomen : Using = Brondata/CBSWijkEnBuurt {
+		attribute<Units/Percent> p_hh_li(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_hh_li[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_hh_li[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_hh_li[Units/Percent])
 		);
-		attribute<Percent> p_hh_hi(..) := MakeDefined(
-			rjoin(BU_CODE, CBS/kwb2015/GWB_CODE_10, CBS/kwb2015/p_hh_hi[Percent])
-		,	rjoin(BU_CODE, CBS/kwb2014/GWB_CODE_10, CBS/kwb2014/p_hh_hi[Percent])
-		,	rjoin(BU_CODE, CBS/kwb2013/GWB_CODE_10, CBS/kwb2013/p_hh_hi[Percent])
+		attribute<Units/Percent> p_hh_hi(..) := MakeDefined(
+			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_hh_hi[Units/Percent])
+		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_hh_hi[Units/Percent])
+		,	rjoin(BU_CODE, j2013/GWB_CODE_10, j2013/p_hh_hi[Units/Percent])
 		);
 		
-		attribute<Percent> p_hh_mi(..) := 100[Percent] - (p_hh_li + p_hh_hi);
+		attribute<Units/Percent> p_hh_mi(..) := 100[Units/Percent] - (p_hh_li + p_hh_hi);
 		
-		attribute<Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
+		attribute<Units/Percent> p_checksum(..) := p_hh_li + p_hh_mi + p_hh_hi;
 	}
 }

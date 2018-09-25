@@ -41,7 +41,7 @@
 container UserInput1: Using = "Model/Units"
 {
 	container BebouwingsScenario  := Model/ScenarioSpecs/Bebouwing;
-	container KlimaatScenario     := Model/Brondata/klimaat/scenario_knmi_g_plus;
+	container KlimaatScenario     := Model/Brondata/klimaat_scenario_knmi/g_plus;
 	
 	container VraagKentallen  := Model/ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine;
 	container AanbodKentallen := Model/ScenarioSpecs/VestaRunOpties/AanbodKentallen/BaseLine;
@@ -56,7 +56,11 @@ container UserInput1: Using = "Model/Units"
 		// 1: in Utiliteit doen vbo's niet mee die alleen een industriefunctie hebben.
 		// 2: in Utilitiet doet alle industrie doet mee
 	}
-	
+	container FysiekeConstanten
+	{
+		parameter<GJ_m3> GasEnergie := 31.65[ MJ / m3 ] / 1000[ MJ  / GJ ]; // ondergrens
+//		parameter<GJ_m3> GasEnergie := 35.17[ MJ / m3 ] / 1000[ MJ  / GJ ]; // bovengrens, rekening houdend met eficientere verbranding (o.a. condensatiewarmte van waterdamp)
+	}
 	container RuimtelijkeVraagOpties
 	{
 		container DragerSpecifiekeOpties
