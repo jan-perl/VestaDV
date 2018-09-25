@@ -377,7 +377,7 @@ template VestaRun
 
 				attribute<Float64> AansluitTarief     (Domains/Woning) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
 				attribute<Eur>     AansluitBijdrageG  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
 				attribute<Eur>     AansluitBijdrageE  (Domains/Woning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
@@ -403,7 +403,7 @@ template VestaRun
 			{
 				attribute<Float64> AansluitTarief     (Domains/NieuwbouwWoning) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
 				attribute<Eur>     AansluitBijdrageG  (Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_NW;
@@ -430,7 +430,7 @@ template VestaRun
 			{
 				attribute<Float64> AansluitTarief     (Domains/Utiliteit) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 
 				attribute<Eur>     AansluitBijdrageD  (Domains/Utiliteit) := AansluitTarief    * WarmteVraagD/AansluitCapaciteit;
@@ -459,7 +459,7 @@ template VestaRun
 			{
 				attribute<Float64> AansluitTarief     (Domains/NieuwbouwUtil) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
 				attribute<Eur>     AansluitBijdrageD  (Domains/NieuwbouwUtil) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
@@ -490,7 +490,7 @@ template VestaRun
 			{
 				attribute<Float64> AansluitTarief     (Domains/GlasTuinbouw) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
 				attribute<Eur>     AansluitBijdrageG  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
 				attribute<Eur>     AansluitBijdrageE  (Domains/GlasTuinbouw) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
@@ -516,7 +516,7 @@ template VestaRun
 			{
 				attribute<Float64> AansluitTarief     (Domains/NieuwbouwGlTb) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
-					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+					(Kengetallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
 				attribute<Eur>     AansluitBijdrageG  (Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
 				attribute<Eur>     AansluitBijdrageE  (Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
@@ -542,8 +542,8 @@ template VestaRun
 	{
 		unit<UInt32> Woning          := VestaRunData/woning/BebouwingsObject;
 		unit<UInt32> NieuwbouwWoning    := VestaRunData/NieuwbouwWoning/BebouwingsObject;
-		unit<uint8> WoningType       := VestaRunData/Woning/KengetalTypeDomein;
-		unit<uint8> NieuwbouwWoningType := VestaRunData/NieuwbouwWoning/KengetalTypeDomein;
+		unit<uint8> WoningType       := VestaRunData/Woning/BebouwingsTypeDomein;
+		unit<uint8> NieuwbouwWoningType := VestaRunData/NieuwbouwWoning/BebouwingsTypeDomein;
 	}
 	container NCW {
 		container ow28 := NcwSchema(AanbodKentallen/DiscontoVoet_ow, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);

@@ -84,7 +84,7 @@ template Import
 		
 		attribute<bouwjaarindeling> BouwJaar (ModelObject): Expr = "rlookup(trim(Table/BouwJaar_str ), bouwjaarindeling/excel_code)";
 		attribute<model_type>       ModelType(ModelObject): Expr = "rlookup(trim(Table/ModelType_str), model_type/Excel_code)";
-		attribute<UInt8>            SubType  (ModelObject): Expr = "ModelType *  UInt8(NrOfRows(bouwjaarindeling)) + BouwJaar";
+		attribute<UInt8>            ModelObjectKey  (ModelObject): Expr = "ModelType *  UInt8(NrOfRows(bouwjaarindeling)) + BouwJaar";
 
 		container Functioneel
 		{

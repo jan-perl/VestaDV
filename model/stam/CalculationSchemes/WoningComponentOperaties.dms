@@ -109,7 +109,7 @@ container WoningComponentOperaties
 // 			attribute<String> Label := TypeName+String(BouwJaar)+String(Point), DialogType = "LabelText";
 // 			parameter<m> SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
 
-			unit<uint8> KengetalTypeDomein: Expr = "WoningType";
+			unit<uint8> BebouwingsTypeDomein: Expr = "WoningType";
 			
 			attribute<Units/nrWoningen>              NrJoinedUnits  (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/NrWoningen') + ')'";
 			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/PC4_rel') + ')'";
@@ -117,9 +117,9 @@ container WoningComponentOperaties
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/blok1km_rel') + ')'";
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/blok2km_rel') + ')'";
 			attribute<Geography/rdc_meter>           Point          (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/Point') + ')'";
-			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/woningtype') + ')'";
+			attribute<BebouwingsTypeDomein>            BebouwingsType   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/woningtype') + ')'";
 			attribute<Classifications/BouwJaar>      Bouwjaar       (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + WoningType/Name + '/results/Bouwjaar') + ')'";
-			attribute<Classifications/BouwJaar>      SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(#Classifications/BouwJaar) + BouwJaar";
+			attribute<Classifications/BouwJaar>      ModelObjectKey        (BebouwingsObject): Expr = "BebouwingsType * UInt8(#Classifications/BouwJaar) + BouwJaar";
 			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := NrJoinedUnits * 1.0[nrAansl / NrWoningen];
 			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := nrJoinedUnits;
 

@@ -78,20 +78,20 @@ container GlTbComponentOperaties
 			// units en attributen van BebouwingsComponent
 			unit<uint32>  BebouwingsObject := .;
 			attribute<Geography/rdc_meter> PointCopy(BebouwingsObject): Expr = "point";
-			attribute<String> Code := String(SubType)+ String(Bouwjaar) + String(Point);
+			attribute<String> Code := String(ModelObjectKey)+ String(Bouwjaar) + String(Point);
 			attribute<string> Label := Code, DialogType = "LabelText";
 
-			unit<uint8>   KengetalTypeDomein: Expr = "Classifications/GLTB";
+			unit<uint8>   BebouwingsTypeDomein: Expr = "Classifications/GLTB";
 			
 			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "impl/lokatiesBij/point[BebouwingsObject/nr_1]";
 			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "impl/lokatiesBij/PC4_rel     [BebouwingsObject/nr_1]";
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel (BebouwingsObject): Expr = "impl/lokatiesBij/blok500m_rel[BebouwingsObject/nr_1]";
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok1km_rel [BebouwingsObject/nr_1]";
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok2km_rel [BebouwingsObject/nr_1]";
-			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "GLTB_Code";
+			attribute<BebouwingsTypeDomein>            BebouwingsType   (BebouwingsObject): Expr = "GLTB_Code";
 			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
 			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
-			attribute<UInt8>                         SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
+			attribute<UInt8>                         ModelObjectKey        (BebouwingsObject): Expr = "BebouwingsType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
 			attribute<m2>                            NrJoinedUnits  (BebouwingsObject): Expr = "Oppervlakte";
 			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(1[nrAansl   ], BebouwingsObject), FreeData = "True";
 			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";

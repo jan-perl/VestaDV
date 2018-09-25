@@ -44,7 +44,7 @@ Container Nieuwbouw
 	template LegeSetFunc
 	{
 		unit<Float64> JoinedUnit;
-		unit<uint8>   KengetalTypeDomeinArg;
+		unit<uint8>   BebouwingsTypeDomeinArg;
 		
 		container results
 		{
@@ -54,7 +54,7 @@ Container Nieuwbouw
 				attribute<String> Code := const('', .);
 				attribute<String> Label := Code, DialogType = "LabelText";
 			}
-			unit<uint8>   KengetalTypeDomein: Expr = "KengetalTypeDomeinArg";
+			unit<uint8>   BebouwingsTypeDomein: Expr = "BebouwingsTypeDomeinArg";
 			
 			attribute<Geography/rdc_meter> point(BebouwingsObject): Expr = "point(const(Float64(0), BebouwingsObject), const(Float64(0), BebouwingsObject), Geography/rdc_meter)";
 			
@@ -65,8 +65,8 @@ Container Nieuwbouw
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/blok1km],  BebouwingsObject)";
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/blok2km],  BebouwingsObject)";
 			
-			attribute<UInt8>                    SubType        (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
-			attribute<KengetalTypeDomein>       KengetalType   (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
+			attribute<UInt8>                    ModelObjectKey        (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
+			attribute<BebouwingsTypeDomein>       BebouwingsType   (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
 			attribute<Classifications/BouwJaar> BouwJaar       (BebouwingsObject): Expr = "const(Classifications/BouwJaar/Onbekend, BebouwingsObject)";
 			attribute<nrAansl>                  nrAansluitingen(BebouwingsObject): Expr = "const(0, BebouwingsObject, nrAansl)";
 			attribute<nrWoningen>               nrWoonUnits    (BebouwingsObject) := const(0.0[nrWoningen], BebouwingsObject);

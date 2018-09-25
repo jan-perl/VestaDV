@@ -253,9 +253,9 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> ClassRef:
 		[
 			'Model/Classifications/GeenOnderverdeling',
-			'AllocatieResultaat/Woning/BebouwingsObject/KengetalTypeDomein',
+			'AllocatieResultaat/Woning/BebouwingsObject/BebouwingsTypeDomein',
 			'AllocatieResultaat/Woning/BebouwingsObject/BouwjaarDomein',
-			'AllocatieResultaat/Woning/BebouwingsObject/SubtypeDomein',
+			'AllocatieResultaat/Woning/BebouwingsObject/ModelObjectKeyDomein',
 			'Model/Classifications/Eigendom_Woning',
 			'', '', '', 
 			'Model/Classifications/InkomensKlasse',
@@ -264,9 +264,9 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> AttrRef:
 		[
 			'GeenOnderverdeling',
-			'KengetalType',
+			'BebouwingsType',
 			'Bouwjaar',
-			'SubType',
+			'ModelObjectKey',
 			'BebouwingsObject/Eigendom',
 			'', '', '', 
 			'BebouwingsObject/Inkomen',

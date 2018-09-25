@@ -73,7 +73,7 @@ template WKO
 			
 			unit<UInt32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
 			
-			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[VestaRunDataComponent/RuimtelijkeVraagComponent/KengetalType];
+			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[VestaRunDataComponent/RuimtelijkeVraagComponent/BebouwingsType];
 			
 			attribute<GJ_yr>   Lq2        (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/Verbruik; // + Vraag/NieuwbouwWoning/Totaal/Warmte; // WarmteVraag
 			attribute<NrWoningen> Lw1     (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;

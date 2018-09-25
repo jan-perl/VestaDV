@@ -52,7 +52,7 @@ container UtilComponentOperaties
 				DialogType = "map",
 				DialogData = "results/Point";
 
-			unit<uint8>   KengetalTypeDomein := Classifications/NieuwbouwUtil;
+			unit<uint8>   BebouwingsTypeDomein := Classifications/NieuwbouwUtil;
 
 			attribute<nrArbeidspl>                   NrJoinedUnits      (BebouwingsObject) :=BanenZichtjaar;
 
@@ -64,8 +64,8 @@ container UtilComponentOperaties
 			attribute<RegioIndelingen/blok2km>       blok2km_rel        (BebouwingsObject) :=BebouwingsObject/blok2km_rel;
 
 			attribute<Classifications/BouwJaar>      BouwJaar           (BebouwingsObject) :=BebouwingsObject/BouwJaar;
-			attribute<KengetalTypeDomein>            KengetalType       (BebouwingsObject) :=BebouwingsObject/KengetalType;
-			attribute<UInt8>                         SubType            (BebouwingsObject) :=BebouwingsObject/subtype;
+			attribute<BebouwingsTypeDomein>            BebouwingsType       (BebouwingsObject) :=BebouwingsObject/BebouwingsType;
+			attribute<UInt8>                         ModelObjectKey            (BebouwingsObject) :=BebouwingsObject/ModelObjectKey;
 
 			attribute<Float64>                       AandeelWarmteVraag (BebouwingsObject) :=BebouwingsObject/AandeelWarmteVraag;
 			
@@ -104,7 +104,7 @@ container UtilComponentOperaties
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok500m_rel[BebouwingsObject/nr_OrgEntity]";
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok1km_rel [BebouwingsObject/nr_OrgEntity]";
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok2km_rel [BebouwingsObject/nr_OrgEntity]";
-			attribute<Classifications/NieuwbouwUtil>         KengetalType (BebouwingsObject): Expr = "const(rlookup(utiliteit_lbl, Classifications/NieuwbouwUtil/label), BebouwingsObject)";
+			attribute<Classifications/NieuwbouwUtil>         BebouwingsType (BebouwingsObject): Expr = "const(rlookup(utiliteit_lbl, Classifications/NieuwbouwUtil/label), BebouwingsObject)";
 			attribute<Classifications/BouwJaar>           Bouwjaar     (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr) - value(0.5, units/yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
 			attribute<Float64>                       AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // alle util Nieuwbouw is geschikt voor WarmteOpties
 			
@@ -140,7 +140,7 @@ container UtilComponentOperaties
 				attribute<String> TypeName :Expr= "='Union_Data(., ' + asItemList('const(' + Quote(Classifications/NieuwbouwUtil/Name) + ',bron/' + Classifications/NieuwbouwUtil/Label + '/results/BebouwingsObject)') + ')'";
 				attribute<String> Label := TypeName+String(BouwJaar)+String(Point), DialogType = "LabelText";
 			}
-			unit<uint8> KengetalTypeDomein := Classifications/NieuwbouwUtil;
+			unit<uint8> BebouwingsTypeDomein := Classifications/NieuwbouwUtil;
 			
 			attribute<m2>                            nrJoinedUnits  (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/nrJoinedUnits') + ')'";
 			attribute<Geography/rdc_meter>           Point          (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/Point') + ')'";
@@ -149,10 +149,10 @@ container UtilComponentOperaties
 			attribute<RegioIndelingen/blok1km>       blok1km_rel    (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/blok1km_rel') + ')'";
 			attribute<RegioIndelingen/blok2km>       blok2km_rel    (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/blok2km_rel') + ')'";
 			
-			attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/KengetalType') + ')'";
+			attribute<BebouwingsTypeDomein>            BebouwingsType   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/BebouwingsType') + ')'";
 			attribute<Classifications/BouwJaar>      BouwjaarOrg    (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/Bouwjaar') + ')'";
 			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "max_elem(bouwjaarOrg, Classifications/BouwJaar/n2010)";
-			attribute<UInt8>                         SubType        (BebouwingsObject): Expr = "KengetalType * UInt8(#Classifications/BouwJaar) + BouwJaar";
+			attribute<UInt8>                         ModelObjectKey        (BebouwingsObject): Expr = "BebouwingsType * UInt8(#Classifications/BouwJaar) + BouwJaar";
 			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject): Expr = "const(1, BebouwingsObject, nrAansl)"; 
 			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := nrJoinedUnits / 100[ m2 / nrWoningen];
 			attribute<Float64>                    AandeelWarmteVraag(BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/AandeelWarmteVraag') + ')'";

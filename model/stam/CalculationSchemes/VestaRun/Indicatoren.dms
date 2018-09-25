@@ -307,8 +307,8 @@ container indicatoren
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
-					, VestaRunData/NieuwbouwWoning/KengetalTypeDomein
-					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
+					, VestaRunData/NieuwbouwWoning/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('WoningType')+'
 					, units/nrWoningen
 				)'
@@ -319,8 +319,8 @@ container indicatoren
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/utiliteit, '+quote('utiliteit')+'
-					, VestaRunData/utiliteit/KengetalTypeDomein
-					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
+					, VestaRunData/utiliteit/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
 				)'
@@ -331,8 +331,8 @@ container indicatoren
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
-					, VestaRunData/NieuwbouwUtil/KengetalTypeDomein
-					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
+					, VestaRunData/NieuwbouwUtil/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
 				)'
@@ -344,7 +344,7 @@ container indicatoren
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/Glastuinbouw, '+quote('Glastuinbouw')+'
 					, Classifications/GLTB
-					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('GlasTuinBouwType')+'
 					, units/m2
 				)'
@@ -356,7 +356,7 @@ container indicatoren
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
 					, Classifications/GlTb
-					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('NieuwbouwGlTb')+'
 					, units/m2
 				)'

@@ -68,16 +68,16 @@ template VestaRunDataComponent
 	unit<uint32>  BebouwingsObject:   Expr = "Bebouwing/BebouwingsObject";
 	
 	unit<uint32>  PrevObject:         Expr = "StartingStateComponent/BebouwingsObject";
-	unit<uint8>   KengetalTypeDomein: Expr = "Bebouwing/KengetalTypeDomein"
+	unit<uint8>   BebouwingsTypeDomein: Expr = "Bebouwing/BebouwingsTypeDomein"
 	{
-		attribute<string> ResterendFactorName := = HasFactors ? 'Bebouwing/KengetalTypeDomein/ResterendFactorName' : 'name'; // fix missing names
+		attribute<string> ResterendFactorName := = HasFactors ? 'Bebouwing/BebouwingsTypeDomein/ResterendFactorName' : 'name'; // fix missing names
 	}
 	unit<UInt32>  ModelObject:= EnergieVraagModellen/ModelObject;
 	unit<Float64> ModelUnit  := EnergieVraagModellen/ModelUnit;
 	unit<uint32>  WkoCluster := StartingState/AanbodOpties/WkoCluster;
 	
 	
-	attribute<ModelObject> Model_rel  (BebouwingsObject) := rlookup(Bebouwing/SubType, EnergieVraagModellen/SubType);
+	attribute<ModelObject> Model_rel  (BebouwingsObject) := rlookup(Bebouwing/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 	attribute<PlanRegio> PlanRegio_rel(BebouwingsObject) := ='Bebouwing/'+UserInput/PlanRegioNaam+'_rel';
 	
 	attribute<PrevObject> StartingState_rel(BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
@@ -90,13 +90,13 @@ template VestaRunDataComponent
 	container RuimtelijkeVraagComponent
 	{
 		// inherited attributen
-		attribute<KengetalTypeDomein>            KengetalType   (BebouwingsObject) := Bebouwing/KengetalType;
+		attribute<BebouwingsTypeDomein>            BebouwingsType   (BebouwingsObject) := Bebouwing/BebouwingsType;
 		attribute<Classifications/BouwJaar>      BouwJaar       (BebouwingsObject) := Bebouwing/BouwJaar;
 		attribute<Geography/rdc_meter>           Point          (BebouwingsObject) := Bebouwing/point;
 		attribute<Geography/rdc_grids/m100>      GridCellID     (BebouwingsObject) := point[Geography/rdc_grids/m100];
 		
 		attribute<Ratio> ResterendFactorBase(BebouwingsObject) := =HasFactors 
-			? 'MakeDefined(merge(KengetalType, Ratio, '+AsItemList('ResterendFactorMaps/'+KengetalTypeDomein/ResterendFactorName+'[GridCellID]')+'), 1.0)'
+			? 'MakeDefined(merge(BebouwingsType, Ratio, '+AsItemList('ResterendFactorMaps/'+BebouwingsTypeDomein/ResterendFactorName+'[GridCellID]')+'), 1.0)'
 			: 'const(1.0, BebouwingsObject)';
 		attribute<Ratio> ResterendFactor(BebouwingsObject) := ResterendFactorBase * Float64(IsDefined(PlanRegio_rel));
 		
@@ -145,7 +145,7 @@ template VestaRunDataComponent
 	
 	parameter<GJ_yr> geen_verbruik: [ 0.0 ];
 	
-	attribute<KengetalTypeDomein>   KengetalType(BebouwingsObject): Expr = "RuimtelijkeVraagComponent/KengetalType";
+	attribute<BebouwingsTypeDomein>   BebouwingsType(BebouwingsObject): Expr = "RuimtelijkeVraagComponent/BebouwingsType";
 	
 	container EIA_Opties := ='UserInput/BeleidsOpties/EIA/'+NcwRefBase + 'e';
 	container EEA_Opties := UserInput/BeleidsOpties/EEA/Kosten/Base;
@@ -185,8 +185,8 @@ template VestaRunDataComponent
 	
 	container Hoeveelheden
 	{
-		attribute<m2> ZonneBoiler(BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/ZonneBoiler * Kengetallen/ZonneBoiler/Oppervlak[ KengetalType ];
-		attribute<m2> Zon_PV     (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/Zon_PV      * Kengetallen/Zon_PV/Oppervlak     [ KengetalType ];
+		attribute<m2> ZonneBoiler(BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/ZonneBoiler * Kengetallen/ZonneBoiler/Oppervlak[ BebouwingsType ];
+		attribute<m2> Zon_PV     (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/Zon_PV      * Kengetallen/Zon_PV/Oppervlak     [ BebouwingsType ];
 		attribute<nrAansl> mWKK  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/mWKK;
 		attribute<nrAansl> hWP   (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/hWP;
 	}

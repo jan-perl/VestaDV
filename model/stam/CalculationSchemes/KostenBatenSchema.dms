@@ -107,7 +107,7 @@ template KostenBatenSchema
 				parameter<bool> IsNieuwbouw;
 				// en dof case parameters
 				
-				attribute<bool> IsMeergezins  (WoonObject) := Type/IsMeergezins[VestaRunDataComponent/KengetalType];
+				attribute<bool> IsMeergezins  (WoonObject) := Type/IsMeergezins[VestaRunDataComponent/BebouwingsType];
 				
 				attribute<Eur_Aansl> Ki_wd_w (WoonObject) := IsMeergezins ? 2700[Eur_Aansl] : 5000[Eur_Aansl];
 					
@@ -310,7 +310,7 @@ template KostenBatenSchema
 				attribute<Eur> Ki_OnderStation(PlanRegio): Expr = "(Schuiven/KostenMin * Ki_OS_min + Schuiven/KostenMax * Ki_OS_max) * LeerCurves/Curve1", Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 	 			
 	 			attribute<Eur> K_dienstleidingen(PlanRegio): Source = "F 47b",
-	 				Expr = "sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/GlasTuinbouw/KengetalType], PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
+	 				Expr = "sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/GlasTuinbouw/BebouwingsType], PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel)";
 	
 				attribute<Float64> n_Zijwegparen(PlanRegio) := Sqrt(2.0) * SqrtAreaal / GroenteKasLengteFactor, Descr = "F 48";
 					
@@ -349,7 +349,7 @@ template KostenBatenSchema
 				attribute<Eur> Ki_OnderStation(PlanRegio): Expr = "(Schuiven/KostenMin * Ki_OS_min + Schuiven/KostenMax * Ki_OS_max) * LeerCurves/Curve1", Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 					
 				attribute<Eur> K_dienstleidingen(PlanRegio): Source = "F 47b",
-					Expr = "sum(VestaRunData/NieuwbouwGlTb/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/NieuwbouwGlTb/KengetalType], PlanRegioKaarten/NieuwbouwGlTb/impl/PlanRegio_rel)";
+					Expr = "sum(VestaRunData/NieuwbouwGlTb/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/NieuwbouwGlTb/BebouwingsType], PlanRegioKaarten/NieuwbouwGlTb/impl/PlanRegio_rel)";
 	
 				attribute<Float64> n_Zijwegparen(PlanRegio) := Sqrt(2.0) * SqrtAreaal / GroenteKasLengteFactor, Descr = "F 48";
 					

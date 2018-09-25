@@ -44,7 +44,7 @@ template StartingStateComponent
 	unit<UInt32>  ModelObject      := EnergieVraagModellen/ModelObject;
 	unit<uint32>  WkoCluster       := StartingState/AanbodOpties/WkoCluster;
 
-	attribute<ModelObject> Model_rel  (BebouwingsObject) := rlookup(Bebouwing/SubType, EnergieVraagModellen/SubType);
+	attribute<ModelObject> Model_rel  (BebouwingsObject) := rlookup(Bebouwing/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 
 	attribute<Classifications/AanbodOptie> WarmteAllocatie(BebouwingsObject) := const((0 / 0)[Classifications/AanbodOptie], BebouwingsObject);
 	attribute<Eur_yr> KoudeAllocatie(BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
