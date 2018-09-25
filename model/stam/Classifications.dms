@@ -225,13 +225,6 @@ container Classifications: Using = "Units", KeepData = "True"
 	{
 		attribute<String> Label: expr = "WoningtypeBouwjaarBAGUint32/Label[uint32(id(.))]";
 	}
-	unit<uint8> GeenOnderverdeling: nrofrows = 1
-	{
-		attribute<string> label:
-		[
-			'alle'
-		];
-	}
 	// let op: de set van mogelijke RapGroeperingen is afhankelijk van de gekozen BebouwingsComponenten.
 	unit<uint8> BestaandeWoningRapGroep: nrofrows = 16 // Eigendom (4) en inkomensklasse (8) zijn nu niet beschikbaar voor woningBAG
 	{
@@ -568,9 +561,9 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<BebouwingsComponent> Warmtewet_BC_rel: [ 0, 0, 2, 2, 4, 4 ]; /// warmtewet prijs voor Nieuwbouw obv bestaande objecten
 
 		attribute<string> BronExpr: [
-				'BronData/Bebouwing/BagWoning',    'BebouwingsComponenten/Nieuwbouw/woning/@BRON@/@JAAR@/results',
-				'BronData/Bebouwing/BagUtil',      'BebouwingsComponenten/Nieuwbouw/Utiliteit/@BRON@/@JAAR@/results',
-				'BronData/Bebouwing/Glastuinbouw', 'BebouwingsComponenten/Glastuinbouw/@BRON@/@JAAR@/Nieuwbouw'
+				'Bebouwing/BagWoning',    'BebouwingsComponenten/Nieuwbouw/woning/@BRON@/@JAAR@/results',
+				'Bebouwing/BagUtil',      'BebouwingsComponenten/Nieuwbouw/Utiliteit/@BRON@/@JAAR@/results',
+				'Bebouwing/Glastuinbouw', 'BebouwingsComponenten/Glastuinbouw/@BRON@/@JAAR@/Nieuwbouw'
 			];
 		
 		attribute<String> NcwRefBase: [

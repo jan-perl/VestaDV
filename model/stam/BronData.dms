@@ -135,8 +135,6 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			StorageReadOnly = "True";
 	}
 
-	#include <Bebouwing.dms>
-
 	/*
 	container VraagReductiePrijzen: Descr = "zie FO $3.6"
 	{
@@ -149,5 +147,4 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 		
 	}
 	*/
-
 }

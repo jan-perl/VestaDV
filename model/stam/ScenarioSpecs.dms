@@ -44,11 +44,11 @@ container ScenarioSpecs: Using = "Units"
 	
 	container bebouwing := for_each_ne( Classifications/Zichtjaar/Name,
 			'CalculationSchemes/BebouwingsOperaties/Samenstelling('
-			'   BronData/Bebouwing/Woning,       Nieuwbouw/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+			'   Model/Bebouwing/Woning,       Nieuwbouw/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
 					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/WoningResterendFactors/'+Classifications/Zichtjaar/Name : '')+
-			',  BronData/Bebouwing/Utiliteit,    Nieuwbouw/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+			',  Model/Bebouwing/Utiliteit,    Nieuwbouw/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
 					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/UtilResterendFactors/'+Classifications/Zichtjaar/Name : '')+
-			',  BronData/Bebouwing/Glastuinbouw, Nieuwbouw/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
+			',  Model/Bebouwing/Glastuinbouw, Nieuwbouw/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
 			')'
 			);
 			

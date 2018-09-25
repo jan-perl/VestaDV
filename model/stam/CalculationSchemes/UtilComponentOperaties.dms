@@ -42,13 +42,13 @@ container UtilComponentOperaties
 	template PerYear
 	{
 		// begin case parameters
-		attribute<nrArbeidspl> BanenZichtjaar (Brondata/bebouwing/Utiliteit);
+		attribute<nrArbeidspl> BanenZichtjaar (Bebouwing/Utiliteit);
 		// einde case parameters
 
 		container results
 		{
 			unit<uint32> BebouwingsObject: 
-				Expr       = "Brondata/bebouwing/Utiliteit",
+				Expr       = "Bebouwing/Utiliteit",
 				DialogType = "map",
 				DialogData = "results/Point";
 

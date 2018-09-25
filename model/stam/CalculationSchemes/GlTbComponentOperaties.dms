@@ -46,7 +46,7 @@ container GlTbComponentOperaties
 		attribute<bool>            af (Geography/rdc_grids/m100);
 		parameter<units/yr_uint16> zichtjaar;
 		
-		Unit<UInt32> bron: Expr = "BronData/bebouwing/glastuinbouw";
+		Unit<UInt32> bron: Expr = "Bebouwing/glastuinbouw";
 		
 		// einde case parameters
 		
@@ -67,7 +67,7 @@ container GlTbComponentOperaties
 				attribute<Units/m2>    Oppervlakte_bij     := sum(bij ? 10000[units/m2] : 0[units/m2],rel);
 				attribute<Units/m2>    Oppervlakte_af_max  := sum(af  ? 10000[units/m2] : 0[units/m2],rel);
 				attribute<Units/m2>    Oppervlakte_huidig  : 
-					Expr = "sum(BronData/bebouwing/glastuinbouw/Opp_M2, BronData/bebouwing/glastuinbouw/PC4_rel)";
+					Expr = "sum(Bebouwing/glastuinbouw/Opp_M2, Bebouwing/glastuinbouw/PC4_rel)";
 				attribute<Units/ratio> behoudfactor        : Expr = "value(1, Units/Ratio) - min_elem(Oppervlakte_af_max / Oppervlakte_huidig, value(1, Units/ratio))";
 			}
 		}

@@ -40,6 +40,19 @@
 
 container GlasTuinBouw
 {
+	unit<uint32> pc04_010316:
+		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_pc04_010316.dbf",
+		DialogData      = "point",
+		DialogType      = "Map",
+		StorageReadOnly = "True",
+		SyncMode        = "All",
+		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
+		FreeData        = "False"
+	{
+		attribute<uint32>               postcode4;
+		attribute<Classifications/GLTB> GLTB_Code;
+		attribute<m2>                   Opp_M2;
+	}
 	container Af :=
 		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
 			Geography/rdc_grids/m100, bool,
@@ -56,7 +69,7 @@ container GlasTuinBouw
 	{
 		container NL
 		{
-			attribute<units/m2>    Oppervlakte (Classifications/GLTB) := sum(BronData/bebouwing/glastuinbouw/Opp_M2, BronData/bebouwing/glastuinbouw/GLTB_Code);
+			attribute<units/m2>    Oppervlakte (Classifications/GLTB) := sum(Bebouwing/glastuinbouw/Opp_M2, Bebouwing/glastuinbouw/GLTB_Code);
 			parameter<units/m2>    OppervlakteNL := sum(Oppervlakte);
 			attribute<units/ratio> GLTB        (Classifications/GLTB) := Oppervlakte / OppervlakteNL,
 				IntegrityCheck = "sum(this) = 1[units/ratio]";

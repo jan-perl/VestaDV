@@ -1,0 +1,246 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden de bebouwingscomponenten geconfigureerd.       //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
+{
+	unit<uint32> Woning := BAG/vbo_woonfunctie, DialogData = "point", DialogType = "Map"
+	{
+		unit<uint32> BebouwingsObject  := .;
+		unit<uint8>  KengetalTypeDomein:= Classifications/WoningtypeGeoHoogte;
+		unit<uint8>  BouwjaarDomein    := Classifications/BouwJaarBAG;
+		unit<uint8>  SubtypeDomein     := Classifications/WoningtypeBouwJaarBAG;
+
+		attribute<string>                   code               := BAG/vbo_woonfunctie/identificatie;
+		attribute<RegioIndelingen/PC4>      PC4_rel            := MakeDefined(Impl/PC4_coderel,Impl/PC4_georel);
+		attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
+		attribute<RegioIndelingen/blok1km>  blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]];
+		attribute<RegioIndelingen/blok2km>  blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]];
+		attribute<RegioIndelingen/buurt>    buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/geometry);
+
+		attribute<nrAansl>                  nrAansluitingen    := Impl/nrWon * 1[ nrAansl / nrWoningen];
+		attribute<nrWoningen>               nrJoinedUnits      := Impl/nrWon;
+		attribute<nrWoningen>               nrWoonUnits        := Impl/nrWon;
+
+		attribute<KengetalTypeDomein>       KengetalType       := Impl/WoningType;
+		attribute<uint8>                    SubType            := value(KengetalType *  uint8(#(Classifications/BouwJaarBAG)) + Impl/BouwjaarBag_rel, classifications/WoningTypeBouwjaarBAG);
+		attribute<BouwjaarDomein>           BouwJaar:           = Classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwJaarBAG/ClassBreak);
+
+		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Woning/Deelname[KengetalType], 0.0), FreeData = "True";
+
+		attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry
+		{
+			parameter<float64> SymbolSize     := 14.0,  DialogType = "SymbolSize";
+			parameter<m>       SymbolWorldSize:= 30[m], DialogType = "SymbolWorldSize";
+		}
+
+		container Gebied: IsHidden = "True"
+		{
+			attribute<float64> n      (..) := const(1.0,..);
+			attribute<float64> MEAN_x (..) := float64(PointCol(point));
+			attribute<float64> MEAN_y (..) := float64(PointRow(point));
+			attribute<float64> SSD_xx (..) := const(0.0, ..);
+			attribute<float64> SSD_xy (..) := const(0.0, ..);
+			attribute<float64> SSD_yy (..) := const(0.0, ..);
+		}
+
+		attribute<Classifications/energielabel> EnergieLabelData_rel := rjoin(code, Energie/Label/Data/VBO_ID, Energie/Label/Data/energielabel_rel)
+		{
+			attribute<uint32>                       totaal    (..) := uint32(isDefined(EnergieLabelData_rel));
+			attribute<uint32>                       TotWeight (..) := MakeDefined(uint32(AvgLabel), 0);
+			attribute<Classifications/energielabel> AvgLabel  (..) := EnergieLabelData_rel;
+		}
+
+		container Criteria
+		{
+		}
+
+		container Impl : isHidden = "True"
+		{
+			attribute<string>                              PC4code         (..) := substr(postcode,0,4);
+			attribute<RegioIndelingen/PC4>                 PC4_coderel     (..) := rlookup(uint16(PC4code), RegioIndelingen/PC4/code);    // contains 111 null values(2006),  1 null values(2009)
+			attribute<RegioIndelingen/PC4>                 PC4_georel      (..) := point_in_polygon(point, RegioIndelingen/PC4/Geometry); // contains 158 null values(2006), 48 null values(2009)
+
+			attribute<nrWoningen>                          nrWon           (..) := const(1,..,nrWoningen);
+
+			attribute<Classifications/BouwJaarBag>         BouwJaarBag_rel (..) := BAG/vbo_woonfunctie/BouwjaarBag_rel;
+			attribute<string>                              BouwJaarExcel   (..) := Classifications/BouwjaarBag/excel_code[BouwJaarBag_rel];
+
+			attribute<classifications/WoningtypeGeoHoogte> WoningType      (..) := BAG/vbo_woonfunctie/WoningtypeGeoHoogte_rel;
+			attribute<KengetalTypeDomein>                  KengetalType    (..) := WoningType;
+		}
+	}
+
+	unit<uint32> Utiliteit := BAG/vbo_utiliteit
+	{
+		unit<uint32> BebouwingsObject   := .;
+		unit<uint8>  KengetalTypeDomein := Classifications/utiliteitBAG;
+
+		// external key
+		attribute<string>                   code            := BAG/vbo_utiliteit/identificatie;
+		attribute<string>                   postcode        := BAG/vbo_utiliteit/postcode;
+
+		attribute<string>                   PC4code         := substr(postcode,0,4);
+
+		attribute<RegioIndelingen/PC4>      PC4_coderel     := rlookup(uint16(PC4code), RegioIndelingen/PC4/code);     // contains  1 null values(2009)
+		attribute<RegioIndelingen/PC4>      PC4_georel      := point_in_polygon(point, RegioIndelingen/PC4/Geometry);  // contains 70 null values(2009)
+		attribute<RegioIndelingen/PC4>      PC4_rel         := MakeDefined(PC4_coderel,PC4_georel);                    // contains  0 null values(2009)
+
+		attribute<RegioIndelingen/buurt>    buurt_rel       := point_in_polygon(point, RegioIndelingen/buurt/geometry);
+
+		attribute<rdc_meter>                point           := BAG/vbo_utiliteit/locatie;
+		attribute<RegioIndelingen/blok500m> blok500m_rel    := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
+		attribute<RegioIndelingen/blok1km>  blok1km_rel     := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]];
+		attribute<RegioIndelingen/blok2km>  blok2km_rel     := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]];
+
+		attribute<Classifications/BouwJaar> BouwJaar        := Classify(BAG/vbo_utiliteit/bouwjaar, Classifications/BouwJaar/ClassBreak);
+
+		attribute<nrAansl>                  nrAansluitingen := const(1[nrAansl], .);
+		attribute<m2>                       nrJoinedUnits   := BAG/vbo_utiliteit/oppervlakte[m2];
+		attribute<nrWoningen>               nrWoonUnits     := nrJoinedUnits / 100[m2/ nrWoningen];
+
+		container Gebied: IsHidden = "True"
+		{
+			attribute<float64> n     (..) := const(1.0, ..);
+			attribute<float64> MEAN_x(..) := PointCol(point);
+			attribute<float64> MEAN_y(..) := PointRow(point);
+			attribute<float64> SSD_xx(..) := const(0.0, ..);
+			attribute<float64> SSD_xy(..) := const(0.0, ..);
+			attribute<float64> SSD_yy(..) := const(0.0, ..);
+		}
+
+		// foreign key to model data
+		//attribute<Classifications/UtilRapGroep> RapGroep;
+
+		attribute<Classifications/BouwjaarUtilBag> BouwjaarUtilBag_rel := BAG/vbo_utiliteit/BouwjaarUtilBag_rel;
+		attribute<KengetalTypeDomein>              KengetalType        := BAG/vbo_utiliteit/gebruiksdoel;
+		attribute<uint8>                           SubType             := KengetalType *  uint8(NrOfRows(Classifications/BouwjaarUtilBag)) + BouwjaarUtilBag_rel;
+		attribute<int16>                           SymbolIndex         := KengetalTypeDomein/SymbolIndex[KenGetalType], DialogType = "SymbolIndex";
+
+		//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
+		attribute<float64>                         AandeelWarmteVraag  := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Utiliteit/Deelname[KengetalType], 0.0), FreeData = "True";
+
+		container Criteria
+		{
+		}
+	}
+
+	container NieuwbouwWoning :=
+		for_each_nedv(  BronData/Nieuwbouw/SZW/HasMutations ? BronData/Nieuwbouw/SZW/Name : ''
+			, 'BronData/Nieuwbouw/Woning/'+BronData/Nieuwbouw/SZW/Name+'[nrWoningen]'
+			, Geography/rdc_grids/m100, nrWoningen
+		);
+
+	container Util_Nieuwbouw_Inbreiding :=
+		for_each_nedv(
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
+			?	'int32(sum( '
+					'bebouwing/utiliteit/NrJoinedUnits * ' +
+					'float64(bebouwing/utiliteit/KengetalTypeDomein/utiliteit_rel[bebouwing/utiliteit/KengetalType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
+			 	+	', bebouwing/utiliteit/point[rdc_grids/m100]'
+				')'
+				'*max_elem(float64(Nieuwbouw/InbreidingUtilFactor/'+BronData/Nieuwbouw/SZU/Name+') - 1.0 , 0.0)'
+				')'
+			:	'const(0i, Geography/rdc_grids/m100)'
+			,	Geography/rdc_grids/m100, int32
+		);
+
+	container Util_Nieuwbouw_Nieuwbouw :=
+		for_each_nedv(
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
+				?	'int32(Nieuwbouw/UtilOppervlak/'+BronData/Nieuwbouw/SZU/Name +')'
+					''
+				:	'const(0i, Geography/rdc_grids/m100)'
+			,	Geography/rdc_grids/m100, int32
+		);
+
+	container NieuwbouwUtil :=
+		for_each_nedv(
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	'Util_Nieuwbouw_Nieuwbouw/'+BronData/Nieuwbouw/SZU/Name + ' + Util_Nieuwbouw_Inbreiding/'+BronData/Nieuwbouw/SZU/Name
+			,	Geography/rdc_grids/m100, int32
+		);
+
+	unit<uint32> glastuinbouw := BronData/Glastuinbouw/pc04_010316, FreeData = "True"
+	{
+		unit<uint32>  BebouwingsObject   := ., FreeData = "True";
+		unit<uint8>   KengetalTypeDomein := Classifications/GLTB;
+		
+		// external key
+		attribute<string>                     code            := string(ID(.));
+		attribute<string>                     Label           := string(postcode4), DialogType = "LabelText";
+
+		attribute<uint32>                     PC4code         := postcode4;
+		attribute<RegioIndelingen/PC4>        PC4_rel         := rlookup(uint16(PC4code), RegioIndelingen/PC4/code);
+		attribute<string>                     BuurtcodeStr    := BU_CODE;
+		attribute<string>                     buurtcode       := substr(BuurtcodeStr,2,10);
+		attribute<uint32>                     Buurt_nr        := value(buurtcode,  uint32);
+		attribute<RegioIndelingen/buurt>      buurt_rel       := rlookup(Buurt_nr, RegioIndelingen/buurt/code);
+
+		attribute<RegioIndelingen/blok500m>   blok500m_rel    := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
+		attribute<RegioIndelingen/blok1km>    blok1km_rel     := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]];
+		attribute<RegioIndelingen/blok2km>    blok2km_rel     := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]];
+
+		attribute<nrAansl>                    nrAansluitingen := const(1[nrAansl   ], .);
+		attribute<nrWoningen>                 nrWoonUnits     := const(0[nrWoningen], .);
+		attribute<m2>                         NrJoinedUnits   := Opp_M2;
+
+		// location
+		attribute<rdc_meter> point:
+			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_pc04_010316.shp",
+			StorageReadOnly = "True"
+		{
+			parameter<float64> SymbolSize      := 16.0  , DialogType = "SymbolSize";
+			parameter<m>       SymbolWorldSize := 100[m], DialogType = "SymbolWorldSize";
+			parameter<int16>   SymbolIndex     := 81s   , DialogType = "SymbolIndex";
+		}
+		// foreign key to model data
+		attribute<Classifications/BouwJaar> BouwJaar     := const(Classifications/Bouwjaar/Onbekend, .), FreeData = "True";
+		attribute<KengetalTypeDomein>       KengetalType := GLTB_Code, FreeData = "True";
+		attribute<uint8>                    SubType      := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
+
+		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Glastuinbouw/Deelname[KengetalType], 0.0);
+		container Criteria
+		{
+		//	attribute<Bool>     KanBesparen: Expr = "const(false, BebouwingsObject)"; // Vul  hier iets anders in als je in RuimtelijkeVraagMetBesparing wel besparingen voor glastuinbouw wilt
+		}
+	}
+}
