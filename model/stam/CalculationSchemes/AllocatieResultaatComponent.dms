@@ -93,7 +93,7 @@ template AllocatieResultaatComponentTempl
 		attribute<GJ_yr> hWP (BebouwingsObject)  := Aandelen/hWP  * VestaRunDataComponent/DragerOpties/RuimteVerwarming/Warmte * (Kengetallen/hWP/DekkingsGraad / Kengetallen/hWP/COP); // F85
 		attribute<GJ_yr> mWKK(BebouwingsObject)  := Aandelen/mWKK * VestaRunDataComponent/DragerOpties/Warmte/Warmte; // op basis van 50/50 productie   
 		attribute<GJ_yr> CvPomp(BebouwingsObject):= VestaRunDataComponent/Functioneel/PompEnergie * (Aandelen/AardGasExclMicroWKK - Kengetallen/hWP/DekkingsGraad * Aandelen/hWP);
-		attribute<GJ_yr> Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij UitlegUtil
+		attribute<GJ_yr> Koude(BebouwingsObject) := VestaRunDataComponent/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij NieuwbouwUtil
 				
 		attribute<GJ_yr> Elektriciteit(BebouwingsObject) :=
 			  VestaRunDataComponent/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV

@@ -301,13 +301,13 @@ container indicatoren
 					, units/nrWoningen
 				)'
 			);
-		container UitlegWoning :=
+		container NieuwbouwWoning :=
 			for_each_ne(
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/UitlegWoning, '+quote('UitlegWoning')+'
-					, VestaRunData/UitlegWoning/KengetalTypeDomein
+					, AllocatieResultaat/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
+					, VestaRunData/NieuwbouwWoning/KengetalTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
 					, '+quote('WoningType')+'
 					, units/nrWoningen
@@ -325,13 +325,13 @@ container indicatoren
 					, units/m2
 				)'
 			);
-		container UitlegUtil:=
+		container NieuwbouwUtil:=
 			for_each_ne(
 				 UserInput/ReportOpties/RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/UitlegUtil, '+quote('UitlegUtil')+'
-					, VestaRunData/UitlegUtil/KengetalTypeDomein
+					, AllocatieResultaat/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
+					, VestaRunData/NieuwbouwUtil/KengetalTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
@@ -349,15 +349,15 @@ container indicatoren
 					, units/m2
 				)'
 			);
-		container UitlegGlTb:=
+		container NieuwbouwGlTb:=
 			for_each_ne(
 				 UserInput/ReportOpties/RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/UitlegGlTb, '+quote('UitlegGlTb')+'
+					, AllocatieResultaat/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
 					, Classifications/GlTb
 					, '+quote('RuimtelijkeVraagComponent/KengetalType')+'
-					, '+quote('UitlegGlTb')+'
+					, '+quote('NieuwbouwGlTb')+'
 					, units/m2
 				)'
 			);
@@ -385,10 +385,10 @@ container indicatoren
 			"+ (UserInput/ReportOpties/RapportageRegio/Name != 'NL' ? ';InputOutput/Totaal/GenerateAll': '')"
 			"+ ';' + AsList('MaatregelenRapportage/Woning/'      +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/Utiliteit/'   +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
-			"+ ';' + AsList('MaatregelenRapportage/UitlegWoning/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
-			"+ ';' + AsList('MaatregelenRapportage/UitlegUtil/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwWoning/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwUtil/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/GlasTuinBouw/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
-			"+ ';' + AsList('MaatregelenRapportage/UitlegGlTb/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwGlTb/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 //			"+ ';' + 'AllocExports/GenerateThisToo'" // comment-out if you want to skip all exports
 		;
 }

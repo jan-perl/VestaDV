@@ -175,22 +175,22 @@ container bebouwing
 	}
 
 	
-	container UitlegWoning :=
-		for_each_nedv(  BronData/Uitleg/SZW/HasMutations ? BronData/Uitleg/SZW/Name : ''
-			, 'BronData/Uitleg/UitlegWoningTiffs/'+BronData/Uitleg/SZW/Name+'[nrWoningen]'
+	container NieuwbouwWoning :=
+		for_each_nedv(  BronData/Nieuwbouw/SZW/HasMutations ? BronData/Nieuwbouw/SZW/Name : ''
+			, 'BronData/Nieuwbouw/NieuwbouwWoningTiffs/'+BronData/Nieuwbouw/SZW/Name+'[nrWoningen]'
 			, Geography/rdc_grids/m100, nrWoningen
 		);
 	
 	container Util_Nieuwbouw_Inbreiding :=
 		for_each_nedv(
-			BronData/Uitleg/SZU/HasMutations ? BronData/Uitleg/SZU/Name : ''
-			,	BronData/Uitleg/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Uitleg/SZU/wlo_filename_uitleg) > 0 
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
 			?	'int32(sum( '
 					'bebouwing/utiliteit/NrJoinedUnits * ' +
-					'Float64(bebouwing/utiliteit/KengetalTypeDomein/utiliteit_rel[bebouwing/utiliteit/KengetalType] == '+string(BronData/Uitleg/SZU/nr_2)+'[uint8])'
+					'Float64(bebouwing/utiliteit/KengetalTypeDomein/utiliteit_rel[bebouwing/utiliteit/KengetalType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
 			 	+	', bebouwing/utiliteit/point[rdc_grids/m100]'
 				')'
-				'*max_elem(Float64(Uitleg/InbreidingUtilFactorTiffs/'+BronData/Uitleg/SZU/Name+') - 1.0 , 0.0)'
+				'*max_elem(Float64(Nieuwbouw/InbreidingUtilFactorTiffs/'+BronData/Nieuwbouw/SZU/Name+') - 1.0 , 0.0)'
 				')'
 			:	'const(0i, Geography/rdc_grids/m100)'
 			,	Geography/rdc_grids/m100, int32
@@ -199,19 +199,19 @@ container bebouwing
 
 
 		
-	container Util_Nieuwbouw_Uitleg :=
+	container Util_Nieuwbouw_Nieuwbouw :=
 		for_each_nedv(
-			BronData/Uitleg/SZU/HasMutations ? BronData/Uitleg/SZU/Name : ''
-			,	BronData/Uitleg/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Uitleg/SZU/wlo_filename_uitleg) > 0 
-				?	'int32(Uitleg/UitlegUtilBvoTiffs/'+BronData/Uitleg/SZU/Name +')'
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
+				?	'int32(Nieuwbouw/NieuwbouwUtilBvoTiffs/'+BronData/Nieuwbouw/SZU/Name +')'
 					''
 				:	'const(0i, Geography/rdc_grids/m100)'
 			,	Geography/rdc_grids/m100, int32
 		);
-	container UitlegUtil :=
+	container NieuwbouwUtil :=
 		for_each_nedv(
-			BronData/Uitleg/SZU/HasMutations ? BronData/Uitleg/SZU/Name : ''
-			,	'Util_Nieuwbouw_Uitleg/'+BronData/Uitleg/SZU/Name + ' + Util_Nieuwbouw_Inbreiding/'+BronData/Uitleg/SZU/Name
+			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
+			,	'Util_Nieuwbouw_Nieuwbouw/'+BronData/Nieuwbouw/SZU/Name + ' + Util_Nieuwbouw_Inbreiding/'+BronData/Nieuwbouw/SZU/Name
 			,	Geography/rdc_grids/m100, int32
 		);
 

@@ -121,7 +121,7 @@ container Vesta
 				attribute<Ratio> Deelname(Classifications/utiliteitBAG):= const(1[Units/Ratio],Classifications/utiliteitBAG); // fractie deelnemers
 			}
 			container Utiliteit_nieuw {
-				attribute<Ratio> Deelname(Classifications/UitlegUtil):= const(1[Units/Ratio],Classifications/UitlegUtil); // fractie deelnemers
+				attribute<Ratio> Deelname(Classifications/NieuwbouwUtil):= const(1[Units/Ratio],Classifications/NieuwbouwUtil); // fractie deelnemers
 			}
 			container Glastuinbouw_bestaand {
 				attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
@@ -152,7 +152,7 @@ container Vesta
 				];
 			}
 			container Utiliteit_nieuw {
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UitlegUtil): [
+				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/NieuwbouwUtil): [
 					0.001413423, 0.001413423, 0.001413423,
 					0.001413423, 0.009422819, 0.03533557,
 					0.001727517, 0.015312081, 0.001413423

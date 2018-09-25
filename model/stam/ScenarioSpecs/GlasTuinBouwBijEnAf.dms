@@ -39,13 +39,13 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 Container GlasTuinBouw:= for_each_ne( Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/Name : '' 
-			,'MaakMutatieUitleg(BronData/GGSectorAfBij/Bij/' + Classifications/Zichtjaar/Name
+			,'MaakMutatieNieuwbouw(BronData/GGSectorAfBij/Bij/' + Classifications/Zichtjaar/Name
 				+ ',BronData/GGSectorAfBij/Af/'  + Classifications/Zichtjaar/Name
 				+ ',value(' + String(Classifications/Zichtjaar/jaar )+ ',units/yr_uint16)'
-//				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Uitleg/BebouwingsObject','Huidig/LegeUitleg/results/BebouwingsObject')
+//				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Nieuwbouw/BebouwingsObject','Huidig/LegeNieuwbouw/results/BebouwingsObject')
 			+')'
 		)
 {
-	container J2010 := Uitleg/LegeSetFunc(Units/m2, classifications/GLTB);
+	container J2010 := Nieuwbouw/LegeSetFunc(Units/m2, classifications/GLTB);
 	
 }

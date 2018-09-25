@@ -533,11 +533,11 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<String> Name:
 		[
 			'Woning'
-		,	'UitlegWoning'
+		,	'NieuwbouwWoning'
 		,	'Utiliteit'
-		,	'UitlegUtil'
+		,	'NieuwbouwUtil'
 		,	'Glastuinbouw'
-		,	'UitlegGlTb'
+		,	'NieuwbouwGlTb'
 		];
 		attribute<String> Code := string(ID(.));
 
@@ -553,24 +553,24 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 		container V := for_each_nedv(name, string(ID(.))+'[..]', void, .);
 		parameter<.> Woning      : [ 0 ];
-		parameter<.> UitlegWoning: [ 1 ];
+		parameter<.> NieuwbouwWoning: [ 1 ];
 		parameter<.> Utiliteit   : [ 2 ];
-		parameter<.> UitlegUtil  : [ 3 ];
+		parameter<.> NieuwbouwUtil  : [ 3 ];
 		parameter<.> Glastuinbouw: [ 4 ];
-		parameter<.> UitlegGlTb  : [ 5 ];
+		parameter<.> NieuwbouwGlTb  : [ 5 ];
 
 		attribute<Bool> IsBestaand:     [ true,  false,  true, false,  true, false ];
 		attribute<Bool> IsGlastuinbouw: [ false, false, false, false,  true,  true ];
-		attribute<Bool> IsUitleg := !IsBestaand;
+		attribute<Bool> IsNieuwbouw := !IsBestaand;
 		attribute<Bool> DraagtBTW:  [ true,  true, false, false, false, false ];
 		attribute<Bool> KanWKO   := not(IsGlastuinbouw);
 		attribute<Bool> Warmtewet:  [ true, false, false, false, false, false ]; // prijsberekening warmte volgens ACM berekening ?
-		attribute<BebouwingsComponent> Warmtewet_BC_rel: [ 0, 0, 2, 2, 4, 4 ]; /// warmtewet prijs voor uitleg obv bestaande objecten
+		attribute<BebouwingsComponent> Warmtewet_BC_rel: [ 0, 0, 2, 2, 4, 4 ]; /// warmtewet prijs voor Nieuwbouw obv bestaande objecten
 
 		attribute<string> BronExpr: [
-				'BronData/Bebouwing/BagWoning',    'BebouwingsComponenten/Uitleg/woning/@BRON@/@JAAR@/results',
-				'BronData/Bebouwing/BagUtil',      'BebouwingsComponenten/Uitleg/Utiliteit/@BRON@/@JAAR@/results',
-				'BronData/Bebouwing/Glastuinbouw', 'BebouwingsComponenten/Glastuinbouw/@BRON@/@JAAR@/Uitleg'
+				'BronData/Bebouwing/BagWoning',    'BebouwingsComponenten/Nieuwbouw/woning/@BRON@/@JAAR@/results',
+				'BronData/Bebouwing/BagUtil',      'BebouwingsComponenten/Nieuwbouw/Utiliteit/@BRON@/@JAAR@/results',
+				'BronData/Bebouwing/Glastuinbouw', 'BebouwingsComponenten/Glastuinbouw/@BRON@/@JAAR@/Nieuwbouw'
 			];
 		
 		attribute<String> NcwRefBase: [
@@ -603,13 +603,13 @@ container Classifications: Using = "Units", KeepData = "True"
 		parameter<EnergieDrager> Elektriciteit: [ 2 ];
 	}
 
-	unit<uint8> UitlegUtil: nrofrows = 9
+	unit<uint8> NieuwbouwUtil: nrofrows = 9
 	{
 //		attribute<utiliteit_EK> ExternalKey:     [1,2,3,4,5,6,7,8,9], isHidden = "True";
 		attribute<String>       Label:           ['kantoor', 'winkel', 'groothandel', 'autohandel_reperatie','verzorging_verpleging', 'ziekenhuis', 'onderwijs', 'horeca' , 'overig'], DialogType = "LabelText";
 		attribute<String>       Label_key:       ['kantoren', 'winkels', 'Groothandel', 'Autohandel en reparatie', 'Verpleging en verzorging', 'Ziekenhuizen', 'Onderwijs','Horeca','Overige dienstverlening'], isHidden = "True";
-		attribute<String>       filename_uitleg: ['kantoren', 'winkels', 'groothandel', 'autohandel', 'verpleging', 'ziekenhuis', 'onderwijs','horeca','overig'], isHidden = "True";
-		attribute<String>       wlo_filename_uitleg: ['kantoor', 'winkel', '', '', 'verpleging_verzorging', '', 'onderwijs','horeca','overig_dienstverlening'], isHidden = "True";
+		attribute<String>       filename_Nieuwbouw: ['kantoren', 'winkels', 'groothandel', 'autohandel', 'verpleging', 'ziekenhuis', 'onderwijs','horeca','overig'], isHidden = "True";
+		attribute<String>       wlo_filename_Nieuwbouw: ['kantoor', 'winkel', '', '', 'verpleging_verzorging', '', 'onderwijs','horeca','overig_dienstverlening'], isHidden = "True";
 		attribute<String>       Excel_Code:      Expr = "Label_key", isHidden = "True";
 		attribute<int16>        SymbolIndex:     [41,54,241,49,67,213,107,246,171], DialogType = "SymbolIndex", isHidden = "True";
 		attribute<String>       Name:            Expr = "Label", isHidden = "True";
@@ -624,7 +624,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<int16>        SymbolIndex:     [41,54,241,49,67,213,107,246,171,150], DialogType = "SymbolIndex";
 		attribute<String>       Name := Label;
 		attribute<string>       resterendFactorName: ['kantoor', 'winkel', 'verzorging_verpleging', 'horeca', 'onderwijs', 'overig', 'overig', 'overig', 'overig', 'overig'];
-		attribute<UitlegUtil>   utiliteit_rel := rlookup(resterendFactorName, UitlegUtil/Label);
+		attribute<NieuwbouwUtil>   utiliteit_rel := rlookup(resterendFactorName, NieuwbouwUtil/Label);
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
@@ -806,7 +806,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ..)', void, .);
 	}
-	unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningType) // wordt gebruikt om uitleg maps en ResterdFactorMaps te lezen.
+	unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningType) // wordt gebruikt om Nieuwbouw maps en ResterdFactorMaps te lezen.
 	{
 		attribute<Bool>       HasMutations      := Zichtjaar/HasMutations[nr_1];
 		attribute<String>     zichtjaar_Label   := Zichtjaar/Label[nr_1];
@@ -823,7 +823,7 @@ container Classifications: Using = "Units", KeepData = "True"
 
 		container V := for_each_nedv(name, 'value('+string(ID(.))+', ...)', void, .);
 	}
-	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UitlegUtil)
+	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, NieuwbouwUtil)
 	{
 		attribute<Bool>       HasMutations   := Zichtjaar/HasMutations[nr_1];
 		attribute<String>     zichtjaar_Label:= Zichtjaar/Label[nr_1];
@@ -831,8 +831,8 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<String>     prev_zichtjaar_name := Zichtjaar/Name[nr_1-1b];
 		attribute<units/yr_uint16> zichtjaar_jaar := Zichtjaar/Jaar[nr_1];
 		attribute<String>     period_name    := Zichtjaar/period_name[nr_1];
-		attribute<String>     utiliteit_Name := UitlegUtil/Name[nr_2];
-		attribute<String>     wlo_filename_uitleg:= UitlegUtil/wlo_filename_uitleg[nr_2];
+		attribute<String>     utiliteit_Name := NieuwbouwUtil/Name[nr_2];
+		attribute<String>     wlo_filename_Nieuwbouw:= NieuwbouwUtil/wlo_filename_Nieuwbouw[nr_2];
 		attribute<String>     Name           := zichtjaar_Name + '/' + utiliteit_Name;
 		attribute<String>     prev_name      := prev_zichtjaar_Name + '/' + utiliteit_Name;
 		attribute<string>     Label          := Name;

@@ -51,15 +51,15 @@ container CalculationSchemes: Using = "Units;Geography"
 		template Samenstelling
 		{
 			container Woning;
-			container UitlegWoning;
+			container NieuwbouwWoning;
 			parameter<bool> HasWoningResterendFactors;
 			container WoningResterendFactors;
 			container Utiliteit;
-			container UitlegUtil;
+			container NieuwbouwUtil;
 			parameter<bool> HasUtiliteitResterendFactors;
 			container UtiliteitResterendFactors;
 			container GlasTuinbouw;
-			container UitlegGLTB;
+			container NieuwbouwGLTB;
 			parameter<bool> HasGlasTuinbouwResterendFactors;
 			container GlasTuinbouwResterendFactors;
 		}

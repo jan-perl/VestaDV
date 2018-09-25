@@ -75,8 +75,8 @@ template WKO
 			
 			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[VestaRunDataComponent/RuimtelijkeVraagComponent/KengetalType];
 			
-			attribute<GJ_yr>   Lq2        (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/Verbruik; // + Vraag/UitlegWoning/Totaal/Warmte; // WarmteVraag
-			attribute<NrWoningen> Lw1     (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/UitlegWoning/Totaal/Warmte;
+			attribute<GJ_yr>   Lq2        (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/Verbruik; // + Vraag/NieuwbouwWoning/Totaal/Warmte; // WarmteVraag
+			attribute<NrWoningen> Lw1     (BebouwingsObject) := VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
 			attribute<GJ_yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
@@ -129,22 +129,22 @@ template WKO
 				BeginStatus/KostenBaten/KostenD/Wonen/bbw
 			);
 
-		container UitlegWoningData := 
+		container NieuwbouwWoningData := 
 			WoningDataTempl(
-				VestaRunData/UitlegWoning, 
-				BeginStatus/KostenBaten/PlanRegioKaarten/UitlegWoning/WarmtePrijs, 
-				Entiteiten/UitlegWoningType,
+				VestaRunData/NieuwbouwWoning, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
+				Entiteiten/NieuwbouwWoningType,
 				BeginStatus/KostenBaten/KostenD/Wonen/nbw
 			);
 
 		template UtilDataTempl
 		{
-			container VestaRunDataComponent;    // := VestaRunData/UitlegUtil;
-			parameter<Eur_GJ> WarmtePrijs;      // := BeginStatus/KostenBaten/PlanRegioKaarten/UitlegUtil/WarmtePrijs;
+			container VestaRunDataComponent;    // := VestaRunData/NieuwbouwUtil;
+			parameter<Eur_GJ> WarmtePrijs;      // := BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs;
 			
 			unit<UInt32> BebouwingsObject := VestaRunDataComponent/BebouwingsObject;
 			
-			attribute<GJ_yr> Lq4   (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/Verbruik, Descr = "Warmtevraag"; // + Vraag/UitlegWoning/Totaal/Warmte";
+			attribute<GJ_yr> Lq4   (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/Verbruik, Descr = "Warmtevraag"; // + Vraag/NieuwbouwWoning/Totaal/Warmte";
 			attribute<GJ_yr> Lq4bis(BebouwingsObject):= VestaRunDataComponent/AandeelWarmteVraag * VestaRunDataComponent/Functioneel/Koude, Descr = "KoudeVraag";
 			attribute<m2>    Lu    (BebouwingsObject):= VestaRunDataComponent/WarmteVraagD/NrModelUnits;
 			
@@ -206,10 +206,10 @@ template WKO
 				BeginStatus/KostenBaten/PlanRegioKaarten/Utiliteit/WarmtePrijs
 			);
 		
-		container UitlegUtilData := 
+		container NieuwbouwUtilData := 
 			UtilDataTempl(
-				VestaRunData/UitlegUtil, 
-				BeginStatus/KostenBaten/PlanRegioKaarten/UitlegUtil/WarmtePrijs
+				VestaRunData/NieuwbouwUtil, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs
 			);
 		
 		template WkoDataTempl

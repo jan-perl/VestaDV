@@ -40,15 +40,15 @@
 
 container ScenarioSpecs: Using = "Units"
 {
-	#include<Uitleg.dms>
+	#include<Nieuwbouw.dms>
 	
 	container bebouwing := for_each_ne( Classifications/Zichtjaar/Name,
 			'CalculationSchemes/BebouwingsOperaties/Samenstelling('
-			'   BronData/Bebouwing/Woning,       Uitleg/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+			'   BronData/Bebouwing/Woning,       Nieuwbouw/woning/'      +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
 					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/WoningResterendFactors/'+Classifications/Zichtjaar/Name : '')+
-			',  BronData/Bebouwing/Utiliteit,    Uitleg/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
+			',  BronData/Bebouwing/Utiliteit,    Nieuwbouw/Utiliteit/'   +Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations)+
 					', BronData'+(Classifications/Zichtjaar/HasMutations ? '/Sloop/UtilResterendFactors/'+Classifications/Zichtjaar/Name : '')+
-			',  BronData/Bebouwing/Glastuinbouw, Uitleg/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
+			',  BronData/Bebouwing/Glastuinbouw, Nieuwbouw/Glastuinbouw/'+Classifications/Zichtjaar/Name+'/results, false, BronData'
 			')'
 			);
 			
@@ -146,7 +146,7 @@ container ScenarioSpecs: Using = "Units"
 						attribute<Eur_Aansl>    AansluitTarief_max(Classifications/WoningtypeGeoHoogte ):= AansluitTarief_min;
 					}
 				}
-				container UitlegWoning:= Woning
+				container NieuwbouwWoning:= Woning
 				{
 					attribute<Units/Ratio> Deelname(Classifications/woningtype2006):= Parameters/CollectieveOpwekking/Woning_nieuw/Deelname;
 					
@@ -206,15 +206,15 @@ container ScenarioSpecs: Using = "Units"
 						attribute<Eur_kW> AansluitTarief_max(Classifications/utiliteitBAG):= const(100[Eur_kW],Classifications/utiliteitBAG);
 					}
 				}
-				container UitlegUtil := Utiliteit
+				container NieuwbouwUtil := Utiliteit
 				{
-					attribute<Units/Ratio> Deelname(Classifications/UitlegUtil):= Parameters/CollectieveOpwekking/Utiliteit_nieuw/Deelname;
+					attribute<Units/Ratio> Deelname(Classifications/NieuwbouwUtil):= Parameters/CollectieveOpwekking/Utiliteit_nieuw/Deelname;
 
 					// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
 					// 302671365 de oppervlakte bij het oproepen van het item /RunContext/Y2050/VestaRunData/Utiliteit/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 					// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 					// SourceData\vesta\vraag\utiliteit\pand-BAG_sel_LISA_2008_010611.shp
-					attribute<Units/Bouwlaag> StapelFactor (Classifications/UitlegUtil): [  // 4
+					attribute<Units/Bouwlaag> StapelFactor (Classifications/NieuwbouwUtil): [  // 4
 						4.13549775,2.48129865,1.6541991,// oude stapelfactor 2.5, 1.5, 1.0, 
 						1.6541991,4.13549775,4.13549775,// oude stapelfactor 1.0, 2.5, 2.5,
 						2.48129865,3.3083982,3.3083982// oude stapelfactor 1.5, 2.0, 2.0
@@ -222,17 +222,17 @@ container ScenarioSpecs: Using = "Units"
 
 					container Zon_PV := Utiliteit/Zon_PV
 					{
-						attribute<m2_Dak> dakopp   (Classifications/UitlegUtil) := const(0.8[m2_Dak],Classifications/UitlegUtil); // m2 per (DakObject = ModelEenheid * Bouwlaag)
-						attribute<m2_MU > Oppervlak(Classifications/UitlegUtil) := dakopp / StapelFactor;  // m2 per ModelUnit
+						attribute<m2_Dak> dakopp   (Classifications/NieuwbouwUtil) := const(0.8[m2_Dak],Classifications/NieuwbouwUtil); // m2 per (DakObject = ModelEenheid * Bouwlaag)
+						attribute<m2_MU > Oppervlak(Classifications/NieuwbouwUtil) := dakopp / StapelFactor;  // m2 per ModelUnit
 					}
 					container ZonneBoiler := Utiliteit/ZonneBoiler
 					{
-						attribute<m2_MU > Oppervlak(Classifications/UitlegUtil) := Parameters/LokaleOpwekking/Utiliteit_nieuw/ZonneBoiler_Oppervlak;
+						attribute<m2_MU > Oppervlak(Classifications/NieuwbouwUtil) := Parameters/LokaleOpwekking/Utiliteit_nieuw/ZonneBoiler_Oppervlak;
 					}
 					container Opbrengsten := Utiliteit/Opbrengsten,  Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 					{
-						attribute<Eur_kW> AansluitTarief_min(Classifications/UitlegUtil):= const( 50[Eur_kW],Classifications/UitlegUtil);
-						attribute<Eur_kW> AansluitTarief_max(Classifications/UitlegUtil):= const(100[Eur_kW],Classifications/UitlegUtil);
+						attribute<Eur_kW> AansluitTarief_min(Classifications/NieuwbouwUtil):= const( 50[Eur_kW],Classifications/NieuwbouwUtil);
+						attribute<Eur_kW> AansluitTarief_max(Classifications/NieuwbouwUtil):= const(100[Eur_kW],Classifications/NieuwbouwUtil);
 					}
 					container mWKK := Utiliteit/mWKK
 					{
@@ -277,7 +277,7 @@ container ScenarioSpecs: Using = "Units"
 				}
 				
 
-				container UitlegGlTb := Glastuinbouw
+				container NieuwbouwGlTb := Glastuinbouw
 				{
 					attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
 					container Opbrengsten := Glastuinbouw/Opbrengsten,

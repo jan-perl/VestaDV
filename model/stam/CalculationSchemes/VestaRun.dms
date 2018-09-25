@@ -256,14 +256,14 @@ template VestaRun
 	}
 	attribute<String> BCN(Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
 	attribute<Bool>   HasFactors(Classifications/BebouwingsComponent) := 
-		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsUitleg ? 'false' : 'Bebouwing/Has'+BCN+'ResterendFactors',',')+')';
+		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCN+'ResterendFactors',',')+')';
 	
 	container VestaRunData :=
 			for_each_ne(BCN,
 				'CalculationSchemes/VestaRunDataComponent('
 					'Bebouwing/'+BCN+','
 					+Quote(BCN)+','
-					+String(Classifications/BebouwingsComponent/IsUitleg)+','
+					+String(Classifications/BebouwingsComponent/IsNieuwbouw)+','
 					+String(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
 					'ScenarioSpecs/energievraag/'+BCN+','
@@ -364,11 +364,11 @@ template VestaRun
 		container Domains // to support specific derivations
 		{
 			unit<uint32> Woning:        = ../Woning/BebouwingsObject;
-			unit<uint32> UitlegWoning:  = ../UitlegWoning/BebouwingsObject;
+			unit<uint32> NieuwbouwWoning:  = ../NieuwbouwWoning/BebouwingsObject;
 			unit<uint32> Utiliteit:     = ../Utiliteit/BebouwingsObject;
-			unit<uint32> UitlegUtil:    = ../UitlegUtil/BebouwingsObject;
+			unit<uint32> NieuwbouwUtil:    = ../NieuwbouwUtil/BebouwingsObject;
 			unit<uint32> GlasTuinbouw:  = ../GlasTuinbouw/BebouwingsObject;
-			unit<uint32> UitlegGlTb:    = ../UitlegGlTb/BebouwingsObject;
+			unit<uint32> NieuwbouwGlTb:    = ../NieuwbouwGlTb/BebouwingsObject;
 		}
 		container Woning // specific AansluitTarief (per nrAansluitingen)
 		{
@@ -397,31 +397,31 @@ template VestaRun
 				attribute<Eur_yr> VastRechtBijdrageA(Domains/Woning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
-		container UitlegWoning
+		container NieuwbouwWoning
 		{
 			container opbrengsten: Source = "Fo v7a F 6"
 			{
-				attribute<Float64> AansluitTarief     (Domains/UitlegWoning) := 
+				attribute<Float64> AansluitTarief     (Domains/NieuwbouwWoning) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
-				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_NW;
-				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_NW;
-				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegWoning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_NW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_NW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/NieuwbouwWoning) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/NieuwbouwWoning) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 				
 				parameter<Float64> VastRechtTarief:  = 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin + 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 					
-				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegWoning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/NieuwbouwWoning) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<Eur_yr>  VastRechtBijdrage (Domains/UitlegWoning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<Eur_yr>  VastRechtBijdrageD(Domains/UitlegWoning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<Eur_yr>  VastRechtBijdrageA(Domains/UitlegWoning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrage (Domains/NieuwbouwWoning) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageD(Domains/NieuwbouwWoning) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageA(Domains/NieuwbouwWoning) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 		container Utiliteit // specific AansluitTarief (per AansluitCapaciteit)
@@ -453,35 +453,35 @@ template VestaRun
 				attribute<Eur_yr> HeffingskortingE  (Domains/Utiliteit) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
-		container UitlegUtil
+		container NieuwbouwUtil
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief     (Domains/UitlegUtil) := 
+				attribute<Float64> AansluitTarief     (Domains/NieuwbouwUtil) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
 					Source = "FO v7a F 6 en 12";
 				
-				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
-				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegUtil) := AansluitTarief * WarmteVraagA/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageD  (Domains/NieuwbouwUtil) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
+				attribute<Eur>     AansluitBijdrageA  (Domains/NieuwbouwUtil) := AansluitTarief * WarmteVraagA/AansluitCapaciteit;
 				
-				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_NU;
-				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_NU;
+				attribute<Eur>     AansluitBijdrageG  (Domains/NieuwbouwUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefG_NU;
+				attribute<Eur>     AansluitBijdrageE  (Domains/NieuwbouwUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/AansluitTariefE_NU;
 				
-				attribute<Float64> VastRechtTarief(Domains/UitlegUtil): Source = "F 11",
+				attribute<Float64> VastRechtTarief(Domains/NieuwbouwUtil): Source = "F 11",
 					 = value(96.84, Eur_kW_yr) * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, value(4000, kW ))^Float64(- 0.22);
-				attribute<Float64> VastRechtTariefD(Domains/UitlegUtil): Source = "F 11",
+				attribute<Float64> VastRechtTariefD(Domains/NieuwbouwUtil): Source = "F 11",
 					 = value(96.84, Eur_kW_yr) * Min_elem(WarmteVraagD/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
-				attribute<Float64> VastRechtTariefA(Domains/UitlegUtil): Source = "F 11",
+				attribute<Float64> VastRechtTariefA(Domains/NieuwbouwUtil): Source = "F 11",
 					 = value(96.84, Eur_kW_yr) * Min_elem(WarmteVraagA/AansluitCapaciteit, value(4000, kW ))^Float64(- 0.22);
-				attribute<Eur_yr>  VastRechtBijdrage (Domains/UitlegUtil):                          = RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
-				attribute<Eur_yr>  VastRechtBijdrageD(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
-				attribute<Eur_yr>  VastRechtBijdrageA(Domains/UitlegUtil): Source = "Fo v7a F 11",  = WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
+				attribute<Eur_yr>  VastRechtBijdrage (Domains/NieuwbouwUtil):                          = RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
+				attribute<Eur_yr>  VastRechtBijdrageD(Domains/NieuwbouwUtil): Source = "Fo v7a F 11",  = WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
+				attribute<Eur_yr>  VastRechtBijdrageA(Domains/NieuwbouwUtil): Source = "Fo v7a F 11",  = WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
 				
-				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
-				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/NieuwbouwUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/NieuwbouwUtil) := RuimtelijkeVraagComponent/nrModelUnits * InfraParameters/JaarlijksU_E;
 				
-				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegUtil) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (Domains/NieuwbouwUtil) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}		
 		container GlasTuinbouw // specific Bijdragen
@@ -510,30 +510,30 @@ template VestaRun
 				attribute<Eur_yr> VastRechtBijdrageA(Domains/GlasTuinbouw) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
-		container UitlegGlTb // specific Bijdragen
+		container NieuwbouwGlTb // specific Bijdragen
 		{
 			container opbrengsten
 			{
-				attribute<Float64> AansluitTarief     (Domains/UitlegGlTb) := 
+				attribute<Float64> AansluitTarief     (Domains/NieuwbouwGlTb) := 
 					Float64(J2010/indicatoren/heeft_gas[Planregio_rel]) * 
 					(Kengetallen/Opbrengsten/AansluitTarief_min[KengetalType] * Schuiven/OpbrMin + Kengetallen/Opbrengsten/AansluitTarief_max[KengetalType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
 				
-				attribute<Eur>     AansluitBijdrageG  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
-				attribute<Eur>     AansluitBijdrageE  (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
-				attribute<Eur>     AansluitBijdrageD  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
-				attribute<Eur>     AansluitBijdrageA  (Domains/UitlegGlTb) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageG  (Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefG_BW;
+				attribute<Eur>     AansluitBijdrageE  (Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/AansluitTariefE_BW;
+				attribute<Eur>     AansluitBijdrageD  (Domains/NieuwbouwGlTb) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+				attribute<Eur>     AansluitBijdrageA  (Domains/NieuwbouwGlTb) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
 //
 				parameter<Float64> VastRechtTarief := 
 					(Kengetallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
 					Kengetallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
 
-				attribute<Eur_yr> VastRechtBijdrageG(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
-				attribute<Eur_yr> VastRechtBijdrageE(Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
-				attribute<Eur_yr> HeffingskortingE  (Domains/UitlegGlTb) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> VastRechtBijdrageG(Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_G;
+				attribute<Eur_yr> VastRechtBijdrageE(Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * InfraParameters/JaarlijksW_E;
+				attribute<Eur_yr> HeffingskortingE  (Domains/NieuwbouwGlTb) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
-				attribute<Eur_yr> VastRechtBijdrage (Domains/UitlegGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
-				attribute<Eur_yr> VastRechtBijdrageD(Domains/UitlegGlTb) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
-				attribute<Eur_yr> VastRechtBijdrageA(Domains/UitlegGlTb) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrage (Domains/NieuwbouwGlTb) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageD(Domains/NieuwbouwGlTb) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+				attribute<Eur_yr> VastRechtBijdrageA(Domains/NieuwbouwGlTb) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
 			}
 		}
 	}
@@ -541,9 +541,9 @@ template VestaRun
 	container entiteiten
 	{
 		unit<UInt32> Woning          := VestaRunData/woning/BebouwingsObject;
-		unit<UInt32> UitlegWoning    := VestaRunData/UitlegWoning/BebouwingsObject;
+		unit<UInt32> NieuwbouwWoning    := VestaRunData/NieuwbouwWoning/BebouwingsObject;
 		unit<uint8> WoningType       := VestaRunData/Woning/KengetalTypeDomein;
-		unit<uint8> UitlegWoningType := VestaRunData/UitlegWoning/KengetalTypeDomein;
+		unit<uint8> NieuwbouwWoningType := VestaRunData/NieuwbouwWoning/KengetalTypeDomein;
 	}
 	container NCW {
 		container ow28 := NcwSchema(AanbodKentallen/DiscontoVoet_ow, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);

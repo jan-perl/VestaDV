@@ -75,7 +75,7 @@ container UserInput1: Using = "Model/Units"
 					parameter<Ratio> Zon_PV:      [ 0.0 ];
 					parameter<Ratio> ZonneBoiler: [ 0.0 ];
 					
-					parameter<Ratio> mWKK:   [ 0.0 ]; // niet hier aanzetten als je het alleen voor woningen aan wilt, dan specifiek voor BebouwingsComponent Woning of UitlegWoning instellen hieronder bij BaseLine
+					parameter<Ratio> mWKK:   [ 0.0 ]; // niet hier aanzetten als je het alleen voor woningen aan wilt, dan specifiek voor BebouwingsComponent Woning of NieuwbouwWoning instellen hieronder bij BaseLine
 					attribute<Ratio> hWP(Classifications/energielabel) := const(0.0, Classifications/energielabel); // uit in 2010
 				}
 				container Verbeteringen
@@ -128,9 +128,9 @@ container UserInput1: Using = "Model/Units"
 			container Woning      := GenericBase;
 			container Utiliteit   := GenericBase;
 			container Glastuinbouw:= GenericBase;
-			container UitlegWoning:= Woning;
-			container UitlegUtil  := Utiliteit;
-			container UitlegGlTb  := Glastuinbouw;
+			container NieuwbouwWoning:= Woning;
+			container NieuwbouwUtil  := Utiliteit;
+			container NieuwbouwGlTb  := Glastuinbouw;
 		}
 	}
 	

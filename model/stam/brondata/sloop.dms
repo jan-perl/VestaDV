@@ -40,44 +40,44 @@
 
 container Sloop
 {
-	container Uitleg := BronData/Uitleg;
+	container Nieuwbouw := BronData/Nieuwbouw;
 	
 	container WoningResterendTiffs := 
-		for_each_ndva(Uitleg/SZW/HasMutations ? Uitleg/SZW/Name : ''
+		for_each_ndva(Nieuwbouw/SZW/HasMutations ? Nieuwbouw/SZW/Name : ''
 			, Geography/rdc_grids/m100, float32
-			, Parameters/WloScenarioFolder+'/'+Uitleg/SZW/period_name+'/Wonen/Resterend/'
-			+ Uitleg/SZW/wonen_wlo_filename+ '.tif'
+			, Parameters/WloScenarioFolder+'/'+Nieuwbouw/SZW/period_name+'/Wonen/Resterend/'
+			+ Nieuwbouw/SZW/wonen_wlo_filename+ '.tif'
 		);
 
 	container WoningResterendFactors :=
-		for_each_nedv(  Uitleg/SZW/HasMutations ? Uitleg/SZW/Name : ''
-			, 'median(0.0, Float64(WoningResterendTiffs/'+Uitleg/SZW/Name +'), '
-				+ (Uitleg/SZW/Zichtjaar_jaar > 2020w ? Uitleg/SZW/prev_name : '1.0')+')' 
+		for_each_nedv(  Nieuwbouw/SZW/HasMutations ? Nieuwbouw/SZW/Name : ''
+			, 'median(0.0, Float64(WoningResterendTiffs/'+Nieuwbouw/SZW/Name +'), '
+				+ (Nieuwbouw/SZW/Zichtjaar_jaar > 2020w ? Nieuwbouw/SZW/prev_name : '1.0')+')' 
 			, Geography/rdc_grids/m100, Float64
 		);
 
 	container UtilDeltaFactorTiffs :=
-		for_each_ndva(  Uitleg/SZU/HasMutations && strlen(Uitleg/SZU/wlo_filename_uitleg) > 0  ? Uitleg/SZU/Name : ''
+		for_each_ndva(  Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0  ? Nieuwbouw/SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, Parameters/WloScenarioFolder+'/'+Uitleg/SZU/period_name+'/Util/Resterend/'
-			+ Uitleg/SZU/wlo_filename_uitleg + '.tif'
+			, Parameters/WloScenarioFolder+'/'+Nieuwbouw/SZU/period_name+'/Util/Resterend/'
+			+ Nieuwbouw/SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
 	container UtilResterendFactors :=
-		for_each_nedv(  Uitleg/SZU/HasMutations ? Uitleg/SZU/Name : ''
-			, Uitleg/SZU/Zichtjaar_jaar > 2010w && strlen(Uitleg/SZU/wlo_filename_uitleg) > 0  
-					? 'median(0.0, Float64(UtilDeltaFactorTiffs/'+Uitleg/SZU/Name +'), '
-						+ (Uitleg/SZU/Zichtjaar_jaar > 2020w ? Uitleg/SZU/prev_name : '1.0')+')' 
+		for_each_nedv(  Nieuwbouw/SZU/HasMutations ? Nieuwbouw/SZU/Name : ''
+			, Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0  
+					? 'median(0.0, Float64(UtilDeltaFactorTiffs/'+Nieuwbouw/SZU/Name +'), '
+						+ (Nieuwbouw/SZU/Zichtjaar_jaar > 2020w ? Nieuwbouw/SZU/prev_name : '1.0')+')' 
 					: 'const(1.0, Geography/rdc_grids/m100)'
 			, Geography/rdc_grids/m100, float64
 		);
 
 	container Totalen {
-		attribute<float32> WoningResterend (Uitleg/SZW) := ='union_data(Uitleg/SZW,'+AsItemList(Uitleg/SZW/HasMutations ? 'sum(WoningResterendTiffs/' +Uitleg/SZW/Name+')' : '0f / 0f')+')';
-		attribute<string>  ScenYearTypeW (Uitleg/SZW) := Uitleg/SZW/Name;		
-		attribute<float32> UtilDeltaFactorSum(Uitleg/SZU) := ='union_data(Uitleg/SZU,'+AsItemList(Uitleg/SZU/HasMutations && strlen(Uitleg/SZU/wlo_filename_uitleg) > 0 ? 'sum(UtilDeltaFactorTiffs/'+Uitleg/SZU/Name+')' : '0f / 0f')+')';
-		attribute<float32> UtilDeltaFactorMean(Uitleg/SZU) := ='union_data(Uitleg/SZU,'+AsItemList(Uitleg/SZU/HasMutations && strlen(Uitleg/SZU/wlo_filename_uitleg) > 0 ? 'mean(UtilDeltaFactorTiffs/'+Uitleg/SZU/Name+')' : '0f / 0f')+')';
-		attribute<string>  ScenYearTypeU (Uitleg/SZU) := Uitleg/SZU/Name;		
+		attribute<float32> WoningResterend (Nieuwbouw/SZW) := ='union_data(Nieuwbouw/SZW,'+AsItemList(Nieuwbouw/SZW/HasMutations ? 'sum(WoningResterendTiffs/' +Nieuwbouw/SZW/Name+')' : '0f / 0f')+')';
+		attribute<string>  ScenYearTypeW (Nieuwbouw/SZW) := Nieuwbouw/SZW/Name;		
+		attribute<float32> UtilDeltaFactorSum(Nieuwbouw/SZU) := ='union_data(Nieuwbouw/SZU,'+AsItemList(Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 ? 'sum(UtilDeltaFactorTiffs/'+Nieuwbouw/SZU/Name+')' : '0f / 0f')+')';
+		attribute<float32> UtilDeltaFactorMean(Nieuwbouw/SZU) := ='union_data(Nieuwbouw/SZU,'+AsItemList(Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 ? 'mean(UtilDeltaFactorTiffs/'+Nieuwbouw/SZU/Name+')' : '0f / 0f')+')';
+		attribute<string>  ScenYearTypeU (Nieuwbouw/SZU) := Nieuwbouw/SZU/Name;		
 	}
 
 	container GlTbResterendFactors;

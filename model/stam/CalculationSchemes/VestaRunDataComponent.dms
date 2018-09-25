@@ -35,7 +35,7 @@ template VestaRunDataComponent
 {
 	container         ExtraBebouwing;
 	parameter<String> Tag;
-	parameter<Bool>   IsUitleg;
+	parameter<Bool>   IsNieuwbouw;
 	parameter<Bool>   HasFactors;
 	container              ResterendFactorMaps;
 	container              EnergieVraagModellen;
@@ -61,7 +61,7 @@ template VestaRunDataComponent
 		container _28 := ='NCW/'+NcwRefBase+'28';
 	}
 	
-	container Bebouwing := =IsUitleg ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent, ExtraBebouwing)' : 'ExtraBebouwing'
+	container Bebouwing := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent, ExtraBebouwing)' : 'ExtraBebouwing'
 	{
 		attribute<Geography/RegioIndelingen/buurt> buurt_rel(BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
 	}
@@ -779,8 +779,8 @@ template VestaRunDataComponent
 		}
 	}
 
-//	attribute<Bool> LtVerwarmingGeschikt(BebouwingsObject): Expr = "(RuimtelijkeVraagComponent/Verbeteringen/Gebouw >= Float64(1.0)) || IsUitleg || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010)";
-	attribute<Bool> LtVerwarmingGeschikt(BebouwingsObject): Expr = "IsUitleg || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus)";
+//	attribute<Bool> LtVerwarmingGeschikt(BebouwingsObject): Expr = "(RuimtelijkeVraagComponent/Verbeteringen/Gebouw >= Float64(1.0)) || IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010)";
+	attribute<Bool> LtVerwarmingGeschikt(BebouwingsObject): Expr = "IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus)";
 	
 	container Opwekking
 	{

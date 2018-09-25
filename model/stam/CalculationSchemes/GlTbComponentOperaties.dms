@@ -39,7 +39,7 @@
 
 container GlTbComponentOperaties
 {
-	template MaakMutatieUitleg
+	template MaakMutatieNieuwbouw
 	{
 		// begin case parameters
 		attribute<bool>            bij(Geography/rdc_grids/m100);

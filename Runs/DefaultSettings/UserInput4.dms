@@ -74,9 +74,9 @@ container UserInput4 := UserInput1, using = "Model/Units"
 			container Woning       := GenericBase;
 			container Utiliteit    := GenericBase;
 			container Glastuinbouw := GenericBase;
-			container UitlegWoning := Woning;
-			container UitlegUtil   := Utiliteit;
-			container UitlegGlTb   := Glastuinbouw;
+			container NieuwbouwWoning := Woning;
+			container NieuwbouwUtil   := Utiliteit;
+			container NieuwbouwGlTb   := Glastuinbouw;
 		}
 	}
 
