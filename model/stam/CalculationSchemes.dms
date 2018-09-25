@@ -66,11 +66,11 @@ container CalculationSchemes: Using = "Units;Geography"
 		template Union
 		{
 			container BestaandeState;
-			container NieuwBouw;
+			container Nieuwbouw;
 			
 			container Bestaand := BestaandeState/Bebouwing;
 			
-			unit<uint32> BebouwingsObject := union_unit(Bestaand/BebouwingsObject, NieuwBouw/BebouwingsObject)
+			unit<uint32> BebouwingsObject := union_unit(Bestaand/BebouwingsObject, Nieuwbouw/BebouwingsObject)
 			,	DialogType = "Map"
 			,	DialogData = "Pnt"
 			{

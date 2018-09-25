@@ -31,16 +31,35 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile wordt de brondata voor de GlasTuinBouw geconfigureerd //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
 
-container GLTBverdeling
+container GlasTuinBouw
 {
-	container NL
+	container Af :=
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
+			Geography/rdc_grids/m100, bool,
+			Parameters/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Af.tif'
+		);
+
+	container Bij :=
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
+			Geography/rdc_grids/m100, bool,
+			Parameters/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
+		);
+
+	container verdeling
 	{
-		attribute<units/m2>    OppervlaktenGLTB (Classifications/GLTB):
-			Expr = "sum(BronData/bebouwing/glastuinbouw/Opp_M2, BronData/bebouwing/glastuinbouw/GLTB_Code)";
-		parameter<units/m2>    Oppervlakte: Expr = "sum(OppervlaktenGLTB)";
-		attribute<units/ratio> GLTB (Classifications/GLTB):
-			Expr           = "OppervlaktenGLTB / Oppervlakte",
-			IntegrityCheck = "sum(this) = value(1, units/ratio)";
+		container NL
+		{
+			attribute<units/m2>    Oppervlakte (Classifications/GLTB) := sum(BronData/bebouwing/glastuinbouw/Opp_M2, BronData/bebouwing/glastuinbouw/GLTB_Code);
+			parameter<units/m2>    OppervlakteNL := sum(Oppervlakte);
+			attribute<units/ratio> GLTB        (Classifications/GLTB) := Oppervlakte / OppervlakteNL,
+				IntegrityCheck = "sum(this) = 1[units/ratio]";
+		}
 	}
 }

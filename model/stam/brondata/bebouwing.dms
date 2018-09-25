@@ -80,7 +80,7 @@ container bebouwing
 			attribute<Float64> SSD_xy (..) := const(0.0, ..);
 			attribute<Float64> SSD_yy (..) := const(0.0, ..);
 		}
-		attribute<Classifications/energielabel> EnergieLabelData_rel := rjoin(code, EnergieLabelData/VBO_ID, EnergieLabelData/energielabel_rel)
+		attribute<Classifications/energielabel> EnergieLabelData_rel := rjoin(code, Energie/Label/Data/VBO_ID, Energie/Label/Data/energielabel_rel)
 		{
 			attribute<uint32>                       totaal    (..):= uint32(isDefined(EnergieLabelData_rel));
 			attribute<uint32>                       TotWeight (..):= MakeDefined(UInt32(AvgLabel), 0);

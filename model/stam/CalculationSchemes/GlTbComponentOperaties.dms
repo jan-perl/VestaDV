@@ -96,9 +96,12 @@ container GlTbComponentOperaties
 			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(1[nrAansl   ], BebouwingsObject), FreeData = "True";
 			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";
 			
+			
+
+
 			// overige attributen 
 			attribute<Classifications/GLTB> GLTB_code  (BebouwingsObject): Expr = "BebouwingsObject/nr_2";
-			attribute<Units/ratio>          Verdeling  (BebouwingsObject): Expr = "BronData/GLTBverdeling/nl/GLTB[GLTB_code]";
+			attribute<Units/ratio>          Verdeling  (BebouwingsObject): Expr = "BronData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code]";
 			attribute<m2>                   Oppervlakte(BebouwingsObject): Expr = "Verdeling * 10000[units/m2]";
 			attribute<Float64>       AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // geen AandeelWarmteVraag in de nieuwe glastuinbouw
 			
