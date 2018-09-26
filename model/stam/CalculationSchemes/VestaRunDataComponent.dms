@@ -615,15 +615,15 @@ template VestaRunDataComponent
 		{
 			container Optimistisch 
 			{
-				parameter<Percent> Cmin  : Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Optimistisch/Cmin)";
-				parameter<Percent> Bpls  : Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Optimistisch/Bpls)";
-				parameter<Percent> Verder: Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Optimistisch/Verder)";
+				parameter<Percent> Cmin  : Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Cmin)";
+				parameter<Percent> Bpls  : Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Bpls)";
+				parameter<Percent> Verder: Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Verder)";
 			}
 			container Pessimistisch
 			{
-				parameter<Percent> Cmin  : Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Pessimistisch/Cmin)";
-				parameter<Percent> Bpls  : Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Pessimistisch/Bpls)";
-				parameter<Percent> Verder: Expr = "interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Schil/Pessimistisch/Verder)";
+				parameter<Percent> Cmin  : Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Cmin)";
+				parameter<Percent> Bpls  : Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Bpls)";
+				parameter<Percent> Verder: Expr = "interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Verder)";
 			}
 			
 			parameter<Percent> Cmin  : Expr = "Optimistisch/Cmin  * (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Cmin  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif";
@@ -792,23 +792,23 @@ template VestaRunDataComponent
 			container BronData:= /Model/BronData;
 			container Optimistisch 
 			{
-				parameter<Percent> ZonB := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/ZonB);
-				parameter<Percent> ZonPV:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/ZonPV);
-				parameter<Percent> eWPlw:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/eWPlw);
-				parameter<Percent> eWPww:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/eWPww);
-				parameter<Percent> EWV  := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/EWV);
-				parameter<Percent> mWKK := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/mWKK);
-				parameter<Percent> hWP  := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/hWP);
+				parameter<Percent> ZonB := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/ZonB);
+				parameter<Percent> ZonPV:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/ZonPV);
+				parameter<Percent> eWPlw:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/eWPlw);
+				parameter<Percent> eWPww:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/eWPww);
+				parameter<Percent> EWV  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/EWV);
+				parameter<Percent> mWKK := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/mWKK);
+				parameter<Percent> hWP  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/hWP);
 			}
 			container Pessimistisch
 			{
-				parameter<Percent> ZonB := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/ZonB);
-				parameter<Percent> ZonPV:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/ZonPV);
-				parameter<Percent> eWPlw:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/eWPlw);
-				parameter<Percent> eWPww:= interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/eWPww);
-				parameter<Percent> EWV  := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/EWV);
-				parameter<Percent> mWKK := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Pessimistisch/mWKK);
-				parameter<Percent> hWP  := interpolate_linear(RunJaar, Energy/Leercurves/ZichtJaar/Jaar, Energy/Leercurves/Installatie/Optimistisch/hWP);
+				parameter<Percent> ZonB := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/ZonB);
+				parameter<Percent> ZonPV:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/ZonPV);
+				parameter<Percent> eWPlw:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/eWPlw);
+				parameter<Percent> eWPww:= interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/eWPww);
+				parameter<Percent> EWV  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/EWV);
+				parameter<Percent> mWKK := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/mWKK);
+				parameter<Percent> hWP  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/hWP);
 			}
 			
 			parameter<Percent> ZonB := Optimistisch/ZonB * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonB * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;

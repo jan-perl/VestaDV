@@ -55,7 +55,7 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 	#include <Bebouwing.dms>
 	#include <CalculationSchemes.dms>
 	#include <ScenarioSpecs.dms>
-	container Energy
+	container Technology
 	{
 		#include<Leercurves.dms>
 		#include<Accounting.dms>
