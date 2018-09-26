@@ -57,6 +57,7 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.121", FreeData = "True"
 	#include <ScenarioSpecs.dms>
 	container Energy
 	{
+		#include<Leercurves.dms>
 		#include<Accounting.dms>
 		#include<Transformations.dms>
 		#include<Infra.dms>

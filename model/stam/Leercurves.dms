@@ -1,0 +1,57 @@
+container Leercurves
+{
+	// Optie 1a, 2: SchilVerbetering
+		// LabelCategorieen: {C-up, B-Dn, Verder dan B}
+		// jaren: 2010..2050
+		// {pessimistisch, Optimistisch}
+	unit<uint32> ZichtJaar: nrofrows = 5 
+	{
+		attribute<units/yr_uint16> Jaar: [2010, 2020, 2030, 2040, 2050];
+	}
+
+	container Schil: Source = "Rapport Vesta 2.0 Uitbreidingen en dataverificaties Delft augustus 2013 CE-Delft tabel 29"
+	{
+		container Pessimistisch
+		{
+			attribute<units/Percent> Cmin  (ZichtJaar): [100, 101, 102, 109, 115];
+			attribute<units/Percent> Bpls  (ZichtJaar): [100, 101, 105, 110, 116];
+			attribute<units/Percent> Verder(ZichtJaar): [100,  80,  70,  64,  59]; // Huidige kosten E 80.000,- per woning
+		}
+		container Optimistisch
+		{
+			attribute<units/Percent> Cmin  (ZichtJaar): [100, 85, 73, 63, 54];
+			attribute<units/Percent> Bpls  (ZichtJaar): [100, 85, 72, 61, 52];
+			attribute<units/Percent> Verder(ZichtJaar): [100, 72, 58, 49, 43]; // Huidige kosten E 60.000,- per woning
+		}
+	}
+	// Optie 1b en 5: gebouwmaatregelen
+		//	{HR-ketel, HRe-ketel, Zonneboiler, eWP (l/w), eWP (w/w), Zon-PV, LTV, EWV}  kosten in woningtabel
+		// jaren: 2010..2050
+		// {pessimistisch, Optimistisch}
+
+	container Installatie
+	{
+		container Pessimistisch
+		{
+			//attribute<units/Percent> HR (ZichtJaar): [100, 93, 88, 85, 83 ]; // dit wordt niet gebruikt!
+			attribute<units/Percent> mWKK (ZichtJaar): [100, 80, 70, 64, 59], Source = "#optie 1b.xlsx#Pessimistisch"; // in de excel tabel is dit de rij HRe
+			attribute<units/Percent> ZonB (ZichtJaar): [100, 91, 85, 80, 77], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Pessimistisch";
+			attribute<units/Percent> ZonPV(ZichtJaar): [100, 52, 37, 32, 27], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Pessimistisch";
+			attribute<units/Percent> eWPlw(ZichtJaar): [100, 80, 70, 64, 59], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Pessimistisch"; 
+			attribute<units/Percent> eWPww(ZichtJaar): [100, 88, 80, 74, 70], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Pessimistisch"; // deze wordt niet gebruikt!
+			attribute<units/Percent> hWP  (ZichtJaar) := eWPlw;
+			attribute<units/Percent> EWV  (ZichtJaar): [100, 99, 100, 103, 107 ], Source = "rapport CE-Delft Ruud 180413#optie 5.xlsx#Pessimistisch";
+		}
+		container Optimistisch
+		{
+			//attribute<units/Percent> HR   (ZichtJaar): [ 100, 88, 79, 73, 68 ]; // dit wordt niet gebruikt!
+			attribute<units/Percent> mWKK (ZichtJaar): [100, 72, 58, 49, 43], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Optimistisch"; // in de excel tabel is dit de rij HRe
+			attribute<units/Percent> ZonB (ZichtJaar): [100, 85, 75, 67, 62], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Optimistisch";
+			attribute<units/Percent> ZonPV(ZichtJaar): [100, 40, 28, 25, 21], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Optimistisch";
+			attribute<units/Percent> eWPlw(ZichtJaar): [100, 72, 58, 49, 43], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Optimistisch";
+			attribute<units/Percent> eWPww(ZichtJaar): [100, 81, 69, 60, 54], Source = "rapport CE-Delft Ruud 180413#optie 1b.xlsx#Optimistisch"; // deze wordt niet gebruikt!
+			attribute<units/Percent> hWP  (ZichtJaar)  := eWPlw;
+			attribute<units/Percent> EWV  (ZichtJaar): [100, 87, 77, 70, 64], Source = "rapport CE-Delft Ruud 180413#optie 5.xlsx#Optimistisch";
+		}
+	}
+}
