@@ -442,4 +442,17 @@ container WarmteBronnen
 				attribute<Classifications/StatusKl> Status_rel := rlookup(Status, Classifications/StatusKl/label);
 			}
 	}
+	container ProductiePerBron := 
+		for_each_nedv(Classifications/ZichtJaar/period_name
+		,	replace(
+				'sum('
+					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
+					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], MetaData/TypeInfoList/V/Onbekend)'
+				') / 1000000[Units/GJ / Units/PJ]'
+			,	'@RW@', 'RunContext/@YR@/GebiedsAllocatie/RestWarmte'
+			,	'@YR@', Classifications/ZichtJaar/Name
+			)
+		,	MetaData/TypeInfoList, Units/PJ_yr
+		);
+	
 }

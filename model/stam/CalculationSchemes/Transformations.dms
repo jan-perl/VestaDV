@@ -103,7 +103,7 @@ container Transformations: FreeData = "False"
 	}
 	template MainTempl {
 		// parameters
-		container          EnergyData;
+		container          Transformation;
 		unit<float64>      Quantity;
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
@@ -113,7 +113,7 @@ container Transformations: FreeData = "False"
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
 		unit<uint32> PR := PlanRegio;
-		unit<uint32> BC := EnergyData/BC;
+		unit<uint32> BC := Transformation/BC;
 		
 		container impl {
 			unit<uint32> WKOC := subset(BC/KanWKO)
@@ -121,15 +121,15 @@ container Transformations: FreeData = "False"
 				attribute<string> name := BC/name[nr_OrgEntity];
 				attribute<string> code := BC/code[nr_OrgEntity];
 			}
-			unit<uint32> EnergyData_mutatie := EnergyData/mutatie
+			unit<uint32> Transformation_mutatie := Transformation/mutatie
 			{
 				parameter<string> EmissionExprE:= (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 				attribute<string> EmissionExpr := =EmissionExprE;
 			}
-			container applyBC := subst(EnergyData_mutatie,'@BC@', '@BN@'  ,  BC); 
-			container applyWKO:= subst(applyBC/result , '@WKOC@', '@WKON@',WKOC); 
-			container applyRO := subst(applyWKO/result, '@ROC@' , '@RON@' , VoorkEuren/PlanRegioOptie);
-			container applyCO := subst(applyRO/result,  '@COC@' , '@CON@' , VoorkEuren/ClusterOptie);
+			container applyBC := subst(Transformation_mutatie,'@BC@', '@BN@'  ,  BC); 
+			container applyWKO:= subst(applyBC/result        , '@WKOC@', '@WKON@',WKOC); 
+			container applyRO := subst(applyWKO/result       , '@ROC@' , '@RON@' , VoorkEuren/PlanRegioOptie);
+			container applyCO := subst(applyRO/result        ,  '@COC@' , '@CON@' , VoorkEuren/ClusterOptie);
 			
 			unit<uint32> mutatie := applyCO/result
 			{

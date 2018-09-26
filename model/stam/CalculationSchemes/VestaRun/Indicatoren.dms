@@ -262,9 +262,9 @@ container indicatoren
 			attribute<m>  L_infra_org     (PlanRegio) := J2010/indicatoren/netwerk/aardgas/L_infra_nu;
 			attribute<m>  L_infra         (PlanRegio) := max_elem(L_infra_nu, L_infra_org);
 			
-			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra    * InfraParameters/KK_infra_g;
-			attribute<Eur_yr> onderhoud       (Planregio) := L_infra_nu * InfraParameters/KO_infra_g;
-			attribute<Eur_yr> verwijderkosten (Planregio) := Float64(verwijderd) * L_infra_org * InfraParameters/KK_infra_g * (InfraParameters/VB_g + 1.0);
+			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra    * Energy/Infra/KK_infra_g;
+			attribute<Eur_yr> onderhoud       (Planregio) := L_infra_nu * Energy/Infra/KO_infra_g;
+			attribute<Eur_yr> verwijderkosten (Planregio) := Float64(verwijderd) * L_infra_org * Energy/Infra/KK_infra_g * (Energy/Infra/VB_g + 1.0);
 			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + verwijderkosten + onderhoud;
 			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
 		}
@@ -278,8 +278,8 @@ container indicatoren
 			// kosten
 			attribute<m>  L_infra             (PlanRegio) := EndState/KostenBaten/KostenD/L_infra_e;
 			
-			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra * InfraParameters/KK_infra_e;
-			attribute<Eur_yr> onderhoud       (Planregio) := L_infra * InfraParameters/KO_infra_e;
+			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra * Energy/Infra/KK_infra_e;
+			attribute<Eur_yr> onderhoud       (Planregio) := L_infra * Energy/Infra/KO_infra_e;
 			attribute<Eur_yr> netverzwaring   (Planregio) := kapitaallasten * R_all_electric;
 			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + netverzwaring + onderhoud;
 			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;

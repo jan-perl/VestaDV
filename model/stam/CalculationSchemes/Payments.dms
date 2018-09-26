@@ -99,7 +99,7 @@ container Payments: FreeData = "False" // DEBUG
 	}
 	template MainTempl {
 		// parameters
-		container          FlowData;
+		container          Accounting;
 		unit<float64>      Quantity;
 		parameter<bool>    is_flow; // false: calc stock only
 		parameter<string>  OutputSubFolder;
@@ -108,10 +108,9 @@ container Payments: FreeData = "False" // DEBUG
 		
 		unit<float64> MQuantity := 1000000 * Quantity;
 		unit<uint32> PR := PlanRegio;
-		unit<uint32> Kostensoort   := FlowData/KostenSoort;
-//		unit<uint32> mutatieSchema := FlowData/mutatieSchema;
-		unit<uint32> BC := FlowData/BC;
-		unit<uint32> Actor := union_unit(FlowData/Kostensoort, BC, BC, Classifications/AanbodOptie) //VoorkEuren/WarmteOpties)
+		unit<uint32> Kostensoort   := Accounting/KostenSoort;
+		unit<uint32> BC := Accounting/BC;
+		unit<uint32> Actor := union_unit(Accounting/Kostensoort, BC, BC, Classifications/AanbodOptie) //VoorkEuren/WarmteOpties)
 		{
 			attribute<string> BaseName := union_data(., Kostensoort/name, BC/name, BC/name,  Classifications/AanbodOptie/name);
 			attribute<string> Name     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Classifications/AanbodOptie/name);
@@ -124,7 +123,7 @@ container Payments: FreeData = "False" // DEBUG
 			{
 				attribute<string> name      := BC/name  [nr_OrgEntity];
 			}
-			container applyBC := subst(FlowData/mutatie,'@BC@' , BC); 
+			container applyBC := subst(Accounting/mutatie,'@BC@' , BC); 
 			container applyWKO:= subst(applyBC/result , '@WKOC@' , WKOC); 
 			container applyRO := subst(applyWKO/result, '@RO@' , VoorkEuren/PlanRegioOptie);
 			container applyCO := subst(applyRO/result,  '@CO@' , VoorkEuren/ClusterOptie);

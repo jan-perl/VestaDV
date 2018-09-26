@@ -14,9 +14,9 @@
 //       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
 //                                                                                      //
 //     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
-//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
 //       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
-//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
 //                                                                                      //
 //     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
 //       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
@@ -31,81 +31,93 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container InfraParameters: using = "units", Source = "MEMO Benno Schippers, 08-05-2016" // TODO: verplaats uit VestaRun want niet afhankelijk van zichtjaar.
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden Energie Infrastructuur parameters              //
+//       geconfigureerd                                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 {
 	parameter<Eur_Aansl> AansluitTariefG_BW := 0[Eur_Aansl];
 	parameter<Eur_Aansl> AansluitTariefE_BW := 0[Eur_Aansl];
-	
+
 	parameter<Eur_Aansl> AansluitTariefG_NW := 795[Eur_Aansl];
 	parameter<Eur_Aansl> AansluitTariefE_NW := 555[Eur_Aansl];
-	
+
 	parameter<Eur_yr_Aansl> VR_G := 18[Eur_yr_Aansl], Descr = "vastrecht";
 	parameter<Eur_yr_Aansl> VR_E := 18[Eur_yr_Aansl], Descr = "vastrecht";
-	
+
 	parameter<Eur_yr_Aansl> PA_G := 21[Eur_yr_Aansl], Descr = "periodieke aansluitvergoeding";
 	parameter<Eur_yr_Aansl> PA_E := 18[Eur_yr_Aansl], Descr = "periodieke aansluitvergoeding";
-	
+
 	parameter<Eur_yr_Aansl> MH_G := 20[Eur_yr_Aansl], Descr = "meterhuur";
 	parameter<Eur_yr_Aansl> MH_E := 28[Eur_yr_Aansl], Descr = "meterhuur";
-	
+
 	parameter<Eur_yr_Aansl> CT_G := 65[Eur_yr_Aansl], Descr = "meterhuur";
 	parameter<Eur_yr_Aansl> CT_E := 132[Eur_yr_Aansl], Descr = "meterhuur";
 	
 	parameter<Eur_yr_Aansl> AK_G := 44[Eur_yr_Aansl], Descr = "administatiekosten leverancier";
 	parameter<Eur_yr_Aansl> AK_E := 44[Eur_yr_Aansl], Descr = "administatiekosten leverancier";
 
-	parameter<Float64> AF   := 0.75,Descr = "Aansluitbijdragefactor voor verhouding aansluitbijdrage utiliteit ten opzichte van woningbouw";	
-	parameter<Float64> N8_g := 1.0, Descr = "fractie van de opbrengsten infra gas";
-	parameter<Float64> N8_e := 1.0, Descr = "fractie van de opbrengsten infra elektriciteit";
-	
+	parameter<float64> AF   := 0.75,Descr = "Aansluitbijdragefactor voor verhouding aansluitbijdrage utiliteit ten opzichte van woningbouw";	
+	parameter<float64> N8_g := 1.0, Descr = "fractie van de opbrengsten infra gas";
+	parameter<float64> N8_e := 1.0, Descr = "fractie van de opbrengsten infra elektriciteit";
+
 	parameter<Eur_yr_Aansl> JaarlijksW_G := VR_G + PA_G + MH_G + CT_G + AK_G;
 	parameter<Eur_yr_Aansl> JaarlijksW_E := VR_E + PA_E + MH_E + CT_E + AK_E;
 	
 //	parameter<m2>        total_woning_area  := sum(RunContext/J2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[RunContext/J2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
 //	parameter<nrAansl>   total_woning_Aansl := sum(RunContext/J2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
-	parameter<m2_Aansl> gem_Aansl_area      := 100[m2_Aansl];
-	
+	parameter<m2_Aansl> gem_Aansl_area   := 100[m2_Aansl];
+
 	parameter<Eur_m2> AansluitTariefG_BU := 0[Eur_m2];
 	parameter<Eur_m2> AansluitTariefE_BU := 0[Eur_m2];
-	
+
 	parameter<Eur_m2> AansluitTariefG_NU := AF * AansluitTariefG_NW / gem_Aansl_area;
 	parameter<Eur_m2> AansluitTariefE_NU := AF * AansluitTariefG_NW / gem_Aansl_area;
-	
-	parameter<Eur_yr_m2> JaarlijksU_G:= JaarlijksW_G / gem_Aansl_area;
-	parameter<Eur_yr_m2> JaarlijksU_E:= JaarlijksW_E / gem_Aansl_area;
-	
-	parameter<MEur_yr> JK_tr_G := 300[MEur_yr]; parameter<MEur_yr> JK_tr_E := 150[MEur_yr]; 
-	parameter<MEur_yr> JK_di_G := 550[MEur_yr]; parameter<MEur_yr> JK_di_E := 550[MEur_yr]; 
-	parameter<MEur_yr> JO_tr_G := 650[MEur_yr]; parameter<MEur_yr> JO_tr_E := 400[MEur_yr]; 
-	parameter<MEur_yr> JO_di_G :=1150[MEur_yr]; parameter<MEur_yr> JO_di_E :=2850[MEur_yr]; 
 
-	parameter<MEur_yr> JK_g := JK_tr_g + JK_di_g;
-	parameter<MEur_yr> JO_g := JO_tr_g + JO_di_g;
-	parameter<MEur_yr> JK_e := JK_tr_e + JK_di_e;
-	parameter<MEur_yr> JO_e := JO_tr_e + JO_di_e;
-	parameter<MEur_yr> J_g := JK_g + JO_g; // K_infra_g
-	parameter<MEur_yr> J_e := JK_e + JO_e; // K_infra_e
-				
-	parameter<m> L_infra_g := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_g);
-	parameter<m> L_infra_e := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_e);
+	parameter<Eur_yr_m2> JaarlijksU_G    := JaarlijksW_G / gem_Aansl_area;
+	parameter<Eur_yr_m2> JaarlijksU_E    := JaarlijksW_E / gem_Aansl_area;
 	
-	parameter<Eur_yr> O_net_g := sum(RunContext/J2010/indicatoren/netwerk/AardGas/Oj_totaal);
-	parameter<Eur_yr> O_net_e := sum(RunContext/J2010/indicatoren/netwerk/Elektriciteit/Oj_totaal);
-	
+	parameter<MEur_yr> JK_tr_G :=  300[MEur_yr];
+	parameter<MEur_yr> JK_tr_E :=  150[MEur_yr];
+	parameter<MEur_yr> JK_di_G :=  550[MEur_yr];
+	parameter<MEur_yr> JK_di_E :=  550[MEur_yr];
+	parameter<MEur_yr> JO_tr_G :=  650[MEur_yr];
+	parameter<MEur_yr> JO_tr_E :=  400[MEur_yr];
+	parameter<MEur_yr> JO_di_G := 1150[MEur_yr];
+	parameter<MEur_yr> JO_di_E := 2850[MEur_yr];
+
+	parameter<MEur_yr> JK_g    := JK_tr_g + JK_di_g;
+	parameter<MEur_yr> JO_g    := JO_tr_g + JO_di_g;
+	parameter<MEur_yr> JK_e    := JK_tr_e + JK_di_e;
+	parameter<MEur_yr> JO_e    := JO_tr_e + JO_di_e;
+	parameter<MEur_yr> J_g     := JK_g + JO_g; // K_infra_g
+	parameter<MEur_yr> J_e     := JK_e + JO_e; // K_infra_e
+
+	parameter<m> L_infra_g     := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_g);
+	parameter<m> L_infra_e     := sum(RunContext/J2010/Endstate/KostenBaten/KostenD/L_infra_e);
+
+	parameter<Eur_yr> O_net_g  := sum(RunContext/J2010/indicatoren/netwerk/AardGas/Oj_totaal);
+	parameter<Eur_yr> O_net_e  := sum(RunContext/J2010/indicatoren/netwerk/Elektriciteit/Oj_totaal);
+
 	// schalingsfactoren
-	parameter<Float64> SF_g := N8_g * O_net_g / J_g[Eur_yr]; 
-	parameter<Float64> SF_e := N8_e * O_net_e / J_e[Eur_yr];
-	
+	parameter<float64> SF_g        := N8_g * O_net_g / J_g[Eur_yr]; 
+	parameter<float64> SF_e        := N8_e * O_net_e / J_e[Eur_yr];
+
 	parameter<Eur_yr_m> KK_infra_g := SF_g *JK_g[Eur_yr] / L_infra_g; 
 	parameter<Eur_yr_m> KK_infra_e := SF_e *JK_e[Eur_yr] / L_infra_e; 
 	
 	parameter<Eur_yr_m> KO_infra_g := SF_g *JO_g[Eur_yr] / L_infra_g; 
 	parameter<Eur_yr_m> KO_infra_e := SF_e *JO_e[Eur_yr] / L_infra_e; 
-	
-	parameter<Eur_yr_m> K_infra_g := KK_infra_g + KO_infra_g; 
-	parameter<Eur_yr_m> K_infra_e := KK_infra_e + KO_infra_e; 
-	
+
+	parameter<Eur_yr_m> K_infra_g  := KK_infra_g + KO_infra_g; 
+	parameter<Eur_yr_m> K_infra_e  := KK_infra_e + KO_infra_e; 
+
 	// verwijderkosten ten opzicht van de oorspronkelijke investeringskosten
-	parameter<float64> VB_g := 0.5; 
+	parameter<float64> VB_g := 0.5;
 //	parameter<float64> VB_e := 0.5; Not Implemented
 }
