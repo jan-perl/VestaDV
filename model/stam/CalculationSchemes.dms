@@ -42,9 +42,11 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 
 	#include <EnergieKengetallen.dms>
 
-	#include <WoningComponentOperaties.dms> 
-	#include <UtilComponentOperaties.dms> 
-	#include <GlTbComponentOperaties.dms> 
+	#include <WoningComponentOperaties.dms>
+	#include <UtilComponentOperaties.dms>
+	#include <GlTbComponentOperaties.dms>
+	#include <LegeBebouwingsComponent.dms>
+	
 
 	container BebouwingsOperaties
 	{

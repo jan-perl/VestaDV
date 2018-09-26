@@ -172,7 +172,7 @@ container BAG
 					? '_' + toev
 					: ''
 				);
-			attribute<Classifications/energielabel> energielabel_rel := rjoin(adres_key, Energie/Label/values, Energie/Label/energielabel_rel);
+			attribute<Classifications/energielabel> energielabel_rel := rjoin(adres_key, Energie/Label/data/values, Energie/Label/data/energielabel_rel);
 		}
 	}
 

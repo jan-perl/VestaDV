@@ -33,19 +33,53 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//       Deze DMS-file wordt aangeroepen door ScenarioSpecs.dms.                        //
-// In deze configuratiefile wordt de toename en afname van glastuinbouw geconfigureerd. //
+//           Het schema om een lege bebouwingscomponent te configureren                 //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Container GlasTuinBouw:= for_each_ne( Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/Name : '' 
-			,'MaakMutatieNieuwbouw(BronData/GlasTuinBouw/Bij/' + Classifications/Zichtjaar/Name
-				+ ',BronData/GlasTuinBouw/Af/'  + Classifications/Zichtjaar/Name
-				+ ',value(' + String(Classifications/Zichtjaar/jaar )+ ',units/yr_uint16)'
-//				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Nieuwbouw/BebouwingsObject','Huidig/LegeNieuwbouw/results/BebouwingsObject')
-			+')'
-		)
+template LegeBebouwingsComponent
 {
-	container J2010 := CalculationSchemes/LegeBebouwingsComponent(Units/m2, classifications/GLTB);
-	
+	unit<float64> JoinedUnit;
+	unit<uint8>   BebouwingsTypeDomeinArg;
+
+	container results
+	{
+		unit<uint32> BebouwingsObject := Range(uint32, 0, 0)
+		{
+			attribute<Geography/rdc_meter> PointCopy := point;
+			attribute<string>              code      := const('', .);
+			attribute<string>              Label     := code, DialogType = "LabelText";
+		}
+		unit<uint8> BebouwingsTypeDomein := BebouwingsTypeDomeinArg;
+
+		attribute<Geography/rdc_meter>                point              (BebouwingsObject) := point(const(0.0, BebouwingsObject), const(0.0, BebouwingsObject), Geography/rdc_meter);
+
+		attribute<JoinedUnit>                         NrJoinedUnits      (BebouwingsObject) := const(0[JoinedUnit], BebouwingsObject);
+
+		attribute<Geography/RegioIndelingen/PC4>      PC4_rel            (BebouwingsObject) := const(0[Geography/RegioIndelingen/PC4],      BebouwingsObject);
+		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok500m], BebouwingsObject);
+		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok1km],  BebouwingsObject);
+		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok2km],  BebouwingsObject);
+
+		attribute<uint8>                              ModelObjectKey     (BebouwingsObject) := const(0b, BebouwingsObject);
+		attribute<BebouwingsTypeDomein>               BebouwingsType     (BebouwingsObject) := const(0b, BebouwingsObject);
+		attribute<Classifications/BouwJaar>           BouwJaar           (BebouwingsObject) := const(Classifications/BouwJaar/Onbekend, BebouwingsObject);
+		attribute<nrAansl>                            nrAansluitingen    (BebouwingsObject) := const(0[nrAansl], BebouwingsObject);
+		attribute<nrWoningen>                         nrWoonUnits        (BebouwingsObject) := const(0.0[nrWoningen], BebouwingsObject);
+
+		attribute<bool>                               KanBesparen        (BebouwingsObject) := const(false, BebouwingsObject);
+		attribute<float64>                            AandeelWarmteVraag (BebouwingsObject) := const(0.0, BebouwingsObject);
+		attribute<string>                             Label              (BebouwingsObject) := BebouwingsObject/Label;
+
+		container Criteria;
+		container Gebied
+		{
+			attribute<float64> n      (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> MEAN_x (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> MEAN_y (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> SSD_xx (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> SSD_xy (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> SSD_yy (BebouwingsObject) := const(0.0, BebouwingsObject);
+		}
+	}
 }

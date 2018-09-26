@@ -41,58 +41,12 @@
 
 Container Nieuwbouw
 {
-	template LegeSetFunc
-	{
-		unit<Float64> JoinedUnit;
-		unit<uint8>   BebouwingsTypeDomeinArg;
-		
-		container results
-		{
-			unit<UInt32> BebouwingsObject: Expr = "Range(UInt32, 0, 0)"
-			{
-				attribute<Geography/rdc_meter> PointCopy: Expr = "point";
-				attribute<String> Code := const('', .);
-				attribute<String> Label := Code, DialogType = "LabelText";
-			}
-			unit<uint8>   BebouwingsTypeDomein: Expr = "BebouwingsTypeDomeinArg";
-			
-			attribute<Geography/rdc_meter> point(BebouwingsObject): Expr = "point(const(Float64(0), BebouwingsObject), const(Float64(0), BebouwingsObject), Geography/rdc_meter)";
-			
-			attribute<JoinedUnit>          NrJoinedUnits(BebouwingsObject): Expr = "const(0[JoinedUnit], BebouwingsObject)";
-			
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/PC4],      BebouwingsObject)";
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel(BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/blok500m], BebouwingsObject)";
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/blok1km],  BebouwingsObject)";
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject): Expr = "const(0[Geography/RegioIndelingen/blok2km],  BebouwingsObject)";
-			
-			attribute<UInt8>                    ModelObjectKey        (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
-			attribute<BebouwingsTypeDomein>       BebouwingsType   (BebouwingsObject): Expr = "const(UInt8(0), BebouwingsObject)";
-			attribute<Classifications/BouwJaar> BouwJaar       (BebouwingsObject): Expr = "const(Classifications/BouwJaar/Onbekend, BebouwingsObject)";
-			attribute<nrAansl>                  nrAansluitingen(BebouwingsObject): Expr = "const(0, BebouwingsObject, nrAansl)";
-			attribute<nrWoningen>               nrWoonUnits    (BebouwingsObject) := const(0.0[nrWoningen], BebouwingsObject);
 
-			attribute<bool>                     KanBesparen    (BebouwingsObject): Expr = "const(false, BebouwingsObject)";
-			attribute<Float64>                  AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(0.0), BebouwingsObject)";
-			attribute<String>                   Label          (BebouwingsObject): Expr= "BebouwingsObject/Label";
-			
-			container Criteria;
-			container Gebied
-			{
-				attribute<Float64> n     (BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_x(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_y(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xx(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xy(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_yy(BebouwingsObject) := const(0.0, BebouwingsObject);
-			}
-		}
-		
-	}
 	
 	Container Woning := for_each_ne(Classifications/Zichtjaar/Name
 			,  Classifications/Zichtjaar/HasMutations
 			?  'CalculationSchemes/WoningComponentOperaties/Unite(PerGrid/' + Classifications/Zichtjaar/Name+ ')'
-			:  'LegeSetFunc(Units/NrWoningen, Classifications/WoningType)'
+			:  'CalculationSchemes/LegeBebouwingsComponent(Units/NrWoningen, Classifications/WoningType)'
 			)
 	{
 		container PerGrid := for_each_ne(Classifications/ZichtjaarWonen/HasMutations ? Classifications/ZichtjaarWonen/Name : ''
@@ -105,7 +59,7 @@ Container Nieuwbouw
 	Container Utiliteit := for_each_ne(Classifications/Zichtjaar/Name
 			,  Classifications/Zichtjaar/HasMutations
 			?  'CalculationSchemes/UtilComponentOperaties/Unite(PerGrid/' + Classifications/Zichtjaar/Name+ ')'
-			:  'LegeSetFunc(Units/m2, Classifications/NieuwbouwUtil)'
+			:  'CalculationSchemes/LegeBebouwingsComponent(Units/m2, Classifications/NieuwbouwUtil)'
 			)
 	{
 		container PerGrid := for_each_ne(Classifications/ZichtjaarUtiliteit/HasMutations ?  Classifications/ZichtjaarUtiliteit/Name : ''
@@ -124,7 +78,7 @@ Container Nieuwbouw
 			+')'
 		)
 	{
-		container J2010 := LegeSetFunc(Units/m2, classifications/GLTB);
+		container J2010 := CalculationSchemes/LegeBebouwingsComponent(Units/m2, classifications/GLTB);
 	}
 	
 }
