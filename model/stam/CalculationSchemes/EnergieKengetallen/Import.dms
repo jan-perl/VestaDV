@@ -41,58 +41,58 @@
 
 template Import
 {
-	parameter<String> FileName;
-	parameter<String> ModelType_str_name;
-	
-	unit<UInt8> model_type;
-	unit<UInt8> bouwjaarindeling;
-	
-	unit<Float64> model_eenheid;
-	unit<Float64> koppel_eenheid;
+	parameter<string> FileName;
+	parameter<string> ModelType_str_name;
 
-//					attribute<bool> Actief(domein): Expr = "const(true, domein)";
+	unit<uint8> model_type;
+	unit<uint8> bouwjaarindeling;
 
-	unit<Float64> GJ_yr_per_eenheid : Expr = "(units/GJ / Units/Yr) / model_eenheid";
-	unit<Float64> kW_per_eenheid:  Expr = "units/kW  / model_eenheid"; // capaciteit
-	unit<Float64> kWh_per_eenheid: Expr = "units/kWh / model_eenheid";
-	unit<Float64> Eur_per_eenheid: Expr = "units/Eur / model_eenheid";
-	unit<Float64> m2_per_eenheid:  Expr = "units/m2  / model_eenheid";	
-	unit<Float64> MU_per_JU: Expr = "model_eenheid / koppel_eenheid";
-	
-	unit<UInt32> Table
-	:	StorageName = "='%EnergieDataProjDir%/'+ FileName"
-	,	StorageType = "gdal.vect"
+	unit<float64> model_eenheid;
+	unit<float64> koppel_eenheid;
+
+// attribute<bool> Actief(domein) := const(true, domein);
+
+	unit<float64> GJ_yr_per_eenheid := (units/GJ / Units/Yr) / model_eenheid;
+	unit<float64> kW_per_eenheid    := units/kW      / model_eenheid; // capaciteit
+	unit<float64> kWh_per_eenheid   := units/kWh     / model_eenheid;
+	unit<float64> Eur_per_eenheid   := units/Eur     / model_eenheid;
+	unit<float64> m2_per_eenheid    := units/m2      / model_eenheid;
+	unit<float64> MU_per_JU         := model_eenheid / koppel_eenheid;
+
+	unit<uint32> Table
+	:	StorageName     = "='%EnergieDataProjDir%/'+ FileName"
+	,	StorageType     = "gdal.vect"
 	,	StorageReadOnly = "True"
-	,	SyncMode    = "All"
-	,	IsHidden    = "True"
+	,	SyncMode        = "All"
+	,	IsHidden        = "True"
 	{
-		attribute<String> BouwJaar_str;
+		attribute<string> BouwJaar_str;
 		attribute<string> ModelType_str := =ModelType_str_name;
-		
-		attribute<String> Label: Expr = "trim(ModelType_str) +  ', ' + trim(BouwJaar_str)", DialogType = "LabelText";
-		parameter<String> LabelList: Expr = "lowercase(AsItemList(Label))";
-		
+
+		attribute<string> Label     := trim(ModelType_str) +  ', ' + trim(BouwJaar_str), DialogType = "LabelText";
+		parameter<string> LabelList := lowercase(AsItemList(Label));
 	}
-	unit<uint32> TableColumns :=SubItem_PropValues(table, 'name');
+
+	unit<uint32> TableColumns := SubItem_PropValues(table, 'name');
 	container Results : FreeData = "False"
 	{
-		unit<UInt32>  ModelObject := Table;
-		unit<Float64> ModelUnit := model_eenheid;
-		unit<Float64> JoinedUnit := koppel_eenheid;
+		unit<uint32>  ModelObject := Table;
+		unit<float64> ModelUnit   := model_eenheid;
+		unit<float64> JoinedUnit  := koppel_eenheid;
 		
 		attribute<MU_per_JU> nrMUperJU(ModelObject) := const(1.0[ModelUnit / JoinedUnit], Table);
 		
-		attribute<bouwjaarindeling> BouwJaar (ModelObject): Expr = "rlookup(trim(Table/BouwJaar_str ), bouwjaarindeling/excel_code)";
-		attribute<model_type>       ModelType(ModelObject): Expr = "rlookup(trim(Table/ModelType_str), model_type/Excel_code)";
-		attribute<UInt8>            ModelObjectKey  (ModelObject): Expr = "ModelType *  UInt8(NrOfRows(bouwjaarindeling)) + BouwJaar";
+		attribute<bouwjaarindeling> BouwJaar       (ModelObject) := rlookup(trim(Table/BouwJaar_str ), bouwjaarindeling/excel_code);
+		attribute<model_type>       ModelType      (ModelObject) := rlookup(trim(Table/ModelType_str), model_type/Excel_code);
+		attribute<uint8>            ModelObjectKey (ModelObject) := ModelType *  uint8(NrOfRows(bouwjaarindeling)) + BouwJaar;
 
 		container Functioneel
 		{
 			attribute<GJ_yr_per_eenheid> RuimteVerwarming      (ModelObject) := value(table/V_RV,       GJ_yr_per_eenheid);
-			attribute<GJ_yr_M2>          Pompenergie_M2        (ModelObject) := 
+			attribute<GJ_yr_M2>          Pompenergie_M2        (ModelObject) :=
 				= IsDefined(rlookup('V_P_ELEK', TableColumns/name))
-				? 'MakeDefined(value(table/V_P_ELEK,  Ratio), 0.0[GJ_yr_M2])'
-				: 'const(0.0[GJ_yr_M2], ModelObject)';
+					? 'MakeDefined(value(table/V_P_ELEK,  Ratio), 0.0[GJ_yr_M2])'
+					: 'const(0.0[GJ_yr_M2], ModelObject)';
 			attribute<GJ_yr_per_eenheid> Pompenergie_min       (ModelObject) := Pompenergie_M2 * area/min;
 			attribute<GJ_yr_per_eenheid> Pompenergie_max       (ModelObject) := Pompenergie_M2 * area/max;
 			attribute<GJ_yr_per_eenheid> Koude                 (ModelObject) := value(table/V_KOU,      GJ_yr_per_eenheid);
@@ -101,16 +101,16 @@ template Import
 		}
 		container Efficiency
 		{
-			attribute<Classifications/EnergieLabel> EnergieLabel(ModelObject): Expr = 
-				"results/energie/Label == 'A' "
-					"? Classifications/EnergieLabel/V/LabelB "
-					": rlookup(results/energie/Label, Classifications/EnergieLabel/Label)";
-			
-			attribute<Ratio> Gebouw           (ModelObject): Expr = "value(table/EG, Ratio)";
-			
+			attribute<Classifications/EnergieLabel> EnergieLabel(ModelObject) :=
+				results/energie/Label == 'A'
+					? Classifications/EnergieLabel/V/LabelB
+					: rlookup(results/energie/Label, Classifications/EnergieLabel/Label);
+
+			attribute<Ratio> Gebouw            (ModelObject) := value(table/EG, Ratio);
+
 			container RuimteVerwarming
 			{
-				attribute<Ratio> AardGas          (ModelObject) := MakeDefined(value(table/E_RV_Gas,  Ratio), value(1.0, Ratio));
+				attribute<Ratio> AardGas       (ModelObject) := MakeDefined(value(table/E_RV_Gas,  Ratio), value(1.0, Ratio));
 			}
 			container Koude
 			{
@@ -118,27 +118,27 @@ template Import
 			}
 			container WarmWater
 			{
-				attribute<Ratio> AardGas     (ModelObject) := MakeDefined(value(table/E_WW_GAS,  Ratio), 1.0[Ratio]);
+				attribute<Ratio> AardGas       (ModelObject) := MakeDefined(value(table/E_WW_GAS,  Ratio), 1.0[Ratio]);
 			}
 			container Apparatuur
 			{
-				attribute<Ratio> Elektriciteit (ModelObject): Expr = "MakeDefined(value(table/E_APP_Elek, Ratio), value(1.0, Ratio))";
+				attribute<Ratio> Elektriciteit (ModelObject):= MakeDefined(value(table/E_APP_Elek, Ratio), value(1.0, Ratio));
 			}
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW_per_eenheid> Warmte(ModelObject): Expr = "value(table/AC_WARM, kW_per_eenheid)";
+			attribute<kW_per_eenheid> Warmte(ModelObject) := value(table/AC_WARM, kW_per_eenheid);
 		}
 		container Energie
 		{
-			attribute<Float64> Index (ModelObject): Expr = "Float64(table/EnergieIndex)";
-			attribute<String>  Label (ModelObject): Expr = "String(table/EnergieLabel)";
+			attribute<float64> Index (ModelObject) := float64(table/EnergieIndex);
+			attribute<string>  Label (ModelObject) := string(table/EnergieLabel);
 		}
 		container Verbeteringen
 		{
 			container RuimteVerwarming
 			{
-				attribute<Ratio> efficiency (ModelObject) := MakeDefined(value(table/MV_RV, Ratio), value(1.07, Ratio));
+				attribute<Ratio> efficiency (ModelObject) := MakeDefined(table/MV_RV[Ratio], 1.07[Ratio]);
 			}
 			container LTAS
 			{
@@ -148,9 +148,9 @@ template Import
 		}
 		container area
 		{
-			attribute<m2_per_eenheid> min(ModelObject) := = IsDefined(rlookup('VL_OPP_WON_MIN', TableColumns/name)) ? 'value(table/VL_OPP_WON_MIN, m2_per_eenheid)' : 'const(1.0, ModelObject)';
-			attribute<m2_per_eenheid> max(ModelObject) := = IsDefined(rlookup('VL_OPP_WON_MAX', TableColumns/name)) ? 'value(table/VL_OPP_WON_MAX, m2_per_eenheid)' : 'const(1.0, ModelObject)';
-			attribute<m2_per_eenheid> gem(ModelObject) := 0.5 * (min+max);
+			attribute<m2_per_eenheid> min (ModelObject) := = IsDefined(rlookup('VL_OPP_WON_MIN', TableColumns/name)) ? 'value(table/VL_OPP_WON_MIN, m2_per_eenheid)' : 'const(1.0, ModelObject)';
+			attribute<m2_per_eenheid> max (ModelObject) := = IsDefined(rlookup('VL_OPP_WON_MAX', TableColumns/name)) ? 'value(table/VL_OPP_WON_MAX, m2_per_eenheid)' : 'const(1.0, ModelObject)';
+			attribute<m2_per_eenheid> gem (ModelObject) := 0.5 * (min+max);
 		}
 	}
 }

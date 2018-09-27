@@ -33,7 +33,7 @@
 
 container RunContext :=
 	for_each_ne(
-		Model/Classifications/zichtjaar/Name, 
+		Model/Classifications/zichtjaar/Name,
 		'CalculationSchemes/VestaRun('
 			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Model/Classifications/zichtjaar/Name+']'
 			+MakeDefined(', '+Model/Classifications/zichtjaar/Name[ID(Model/Classifications/zichtjaar)-1b]+'/EndState','')
@@ -42,12 +42,11 @@ container RunContext :=
 	, using = "Model"
 {
 	parameter<String> GenerateAll := 'Ready', 
-		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')";
+		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')", IsHidden = "True";
 
 	container AllocExports
 	{
 		parameter<string> GenerateAll := 'ready', 
-			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')";
+			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
 	}
-
 }

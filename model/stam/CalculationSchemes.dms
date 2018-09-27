@@ -46,71 +46,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 	#include <UtilComponentOperaties.dms>
 	#include <GlTbComponentOperaties.dms>
 	#include <LegeBebouwingsComponent.dms>
-	
-
-	container BebouwingsOperaties
-	{
-		template Samenstelling
-		{
-			container Woning;
-			container NieuwbouwWoning;
-			parameter<bool> HasWoningResterendFactors;
-			container WoningResterendFactors;
-			container Utiliteit;
-			container NieuwbouwUtil;
-			parameter<bool> HasUtiliteitResterendFactors;
-			container UtiliteitResterendFactors;
-			container GlasTuinbouw;
-			container NieuwbouwGLTB;
-			parameter<bool> HasGlasTuinbouwResterendFactors;
-			container GlasTuinbouwResterendFactors;
-		}
-		template Union
-		{
-			container BestaandeState;
-			container Nieuwbouw;
-			
-			container Bestaand := BestaandeState/Bebouwing;
-			
-			unit<uint32> BebouwingsObject := union_unit(Bestaand/BebouwingsObject, Nieuwbouw/BebouwingsObject)
-			,	DialogType = "Map"
-			,	DialogData = "Pnt"
-			{
-				attribute<Geography/rdc_meter> Pnt := Point;
-				attribute<string> Code  := union_data(BebouwingsObject, Bestaand/BebouwingsObject/Code,  Nieuwbouw/BebouwingsObject/Code);
-				attribute<String> Label := union_data(BebouwingsObject, Bestaand/BebouwingsObject/Label, Nieuwbouw/BebouwingsObject/Label), DialogType = "LabelText";
-				parameter<m> SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
-			}
-			
-			unit<Float64> JoinedUnit := valuesunit(Bestaand/NrJoinedUnits);
-			unit<uint8>  BebouwingsTypeDomein := Bestaand/BebouwingsTypeDomein;
-			
-			attribute<JoinedUnit>                      NrJoinedUnits  (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/NrJoinedUnits, Nieuwbouw/NrJoinedUnits);
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel(BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok500m_rel, Nieuwbouw/blok500m_rel);
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok1km_rel, Nieuwbouw/blok1km_rel);
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok2km_rel, Nieuwbouw/blok2km_rel);
-			attribute<Geography/rdc_meter>           Point            (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Point, Nieuwbouw/Point);
-			attribute<BebouwingsTypeDomein>          BebouwingsType   (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/BebouwingsType, Nieuwbouw/BebouwingsType);
-			attribute<Classifications/BouwJaar>      Bouwjaar         (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Bouwjaar, Nieuwbouw/Bouwjaar);
-			attribute<uint8>                         ModelObjectKey          (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/ModelObjectKey, Nieuwbouw/ModelObjectKey);
-			attribute<nrAansl>                       nrAansluitingen  (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/nrAansluitingen, Nieuwbouw/nrAansluitingen);
-			attribute<nrWoningen>                    nrWoonUnits      (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/nrWoonUnits, Nieuwbouw/nrWoonUnits);
-
-			attribute<Float64>                    AandeelWarmteVraag(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/AandeelWarmteVraag, Nieuwbouw/AandeelWarmteVraag);
-		
-			attribute<String> Label(BebouwingsObject) := BebouwingsObject/Label;
-			container Gebied
-			{
-				attribute<Float64> n     (BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/n,      Nieuwbouw/Gebied/n);
-				attribute<Float64> MEAN_x(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/MEAN_x, Nieuwbouw/Gebied/MEAN_x);
-				attribute<Float64> MEAN_y(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/MEAN_y, Nieuwbouw/Gebied/MEAN_y);
-				attribute<Float64> SSD_xx(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/SSD_xx, Nieuwbouw/Gebied/SSD_xx);
-				attribute<Float64> SSD_xy(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/SSD_xy, Nieuwbouw/Gebied/SSD_xy);
-				attribute<Float64> SSD_yy(BebouwingsObject):= union_data(BebouwingsObject, Bestaand/Gebied/SSD_yy, Nieuwbouw/Gebied/SSD_yy);
-			}
- 			container Criteria;
-		}
-	}
+	#include <BebouwingsOperaties.dms>
 
 	#include <VestaRun.dms>
 	#include <Payments.dms>
@@ -166,13 +102,13 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 		container GridAggr;
 		unit<spoint> Kernel := Geography/DistMatrices/pot1000mRange;
 		
-		attribute<Units/GJ_yr> AardGas      (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/AardGas),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> RestWarmte   (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/RestWarmte),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> GeoThermie   (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/GeoThermie),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WijkWKK      (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/WijkWKK),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WKO          (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/WKO),           Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Elektriciteit(Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/Elektriciteit), Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Totaal       (Geography/rdc_grids/m100) := Float64(potential(Float32(GridAggr/Totaal),        Kernel/Cilindrical));
+		attribute<Units/GJ_yr> AardGas      (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/AardGas),       Kernel/Cilindrical));
+		attribute<Units/GJ_yr> RestWarmte   (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/RestWarmte),    Kernel/Cilindrical));
+		attribute<Units/GJ_yr> GeoThermie   (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/GeoThermie),    Kernel/Cilindrical));
+		attribute<Units/GJ_yr> WijkWKK      (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WijkWKK),       Kernel/Cilindrical));
+		attribute<Units/GJ_yr> WKO          (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WKO),           Kernel/Cilindrical));
+		attribute<Units/GJ_yr> Elektriciteit(Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Elektriciteit), Kernel/Cilindrical));
+		attribute<Units/GJ_yr> Totaal       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Totaal),        Kernel/Cilindrical));
 	}
 	
 	Template AggrComponent
@@ -186,9 +122,9 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 		
 		container impl: IsHidden = "True"
 		{
-			unit<Float64>        ModelUnit                                := VestaRunDataComponent/EnergieVraagModellen/ModelUnit;
+			unit<float64>        ModelUnit                                := VestaRunDataComponent/EnergieVraagModellen/ModelUnit;
 			attribute<PlanRegio> PlanRegio_rel          (BebouwingsObject):= VestaRunDataComponent/PlanRegio_rel;
-			attribute<Float64>   BeschikbaarheidsFactor (BebouwingsObject):= Float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * Float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
+			attribute<float64>   BeschikbaarheidsFactor (BebouwingsObject):= float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
 		}
 
 		attribute<nrAansl>        nrAanslWarmteD     (PlanRegio) := sum(impl/BeschikbaarheidsFactor * VestaRunDataComponent/WarmteVraagD/nrAansluitingen,    impl/PlanRegio_rel);

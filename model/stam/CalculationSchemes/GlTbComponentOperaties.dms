@@ -42,66 +42,63 @@ container GlTbComponentOperaties
 	template MaakMutatieNieuwbouw
 	{
 		// begin case parameters
-		attribute<bool>            bij(Geography/rdc_grids/m100);
-		attribute<bool>            af (Geography/rdc_grids/m100);
+		attribute<bool>            bij (Geography/rdc_grids/m100);
+		attribute<bool>            af  (Geography/rdc_grids/m100);
 		parameter<units/yr_uint16> zichtjaar;
-		
-		Unit<UInt32> bron: Expr = "Bebouwing/glastuinbouw";
-		
+
+		unit<uint32> bron := Bebouwing/glastuinbouw;
+
 		// einde case parameters
-		
-		container impl
+
+		container impl: IsHidden = "True"
 		{
 			unit<uint32> lokatiesBij := Subset(bij)
 			{
-				attribute<Geography/rdc_meter>                point:        Expr = "Geography/rdc_grids/m100/point[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/blok500m> blok500m_rel: Expr = "Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel:  Expr = "Geography/rdc_grids/m100/blok1km_rel[nr_OrgEntity]";
-				attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel:  Expr = "Geography/rdc_grids/m100/blok2km_rel[nr_OrgEntity]";
+				attribute<Geography/rdc_meter>                point        := Geography/rdc_grids/m100/point[nr_OrgEntity];
+				attribute<Geography/RegioIndelingen/blok500m> blok500m_rel := Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity];
+				attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  := Geography/rdc_grids/m100/blok1km_rel[nr_OrgEntity];
+				attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  := Geography/rdc_grids/m100/blok2km_rel[nr_OrgEntity];
 			}
 		}
 		unit<uint32>  results := combine(impl/lokatiesBij, Classifications/GLTB)
-			,	DialogType ="Map"
-			,	DialogData ="Point"
+		,	DialogType ="Map"
+		,	DialogData ="Point"
 		{
 			// units en attributen van BebouwingsComponent
-			unit<uint32>  BebouwingsObject := .;
-			attribute<Geography/rdc_meter> PointCopy(BebouwingsObject): Expr = "point";
-			attribute<String> Code := String(ModelObjectKey)+ String(Bouwjaar) + String(Point);
-			attribute<string> Label := Code, DialogType = "LabelText";
+			unit<uint32>                   BebouwingsObject := .;
+			attribute<Geography/rdc_meter> PointCopy (BebouwingsObject) := point;
+			attribute<String>              Code                         := String(ModelObjectKey)+ String(Bouwjaar) + String(Point);
+			attribute<string>              Label                        := Code, DialogType = "LabelText";
 
-			unit<uint8>   BebouwingsTypeDomein: Expr = "Classifications/GLTB";
-			
-			attribute<Geography/rdc_meter>           point          (BebouwingsObject): Expr = "impl/lokatiesBij/point[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel (BebouwingsObject): Expr = "impl/lokatiesBij/blok500m_rel[BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok1km_rel [BebouwingsObject/nr_1]";
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  (BebouwingsObject): Expr = "impl/lokatiesBij/blok2km_rel [BebouwingsObject/nr_1]";
-			attribute<BebouwingsTypeDomein>            BebouwingsType   (BebouwingsObject): Expr = "GLTB_Code";
-			attribute<Classifications/bouwjaar>      bouwjaarOrg    (BebouwingsObject): Expr = "const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject)";
-			attribute<Classifications/bouwjaar>      bouwjaar       (BebouwingsObject): Expr = "(bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg";
-			attribute<UInt8>                         ModelObjectKey        (BebouwingsObject): Expr = "BebouwingsType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar";
-			attribute<m2>                            NrJoinedUnits  (BebouwingsObject): Expr = "Oppervlakte";
-			attribute<nrAansl>                       nrAansluitingen(BebouwingsObject) := const(1[nrAansl   ], BebouwingsObject), FreeData = "True";
-			attribute<nrWoningen>                    nrWoonUnits    (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";
-			
-			
+			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB;
 
+			attribute<Geography/rdc_meter>                point              (BebouwingsObject) := impl/lokatiesBij/point[BebouwingsObject/nr_1];
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := impl/lokatiesBij/blok500m_rel[BebouwingsObject/nr_1];
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := impl/lokatiesBij/blok1km_rel [BebouwingsObject/nr_1];
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := impl/lokatiesBij/blok2km_rel [BebouwingsObject/nr_1];
+			attribute<BebouwingsTypeDomein>               BebouwingsType     (BebouwingsObject) := GLTB_Code;
+			attribute<Classifications/bouwjaar>           bouwjaarOrg        (BebouwingsObject) := const(classify(value(zichtjaar, units/Yr)-value(0.5, units/Yr),  classifications/bouwjaar/ClassBreak), BebouwingsObject);
+			attribute<Classifications/bouwjaar>           bouwjaar           (BebouwingsObject) := (bouwjaarOrg < Classifications/BouwJaar/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg;
+			attribute<UInt8>                              ModelObjectKey     (BebouwingsObject) := BebouwingsType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
+			attribute<m2>                                 NrJoinedunits      (BebouwingsObject) := Oppervlakte;
+			attribute<nrAansl>                            nrAansluitingen    (BebouwingsObject) := const(1[nrAansl   ], BebouwingsObject), FreeData = "True";
+			attribute<nrWoningen>                         nrWoonunits        (BebouwingsObject) := const(0[nrWoningen], BebouwingsObject), FreeData = "True";
 
-			// overige attributen 
-			attribute<Classifications/GLTB> GLTB_code  (BebouwingsObject): Expr = "BebouwingsObject/nr_2";
-			attribute<Units/ratio>          Verdeling  (BebouwingsObject): Expr = "BronData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code]";
-			attribute<m2>                   Oppervlakte(BebouwingsObject): Expr = "Verdeling * 10000[units/m2]";
-			attribute<Float64>       AandeelWarmteVraag(BebouwingsObject): Expr = "const(Float64(1.0), BebouwingsObject)"; // geen AandeelWarmteVraag in de nieuwe glastuinbouw
-			
+			// overige attributen
+			attribute<Classifications/GLTB>               GLTB_code          (BebouwingsObject) := BebouwingsObject/nr_2;
+			attribute<units/ratio>                        Verdeling          (BebouwingsObject) := BronData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
+			attribute<m2>                                 Oppervlakte        (BebouwingsObject) := Verdeling * 10000[units/m2];
+			attribute<float64>                            AandeelWarmteVraag (BebouwingsObject) := const(1.0, BebouwingsObject); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
+
 			container Criteria;
 			container Gebied: FreeData = "True" // noodzakelijk voor Bebouwingscomponent interfact, hoewel gtb niet gebruikt wordt voor WKO.
 			{
-				attribute<Float64> n     (BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_x(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> MEAN_y(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xx(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_xy(BebouwingsObject) := const(0.0, BebouwingsObject);
-				attribute<Float64> SSD_yy(BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> n      (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> MEAN_x (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> MEAN_y (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> SSD_xx (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> SSD_xy (BebouwingsObject) := const(0.0, BebouwingsObject);
+				attribute<float64> SSD_yy (BebouwingsObject) := const(0.0, BebouwingsObject);
 			}
 		}
 	}
