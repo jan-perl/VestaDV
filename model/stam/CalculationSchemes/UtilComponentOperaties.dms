@@ -58,7 +58,6 @@ container UtilComponentOperaties
 
 			attribute<nrAansl>                       nrAansluitingen    (BebouwingsObject) :=BebouwingsObject/nrAansluitingen;
 			attribute<rdc_meter>                     point              (BebouwingsObject) :=BebouwingsObject/point;
-			attribute<RegioIndelingen/PC4>           PC4_rel            (BebouwingsObject) :=BebouwingsObject/PC4_rel;
 			attribute<RegioIndelingen/blok500m>      blok500m_rel       (BebouwingsObject) :=BebouwingsObject/blok500m_rel;
 			attribute<RegioIndelingen/blok1km>       blok1km_rel        (BebouwingsObject) :=BebouwingsObject/blok1km_rel;
 			attribute<RegioIndelingen/blok2km>       blok2km_rel        (BebouwingsObject) :=BebouwingsObject/blok2km_rel;
@@ -82,25 +81,14 @@ container UtilComponentOperaties
 
 		container results
 		{
-			unit<uint32> BebouwingsObjectGeenPC4 := Subset(att > int32(0) && !IsDefined(Geography/rdc_grids/m100/PC4_rel) ),
-				DialogType = "map",
-				DialogData = "Point"
-			{
-				attribute<m2>                            oppervlakte  : Expr = "value(att[nr_OrgEntity], m2)";
-				attribute<m2>                            nrJoinedUnits: Expr = "oppervlakte";
-	
-				attribute<Geography/rdc_meter>                Point := Geography/rdc_grids/m100/Point       [nr_OrgEntity];
-//				attribute<Geography/RegioIndelingen/PC4>      PC4_rel: Expr = "Geography/rdc_grids/m100/PC4_rel     [BebouwingsObject/nr_OrgEntity]";
-			}
 			
-			unit<uint32> BebouwingsObject := Subset(att > int32(0) && IsDefined(Geography/rdc_grids/m100/PC4_rel) ),
+			unit<uint32> BebouwingsObject := Subset(att > int32(0) && IsDefined(Geography/rdc_grids/m100/PlanRegio_Rel) ),
 				DialogType = "map",
 				DialogData = "results/Point";
 			attribute<m2>                            oppervlakte  (BebouwingsObject): Expr = "value(att[BebouwingsObject/nr_OrgEntity], m2)";
 			attribute<m2>                            nrJoinedUnits(BebouwingsObject): Expr = "oppervlakte";
 
 			attribute<Geography/rdc_meter>                Point        (BebouwingsObject): Expr = "Geography/rdc_grids/m100/Point       [BebouwingsObject/nr_OrgEntity]";
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel      (BebouwingsObject): Expr = "Geography/rdc_grids/m100/PC4_rel     [BebouwingsObject/nr_OrgEntity]";
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok500m_rel[BebouwingsObject/nr_OrgEntity]";
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok1km_rel [BebouwingsObject/nr_OrgEntity]";
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  (BebouwingsObject): Expr = "Geography/rdc_grids/m100/blok2km_rel [BebouwingsObject/nr_OrgEntity]";
@@ -144,7 +132,6 @@ container UtilComponentOperaties
 			
 			attribute<m2>                            nrJoinedUnits  (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/nrJoinedUnits') + ')'";
 			attribute<Geography/rdc_meter>           Point          (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/Point') + ')'";
-			attribute<RegioIndelingen/PC4>           PC4_rel        (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/PC4_rel') + ')'";
 			attribute<RegioIndelingen/blok500m>      blok500m_rel   (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/blok500m_rel') + ')'";
 			attribute<RegioIndelingen/blok1km>       blok1km_rel    (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/blok1km_rel') + ')'";
 			attribute<RegioIndelingen/blok2km>       blok2km_rel    (BebouwingsObject): Expr = "='Union_Data(BebouwingsObject, ' + asItemList('bron/' + Classifications/NieuwbouwUtil/Name + '/results/blok2km_rel') + ')'";

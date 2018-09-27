@@ -48,7 +48,6 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		unit<uint8>  ModelObjectKeyDomein     := Classifications/WoningtypeBouwJaarBAG, isHidden = "True";
 
 		attribute<string>                   code               := BAG/vbo_woonfunctie/identificatie;
-		attribute<RegioIndelingen/PC4>      PC4_rel            := MakeDefined(Impl/PC4_coderel,Impl/PC4_georel), isHidden = "True";
 		attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
 		attribute<RegioIndelingen/blok1km>  blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]], isHidden = "True";
 		attribute<RegioIndelingen/blok2km>  blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]], isHidden = "True";
@@ -93,10 +92,6 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 
 		container Impl : isHidden = "True"
 		{
-			attribute<string>                              PC4code         (..) := substr(postcode,0,4);
-			attribute<RegioIndelingen/PC4>                 PC4_coderel     (..) := rlookup(uint16(PC4code), RegioIndelingen/PC4/code);    // contains 111 null values(2006),  1 null values(2009)
-			attribute<RegioIndelingen/PC4>                 PC4_georel      (..) := point_in_polygon(point, RegioIndelingen/PC4/Geometry); // contains 158 null values(2006), 48 null values(2009)
-
 			attribute<nrWoningen>                          nrWon           (..) := const(1,..,nrWoningen);
 
 			attribute<Classifications/BouwJaarBag>         BouwJaarBag_rel (..) := BAG/vbo_woonfunctie/BouwjaarBag_rel;
@@ -115,12 +110,6 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		// external key
 		attribute<string>                   code            := BAG/vbo_utiliteit/identificatie;
 		attribute<string>                   postcode        := BAG/vbo_utiliteit/postcode;
-
-		attribute<string>                   PC4code         := substr(postcode,0,4), isHidden = "True";
-
-		attribute<RegioIndelingen/PC4>      PC4_coderel     := rlookup(uint16(PC4code), RegioIndelingen/PC4/code), isHidden = "True";     // contains  1 null values(2009)
-		attribute<RegioIndelingen/PC4>      PC4_georel      := point_in_polygon(point, RegioIndelingen/PC4/Geometry), isHidden = "True";  // contains 70 null values(2009)
-		attribute<RegioIndelingen/PC4>      PC4_rel         := MakeDefined(PC4_coderel,PC4_georel), isHidden = "True";                    // contains  0 null values(2009)
 
 		attribute<RegioIndelingen/buurt>    buurt_rel       := point_in_polygon(point, RegioIndelingen/buurt/geometry), isHidden = "True";
 
@@ -208,8 +197,6 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<string>                     code            := string(ID(.));
 		attribute<string>                     Label           := string(postcode4), DialogType = "LabelText";
 
-		attribute<uint32>                     PC4code         := postcode4, isHidden = "True";
-		attribute<RegioIndelingen/PC4>        PC4_rel         := rlookup(uint16(PC4code), RegioIndelingen/PC4/code), isHidden = "True";
 		attribute<string>                     buurtcode       := substr(BU_CODE,2,10), isHidden = "True";
 		attribute<uint32>                     Buurt_nr        := value(buurtcode,  uint32), isHidden = "True";
 		attribute<RegioIndelingen/buurt>      buurt_rel       := rlookup(Buurt_nr, RegioIndelingen/buurt/code), isHidden = "True";

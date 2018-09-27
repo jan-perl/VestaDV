@@ -230,7 +230,7 @@ container BAG
 		attribute<rdc_meter>                       locatie                 := value(import/vbo/geometry[nr_OrgEntity],rdc_meter);
 		attribute<string>                          postcode                := rjoin(import/vbo/nummeraanduiding_id[nr_OrgEntity], import/nummeraanduiding/identificatie, import/nummeraanduiding/postcode);
 
-		attribute<Units/m2>                        oppervlakte             := import/vbo/oppervlak_filters/wonen[nr_OrgEntity];  // let op: hier zit al een model achter., see issue 1112, waarschijnlijk BUG
+		attribute<Units/m2>                        oppervlakte             := import/vbo/oppervlak_filters/utiliteit[nr_OrgEntity];
 		attribute<string>                          pand_id                 := import/vbo/pand_id[nr_OrgEntity];
 
 		attribute<units/Yr>                        bouwjaar                := rjoin(pand_id, import/pand/identificatie, import/pand/bouwjaar_gecorrigeerd);

@@ -56,7 +56,6 @@ template LegeBebouwingsComponent
 
 		attribute<JoinedUnit>                         NrJoinedUnits      (BebouwingsObject) := const(0[JoinedUnit], BebouwingsObject);
 
-		attribute<Geography/RegioIndelingen/PC4>      PC4_rel            (BebouwingsObject) := const(0[Geography/RegioIndelingen/PC4],      BebouwingsObject);
 		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok500m], BebouwingsObject);
 		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok1km],  BebouwingsObject);
 		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok2km],  BebouwingsObject);

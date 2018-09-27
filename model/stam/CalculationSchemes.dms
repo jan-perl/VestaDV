@@ -86,7 +86,6 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 			unit<uint8>  BebouwingsTypeDomein := Bestaand/BebouwingsTypeDomein;
 			
 			attribute<JoinedUnit>                      NrJoinedUnits  (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/NrJoinedUnits, Nieuwbouw/NrJoinedUnits);
-			attribute<Geography/RegioIndelingen/PC4>      PC4_rel     (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/PC4_rel, Nieuwbouw/PC4_rel);
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel(BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok500m_rel, Nieuwbouw/blok500m_rel);
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok1km_rel, Nieuwbouw/blok1km_rel);
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok2km_rel, Nieuwbouw/blok2km_rel);
@@ -228,7 +227,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 			attribute<Eur_yr> Oj_VastRechtE(PlanRegio);
 			attribute<Eur   > Oi_AansluitE (PlanRegio);
 			
-			container Pc4KaartComponent;
+			container PlanRegioKaartComponent;
 			
 			container VestaRunDataComponent    := AllocatieResultaatComponent/VestaRunDataComponent;
 			container RuimtelijkeVraagComponent:= AllocatieResultaatComponent/RuimtelijkeVraagComponent;
@@ -271,7 +270,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 					parameter<Classifications/AanbodOptie> Optie;
 					attribute<Ratio> Aandeel(BebouwingsObject);
 					
-					attribute<Eur_yr> Verbruik    (PlanRegio): = sum(Pc4KaartComponent/WarmteVraagD_obj                   * Aandeel, VestaRunDataComponent/PlanRegio_rel);
+					attribute<Eur_yr> Verbruik    (PlanRegio): = sum(PlanRegioKaartComponent/WarmteVraagD_obj                   * Aandeel, VestaRunDataComponent/PlanRegio_rel);
 					attribute<Eur_yr> VastRecht   (PlanRegio): = sum(VestaRunDataComponent/Opbrengsten/VastRechtBijdrageD * Aandeel, VestaRunDataComponent/PlanRegio_rel);
 					
 					attribute<Eur>    Oi_AanslD   (PlanRegio) := sum(VestaRunDataComponent/Opbrengsten/AansluitBijdrageD  * Aandeel, VestaRunDataComponent/PlanRegio_rel);
@@ -292,7 +291,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 					
 					// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
 					
-					attribute<Eur_yr> Warmte      (PlanRegio): = =Active ? 'sum(Pc4KaartComponent/WarmteVraagD_obj         * Aandeel, VestaRunDataComponent/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
+					attribute<Eur_yr> Warmte      (PlanRegio): = =Active ? 'sum(PlanRegioKaartComponent/WarmteVraagD_obj         * Aandeel, VestaRunDataComponent/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> Koude       (PlanRegio): = =Active ? 'sum(AllocatieResultaatComponent/KoudeAllocatie * Aandeel, VestaRunDataComponent/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> Om_Comfort  (PlanRegio): = =Active ? 'sum(AllocatieResultaatComponent/Om_Comfort     * Aandeel, VestaRunDataComponent/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					
