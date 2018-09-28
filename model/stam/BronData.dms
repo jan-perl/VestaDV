@@ -49,11 +49,6 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 
 	container Klimaat_scenario_knmi
 	{
-		container w :=
-			for_each_ndva(Classifications/zichtjaar/name
-			, Geography/rdc_grids/m100, float32
-			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_w/w_' + Classifications/zichtjaar/label + '.tif'
-			);
 		container g_plus :=
 			for_each_ndva(  Classifications/zichtjaar/name
 			, Geography/rdc_grids/m100, float32

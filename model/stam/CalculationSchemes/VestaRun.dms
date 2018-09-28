@@ -60,7 +60,7 @@ template VestaRun
 			container RestWarmte {
 				
 				attribute<CumulatedArcSet> CumulatedArcSet_rel (PlanRegio) := invert(CumulatedArcSet/planregio_rel);
-				attribute<Bool>           GebruikRestWarmte    (PlanRegio) := IsDefined(CumulatedArcSet_rel);
+				attribute<bool>           GebruikRestWarmte    (PlanRegio) := IsDefined(CumulatedArcSet_rel);
 
 				unit<uint32> WarmteBronnen := BronData/WarmteBronnen/RestWarmte/bron; // BronData/WarmteBronnen/RestWarmte/BronSelecties/J2010/Bronnen;
 				unit<uint32> linkset: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/buurt_2014_CBS_Restwarmte_20180207.csv", StorageType = "gdal.vect", StorageReadOnly = "True", url = "%SourceDataProjDir%/hulpbestanden/buurt/metadata_buurt_2014_CBS_Restwarmte_20180207.txt"
@@ -174,7 +174,7 @@ template VestaRun
 
 	container UserInput       := ='UserInput'+string(RunJaar);
 	container Bebouwing       := ='UserInput/BebouwingsScenario/J'+string(RunJaar);
-	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := ='UserInput/KlimaatScenario/J'+string(RunJaar);
+	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat_scenario_knmi/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
 
 	container VraagKentallen  := UserInput/VraagKentallen;
 	container AanbodKentallen := UserInput/AanbodKentallen;
@@ -256,7 +256,7 @@ template VestaRun
 	}
 
 	attribute<string> BCN        (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
-	attribute<Bool>   HasFactors (Classifications/BebouwingsComponent) := 
+	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
 		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCN+'ResterendFactors',',')+')';
 	
 	container VestaRunData :=
@@ -619,8 +619,8 @@ template VestaRun
 	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(VoorkEuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	container EndState   := FinalState
 	{
-		attribute<Bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
-		attribute<Bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StartingState/AanbodOpties/PlanRegioWarmteAllocatie));
+		attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
+		attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StartingState/AanbodOpties/PlanRegioWarmteAllocatie));
 		container Stock := FinalState/Stock
 		{
 			// gebiedsmaatregelen
@@ -737,28 +737,28 @@ template VestaRun
 		{
 			container Vraag
 			{
-				attribute<GJ_yr> AardGas      (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
-				attribute<GJ_yr> RestWarmte   (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
-				attribute<GJ_yr> GeoThermie   (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
-				attribute<GJ_yr> WijkWKK      (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
-				attribute<GJ_yr> WKO          (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
-				attribute<GJ_yr> Warmte       (Geography/rdc_grids/m100):  = AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
-				attribute<GJ_yr> Elektriciteit(Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
-				attribute<GJ_yr> Totaal       (Geography/rdc_grids/m100):  = Warmte + Elektriciteit;
+				attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
+				attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
+				attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
+				attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
+				attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
+				attribute<GJ_yr> Warmte        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
+				attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
+				attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := Warmte + Elektriciteit;
 			}
 			container AansluitCapaciteit
 			{
-				attribute<kW> Totaal          (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Totaal')+')';
-				attribute<kW> AardGas         (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/AardGas')+')';
-				attribute<kW> Overig          (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Overig')+')';
+				attribute<kW> Totaal           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Totaal')+')';
+				attribute<kW> AardGas          (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/AardGas')+')';
+				attribute<kW> Overig           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Overig')+')';
 			}
 			container WKO
 			{
-				attribute<GJ_yr> V_Warmte     (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
-				attribute<GJ_yr> V_Koude      (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
-				attribute<GJ_yr> V_Elek       (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
-				attribute<GJ_yr> Onttrekking  (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
-				attribute<kW>    Capaciteit   (Geography/rdc_grids/m100):  = ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
+				attribute<GJ_yr> V_Warmte      (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
+				attribute<GJ_yr> V_Koude       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
+				attribute<GJ_yr> V_Elek        (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
+				attribute<GJ_yr> Onttrekking   (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
+				attribute<kW>    Capaciteit    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
 			}
 		}
 	}
@@ -770,7 +770,7 @@ template VestaRun
 	{
 		container Totaal := CalculationSchemes/PotentialComponent(GridKaarten/Totaal/vraag);
 	}
-	
+
 	container FolderInfo {
 		parameter<string> CurrDir      := Expand(., '%currDir%');
 		parameter<string> RunDir       := Expand(., '%configDir%');
@@ -780,17 +780,17 @@ template VestaRun
 	}
 
 	parameter<string> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+string(RunJaar);
-	
+
 	#include <Indicatoren.dms>
-	
+
 	#include <AllocExports.dms>
-	
+
 	container RegressieTest
 	{
-		parameter<Bool> PotentiaalKaartLeesbaar: = all(PotentiaalKaarten/totaal/totaal >= 0.0) && sum(PotentiaalKaarten/totaal/totaal) > 0.0;
-		parameter<Bool> All:  = PotentiaalKaartLeesbaar;
-		parameter<string> Generate := 'Ready',IntegrityCheck  = "All",
-			ExplicitSuppliers = "Indicatoren/GenerateAll"; // Generates All reports.
-		
+		parameter<bool>   PotentiaalKaartLeesbaar : = all(PotentiaalKaarten/totaal/totaal >= 0.0) && sum(PotentiaalKaarten/totaal/totaal) > 0.0;
+		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
+		parameter<string> Generate                := 'Ready'
+		,	IntegrityCheck    = "All"
+		,	ExplicitSuppliers = "Indicatoren/GenerateAll"; // Generates All reports.
 	}
 }

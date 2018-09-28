@@ -45,16 +45,16 @@ container AanbodOptieTemplates
 		container AanbodKentallen;
 		container EnergiePrijzen;
 		parameter<units/yr_uint16> Jaar;
-		
+
 		//parameter<kg_GJ>  CO2_GJ     :=  Impl/kosten/CO2_GJ + 0[GJ];
-		
+
 		// emissies per GJ gas voor WijkWKK.
-		parameter<kg_GJ>  CO2_GJb     :=  indicatoren/CO2/CO2_GJg;
-		parameter<g_GJ>   NOx_GJb     := 28[g_GJ];
-		parameter<g_GJ>   SO2_GJb     := 0 [g_GJ];
-		parameter<g_GJ>   VOS_GJb     := 420[g_GJ];
-		parameter<g_GJ>   TS_GJb      := 0  [g_GJ];
-	
+		parameter<kg_GJ> CO2_GJb :=  indicatoren/CO2/CO2_GJg;
+		parameter<g_GJ>  NOx_GJb := 28[g_GJ];
+		parameter<g_GJ>  SO2_GJb := 0 [g_GJ];
+		parameter<g_GJ>  VOS_GJb := 420[g_GJ];
+		parameter<g_GJ>  TS_GJb  := 0  [g_GJ];
+
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]);
 		container Results := Impl/Results;
 	}
@@ -64,14 +64,14 @@ container AanbodOptieTemplates
 		container AanbodKentallen;
 		container EnergiePrijzen;
 		parameter<units/yr_uint16> Jaar;
-		
+
 		// emissies per GJ bio-brandstof voor BioWKK.
-		parameter<kg_GJ>  CO2_GJb     :=  0[kg_GJ]; // obv definitie hernieuwbare bron.
-		parameter<g_GJ>   NOx_GJb     := 49[g_GJ];
-		parameter<g_GJ>   SO2_GJb     := 10[g_GJ];
-		parameter<g_GJ>   VOS_GJb     :=  0[g_GJ];
-		parameter<g_GJ>   TS_GJb      :=  2[g_GJ];
-	
+		parameter<kg_GJ> CO2_GJb :=  0[kg_GJ]; // obv definitie hernieuwbare bron.
+		parameter<g_GJ>  NOx_GJb := 49[g_GJ];
+		parameter<g_GJ>  SO2_GJb := 10[g_GJ];
+		parameter<g_GJ>  VOS_GJb :=  0[g_GJ];
+		parameter<g_GJ>  TS_GJb  :=  2[g_GJ];
+
 		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, BronData/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]);
 		container Results := Impl/Results;
 	}

@@ -34,15 +34,15 @@
 template NcwSchema
 {
 	parameter<Percent_yr> DiscontoVoet;
-	parameter<Yr> StartJaar;
-	parameter<Yr> StopJaar;
-	
+	parameter<yr> StartJaar;
+	parameter<yr> StopJaar;
+
 	parameter<_yr>     CapitalGrowthFactor := DiscontoVoet / 100[percent];
-	
-	parameter<Float64> DiscontoFactor      := 1.0 + CapitalGrowthFactor * 1[Yr];
-	parameter<Float64> StartDiscountFactor := DiscontoFactor ^ -StartJaar;
-	parameter<Float64> StopDiscountFactor  := DiscontoFactor ^ -StopJaar;
-	parameter<Yr>      DurationFactor      := (CapitalGrowthFactor <> 0[_yr]) ? (StartDiscountFactor - StopDiscountFactor) / CapitalGrowthFactor : StopJaar - StartJaar;
+
+	parameter<float64> DiscontoFactor      := 1.0 + CapitalGrowthFactor * 1[yr];
+	parameter<float64> StartDiscountFactor := DiscontoFactor ^ -StartJaar;
+	parameter<float64> StopDiscountFactor  := DiscontoFactor ^ -StopJaar;
+	parameter<yr>      DurationFactor      := (CapitalGrowthFactor <> 0[_yr]) ? (StartDiscountFactor - StopDiscountFactor) / CapitalGrowthFactor : StopJaar - StartJaar;
 	parameter<_yr>     AnnualisationFactor := 1.0 / DurationFactor;
 }
 

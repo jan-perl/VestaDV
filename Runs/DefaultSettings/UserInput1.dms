@@ -41,8 +41,8 @@
 container UserInput1: Using = "Model/Units"
 {
 	container BebouwingsScenario  := Model/ScenarioSpecs/Bebouwing;
-	container KlimaatScenario     := Model/Brondata/klimaat_scenario_knmi/g_plus;
-	
+	parameter <string> KlimaatScenario := 'g_plus'; // other option = 'w';
+
 	container VraagKentallen  := Model/ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine;
 	container AanbodKentallen := Model/ScenarioSpecs/VestaRunOpties/AanbodKentallen/BaseLine;
 	
