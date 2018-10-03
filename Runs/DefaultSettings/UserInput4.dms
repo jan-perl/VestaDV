@@ -71,12 +71,12 @@ container UserInput4 := UserInput1, using = "Model/Units"
 					parameter<bool> SpringMeestRendabel  : [ true ] ; // maak rentabiliteitsafweging tbv bebouwingobject eigenaren indien true
 				}
 			}
-			container Woning       := GenericBase;
-			container Utiliteit    := GenericBase;
-			container Glastuinbouw := GenericBase;
-			container NieuwbouwWoning := Woning;
-			container NieuwbouwUtil   := Utiliteit;
-			container NieuwbouwGlTb   := Glastuinbouw;
+			container BestaandeWoning := GenericBase;
+			container BestaandeUtil   := GenericBase;
+			container BestaandeGlTb   := GenericBase;
+			container NieuwbouwWoning := BestaandeWoning;
+			container NieuwbouwUtil   := BestaandeUtil;
+			container NieuwbouwGlTb   := BestaandeGlTb;
 		}
 	}
 

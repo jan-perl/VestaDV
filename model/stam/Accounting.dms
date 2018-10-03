@@ -383,12 +383,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
 		// ===== Eigenaar kosten
-			,	'projectmanagement', 'KL_e', 'Woning/Eigenaar',
+			,	'projectmanagement', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'EndState/Stock/Ki_ge_pm',
 					AF28_BW,
 					''
 
-			,	'ongeriefsvergoeding', 'KL_e', 'Woning/Eigenaar',
+			,	'ongeriefsvergoeding', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'EndState/Stock/Ki_ge_ov',
 					AF28_BW,
 					''
@@ -403,7 +403,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_MR, 
 					''
 
-			,	'EIA', 'Woning/Eigenaar', 'KL_e',
+			,	'EIA', 'BestaandeWoning/Eigenaar', 'KL_e',
 					'EndState/Stock/Oi_ge_subsidie',
 					AF28_BW,
 					''
@@ -413,13 +413,13 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_MR,
 					''
 
-			,	'EEA', 'Woning/Eigenaar', 'Subsidie',
+			,	'EEA', 'BestaandeWoning/Eigenaar', 'Subsidie',
 					'EndState/Flow/Oe_ge_subsidie',
 					'',
 					''
 
 		// ===== huuurkorting
-			,	'HuurVerlaging', 'Comfort', 'Woning/Eigenaar', 
+			,	'HuurVerlaging', 'Comfort', 'BestaandeWoning/Eigenaar', 
 					'EndState/Flow/Kj_ge_hv',
 					'',
 					''
@@ -603,7 +603,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 				
 
 		// ===== LEVERANCIER
-			,	'Verrekening', 'Woning/Eigenaar', 'Leverancier',
+			,	'Verrekening', 'BestaandeWoning/Eigenaar', 'Leverancier',
 					'EndState/Flow/Kj_ge_Netto', 
 					'', 
 					''
@@ -665,12 +665,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'', 
 					''
 		// ===== WKO Eigenaar kosten
- 			,	'projectmanagement_@CO@', 'KL_e', 'Woning/Eigenaar',
+ 			,	'projectmanagement_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'EndState/@CO@/Ki_ge_pm', 
 					AF28_BW,
 					''
 
-			,	'ongeriefsvergoeding_@CO@', 'KL_e', 'Woning/Eigenaar',
+			,	'ongeriefsvergoeding_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'EndState/@CO@/Ki_ge_ov', 
 					AF28_BW,
 					''
@@ -685,7 +685,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_MR, 
 					''
 
-			,	'EIA_@CO@', 'Woning/Eigenaar', 'KL_e',
+			,	'EIA_@CO@', 'BestaandeWoning/Eigenaar', 'KL_e',
 					'EndState/@CO@/Si_ge',
 					AF28_BW,
 					''
@@ -695,13 +695,13 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_MR,
 					''
 
-			,	'EEA_@CO@', 'Woning/Eigenaar', 'Subsidie',
+			,	'EEA_@CO@', 'BestaandeWoning/Eigenaar', 'Subsidie',
 					'EndState/@CO@/Se_ge',
 					'',
 					''
 //
 		// ===== WKO huuurkorting
-// 			,	'HuurVerlaging_@CO@', 'Comfort', 'Woning/Eigenaar', 
+// 			,	'HuurVerlaging_@CO@', 'Comfort', 'BestaandeWoning/Eigenaar', 
 // 					'EndState/@CO@/Kj_ge_hv',
 // 					'',
 // 					''
@@ -831,7 +831,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== WKO LEVERANCIER
 		
-			,	'Verrekening@CO@', 'Woning/Eigenaar', 'Leverancier',
+			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
 					'EndState/@CO@/Kj_ge_netto', 
 					'',
 					''

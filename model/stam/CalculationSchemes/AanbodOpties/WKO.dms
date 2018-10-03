@@ -121,10 +121,10 @@ template WKO
 			}
 		}
 		
-		container WoningData := 
+		container BestaandeWoningData := 
 			WoningDataTempl(
-				VestaRunData/Woning, 
-				BeginStatus/KostenBaten/PlanRegioKaarten/Woning/WarmtePrijs, 
+				VestaRunData/BestaandeWoning, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 				Entiteiten/WoningType,
 				BeginStatus/KostenBaten/KostenD/Wonen/bbw
 			);
@@ -200,10 +200,10 @@ template WKO
 			}
 		}
 		
-		container UtiliteitData := 
+		container BestaandeUtilData := 
 			UtilDataTempl(
-				VestaRunData/Utiliteit, 
-				BeginStatus/KostenBaten/PlanRegioKaarten/Utiliteit/WarmtePrijs
+				VestaRunData/BestaandeUtil, 
+				BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs
 			);
 		
 		container NieuwbouwUtilData := 
@@ -597,8 +597,8 @@ template WKO
 	 		
 	 		// recalculated stock
 			attribute<Eur>    Ki_id      (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_id')+')';
-			attribute<Eur>    Ki_ge_pm   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_pm;
-			attribute<Eur>    Ki_ge_ov   (PlanRegio) := ObjectResults/Woning/PR/Ki_ge_ov;
+			attribute<Eur>    Ki_ge_pm   (PlanRegio) := ObjectResults/BestaandeWoning/PR/Ki_ge_pm;
+			attribute<Eur>    Ki_ge_ov   (PlanRegio) := ObjectResults/BestaandeWoning/PR/Ki_ge_ov;
 			
 			// recalculated Flow
 	 		container Oj_Verbruik := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Oj_Verbruik', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);

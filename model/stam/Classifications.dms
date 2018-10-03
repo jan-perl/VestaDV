@@ -185,9 +185,9 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> ClassRef:
 		[
 			'Model/Classifications/GeenOnderverdeling',
-			'AllocatieResultaat/Woning/BebouwingsObject/BebouwingsTypeDomein',
-			'AllocatieResultaat/Woning/BebouwingsObject/BouwjaarDomein',
-			'AllocatieResultaat/Woning/BebouwingsObject/ModelObjectKeyDomein',
+			'AllocatieResultaat/BestaandeWoning/BebouwingsObject/BebouwingsTypeDomein',
+			'AllocatieResultaat/BestaandeWoning/BebouwingsObject/BouwjaarDomein',
+			'AllocatieResultaat/BestaandeWoning/BebouwingsObject/ModelObjectKeyDomein',
 			'Model/Classifications/Eigendom_Woning',
 			'', '', '', 
 			'Model/Classifications/InkomensKlasse',
@@ -456,11 +456,11 @@ container Classifications: Using = "Units", KeepData = "True"
 	{
 		attribute<string> Name:
 		[
-			'Woning'
+			'BestaandeWoning'
 		,	'NieuwbouwWoning'
-		,	'Utiliteit'
+		,	'BestaandeUtil'
 		,	'NieuwbouwUtil'
-		,	'Glastuinbouw'
+		,	'BestaandeGlTb'
 		,	'NieuwbouwGlTb'
 		];
 		attribute<string> Code := string(ID(.));

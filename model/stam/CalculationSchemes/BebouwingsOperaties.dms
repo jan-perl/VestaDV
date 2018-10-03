@@ -41,18 +41,18 @@ container BebouwingsOperaties
 {
 	template Samenstelling
 	{
-		container Woning;
+		container BestaandeWoning;
 		container NieuwbouwWoning;
-		parameter<bool> HasWoningResterendFactors;
-		container WoningResterendFactors;
-		container Utiliteit;
+		parameter<bool> HasBestaandeWoningResterendFactors;
+		container BestaandeWoningResterendFactors;
+		container BestaandeUtil;
 		container NieuwbouwUtil;
-		parameter<bool> HasUtiliteitResterendFactors;
-		container UtiliteitResterendFactors;
-		container GlasTuinbouw;
+		parameter<bool> HasBestaandeUtilResterendFactors;
+		container BestaandeUtilResterendFactors;
+		container BestaandeGLTB;
 		container NieuwbouwGLTB;
-		parameter<bool> HasGlasTuinbouwResterendFactors;
-		container GlasTuinbouwResterendFactors;
+		parameter<bool> HasBestaandeGlTbResterendFactors;
+		container BestaandeGlTbResterendFactors;
 	}
 	template Union
 	{

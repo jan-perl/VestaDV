@@ -288,12 +288,12 @@ container indicatoren
 	container MaatregelenRapportage
 	{
 		unit<uint32> RapportageRegio := UserInput/ReportOpties/RapportageRegio;
-		container Woning :=
+		container BestaandeWoning :=
 			for_each_ne(
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/Woning, '+quote('woning')+'
+					, AllocatieResultaat/BestaandeWoning, '+quote('BestaandeWoning')+'
 					, '+Classifications/BestaandeWoningRapGroep/ClassRef[UserInput/ReportOpties/BestaandeWoningRapGroep]+'
 					, '+quote('BebouwingsObject/'+Classifications/BestaandeWoningRapGroep/AttrRef [ UserInput/ReportOpties/BestaandeWoningRapGroep ])+'
 					, Classifications/BestaandeWoningRapGroep/ExportLabel [ UserInput/ReportOpties/BestaandeWoningRapGroep ]
@@ -312,13 +312,13 @@ container indicatoren
 					, units/nrWoningen
 				)'
 			);
-		container Utiliteit :=
+		container BestaandeUtil:=
 			for_each_ne(
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/utiliteit, '+quote('utiliteit')+'
-					, VestaRunData/utiliteit/BebouwingsTypeDomein
+					, AllocatieResultaat/BestaandeUtil, '+quote('BestaandeUtil')+'
+					, VestaRunData/BestaandeUtil/BebouwingsTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
@@ -336,12 +336,12 @@ container indicatoren
 					, units/m2
 				)'
 			);
-		container GlasTuinBouw :=
+		container BestaandeGlTb :=
 			for_each_ne(
 				 UserInput/ReportOpties/RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/Glastuinbouw, '+quote('Glastuinbouw')+'
+					, AllocatieResultaat/BestaandeGlTb, '+quote('BestaandeGlTb')+'
 					, Classifications/GLTB
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('GlasTuinBouwType')+'
@@ -381,11 +381,11 @@ container indicatoren
 		ExplicitSuppliers =
 			"= ';' + AsList('InputOutput/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ (UserInput/ReportOpties/RapportageRegio/Name != 'NL' ? ';InputOutput/Totaal/GenerateAll': '')"
-			"+ ';' + AsList('MaatregelenRapportage/Woning/'      +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
-			"+ ';' + AsList('MaatregelenRapportage/Utiliteit/'   +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/BestaandeWoning/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwWoning/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/BestaandeUtil/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwUtil/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
-			"+ ';' + AsList('MaatregelenRapportage/GlasTuinBouw/'+UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
+			"+ ';' + AsList('MaatregelenRapportage/BestaandeGlTb/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 			"+ ';' + AsList('MaatregelenRapportage/NieuwbouwGlTb/'  +UserInput/ReportOpties/RapportageRegio/Name+'/GenerateAll',';')"
 //			"+ ';' + 'AllocExports/GenerateThisToo'" // comment-out if you want to skip all exports
 		;

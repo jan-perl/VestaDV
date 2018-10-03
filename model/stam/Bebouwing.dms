@@ -40,7 +40,7 @@
 
 container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 {
-	unit<uint32> Woning := BAG/vbo_woonfunctie, DialogData = "point", DialogType = "Map"
+	unit<uint32> BestaandeWoning := BAG/vbo_woonfunctie, DialogData = "point", DialogType = "Map"
 	{
 		unit<uint32> BebouwingsObject  := ., isHidden = "True";
 		unit<uint8>  BebouwingsTypeDomein:= Classifications/WoningtypeGeoHoogte, isHidden = "True";
@@ -61,7 +61,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwJaarBAG)) + Impl/BouwjaarBag_rel, classifications/WoningTypeBouwjaarBAG);
 		attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwJaarBAG/ClassBreak), isHidden = "True";
 
-		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Woning/Deelname[BebouwingsType], 0.0), FreeData = "True";
+		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 		attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry, isHidden = "True"
 		{
@@ -102,7 +102,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		}
 	}
 
-	unit<uint32> Utiliteit := BAG/vbo_utiliteit
+	unit<uint32> BestaandeUtil := BAG/vbo_utiliteit
 	{
 		unit<uint32> BebouwingsObject   := . ,isHidden = "True";
 		unit<uint8>  BebouwingsTypeDomein := Classifications/utiliteitBAG ,isHidden = "True";
@@ -143,7 +143,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<int16>                           SymbolIndex         := BebouwingsTypeDomein/SymbolIndex[BebouwingsType], DialogType = "SymbolIndex", isHidden = "True";
 
 		//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
-		attribute<float64>                         AandeelWarmteVraag  := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Utiliteit/Deelname[BebouwingsType], 0.0), FreeData = "True";
+		attribute<float64>                         AandeelWarmteVraag  := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 		container Criteria: isHidden = "True"
 		{
@@ -161,9 +161,9 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 			BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
 			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
 			?	'int32(sum( '
-					'bebouwing/utiliteit/NrJoinedUnits * ' +
-					'float64(bebouwing/utiliteit/BebouwingsTypeDomein/utiliteit_rel[bebouwing/utiliteit/BebouwingsType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
-			 	+	', bebouwing/utiliteit/point[rdc_grids/m100]'
+					'bebouwing/BestaandeUtil/NrJoinedUnits * ' +
+					'float64(bebouwing/BestaandeUtil/BebouwingsTypeDomein/utiliteit_rel[bebouwing/BestaandeUtil/BebouwingsType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
+			 	+	', bebouwing/BestaandeUtil/point[rdc_grids/m100]'
 				')'
 				'*max_elem(float64(Nieuwbouw/InbreidingUtilFactor/'+BronData/Nieuwbouw/SZU/Name+') - 1.0 , 0.0)'
 				')'
@@ -188,7 +188,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 			,	Geography/rdc_grids/m100, int32
 		);
 
-	unit<uint32> glastuinbouw := BronData/Glastuinbouw/pc04_010316, FreeData = "True"
+	unit<uint32> BestaandeGlTb := BronData/Glastuinbouw/pc04_010316, FreeData = "True"
 	{
 		unit<uint32>  BebouwingsObject   := ., FreeData = "True" ,isHidden = "True";
 		unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
@@ -224,7 +224,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<BebouwingsTypeDomein>     BebouwingsType     := GLTB_Code, isHidden = "True";
 		attribute<uint8>                    ModelObjectKey     := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 
-		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/Glastuinbouw/Deelname[BebouwingsType], 0.0);
+		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
 		container Criteria: isHidden = "True"
 		{
 		//	attribute<Bool>     KanBesparen: Expr = "const(false, BebouwingsObject)"; // Vul  hier iets anders in als je in RuimtelijkeVraagMetBesparing wel besparingen voor glastuinbouw wilt

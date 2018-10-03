@@ -58,11 +58,11 @@ template KostenBatenSchema
 		{
 			attribute<Eur_yr> WarmteVraag     (PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/WarmteVraagD')+')';
 
-			attribute<Eur_yr> Woning          (PlanRegio) : Source = "F 6",  = sum(VestaRunData/Woning/Opbrengsten/VastRechtBijdrageD          * float64(Not(IsDefined(VestaRunData/Woning/WarmteAllocatie)))          , PlanRegioKaarten/Woning/impl/PlanRegio_rel);
+			attribute<Eur_yr> BestaandeWoning (PlanRegio) : Source = "F 6",  = sum(VestaRunData/BestaandeWoning/Opbrengsten/VastRechtBijdrageD          * float64(Not(IsDefined(VestaRunData/BestaandeWoning/WarmteAllocatie)))          , PlanRegioKaarten/BestaandeWoning/impl/PlanRegio_rel);
 			attribute<Eur_yr> NieuwbouwWoning (PlanRegio) : Source = "F 6",  = sum(VestaRunData/NieuwbouwWoning/Opbrengsten/VastRechtBijdrageD * float64(Not(IsDefined(VestaRunData/NieuwbouwWoning/WarmteAllocatie))) , PlanRegioKaarten/NieuwbouwWoning/impl/PlanRegio_rel);
-			attribute<Eur_yr> Utiliteit       (PlanRegio) : Source = "F 11", = sum(VestaRunData/utiliteit/Opbrengsten/VastRechtBijdrageD       * float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))       , PlanRegioKaarten/utiliteit/impl/PlanRegio_rel);
+			attribute<Eur_yr> BestaandeUtil   (PlanRegio) : Source = "F 11", = sum(VestaRunData/BestaandeUtil/Opbrengsten/VastRechtBijdrageD       * float64(Not(IsDefined(VestaRunData/BestaandeUtil/WarmteAllocatie)))       , PlanRegioKaarten/BestaandeUtil/impl/PlanRegio_rel);
 			attribute<Eur_yr> NieuwbouwUtil   (PlanRegio) : Source = "F 11", = sum(VestaRunData/NieuwbouwUtil/Opbrengsten/VastRechtBijdrageD   * float64(Not(IsDefined(VestaRunData/NieuwbouwUtil/WarmteAllocatie)))   , PlanRegioKaarten/NieuwbouwUtil/impl/PlanRegio_rel);
-			attribute<Eur_yr> GlasTuinbouw    (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> BestaandeGlTb   (PlanRegio) := const(0[Eur_yr], PlanRegio);
 			attribute<Eur_yr> NieuwbouwGlTb   (PlanRegio) := const(0[Eur_yr], PlanRegio);
 
 			attribute<Eur_yr> Oj_VastRecht    (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
@@ -71,14 +71,14 @@ template KostenBatenSchema
 	}
 	container KostenFactorenD: Source = "F 3"
 	{
-		attribute<float64>       Lw1 (PlanRegio) : Descr = "Aantal woningen",            = (PlanRegioKaarten/Woning/NrAanslWarmteD+ PlanRegioKaarten/NieuwbouwWoning/NrAanslWarmteD) * 1[NrWoningen / NrAansl];
+		attribute<float64>       Lw1 (PlanRegio) : Descr = "Aantal woningen",            = (PlanRegioKaarten/BestaandeWoning/NrAanslWarmteD + PlanRegioKaarten/NieuwbouwWoning/NrAanslWarmteD) * 1[NrWoningen / NrAansl];
 		attribute<Units/km2>     Lw2 (PlanRegio) : Descr = "Oppervlakte",                = PlanRegio/AreaInKm2;
-		attribute<Units/nrAansl> Lu  (PlanRegio) : Descr = "Omvang utiliteitsbouw",      = PlanRegioKaarten/Utiliteit/NrAanslWarmteD + PlanRegioKaarten/NieuwbouwUtil/NrAanslWarmteD;
+		attribute<Units/nrAansl> Lu  (PlanRegio) : Descr = "Omvang utiliteitsbouw",      = PlanRegioKaarten/BestaandeUtil/NrAanslWarmteD + PlanRegioKaarten/NieuwbouwUtil/NrAanslWarmteD;
 		attribute<units/Eur_m2>  Ld  (PlanRegio) : Descr = "Distributieskosten per woning m2 utiliteitsbouw";
-		attribute<units/m2>      Lt  (PlanRegio) : Descr = "Omvang glastuinbouw",        = PlanRegioKaarten/GlasTuinbouw/NrModelUnitsWarmteD + PlanRegioKaarten/NieuwbouwGlTb/NrModelUnitsWarmteD;
-		attribute<units/GJ_yr>   Lq2 (PlanRegio) : Descr = "Warmtevraag woningen",       = PlanRegioKaarten/woning/VerbruikD + PlanRegioKaarten/NieuwbouwWoning/VerbruikD;
-		attribute<units/GJ_yr>   Lq4 (PlanRegio) : Descr = "Warmtevraag utiliteitsbouw", = PlanRegioKaarten/Utiliteit/VerbruikD + PlanRegioKaarten/NieuwbouwUtil/VerbruikD;
-		attribute<units/GJ_yr>   Lq6 (PlanRegio) : Descr = "Warmtevraag glastuinbouw",   = PlanRegioKaarten/GlasTuinbouw/VerbruikD + PlanRegioKaarten/NieuwbouwGlTb/VerbruikD;
+		attribute<units/m2>      Lt  (PlanRegio) : Descr = "Omvang glastuinbouw",        = PlanRegioKaarten/BestaandeGlTb/NrModelUnitsWarmteD + PlanRegioKaarten/NieuwbouwGlTb/NrModelUnitsWarmteD;
+		attribute<units/GJ_yr>   Lq2 (PlanRegio) : Descr = "Warmtevraag woningen",       = PlanRegioKaarten/BestaandeWoning/VerbruikD + PlanRegioKaarten/NieuwbouwWoning/VerbruikD;
+		attribute<units/GJ_yr>   Lq4 (PlanRegio) : Descr = "Warmtevraag utiliteitsbouw", = PlanRegioKaarten/BestaandeUtil/VerbruikD + PlanRegioKaarten/NieuwbouwUtil/VerbruikD;
+		attribute<units/GJ_yr>   Lq6 (PlanRegio) : Descr = "Warmtevraag glastuinbouw",   = PlanRegioKaarten/BestaandeGlTb/VerbruikD + PlanRegioKaarten/NieuwbouwGlTb/VerbruikD;
 
 		parameter<Ratio>  N1   := 80[Percent] / 100[Percent], Source = "FO v7a F 35", Descr = "Percentage grootschalige warmte dat niet wordt bijgestookt";
 		parameter<Eur_GJ> N2   := VestaRunData/Prijzen/AardGas/Bijstook/KGJ_eindgebruik_ex;
@@ -159,7 +159,7 @@ template KostenBatenSchema
 				attribute<Eur_yr> Kj_wd_base (PlanRegio) := Ki_wd_sec * VestaRunData/Onderhoud/Rj_wd + Onderstation/Ki_wd * VestaRunData/Onderhoud/Rj_Onderstation;
 				attribute<Eur_yr> Kj_id_base (PlanRegio) := Ki_id * VestaRunData/Onderhoud/Rj_id;
 			}
-			container bbw:= ComponentTempl (Entiteiten/Woning         , VestaRunData/Woning         , Entiteiten/WoningType          , false);
+			container bbw:= ComponentTempl (Entiteiten/BestaandeWoning, VestaRunData/BestaandeWoning, Entiteiten/WoningType          , false);
 			container nbw:= ComponentTempl (Entiteiten/NieuwbouwWoning, VestaRunData/NieuwbouwWoning, Entiteiten/NieuwbouwWoningType , true);
 
 			attribute<Eur> Ki_wd(PlanRegio) := bbw/ki_wd + nbw/Ki_wd;
@@ -181,10 +181,10 @@ template KostenBatenSchema
 			{
 				attribute<nrAansl> Klein (PlanRegio) := 
 					sum(
-					  VestaRunData/Utiliteit/WarmteVraagD/nrAansluitingen 
-						* float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
-						* float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit <= value(100, kW)) 
-					, PlanRegioKaarten/Utiliteit/impl/PlanRegio_rel
+					  VestaRunData/BestaandeUtil/WarmteVraagD/nrAansluitingen 
+						* float64(Not(IsDefined(VestaRunData/BestaandeUtil/WarmteAllocatie)))
+						* float64(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit <= value(100, kW)) 
+					, PlanRegioKaarten/BestaandeUtil/impl/PlanRegio_rel
 					) + 
 					sum(
 					  VestaRunData/NieuwbouwUtil/WarmteVraagD/nrAansluitingen 
@@ -194,10 +194,10 @@ template KostenBatenSchema
 					);
 				attribute<nrAansl> Groot (PlanRegio) := 
 					sum(
-					  VestaRunData/Utiliteit/WarmteVraagD/nrAansluitingen 
-						* float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
-						* float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit > value(100, kW)) 
-					, PlanRegioKaarten/Utiliteit/impl/PlanRegio_rel
+					  VestaRunData/BestaandeUtil/WarmteVraagD/nrAansluitingen 
+						* float64(Not(IsDefined(VestaRunData/BestaandeUtil/WarmteAllocatie)))
+						* float64(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit > value(100, kW)) 
+					, PlanRegioKaarten/BestaandeUtil/impl/PlanRegio_rel
 					) + 
 					sum(
 					  VestaRunData/NieuwbouwUtil/WarmteVraagD/nrAansluitingen 
@@ -212,10 +212,10 @@ template KostenBatenSchema
 			{
 				attribute<kW> Klein (PlanRegio) :=
 					 0.5 * ( // gelijktijdigheidsfactor
-						sum(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit 
-							* float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
-							* float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit <= 100[ kW]) 
-							, VestaRunData/Utiliteit/PlanRegio_rel
+						sum(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit 
+							* float64(Not(IsDefined(VestaRunData/BestaandeUtil/WarmteAllocatie)))
+							* float64(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit <= 100[ kW]) 
+							, VestaRunData/BestaandeUtil/PlanRegio_rel
 						)+
 						sum(VestaRunData/NieuwbouwUtil/WarmteVraagD/AansluitCapaciteit 
 							* float64(Not(IsDefined(VestaRunData/NieuwbouwUtil/WarmteAllocatie)))
@@ -225,10 +225,10 @@ template KostenBatenSchema
 					);
 				attribute<kW> Groot (PlanRegio) :=
 						// geen gelijktijdigheidsfactor voor grote utiliteit
-						sum(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit 
-							* float64(Not(IsDefined(VestaRunData/Utiliteit/WarmteAllocatie)))
-							* float64(VestaRunData/Utiliteit/WarmteVraagD/AansluitCapaciteit > 100[ kW ]) 
-							, VestaRunData/Utiliteit/PlanRegio_rel
+						sum(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit 
+							* float64(Not(IsDefined(VestaRunData/BestaandeUtil/WarmteAllocatie)))
+							* float64(VestaRunData/BestaandeUtil/WarmteVraagD/AansluitCapaciteit > 100[ kW ]) 
+							, VestaRunData/BestaandeUtil/PlanRegio_rel
 						)+
 						sum(VestaRunData/NieuwbouwUtil/WarmteVraagD/AansluitCapaciteit 
 							* float64(Not(IsDefined(VestaRunData/NieuwbouwUtil/WarmteAllocatie)))
@@ -282,23 +282,23 @@ template KostenBatenSchema
 
 			container bestaand
 			{
-				attribute<m2> Areaal (PlanRegio) := sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits
-						* float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))
-						, PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel);
+				attribute<m2> Areaal (PlanRegio) := sum(VestaRunData/BestaandeGlTb/WarmteVraagD/NrModelUnits
+						* float64(Not(IsDefined(VestaRunData/BestaandeGlTb/WarmteAllocatie)))
+						, PlanRegioKaarten/BestaandeGlTb/impl/PlanRegio_rel);
 				
-				attribute<m> SqrtAreaal (PlanRegio) := sum(Sqrt(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits)
-						* float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))
-						, PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel);
+				attribute<m> SqrtAreaal (PlanRegio) := sum(Sqrt(VestaRunData/BestaandeGlTb/WarmteVraagD/NrModelUnits)
+						* float64(Not(IsDefined(VestaRunData/BestaandeGlTb/WarmteAllocatie)))
+						, PlanRegioKaarten/BestaandeGlTb/impl/PlanRegio_rel);
 
 				attribute<nrAansl> NrAansluitingen (PlanRegio) :=
-						sum(VestaRunData/GlasTuinbouw/WarmteVraagD/nrAansluitingen
-						* float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))
-						, PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel);
+						sum(VestaRunData/BestaandeGlTb/WarmteVraagD/nrAansluitingen
+						* float64(Not(IsDefined(VestaRunData/BestaandeGlTb/WarmteAllocatie)))
+						, PlanRegioKaarten/BestaandeGlTb/impl/PlanRegio_rel);
 
 				attribute<kW> CapaciteitsVraag (PlanRegio) := 
-						sum(  VestaRunData/GlasTuinbouw/WarmteVraagD/AansluitCapaciteit
-						* float64(Not(IsDefined(VestaRunData/Glastuinbouw/WarmteAllocatie)))
-						, VestaRunData/GlasTuinbouw/PlanRegio_rel);
+						sum(  VestaRunData/BestaandeGlTb/WarmteVraagD/AansluitCapaciteit
+						* float64(Not(IsDefined(VestaRunData/BestaandeGlTb/WarmteAllocatie)))
+						, VestaRunData/BestaandeGlTb/PlanRegio_rel);
 
 				attribute<float64> n_OS          (PlanRegio) := CapaciteitsVraag / Vermogen_OS; // OnderStations voor glastuinbouw hebben dezelfde 'optimale' grootte als voor woningen
 
@@ -306,7 +306,7 @@ template KostenBatenSchema
 				attribute<Eur> Ki_OS_max         (PlanRegio) := CapaciteitsVraag * 150[ Eur / KW], Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 				attribute<Eur> Ki_OnderStation   (PlanRegio) := (Schuiven/KostenMin * Ki_OS_min + Schuiven/KostenMax * Ki_OS_max) * LeerCurves/Curve1, Source = "F 42, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36"; // 82.5[Eur_kW ]
 
-				attribute<Eur> K_dienstleidingen (PlanRegio) : Source = "F 47b" ,= sum(VestaRunData/GlasTuinbouw/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/GlasTuinbouw/BebouwingsType], PlanRegioKaarten/GlasTuinbouw/impl/PlanRegio_rel);
+				attribute<Eur> K_dienstleidingen (PlanRegio) : Source = "F 47b" ,= sum(VestaRunData/BestaandeGlTb/WarmteVraagD/NrModelUnits * K_dienstleiding_m2[VestaRunData/BestaandeGlTb/BebouwingsType], PlanRegioKaarten/BestaandeGlTb/impl/PlanRegio_rel);
 
 				attribute<float64> n_Zijwegparen (PlanRegio) := Sqrt(2.0) * SqrtAreaal / GroenteKasLengteFactor, Descr = "F 48";
 				attribute<float64> n_Zijleiding  (PlanRegio) := (n_Zijwegparen + 0.5) * 2.0, Descr = "F 48: estimate average increase of round-up in a 'best' continuous replacement";
