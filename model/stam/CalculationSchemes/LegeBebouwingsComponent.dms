@@ -42,43 +42,38 @@ template LegeBebouwingsComponent
 	unit<float64> JoinedUnit;
 	unit<uint8>   BebouwingsTypeDomeinArg;
 
-	container results
+	unit<uint32> results := Range(uint32, 0, 0)
 	{
-		unit<uint32> BebouwingsObject := Range(uint32, 0, 0)
-		{
-			attribute<Geography/rdc_meter> PointCopy := point;
-			attribute<string>              code      := const('', .);
-			attribute<string>              Label     := code, DialogType = "LabelText";
-		}
+		attribute<string>              code      := const('', .);
 		unit<uint8> BebouwingsTypeDomein := BebouwingsTypeDomeinArg;
 
-		attribute<Geography/rdc_meter>                point              (BebouwingsObject) := point(const(0.0, BebouwingsObject), const(0.0, BebouwingsObject), Geography/rdc_meter);
+		attribute<Geography/rdc_meter>                point              := point(const(0.0, .), const(0.0, .), Geography/rdc_meter);
 
-		attribute<JoinedUnit>                         NrJoinedUnits      (BebouwingsObject) := const(0[JoinedUnit], BebouwingsObject);
+		attribute<JoinedUnit>                         NrJoinedUnits      := const(0[JoinedUnit], .);
 
-		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok500m], BebouwingsObject);
-		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok1km],  BebouwingsObject);
-		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := const(0[Geography/RegioIndelingen/blok2km],  BebouwingsObject);
+		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := const(0[Geography/RegioIndelingen/blok500m], .);
+		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := const(0[Geography/RegioIndelingen/blok1km],  .);
+		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := const(0[Geography/RegioIndelingen/blok2km],  .);
 
-		attribute<uint8>                              ModelObjectKey     (BebouwingsObject) := const(0b, BebouwingsObject);
-		attribute<BebouwingsTypeDomein>               BebouwingsType     (BebouwingsObject) := const(0b, BebouwingsObject);
-		attribute<Classifications/BouwJaar>           BouwJaar           (BebouwingsObject) := const(Classifications/BouwJaar/Onbekend, BebouwingsObject);
-		attribute<nrAansl>                            nrAansluitingen    (BebouwingsObject) := const(0[nrAansl], BebouwingsObject);
-		attribute<nrWoningen>                         nrWoonUnits        (BebouwingsObject) := const(0.0[nrWoningen], BebouwingsObject);
+		attribute<uint8>                              ModelObjectKey     := const(0b, .);
+		attribute<BebouwingsTypeDomein>               BebouwingsType     := const(0b, .);
+		attribute<Classifications/BouwJaar>           BouwJaar           := const(Classifications/BouwJaar/Onbekend, .);
+		attribute<nrAansl>                            nrAansluitingen_i  := const(0[nrAansl], .);
+		attribute<nrWoningen>                         nrWoonUnits_i      := const(0.0[nrWoningen], .);
 
-		attribute<bool>                               KanBesparen        (BebouwingsObject) := const(false, BebouwingsObject);
-		attribute<float64>                            AandeelWarmteVraag (BebouwingsObject) := const(0.0, BebouwingsObject);
-		attribute<string>                             Label              (BebouwingsObject) := BebouwingsObject/Label;
+		attribute<bool>                               KanBesparen        := const(false, .);
+		attribute<float64>                            AandeelWarmteVraag := const(0.0, .);
+		attribute<string>                             Label              := code;
 
 		container Criteria;
 		container Gebied
 		{
-			attribute<float64> n      (BebouwingsObject) := const(0.0, BebouwingsObject);
-			attribute<float64> MEAN_x (BebouwingsObject) := const(0.0, BebouwingsObject);
-			attribute<float64> MEAN_y (BebouwingsObject) := const(0.0, BebouwingsObject);
-			attribute<float64> SSD_xx (BebouwingsObject) := const(0.0, BebouwingsObject);
-			attribute<float64> SSD_xy (BebouwingsObject) := const(0.0, BebouwingsObject);
-			attribute<float64> SSD_yy (BebouwingsObject) := const(0.0, BebouwingsObject);
+			attribute<float64> n      (..) := const(0.0, ..);
+			attribute<float64> MEAN_x (..) := const(0.0, ..);
+			attribute<float64> MEAN_y (..) := const(0.0, ..);
+			attribute<float64> SSD_xx (..) := const(0.0, ..);
+			attribute<float64> SSD_xy (..) := const(0.0, ..);
+			attribute<float64> SSD_yy (..) := const(0.0, ..);
 		}
 	}
 }

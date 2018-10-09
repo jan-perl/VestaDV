@@ -116,9 +116,8 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 		attribute<string> resterendFactorName := name;
 
-		attribute<int16>   fontcharacter: DialogType = "SymbolIndex",= WoningType2008/fontcharacter[wt2008_rel];
+//REMOVE		attribute<int16>   fontcharacter: DialogType = "SymbolIndex",= WoningType2008/fontcharacter[wt2008_rel];
 		parameter<Float64> SymbolSize:    DialogType = "SymbolSize" ,= 24.0;
-		attribute<string>  fo_code_2008 := WoningType2008/fo_code[wt2008_rel];
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
@@ -572,6 +571,7 @@ container Classifications: Using = "Units", KeepData = "True"
 				'Glastuinbouw, overig, belicht',
 				'Glastuinbouw, overig, onbelicht'
 		];
+		attribute<string> resterendFactorName := name;
 		attribute<string> csv_output: // no comma's in output to csv as Excel will treat them as seperate columns
 			expr = "replace(Excel_Code, ', ', '_')";
 	}

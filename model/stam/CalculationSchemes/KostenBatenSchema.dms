@@ -101,10 +101,10 @@ template KostenBatenSchema
 		container Wonen
 		{
 			template ComponentTempl {
-				unit<uint32>    WoonObject;
 				container       VestaRunDataComponent;
 				unit<uint8>     Type;
 				parameter<bool> IsNieuwbouw;
+				unit<uint32>    WoonObject := VestaRunDataComponent/BebouwingsObject;
 				// en dof case parameters
 
 				attribute<bool>      IsMeergezins  (WoonObject) := Type/IsMeergezins[VestaRunDataComponent/BebouwingsType];
@@ -159,8 +159,8 @@ template KostenBatenSchema
 				attribute<Eur_yr> Kj_wd_base (PlanRegio) := Ki_wd_sec * VestaRunData/Onderhoud/Rj_wd + Onderstation/Ki_wd * VestaRunData/Onderhoud/Rj_Onderstation;
 				attribute<Eur_yr> Kj_id_base (PlanRegio) := Ki_id * VestaRunData/Onderhoud/Rj_id;
 			}
-			container bbw:= ComponentTempl (Entiteiten/BestaandeWoning, VestaRunData/BestaandeWoning, Entiteiten/WoningType          , false);
-			container nbw:= ComponentTempl (Entiteiten/NieuwbouwWoning, VestaRunData/NieuwbouwWoning, Entiteiten/NieuwbouwWoningType , true);
+			container bbw := ComponentTempl(VestaRunData/BestaandeWoning, Entiteiten/WoningType, false);
+			container nbw := ComponentTempl(VestaRunData/NieuwbouwWoning, Entiteiten/NieuwbouwWoningType, true);
 
 			attribute<Eur> Ki_wd(PlanRegio) := bbw/ki_wd + nbw/Ki_wd;
 			attribute<Eur> Ki_id(PlanRegio) := bbw/ki_id + nbw/Ki_id;

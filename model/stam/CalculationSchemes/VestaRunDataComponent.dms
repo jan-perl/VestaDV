@@ -33,7 +33,7 @@
 
 template VestaRunDataComponent
 {
-	container         ExtraBebouwing;
+	unit<uint32>      BestaandeOfExtraBebouwingsObject;
 	parameter<string> Tag;
 	parameter<bool>   IsNieuwbouw;
 	parameter<bool>   HasFactors;
@@ -63,64 +63,61 @@ template VestaRunDataComponent
 		container _28 := ='NCW/'+NcwRefBase+'28';
 	}
 	
-	container Bebouwing := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent, ExtraBebouwing)' : 'ExtraBebouwing'
+	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BestaandeOfExtraBebouwingsObject)' : '..';
+	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BestaandeOfExtraBebouwingsObject'
 	{
 		attribute<Geography/RegioIndelingen/buurt> buurt_rel(BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
 	}
-	unit<uint32>  BebouwingsObject     := Bebouwing/BebouwingsObject;
 	unit<uint32>  PrevObject           := StartingStateComponent/BebouwingsObject;
-	unit<uint8>   BebouwingsTypeDomein := Bebouwing/BebouwingsTypeDomein
-	{
-		attribute<string> ResterendFactorName := = HasFactors ? 'Bebouwing/BebouwingsTypeDomein/ResterendFactorName' : 'name'; // fix missing names
-	}
+	unit<uint8>   BebouwingsTypeDomein := BebouwingsObject/BebouwingsTypeDomein;
 	unit<uint32>  ModelObject:= EnergieVraagModellen/ModelObject;
 	unit<float64> ModelUnit  := EnergieVraagModellen/ModelUnit;
 	unit<uint32>  WkoCluster := StartingState/AanbodOpties/WkoCluster;
 
-	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(Bebouwing/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
-	attribute<PlanRegio>                   PlanRegio_rel     (BebouwingsObject) := ='Bebouwing/'+UserInput/PlanRegioNaam+'_rel';
+	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
+	attribute<PlanRegio>                   PlanRegio_rel     (BebouwingsObject) := ='BebouwingsObject/'+UserInput/PlanRegioNaam+'_rel';
 	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
 	attribute<Classifications/AanbodOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
 	attribute<Eur_yr>                      KoudeAllocatie    (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
 	attribute<Eur_yr>                      Om_Comfort        (BebouwingsObject) := MakeDefined(StartingStateComponent/Om_Comfort[StartingState_rel], 0[Eur_yr]);
 	attribute<WkoCluster>                  WkoCluster_rel    (BebouwingsObject) := StartingStateComponent/WkoCluster_rel[StartingState_rel];
 
-	container RuimtelijkeVraagComponent
+	unit<uint32> RuimtelijkeVraagComponent := BebouwingsObject
 	{
 		// inherited attributen
-		attribute<BebouwingsTypeDomein>          BebouwingsType (BebouwingsObject) := Bebouwing/BebouwingsType;
-		attribute<Classifications/BouwJaar>      BouwJaar       (BebouwingsObject) := Bebouwing/BouwJaar;
-		attribute<Geography/rdc_meter>           Point          (BebouwingsObject) := Bebouwing/point;
+//REMOVE		attribute<BebouwingsTypeDomein>          BebouwingsType (BebouwingsObject) := BebouwingsObject/BebouwingsType;
+//REMOVE		attribute<Classifications/BouwJaar>      BouwJaar       (BebouwingsObject) := BebouwingsObject/BouwJaar;
+//REMOVE		attribute<Geography/rdc_meter>           Point          (BebouwingsObject) := BebouwingsObject/point;
 		attribute<Geography/rdc_grids/m100>      GridCellID     (BebouwingsObject) := point[Geography/rdc_grids/m100];
 
-		attribute<Ratio> ResterendFactorBase(BebouwingsObject) := = HasFactors
+		attribute<Ratio> ResterendFactorBase := = HasFactors
 			? 'MakeDefined(merge(BebouwingsType, Ratio, '+AsItemList('ResterendFactorMaps/'+BebouwingsTypeDomein/ResterendFactorName+'[GridCellID]')+'), 1.0)'
 			: 'const(1.0, BebouwingsObject)';
 
-		attribute<Ratio>      ResterendFactor (BebouwingsObject) := ResterendFactorBase * float64(IsDefined(PlanRegio_rel));
-		attribute<nrAansl>    nrAansluitingen (BebouwingsObject) := ResterendFactor * Bebouwing/nrAansluitingen;
-		attribute<nrWoningen> nrWoonunits     (BebouwingsObject) := ResterendFactor * Bebouwing/nrWoonUnits;
-		attribute<ModelUnit>  nrModelUnits    (BebouwingsObject) := ResterendFactor * Bebouwing/NrJoinedUnits * EnergieVraagModellen/nrMUperJU[Model_rel];
+		attribute<Ratio>      ResterendFactor := ResterendFactorBase * float64(IsDefined(PlanRegio_rel));
+		attribute<nrAansl>    nrAansluitingen := ResterendFactor * BebouwingsObject/nrAansluitingen_i;
+		attribute<nrWoningen> nrWoonunits     := ResterendFactor * BebouwingsObject/nrWoonUnits_i;
+		attribute<ModelUnit>  nrModelUnits    := ResterendFactor * BebouwingsObject/NrJoinedUnits * EnergieVraagModellen/nrMUperJU[Model_rel];
 
 		container AansluitCapaciteit
 		{
-			attribute<kW> Warmte (BebouwingsObject) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
+			attribute<kW> Warmte(..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
 		}
 
-		attribute<float64> AandeelWarmteVraag (BebouwingsObject) := Bebouwing/AandeelWarmteVraag;
+		attribute<float64> AandeelWarmteVraag := BebouwingsObject/AandeelWarmteVraag;
 
 		// Extra attributen
-		attribute<Units/Ratio> KlimaatFactor (BebouwingsObject) := KlimaatFactorMap[GridCellID];
+		attribute<Units/Ratio> KlimaatFactor  := KlimaatFactorMap[GridCellID];
 
 		// impl
 		container Functioneel
 		{
-			attribute<GJ_yr> WarmWater            (BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
-			attribute<GJ_yr> Koude                (BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
-			attribute<GJ_yr> ElektrischeApparatuur(BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
-			attribute<GJ_yr> RuimteVerwarming     (BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactor;
-			attribute<GJ_yr> PompEnergie_min      (BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
-			attribute<GJ_yr> PompEnergie_max      (BebouwingsObject) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr> WarmWater            (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
+			attribute<GJ_yr> Koude                (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
+			attribute<GJ_yr> ElektrischeApparatuur(..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
+			attribute<GJ_yr> RuimteVerwarming     (..) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactor;
+			attribute<GJ_yr> PompEnergie_min      (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr> PompEnergie_max      (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
 		}
 	}
 
@@ -133,7 +130,7 @@ template VestaRunDataComponent
 		attribute<bool>                         IsChanged    (BebouwingsObject) := WasChanged || IsChangedNow;
 	}
 
-	container Criteria : Expr = "Bebouwing/Criteria" // inherit, TODO: opruimen na aanpassing runs
+	container Criteria := BebouwingsObject/Criteria // inherit, TODO: opruimen na aanpassing runs
 	{
 		attribute<bool> Always (BebouwingsObject) := const(true,  BebouwingsObject);
 		attribute<bool> Never  (BebouwingsObject) := const(false, BebouwingsObject);

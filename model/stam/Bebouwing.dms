@@ -42,10 +42,10 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 {
 	unit<uint32> BestaandeWoning := BAG/vbo_woonfunctie, DialogData = "point", DialogType = "Map"
 	{
-		unit<uint32> BebouwingsObject  := ., isHidden = "True";
-		unit<uint8>  BebouwingsTypeDomein:= Classifications/WoningtypeGeoHoogte, isHidden = "True";
-		unit<uint8>  BouwjaarDomein    := Classifications/BouwJaarBAG, isHidden = "True";
-		unit<uint8>  ModelObjectKeyDomein     := Classifications/WoningtypeBouwJaarBAG, isHidden = "True";
+//REMOVE		unit<uint32> BebouwingsObject      := ., isHidden = "True";
+		unit<uint8>  BebouwingsTypeDomein  := Classifications/WoningtypeGeoHoogte, isHidden = "True";
+		unit<uint8>  BouwjaarDomein        := Classifications/BouwJaarBAG, isHidden = "True";
+		unit<uint8>  ModelObjectKeyDomein  := Classifications/WoningtypeBouwJaarBAG, isHidden = "True";
 
 		attribute<string>                   code               := BAG/vbo_woonfunctie/identificatie;
 		attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
@@ -53,9 +53,9 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<RegioIndelingen/blok2km>  blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]], isHidden = "True";
 		attribute<RegioIndelingen/buurt>    buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/geometry), isHidden = "True";
 
-		attribute<nrAansl>                  nrAansluitingen    := Impl/nrWon * 1[ nrAansl / nrWoningen];
+		attribute<nrAansl>                  nrAansluitingen_i  := Impl/nrWon * 1[ nrAansl / nrWoningen];
+		attribute<nrWoningen>               nrWoonUnits_i      := Impl/nrWon;
 		attribute<nrWoningen>               nrJoinedUnits      := Impl/nrWon, isHidden = "True";
-		attribute<nrWoningen>               nrWoonUnits        := Impl/nrWon;
 
 		attribute<BebouwingsTypeDomein>     BebouwingsType     := Impl/WoningType, isHidden = "True";
 		attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwJaarBAG)) + Impl/BouwjaarBag_rel, classifications/WoningTypeBouwjaarBAG);
@@ -86,7 +86,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 			attribute<Classifications/energielabel> AvgLabel  (..) := EnergieLabelData_rel;
 		}
 
-		container Criteria: isHidden = "True"
+		container Criteria
 		{
 		}
 
@@ -104,7 +104,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 
 	unit<uint32> BestaandeUtil := BAG/vbo_utiliteit
 	{
-		unit<uint32> BebouwingsObject   := . ,isHidden = "True";
+//REMOVE		unit<uint32> BebouwingsObject   := . ,isHidden = "True";
 		unit<uint8>  BebouwingsTypeDomein := Classifications/utiliteitBAG ,isHidden = "True";
 
 		// external key
@@ -120,9 +120,9 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 
 		attribute<Classifications/BouwJaar> BouwJaar        := classify(BAG/vbo_utiliteit/bouwjaar, Classifications/BouwJaar/ClassBreak), isHidden = "True";
 
-		attribute<nrAansl>                  nrAansluitingen := const(1[nrAansl], .);
+		attribute<nrAansl>                  nrAansluitingen_i := const(1[nrAansl], .);
+		attribute<nrWoningen>               nrWoonUnits_i   := nrJoinedUnits / 100[m2/ nrWoningen];
 		attribute<m2>                       nrJoinedUnits   := BAG/vbo_utiliteit/oppervlakte[m2];
-		attribute<nrWoningen>               nrWoonUnits     := nrJoinedUnits / 100[m2/ nrWoningen];
 
 		container Gebied: IsHidden = "True"
 		{
@@ -145,7 +145,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
 		attribute<float64>                         AandeelWarmteVraag  := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
-		container Criteria: isHidden = "True"
+		container Criteria
 		{
 		}
 	}
@@ -190,7 +190,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 
 	unit<uint32> BestaandeGlTb := BronData/Glastuinbouw/pc04_010316, FreeData = "True"
 	{
-		unit<uint32>  BebouwingsObject   := ., FreeData = "True" ,isHidden = "True";
+//REMOVE		unit<uint32>  BebouwingsObject   := ., FreeData = "True" ,isHidden = "True";
 		unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
 		
 		// external key
@@ -205,8 +205,8 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<RegioIndelingen/blok1km>    blok1km_rel     := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]], isHidden = "True";
 		attribute<RegioIndelingen/blok2km>    blok2km_rel     := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]], isHidden = "True";
 
-		attribute<nrAansl>                    nrAansluitingen := const(1[nrAansl   ], .), isHidden = "True";
-		attribute<nrWoningen>                 nrWoonUnits     := const(0[nrWoningen], .), isHidden = "True";
+		attribute<nrAansl>                    nrAansluitingen_i := const(1[nrAansl   ], .), isHidden = "True";
+		attribute<nrWoningen>                 nrWoonUnits_i   := const(0[nrWoningen], .), isHidden = "True";
 		attribute<m2>                         NrJoinedUnits   := Opp_M2;
 
 		// location
@@ -225,7 +225,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<uint8>                    ModelObjectKey     := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 
 		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
-		container Criteria: isHidden = "True"
+		container Criteria
 		{
 		//	attribute<Bool>     KanBesparen: Expr = "const(false, BebouwingsObject)"; // Vul  hier iets anders in als je in RuimtelijkeVraagMetBesparing wel besparingen voor glastuinbouw wilt
 		}

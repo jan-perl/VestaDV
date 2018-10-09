@@ -41,62 +41,59 @@ container BebouwingsOperaties
 {
 	template Samenstelling
 	{
-		container BestaandeWoning;
-		container NieuwbouwWoning;
+		unit<uint32> BestaandeWoning;
+		unit<uint32> NieuwbouwWoning;
 		parameter<bool> HasBestaandeWoningResterendFactors;
 		container BestaandeWoningResterendFactors;
-		container BestaandeUtil;
-		container NieuwbouwUtil;
+		
+		unit<uint32> BestaandeUtil;
+		unit<uint32> NieuwbouwUtil;
 		parameter<bool> HasBestaandeUtilResterendFactors;
 		container BestaandeUtilResterendFactors;
-		container BestaandeGLTB;
-		container NieuwbouwGLTB;
+		
+		unit<uint32> BestaandeGLTB;
+		unit<uint32> NieuwbouwGLTB;
 		parameter<bool> HasBestaandeGlTbResterendFactors;
 		container BestaandeGlTbResterendFactors;
 	}
 	template Union
 	{
-		container BestaandeState;
-		container Nieuwbouw;
-
-		container Bestaand := BestaandeState/Bebouwing;
-
-		unit<uint32> BebouwingsObject := union_unit(Bestaand/BebouwingsObject, Nieuwbouw/BebouwingsObject)
-		,	DialogType = "Map"
-		,	DialogData = "Pnt"
-		{
-			attribute<Geography/rdc_meter> Pnt   := Point;
-			attribute<string>              Code  := union_data(BebouwingsObject, Bestaand/BebouwingsObject/Code,  Nieuwbouw/BebouwingsObject/Code);
-			attribute<String>              Label := union_data(BebouwingsObject, Bestaand/BebouwingsObject/Label, Nieuwbouw/BebouwingsObject/Label), DialogType = "LabelText";
-			parameter<m> SymbolWorldSize: [50], DialogType = "SymbolWorldSize";
-		}
-
-		unit<float64> JoinedUnit := valuesunit(Bestaand/NrJoinedUnits);
-		unit<uint8>  BebouwingsTypeDomein := Bestaand/BebouwingsTypeDomein;
+		unit<uint32> BestaandObject;
+		unit<uint32> NieuwbouwObject;
 		
-		attribute<JoinedUnit>                         NrJoinedUnits      (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/NrJoinedUnits, Nieuwbouw/NrJoinedUnits);
-		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok500m_rel, Nieuwbouw/blok500m_rel);
-		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok1km_rel, Nieuwbouw/blok1km_rel);
-		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/blok2km_rel, Nieuwbouw/blok2km_rel);
-		attribute<Geography/rdc_meter>                Point              (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Point, Nieuwbouw/Point);
-		attribute<BebouwingsTypeDomein>               BebouwingsType     (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/BebouwingsType, Nieuwbouw/BebouwingsType);
-		attribute<Classifications/BouwJaar>           Bouwjaar           (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Bouwjaar, Nieuwbouw/Bouwjaar);
-		attribute<uint8>                              ModelObjectKey     (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/ModelObjectKey, Nieuwbouw/ModelObjectKey);
-		attribute<nrAansl>                            nrAansluitingen    (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/nrAansluitingen, Nieuwbouw/nrAansluitingen);
-		attribute<nrWoningen>                         nrWoonUnits        (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/nrWoonUnits, Nieuwbouw/nrWoonUnits);
-
-		attribute<float64>                            AandeelWarmteVraag (BebouwingsObject):= union_data(BebouwingsObject, Bestaand/AandeelWarmteVraag, Nieuwbouw/AandeelWarmteVraag);
-
-		attribute<String> Label(BebouwingsObject) := BebouwingsObject/Label;
-		container Gebied
+		unit<uint32> result := union_unit(BestaandObject, NieuwbouwObject)
+		,	DialogType = "Map"
+		,	DialogData = "Point"
 		{
-			attribute<float64> n      (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/n,      Nieuwbouw/Gebied/n);
-			attribute<float64> MEAN_x (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/MEAN_x, Nieuwbouw/Gebied/MEAN_x);
-			attribute<float64> MEAN_y (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/MEAN_y, Nieuwbouw/Gebied/MEAN_y);
-			attribute<float64> SSD_xx (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/SSD_xx, Nieuwbouw/Gebied/SSD_xx);
-			attribute<float64> SSD_xy (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/SSD_xy, Nieuwbouw/Gebied/SSD_xy);
-			attribute<float64> SSD_yy (BebouwingsObject) := union_data(BebouwingsObject, Bestaand/Gebied/SSD_yy, Nieuwbouw/Gebied/SSD_yy);
+			attribute<Geography/rdc_meter> Point := union_data(., BestaandObject/Point, NieuwbouwObject/Point);
+			attribute<string>              Code  := union_data(., BestaandObject/Code,  NieuwbouwObject/Code);
+			attribute<String>              Label := union_data(., BestaandObject/Label, NieuwbouwObject/Label), DialogType = "LabelText";
+			parameter<m> SymbolWorldSize: [50], DialogType = "SymbolWorldSize";
+
+			unit<float64> JoinedUnit := valuesunit(BestaandObject/NrJoinedUnits);
+			unit<uint8>  BebouwingsTypeDomein := BestaandObject/BebouwingsTypeDomein;
+			
+			attribute<JoinedUnit>                         NrJoinedUnits      := union_data(., BestaandObject/NrJoinedUnits, NieuwbouwObject/NrJoinedUnits);
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := union_data(., BestaandObject/blok500m_rel, NieuwbouwObject/blok500m_rel);
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := union_data(., BestaandObject/blok1km_rel, NieuwbouwObject/blok1km_rel);
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := union_data(., BestaandObject/blok2km_rel, NieuwbouwObject/blok2km_rel);
+			attribute<BebouwingsTypeDomein>               BebouwingsType     := union_data(., BestaandObject/BebouwingsType, NieuwbouwObject/BebouwingsType);
+			attribute<Classifications/BouwJaar>           Bouwjaar           := union_data(., BestaandObject/Bouwjaar, NieuwbouwObject/Bouwjaar);
+			attribute<uint8>                              ModelObjectKey     := union_data(., BestaandObject/ModelObjectKey, NieuwbouwObject/ModelObjectKey);
+			attribute<nrAansl>                            nrAansluitingen_i  := union_data(., BestaandObject/nrAansluitingen_i, NieuwbouwObject/nrAansluitingen_i);
+			attribute<nrWoningen>                         nrWoonUnits_i      := union_data(., BestaandObject/nrWoonUnits_i, NieuwbouwObject/nrWoonUnits_i);
+			attribute<float64>                            AandeelWarmteVraag := union_data(., BestaandObject/AandeelWarmteVraag, NieuwbouwObject/AandeelWarmteVraag);
+
+			container Gebied
+			{
+				attribute<float64> n      (..) := union_data(.., BestaandObject/Gebied/n,      NieuwbouwObject/Gebied/n);
+				attribute<float64> MEAN_x (..) := union_data(.., BestaandObject/Gebied/MEAN_x, NieuwbouwObject/Gebied/MEAN_x);
+				attribute<float64> MEAN_y (..) := union_data(.., BestaandObject/Gebied/MEAN_y, NieuwbouwObject/Gebied/MEAN_y);
+				attribute<float64> SSD_xx (..) := union_data(.., BestaandObject/Gebied/SSD_xx, NieuwbouwObject/Gebied/SSD_xx);
+				attribute<float64> SSD_xy (..) := union_data(.., BestaandObject/Gebied/SSD_xy, NieuwbouwObject/Gebied/SSD_xy);
+				attribute<float64> SSD_yy (..) := union_data(.., BestaandObject/Gebied/SSD_yy, NieuwbouwObject/Gebied/SSD_yy);
+			}
+			container Criteria;
 		}
-		container Criteria;
 	}
 }

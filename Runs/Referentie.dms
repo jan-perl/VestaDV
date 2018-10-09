@@ -38,7 +38,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container VestaRunReferentie
+container Referentie
 {
 //	INCLUDE MODEL AND FIXED SETTINGS SECTION	
 	#include <%projDir%/model/stam.dms>

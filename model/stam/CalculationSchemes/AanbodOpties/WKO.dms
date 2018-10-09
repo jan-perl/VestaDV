@@ -226,13 +226,13 @@ template WKO
 			container Gebied
 			{
 				// accumulators
-				attribute<Float64> n     (BebouwingsObject) := value(VestaRunDataComponent/Bebouwing/Gebied/n, Float64);
+				attribute<Float64> n     (BebouwingsObject) := value(VestaRunDataComponent/BebouwingsObject/Gebied/n, Float64);
 
-				attribute<Float64> MEAN_x(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/MEAN_x + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
-				attribute<Float64> MEAN_y(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/MEAN_y + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
-				attribute<Float64> SSD_xx(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_xx;
-				attribute<Float64> SSD_xy(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_xy;
-				attribute<Float64> SSD_yy(BebouwingsObject) := VestaRunDataComponent/Bebouwing/Gebied/SSD_yy;
+				attribute<Float64> MEAN_x(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/MEAN_x + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
+				attribute<Float64> MEAN_y(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/MEAN_y + rnd_uniform(0, BebouwingsObject, Range(Float64, -1.0, 1.0));
+				attribute<Float64> SSD_xx(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/SSD_xx;
+				attribute<Float64> SSD_xy(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/SSD_xy;
+				attribute<Float64> SSD_yy(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/SSD_yy;
 			}
 			
 			attribute <Bool> InContour  (BebouwingsObject) := IsDefined( BronData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
