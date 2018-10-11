@@ -112,16 +112,16 @@ container Referentie
 		}
 		container CollectieveOpwekking {
 			container Woning_bestaand {
-				attribute<Ratio> Deelname(Classifications/WoningtypeGeoHoogte ):= const(1[Units/Ratio],Classifications/WoningtypeGeoHoogte); // fractie deelnemers
+				attribute<Ratio> Deelname(Classifications/WoningtypeBestaand ):= const(1[Units/Ratio],Classifications/WoningtypeBestaand); // fractie deelnemers
 			}
 			container Woning_nieuw {
-				attribute<Ratio> Deelname(Classifications/woningtype2006):= const(1[Units/Ratio],Classifications/woningtype2006); // fractie deelnemers
+				attribute<Ratio> Deelname(Classifications/WoningtypeNieuwbouw):= const(1[Units/Ratio],Classifications/WoningtypeNieuwbouw); // fractie deelnemers
 			}
 			container Utiliteit_bestaand {
-				attribute<Ratio> Deelname(Classifications/utiliteitBAG):= const(1[Units/Ratio],Classifications/utiliteitBAG); // fractie deelnemers
+				attribute<Ratio> Deelname(Classifications/UtilTypeBestaand):= const(1[Units/Ratio],Classifications/UtilTypeBestaand); // fractie deelnemers
 			}
 			container Utiliteit_nieuw {
-				attribute<Ratio> Deelname(Classifications/NieuwbouwUtil):= const(1[Units/Ratio],Classifications/NieuwbouwUtil); // fractie deelnemers
+				attribute<Ratio> Deelname(Classifications/UtilTypeNieuwbouw):= const(1[Units/Ratio],Classifications/UtilTypeNieuwbouw); // fractie deelnemers
 			}
 			container Glastuinbouw_bestaand {
 				attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
@@ -136,15 +136,15 @@ container Referentie
 			
 			container Woning_bestaand {
 				parameter<KWh_yr_m2> Zon_PV_opbrengst  := 150[KWh_yr_m2];
-				attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeGeoHoogte ) := const(30[m2_Dak],Classifications/WoningtypeGeoHoogte);
-				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeGeoHoogte ) := const(3.0[m2_woning],Classifications/WoningtypeGeoHoogte);
+				attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeBestaand ) := const(30[m2_Dak],Classifications/WoningtypeBestaand);
+				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeBestaand ) := const(3.0[m2_woning],Classifications/WoningtypeBestaand);
 			}
 			container Woning_nieuw {
-				attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/woningtype2006) := const(3.0[m2_Woning],Classifications/woningtype2006);
+				attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/WoningtypeNieuwbouw) := const(3.0[m2_Woning],Classifications/WoningtypeNieuwbouw);
 			}
 			container Utiliteit_bestaand {
-				attribute<Bouwlaag> Zon_PV_dakopp     (Classifications/utiliteitBAG ) := const(0.8[Bouwlaag],Classifications/utiliteitBAG);
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/utiliteitBAG): [
+				attribute<Bouwlaag> Zon_PV_dakopp     (Classifications/UtilTypeBestaand ) := const(0.8[Bouwlaag],Classifications/UtilTypeBestaand);
+				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeBestaand): [
 					0.001421186,0.001421186,0.014425039,
 					0.014093429,0.001737005,0.001421186,
 					0.012601184,0.001421186,0.001421186,
@@ -152,7 +152,7 @@ container Referentie
 				];
 			}
 			container Utiliteit_nieuw {
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/NieuwbouwUtil): [
+				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeNieuwbouw): [
 					0.001413423, 0.001413423, 0.001413423,
 					0.001413423, 0.009422819, 0.03533557,
 					0.001727517, 0.015312081, 0.001413423
