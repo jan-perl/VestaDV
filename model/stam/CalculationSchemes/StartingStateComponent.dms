@@ -56,7 +56,7 @@ template StartingStateComponent
 		attribute<Classifications/EnergieLabel> ModelValue (BebouwingsObject) := EnergieVraagModellen/Efficiency/EnergieLabel[ Model_rel];
 
 		attribute<Classifications/EnergieLabel> CalcValue  (BebouwingsObject) :=
-			=(ComponentID == Classifications/BebouwingsComponent/Woning)
+			=(ComponentID == Classifications/BebouwingsComponent/V/BestaandeWoning)
 			? 'value((Float64(ModelValue) * (max_elem(BebouwingsObject/Gebied/n, Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) -Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + Float64(BebouwingsObject/EnergieLabelData_rel/TotWeight)) 
 			/ max_elem(BebouwingsObject/Gebied/n, Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + 0.5,Classifications/EnergieLabel)'
 			: 'ModelValue';

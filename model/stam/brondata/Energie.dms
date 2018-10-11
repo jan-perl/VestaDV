@@ -46,7 +46,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160707_Woningen_BAG.csv', 
 				'WoningType_str', 
-				Classifications/WoningtypeGeoHoogte, Classifications/BouwJaarBag, Units/nrWoningen, Units/nrWoningen
+				Classifications/WoningtypeBestaand, Classifications/BouwjaarWoningBestaand, Units/nrWoningen, Units/nrWoningen
 			)
 		{
 			container results
@@ -66,7 +66,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160525_Woningen_Nieuwbouw_BAG.csv',
 				'WoningType_str',
-				Classifications/woningtype, Classifications/BouwJaar, Units/nrWoningen, Units/nrWoningen
+				Classifications/WoningtypeNieuwbouw, Classifications/BouwJaar, Units/nrWoningen, Units/nrWoningen
 			)
 		{
 			container results {
@@ -87,7 +87,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160706_Utiliteiten_BAG.csv',
 				'UtiliteitType_str', 
-				Classifications/UtiliteitBAG,Classifications/BouwjaarUtilBag,  Units/m2, Units/m2
+				Classifications/UtilTypeBestaand,Classifications/BouwjaarUtilBestaand,  Units/m2, Units/m2
 			)
 		{
 			container results {
@@ -108,7 +108,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160525_Utiliteiten_Nieuwbouw_BAG.csv',
 				'UtiliteitType_str', 
-				Classifications/NieuwbouwUtil, Classifications/BouwJaar,  Units/m2, Units/m2
+				Classifications/UtilTypeNieuwbouw, Classifications/BouwJaar,  Units/m2, Units/m2
 			)
 		{
 			container results {

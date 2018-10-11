@@ -771,8 +771,8 @@ template VestaRunDataComponent
 		}
 	}
 
-//	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := (RuimtelijkeVraagComponent/Verbeteringen/Gebouw >= float64(1.0)) || IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010);
-	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus);
+//	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := (RuimtelijkeVraagComponent/Verbeteringen/Gebouw >= float64(1.0)) || IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010);
+	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus);
 
 	container Opwekking
 	{

@@ -106,11 +106,11 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
 				}
 			}
 
-			unit<uint32> combine_BouwjaarUtil_utiliteit := combine(Classifications/BouwjaarUtilBag ,Classifications/utiliteitBAG)
+			unit<uint32> combine_BouwjaarUtil_utiliteit := combine(Classifications/BouwjaarUtilBestaand ,Classifications/UtilTypeBestaand)
 			{
-				attribute<string>  name_bj                                       := Classifications/BouwjaarUtilBag/label[nr_1];
-				attribute<string>  name_gd                                       := Classifications/utiliteitBAG/label[nr_2];
-				attribute<.>       combine_bj_gd_rel(BronData/BAG/vbo_utiliteit) := combine_data(., BronData/BAG/vbo_utiliteit/BouwjaarUtilBag_rel, BronData/BAG/vbo_utiliteit/gebruiksdoel);
+				attribute<string>  name_bj                                       := Classifications/BouwjaarUtilBestaand/label[nr_1];
+				attribute<string>  name_gd                                       := Classifications/UtilTypeBestaand/label[nr_2];
+				attribute<.>       combine_bj_gd_rel(BronData/BAG/vbo_utiliteit) := combine_data(., BronData/BAG/vbo_utiliteit/BouwjaarUtilBestaand_rel, BronData/BAG/vbo_utiliteit/gebruiksdoel);
 				attribute<uint32>  count(.)                                      := pcount(combine_bj_gd_rel);
 				attribute<float64> sum(.)                                        := sum(BronData/BAG/vbo_utiliteit/Oppervlakte,combine_bj_gd_rel);
 			}

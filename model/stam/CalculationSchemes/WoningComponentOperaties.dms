@@ -43,7 +43,7 @@ container WoningComponentOperaties
 	{
 		// begin case parameters
 		attribute<Units/nrWoningen>           NrWoningenGrid(Geography/rdc_grids/m100);
-		parameter<Classifications/woningtype> type;
+		parameter<Classifications/WoningtypeNieuwbouw> type;
 		parameter<units/yr_uint16>            zichtjaar;
 		// einde case parameters
 
@@ -57,17 +57,17 @@ container WoningComponentOperaties
 				parameter<m> SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
 			}
 
-			attribute<Units/nrWoningen>                   NrWoningen         (BebouwingsObject) := NrWoningenGrid[BebouwingsObject/nr_OrgEntity];
+			attribute<Units/nrWoningen>                    NrWoningen         (BebouwingsObject) := NrWoningenGrid[BebouwingsObject/nr_OrgEntity];
 
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       (BebouwingsObject) := Geography/rdc_grids/m100/blok500m_rel[BebouwingsObject/nr_OrgEntity];
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        (BebouwingsObject) := Geography/rdc_grids/m100/blok1km_rel [BebouwingsObject/nr_OrgEntity];
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        (BebouwingsObject) := Geography/rdc_grids/m100/blok2km_rel [BebouwingsObject/nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/blok500m>  blok500m_rel       (BebouwingsObject) := Geography/rdc_grids/m100/blok500m_rel[BebouwingsObject/nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/blok1km>   blok1km_rel        (BebouwingsObject) := Geography/rdc_grids/m100/blok1km_rel [BebouwingsObject/nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/blok2km>   blok2km_rel        (BebouwingsObject) := Geography/rdc_grids/m100/blok2km_rel [BebouwingsObject/nr_OrgEntity];
 
-			attribute<Geography/rdc_meter>                Point              (BebouwingsObject) := Geography/rdc_grids/m100/Point  [BebouwingsObject/nr_OrgEntity];
-			attribute<Classifications/woningtype>         woningtype         (BebouwingsObject) := const(type, BebouwingsObject, Classifications/woningtype);
-			attribute<Classifications/BouwJaar>           Bouwjaar           (BebouwingsObject) := const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak),BebouwingsObject);
-			attribute<bool>                               KanBesparen        (BebouwingsObject) := const(true, BebouwingsObject); // woning Nieuwbouw wordt al optimaal gebouwd
-			attribute<float64>                            AandeelWarmteVraag (BebouwingsObject) := const(1.0, BebouwingsObject); // alle woning Nieuwbouw is geschikt voor WarmteOpties
+			attribute<Geography/rdc_meter>                 Point              (BebouwingsObject) := Geography/rdc_grids/m100/Point  [BebouwingsObject/nr_OrgEntity];
+			attribute<Classifications/WoningtypeNieuwbouw> woningtype         (BebouwingsObject) := const(type, BebouwingsObject, Classifications/WoningtypeNieuwbouw);
+			attribute<Classifications/BouwJaar>            Bouwjaar           (BebouwingsObject) := const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak),BebouwingsObject);
+			attribute<bool>                                KanBesparen        (BebouwingsObject) := const(true, BebouwingsObject); // woning Nieuwbouw wordt al optimaal gebouwd
+			attribute<float64>                             AandeelWarmteVraag (BebouwingsObject) := const(1.0, BebouwingsObject); // alle woning Nieuwbouw is geschikt voor WarmteOpties
 
 			container Gebied
 			{
@@ -86,7 +86,7 @@ container WoningComponentOperaties
 		container bron;
 		// einde case parameters
 
-		unit<uint8> WoningType := Classifications/WoningType;
+		unit<uint8> WoningType := Classifications/WoningtypeNieuwbouw;
 		
 		unit<uint32> results := ='Union_Unit(' + asItemList('bron/' + WoningType/Name + '/results/BebouwingsObject') + ')'
 			,	DialogType = "Map"

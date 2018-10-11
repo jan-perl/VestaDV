@@ -43,9 +43,9 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 	unit<uint32> BestaandeWoning := BAG/vbo_woonfunctie, DialogData = "point", DialogType = "Map"
 	{
 //REMOVE		unit<uint32> BebouwingsObject      := ., isHidden = "True";
-		unit<uint8>  BebouwingsTypeDomein  := Classifications/WoningtypeGeoHoogte, isHidden = "True";
-		unit<uint8>  BouwjaarDomein        := Classifications/BouwJaarBAG, isHidden = "True";
-		unit<uint8>  ModelObjectKeyDomein  := Classifications/WoningtypeBouwJaarBAG, isHidden = "True";
+		unit<uint8>  BebouwingsTypeDomein  := Classifications/WoningtypeBestaand, isHidden = "True";
+		unit<uint8>  BouwjaarDomein        := Classifications/BouwjaarWoningBestaand, isHidden = "True";
+		unit<uint8>  ModelObjectKeyDomein  := Classifications/WoningtypeBouwjaarBestaand, isHidden = "True";
 
 		attribute<string>                   code               := BAG/vbo_woonfunctie/identificatie;
 		attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
@@ -58,8 +58,8 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		attribute<nrWoningen>               nrJoinedUnits      := Impl/nrWon, isHidden = "True";
 
 		attribute<BebouwingsTypeDomein>     BebouwingsType     := Impl/WoningType, isHidden = "True";
-		attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwJaarBAG)) + Impl/BouwjaarBag_rel, classifications/WoningTypeBouwjaarBAG);
-		attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwJaarBAG/ClassBreak), isHidden = "True";
+		attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwjaarWoningBestaand)) + Impl/BouwjaarWoningBestaand_rel, classifications/WoningtypeBouwjaarBestaand);
+		attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwjaarWoningBestaand/ClassBreak), isHidden = "True";
 
 		attribute<float64>                  AandeelWarmteVraag := MakeDefined(ScenarioSpecs/VestaRunOpties/VraagKentallen/BaseLine/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
@@ -94,10 +94,10 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		{
 			attribute<nrWoningen>                          nrWon           (..) := const(1,..,nrWoningen);
 
-			attribute<Classifications/BouwJaarBag>         BouwJaarBag_rel (..) := BAG/vbo_woonfunctie/BouwjaarBag_rel;
-			attribute<string>                              BouwJaarExcel   (..) := Classifications/BouwjaarBag/excel_code[BouwJaarBag_rel];
+			attribute<Classifications/BouwjaarWoningBestaand>         BouwjaarWoningBestaand_rel (..) := BAG/vbo_woonfunctie/BouwjaarWoningBestaand_rel;
+			attribute<string>                              BouwJaarExcel   (..) := Classifications/BouwjaarWoningBestaand/excel_code[BouwjaarWoningBestaand_rel];
 
-			attribute<classifications/WoningtypeGeoHoogte> WoningType      (..) := BAG/vbo_woonfunctie/WoningtypeGeoHoogte_rel;
+			attribute<classifications/WoningtypeBestaand> WoningType      (..) := BAG/vbo_woonfunctie/WoningtypeBestaand_rel;
 			attribute<BebouwingsTypeDomein>                BebouwingsType  (..) := WoningType;
 		}
 	}
@@ -105,7 +105,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 	unit<uint32> BestaandeUtil := BAG/vbo_utiliteit
 	{
 //REMOVE		unit<uint32> BebouwingsObject   := . ,isHidden = "True";
-		unit<uint8>  BebouwingsTypeDomein := Classifications/utiliteitBAG ,isHidden = "True";
+		unit<uint8>  BebouwingsTypeDomein := Classifications/UtilTypeBestaand ,isHidden = "True";
 
 		// external key
 		attribute<string>                   code            := BAG/vbo_utiliteit/identificatie;
@@ -137,9 +137,9 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 		// foreign key to model data
 		//attribute<Classifications/UtilRapGroep> RapGroep;
 
-		attribute<Classifications/BouwjaarUtilBag> BouwjaarUtilBag_rel := BAG/vbo_utiliteit/BouwjaarUtilBag_rel, isHidden = "True";
+		attribute<Classifications/BouwjaarUtilBestaand> BouwjaarUtilBestaand_rel := BAG/vbo_utiliteit/BouwjaarUtilBestaand_rel, isHidden = "True";
 		attribute<BebouwingsTypeDomein>            BebouwingsType      := BAG/vbo_utiliteit/gebruiksdoel, isHidden = "True";
-		attribute<uint8>                           ModelObjectKey      := BebouwingsType *  uint8(NrOfRows(Classifications/BouwjaarUtilBag)) + BouwjaarUtilBag_rel;
+		attribute<uint8>                           ModelObjectKey      := BebouwingsType *  uint8(NrOfRows(Classifications/BouwjaarUtilBestaand)) + BouwjaarUtilBestaand_rel;
 		attribute<int16>                           SymbolIndex         := BebouwingsTypeDomein/SymbolIndex[BebouwingsType], DialogType = "SymbolIndex", isHidden = "True";
 
 		//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
@@ -162,7 +162,7 @@ container Bebouwing: Using = "BronData", Descr = "zie FO $2, Blok 1"
 			,	BronData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(BronData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
 			?	'int32(sum( '
 					'bebouwing/BestaandeUtil/NrJoinedUnits * ' +
-					'float64(bebouwing/BestaandeUtil/BebouwingsTypeDomein/utiliteit_rel[bebouwing/BestaandeUtil/BebouwingsType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
+					'float64(bebouwing/BestaandeUtil/BebouwingsTypeDomein/UtilTypeNieuwbouw_rel[bebouwing/BestaandeUtil/BebouwingsType] == '+string(BronData/Nieuwbouw/SZU/nr_2)+'[uint8])'
 			 	+	', bebouwing/BestaandeUtil/point[rdc_grids/m100]'
 				')'
 				'*max_elem(float64(Nieuwbouw/InbreidingUtilFactor/'+BronData/Nieuwbouw/SZU/Name+') - 1.0 , 0.0)'
