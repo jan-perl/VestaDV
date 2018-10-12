@@ -294,9 +294,9 @@ container indicatoren
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, AllocatieResultaat/BestaandeWoning, '+quote('BestaandeWoning')+'
-					, '+Classifications/BestaandeWoningRapGroep/ClassRef[UserInput/ReportOpties/BestaandeWoningRapGroep]+'
-					, '+quote('BebouwingsObject/'+Classifications/BestaandeWoningRapGroep/AttrRef [ UserInput/ReportOpties/BestaandeWoningRapGroep ])+'
-					, Classifications/BestaandeWoningRapGroep/ExportLabel [ UserInput/ReportOpties/BestaandeWoningRapGroep ]
+					, '+Classifications/WoningBestaandRapGroep/ClassRef[UserInput/ReportOpties/WoningBestaandRapGroep]+'
+					, '+quote('BebouwingsObject/'+Classifications/WoningBestaandRapGroep/AttrRef [ UserInput/ReportOpties/WoningBestaandRapGroep ])+'
+					, Classifications/WoningBestaandRapGroep/ExportLabel [ UserInput/ReportOpties/WoningBestaandRapGroep ]
 					, units/nrWoningen
 				)'
 			);

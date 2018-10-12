@@ -62,8 +62,8 @@ template StartingStateComponent
 			: 'ModelValue';
 		attribute<uint8>                        code       (BebouwingsObject) := ModelValue * UInt8(#Classifications/EnergieLabel) + CalcValue;
 
-		attribute<Classifications/EnergieLabel> CurrValue  (BebouwingsObject) := MakeDefined(rjoin(code, Classifications/LabelReclassTable/code, Classifications/LabelReclassTable/CurrLabel), ModelValue);
-		attribute<Classifications/LabelSprong>  CurrSprong (BebouwingsObject) := rjoin(code, Classifications/LabelReclassTable/code, Classifications/LabelReclassTable/CurrSprong);
+		attribute<Classifications/EnergieLabel> CurrValue  (BebouwingsObject) := MakeDefined(rjoin(code, Classifications/LabelBasedOnModelAndObservedValue/code, Classifications/LabelBasedOnModelAndObservedValue/CurrLabel), ModelValue);
+		attribute<Classifications/LabelSprong>  CurrSprong (BebouwingsObject) := rjoin(code, Classifications/LabelBasedOnModelAndObservedValue/code, Classifications/LabelBasedOnModelAndObservedValue/CurrSprong);
 		attribute<Bool>                         IsChanged  (BebouwingsObject) := CurrValue != ModelValue;
 	}
 
@@ -78,6 +78,7 @@ template StartingStateComponent
 			attribute<Ratio> hWP         (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
 		}
 	}
+
 	container Efficiency
 	{
 		container Gebouw

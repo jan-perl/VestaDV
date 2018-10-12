@@ -227,6 +227,6 @@ container UserInput1: Using = "Model/Units"
 		//'3=woningtype & bouwjaarklasse',   //	Werkt (nog) niet met BagWoning
 		//'4=Eigendom(koop/huur/onbekend)',
 		//'8=inkomensklasse',
-		parameter<Classifications/BestaandeWoningRapGroep> BestaandeWoningRapGroep: [ 3 ];
+		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep: [ 3 ];
 	}
 }
