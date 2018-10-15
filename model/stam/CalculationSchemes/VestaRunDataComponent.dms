@@ -486,7 +486,7 @@ template VestaRunDataComponent
 		container KanSpringen := for_each_nedv(
 			Classifications/LabelSprong/code, 
 			MakeDefined(Classifications/LabelSprong/code_xtra+' &&' , '') 
-			+'Toepasbaar/'+Classifications/LabelSprong/code+' && IsDefined(Classifications/LabelChange/Label_na[value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + '+string(ID(Classifications/LabelSprong))+', Classifications/LabelChange)])',
+			+'Toepasbaar/'+Classifications/LabelSprong/code+' && IsDefined(Classifications/combine/LabelChange/Label_na[value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + '+string(ID(Classifications/LabelSprong))+', Classifications/combine/LabelChange)])',
 			BebouwingsObject, bool)
 		{
 			attribute<bool> eWP (BebouwingsObject) := (OpwekkingsOpties/org_capaciteit/hWP == 0[Ratio]) && (OpwekkingsOpties/org_capaciteit/mWKK == 0[Ratio]) 
@@ -560,7 +560,7 @@ template VestaRunDataComponent
 
 		attribute<Classifications/EnergieLabel> NaarEnergieLabel (BebouwingsObject) :=
 			KanVerbeteren
-				? Classifications/LabelChange/Label_na[ value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + uint32(LabelSprong), Classifications/LabelChange) ] 
+				? Classifications/combine/LabelChange/Label_na[ value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + uint32(LabelSprong), Classifications/combine/LabelChange) ] 
 				: EnergieLabel/LastValue;
 
 		attribute<Eur_ModelUnit> kosten_min (BebouwingsObject) := 

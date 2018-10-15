@@ -215,8 +215,5 @@ container Geography: Using = "Units"
 			container pot5000m  := potrange(100[m],  5000[m]);
 			container pot10000m := potrange(100[m], 10000[m]);
 		}
-		unit<spoint> pot1000mRange := impl/pot1000m/potrange;
-		unit<spoint> pot5000mRange := impl/pot5000m/potrange;
-		unit<spoint> pot10000mRange:= impl/pot10000m/potrange;
 	}
 }

@@ -97,7 +97,6 @@ container Units: isHidden = "True"
 	unit<float64> kg_yr         := kg / yr, Descr = "Co2 effect per jaar";
 
 	// actor based
-	unit<float64> nrArbeidspl   := BaseUnit('FTE', float64), cdf = "Classifications/Nrarbeidspl12K/ClassBreaks";
 	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
 	unit<float64> nrAansl       := BaseUnit('Aansluiting', float64);
 	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);

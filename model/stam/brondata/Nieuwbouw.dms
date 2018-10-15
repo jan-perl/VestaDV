@@ -41,8 +41,8 @@
 container Nieuwbouw
 {
 	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
-	unit<uInt32> SZW := Classifications/ZichtjaarWonen;
-	unit<uInt32> SZU := Classifications/ZichtjaarUtiliteit;
+	unit<uInt32> SZW := Classifications/combine/ZichtjaarWonen;
+	unit<uInt32> SZU := Classifications/combine/ZichtjaarUtiliteit;
 
 	unit<float32> nrWoningen_32 := float32(Units/nrWoningen);
 

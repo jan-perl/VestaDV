@@ -93,7 +93,7 @@ container indicatoren
 	// *** Bij vervanging van AardGas door warmte, of eWP, EWV, of WKO,
 	// valt de distributievergoeding weg tbv het dekken van de afschrijving van het bestaande aardgasnet
 	attribute<bool> heeft_gebiedswarmte (PlanRegio) := IsDefined(EndState/AanbodOpties/PlanRegioWarmteAllocatie);
-	attribute<bool> heeft_gas           (PlanRegio) := ='or('+AsItemList(replace('any(AllocatieResultaat/@BC@/MeterVraag/Aardgas > 0.0, VestaRunData/@BC@/PlanRegio_rel)','@BC@', Classifications/GasnetComponent/Name))+')';
+	attribute<bool> heeft_gas           (PlanRegio) := ='or('+AsItemList(replace('any(AllocatieResultaat/@BC@/MeterVraag/Aardgas > 0.0, VestaRunData/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
 	
 	container Maatschappelijk: Source = "FO v7a C6"
 	{

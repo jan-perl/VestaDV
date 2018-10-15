@@ -100,7 +100,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 	Template PotentialComponent
 	{
 		container GridAggr;
-		unit<spoint> Kernel := Geography/DistMatrices/pot1000mRange;
+		unit<spoint> Kernel := Geography/DistMatrices/impl/pot1000m/potrange;
 
 		attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/AardGas),       Kernel/Cilindrical));
 		attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/RestWarmte),    Kernel/Cilindrical));

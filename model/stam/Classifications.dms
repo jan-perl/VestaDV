@@ -38,7 +38,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Classifications: Using = "Units", KeepData = "True" 
+container Classifications: Using = "Units", KeepData = "True"
 {
 	unit<uint8> BebouwingsComponent: nrofrows = 6
 	{
@@ -270,12 +270,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		parameter<.> onbekend := V/onbekend;
 	}
 
-	unit<uint8> WoningtypeBouwjaarBestaand := combine_uint8(WoningtypeBestaand, BouwjaarWoningBestaand)
-	{
-		attribute<string> LabelWoningtype := WoningtypeBestaand/Label[nr_1];
-		attribute<string> LabelBouwjaar   := BouwjaarWoningBestaand/Label[nr_2];
-		attribute<string> Label           := LabelWoningtype + '_' + LabelBouwjaar;
-	}
+
 
 // =========  Classificaties voor bouw- en zichtjaren
 	unit<uint8> bouwjaar: nrofrows = 16
@@ -356,39 +351,6 @@ container Classifications: Using = "Units", KeepData = "True"
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
-	unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningtypeNieuwbouw) // wordt gebruikt om Nieuwbouw maps en ResterdFactorMaps te lezen.
-	{
-		attribute<bool>                HasMutations            := Zichtjaar/HasMutations[nr_1];
-		attribute<string>              zichtjaar_Label         := Zichtjaar/Label[nr_1];
-		attribute<string>              zichtjaar_name          := Zichtjaar/Name[nr_1];
-		attribute<string>              prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
-		attribute<units/yr_uint16>     zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];
-		attribute<string>              period_name             := Zichtjaar/period_name[nr_1];
-		attribute<string>              Wonen_Name              := WoningtypeNieuwbouw/Name[nr_2];
-		attribute<string>              Wonen_wlo_FileName      := WoningtypeNieuwbouw/wlo_FileName[nr_2];
-		attribute<WoningtypeNieuwbouw> WoningtypeNieuwbouw_rel := nr_2;
-		attribute<string>              Name                    := zichtjaar_Name + '/' + Wonen_Name;
-		attribute<string>              prev_name               := prev_zichtjaar_Name + '/' + wonen_Name;
-		attribute<string>              Label                   := Name;
-
-		container V := for_each_nedv(name, 'value('+string(id(.))+', ...)', void, .);
-	}
-
-	unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UtilTypeNieuwbouw)
-	{
-		attribute<bool>            HasMutations            := Zichtjaar/HasMutations[nr_1];
-		attribute<string>          zichtjaar_Label         := Zichtjaar/Label[nr_1];
-		attribute<string>          zichtjaar_name          := Zichtjaar/Name[nr_1];
-		attribute<string>          prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
-		attribute<units/yr_uint16> zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];
-		attribute<string>          period_name             := Zichtjaar/period_name[nr_1];
-		attribute<string>          utiliteit_Name          := UtilTypeNieuwbouw/Name[nr_2];
-		attribute<string>          wlo_filename_Nieuwbouw  := UtilTypeNieuwbouw/wlo_filename_Nieuwbouw[nr_2];
-		attribute<string>          Name                    := zichtjaar_Name + '/' + utiliteit_Name;
-		attribute<string>          prev_name               := prev_zichtjaar_Name + '/' + utiliteit_Name;
-		attribute<string>          Label                   := Name;
-	}
-
 // =========  Classificaties voor rapgroepen
 	// let op: de set van mogelijke RapGroeperingen is afhankelijk van de gekozen BebouwingsComponenten.
 	unit<uint8> WoningBestaandRapGroep: nrofrows = 16 // Eigendom (4) en inkomensklasse (8) zijn nu niet beschikbaar voor woningBAG
@@ -443,10 +405,10 @@ container Classifications: Using = "Units", KeepData = "True"
 	{
 		attribute<string> Label: DialogType = "LabelText",
 		[
-			"undefined",
-			"1: Ziekenhuis etc",
-			"minder dan 11 werknememers en niet 1",
-			"11 of meer werknemers en niet 1"
+			'undefined',
+			'1: Ziekenhuis etc',
+			'minder dan 11 werknememers en niet 1',
+			'11 of meer werknemers en niet 1'
 		];
 	}
 
@@ -513,8 +475,6 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> Name := BebouwingsComponent/Name[nr_OrgEntity];
 		attribute<string> Code := BebouwingsComponent/Code[nr_OrgEntity];
 	}
-
-	unit<uint8> GasnetComponent := WkoComponent;
 
 // =========  Classificaties voor Energielabels
 	unit<uint8> energielabel: nrofrows = 9
@@ -589,26 +549,6 @@ container Classifications: Using = "Units", KeepData = "True"
 			false, false, false, true, true, true,
 			false, true, true, true, 
 			false, true, true, true
-		];
-	}
-
-	unit<uint32> LabelChange := Combine(energielabel, LabelSprong)
-	{
-		attribute<string> Label := LabelSprong/code[nr_2]+': van ' + energieLabel/Label[nr_1] + ' naar ' + energieLabel/Label[Label_na], DialogType = "LabelText";
-
-		attribute<energielabel> Label_na: [
-		//      org   org   org   new   new   new   org    new   new   new    org    new   new   new
-		//	EG_T  CG_B  BG_AP T_B   T_AP  B_AP  AG_eWP T_eWP B_eWP AP_eWP AG_EWV T_EWV B_EWV AP_EWV'
-			null, null, null, null, null, null, null,  null, null, null,  null,  null, null, null, // sprongen vanaf eWP (0)
-			null, null, null, null, null, null, null,  null, null, null,  null,  null, null, null, // sprongen vanaf EWV (1)
-			null, null, null, null, null, null, 0,     null, null, 0,     1,     null, null, 1,    // sprongen vanaf A+  (2)
-//NOT			null, null, null, null, null, 2   , null,  null, 0,    null,  null,  null, 1,    null, // sprongen vanaf B   (3)
-			null, null, 2,    null, null, 2   , 0,     null, 0,    null,  1,     null, 1,    null, // sprongen vanaf B   (3) 
-			null, 3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf C (4, evt als zijnde Tussenlabel)
-			null, 3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf D (5, evt als zijnde Tussenlabel)
-			4,    3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf E (6, evt als zijnde Tussenlabel)
-			5,    3,    2,    null, null ,null, 0,     null, null, null,  1,     null, null, null, // sprongen vanaf F (7)
-			6,    3,    2,    null, null ,null, 0,     null, null, null,  1,     null, null, null  // sprongen vanaf G (8)
 		];
 	}
 
@@ -747,19 +687,6 @@ container Classifications: Using = "Units", KeepData = "True"
 			['0 to 5','5 to 10','10 to 15','15 to 30','30 to 50','50 to 75','75 to 100','Geen'];
 	}
 
-// =========  Classificatie voor Nrarbeidspl
-	unit<uint8> Nrarbeidspl12K: nrofrows = 12
-	{
-		attribute<Nrarbeidspl> ClassBreaks: DialogType = "Classification",
-			[0,85000,170000,255000,340000,425000,510000,595000,680000,1258000,1343000,1428000];
-
-		attribute<uint32> BrushColor: DialogType = "BrushColor",
-			[rgb(192,192,192),rgb(255,255,128),rgb(255,226,113),rgb(255,198,99),rgb(255,169,85),rgb(255,141,71),rgb(255,113,56),rgb(255,84,42),rgb(255,56,28),rgb(255,28,14),rgb(202,53,191),rgb(128,0,255)];
-
-		attribute<string> Label: DialogType = "LabelText",
-			['0-85.000','85.000-170.000','170.000-255.000','255.000-340.000','340.000-425.000','425.000-510.000','510.000-595.000','595.000-680.000','680.000-1.258.000','1.258.000-1.343.000','1.343.000- 1.428.000','meer dan 1.428.000'];
-	}
-
 // =========  Classificatie voor de vervangingsstatus van Gasleidingen beheerd door Stedin""
 	unit<uint8> StatusKl: nrofrows = 3
 	{
@@ -775,5 +702,68 @@ container Classifications: Using = "Units", KeepData = "True"
 			,rgb(100,100,100)
 			,rgb(200,200,200)
 		];
+	}
+	
+	container combine
+	{
+		unit<uint8> WoningtypeBouwjaarBestaand := combine_uint8(WoningtypeBestaand, BouwjaarWoningBestaand)
+		{
+			attribute<string> LabelWoningtype := WoningtypeBestaand/Label[nr_1];
+			attribute<string> LabelBouwjaar   := BouwjaarWoningBestaand/Label[nr_2];
+			attribute<string> Label           := LabelWoningtype + '_' + LabelBouwjaar;
+		}
+
+		unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningtypeNieuwbouw) // wordt gebruikt om Nieuwbouw maps en ResterdFactorMaps te lezen.
+		{
+			attribute<bool>                HasMutations            := Zichtjaar/HasMutations[nr_1];
+			attribute<string>              zichtjaar_Label         := Zichtjaar/Label[nr_1];
+			attribute<string>              zichtjaar_name          := Zichtjaar/Name[nr_1];
+			attribute<string>              prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
+			attribute<units/yr_uint16>     zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];
+			attribute<string>              period_name             := Zichtjaar/period_name[nr_1];
+			attribute<string>              Wonen_Name              := WoningtypeNieuwbouw/Name[nr_2];
+			attribute<string>              Wonen_wlo_FileName      := WoningtypeNieuwbouw/wlo_FileName[nr_2];
+			attribute<WoningtypeNieuwbouw> WoningtypeNieuwbouw_rel := nr_2;
+			attribute<string>              Name                    := zichtjaar_Name + '/' + Wonen_Name;
+			attribute<string>              prev_name               := prev_zichtjaar_Name + '/' + wonen_Name;
+			attribute<string>              Label                   := Name;
+
+			container V := for_each_nedv(name, 'value('+string(id(.))+', ...)', void, .);
+		}
+
+		unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UtilTypeNieuwbouw)
+		{
+			attribute<bool>            HasMutations            := Zichtjaar/HasMutations[nr_1];
+			attribute<string>          zichtjaar_Label         := Zichtjaar/Label[nr_1];
+			attribute<string>          zichtjaar_name          := Zichtjaar/Name[nr_1];
+			attribute<string>          prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
+			attribute<units/yr_uint16> zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];
+			attribute<string>          period_name             := Zichtjaar/period_name[nr_1];
+			attribute<string>          utiliteit_Name          := UtilTypeNieuwbouw/Name[nr_2];
+			attribute<string>          wlo_filename_Nieuwbouw  := UtilTypeNieuwbouw/wlo_filename_Nieuwbouw[nr_2];
+			attribute<string>          Name                    := zichtjaar_Name + '/' + utiliteit_Name;
+			attribute<string>          prev_name               := prev_zichtjaar_Name + '/' + utiliteit_Name;
+			attribute<string>          Label                   := Name;
+		}
+
+		unit<uint32> LabelChange := Combine(energielabel, LabelSprong)
+		{
+			attribute<string> Label := LabelSprong/code[nr_2]+': van ' + energieLabel/Label[nr_1] + ' naar ' + energieLabel/Label[Label_na], DialogType = "LabelText";
+	
+			attribute<energielabel> Label_na: [
+			//      org   org   org   new   new   new   org    new   new   new    org    new   new   new
+			//	EG_T  CG_B  BG_AP T_B   T_AP  B_AP  AG_eWP T_eWP B_eWP AP_eWP AG_EWV T_EWV B_EWV AP_EWV'
+				null, null, null, null, null, null, null,  null, null, null,  null,  null, null, null, // sprongen vanaf eWP (0)
+				null, null, null, null, null, null, null,  null, null, null,  null,  null, null, null, // sprongen vanaf EWV (1)
+				null, null, null, null, null, null, 0,     null, null, 0,     1,     null, null, 1,    // sprongen vanaf A+  (2)
+	//NOT			null, null, null, null, null, 2   , null,  null, 0,    null,  null,  null, 1,    null, // sprongen vanaf B   (3)
+				null, null, 2,    null, null, 2   , 0,     null, 0,    null,  1,     null, 1,    null, // sprongen vanaf B   (3) 
+				null, 3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf C (4, evt als zijnde Tussenlabel)
+				null, 3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf D (5, evt als zijnde Tussenlabel)
+				4,    3,    2,    3,    2,    null, 0,     0,    null, null,  1,     1,    null, null, // sprongen vanaf E (6, evt als zijnde Tussenlabel)
+				5,    3,    2,    null, null ,null, 0,     null, null, null,  1,     null, null, null, // sprongen vanaf F (7)
+				6,    3,    2,    null, null ,null, 0,     null, null, null,  1,     null, null, null  // sprongen vanaf G (8)
+			];
+		}
 	}
 }
