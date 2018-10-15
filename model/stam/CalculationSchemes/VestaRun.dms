@@ -48,7 +48,7 @@ template VestaRun
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/StartingStateComponent('+
 				'Bebouwing/'+Classifications/BebouwingsComponent/Name+','+
-				'ScenarioSpecs/energievraag/'+Classifications/BebouwingsComponent/Name+', '+
+				'/Model/BronData/energie/vraag_modelobject/'+Classifications/BebouwingsComponent/Name+'/results, '+
 				string(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
 			')'
 		)
@@ -176,10 +176,10 @@ template VestaRun
 	container Bebouwing       := ='UserInput/BebouwingsScenario/J'+string(RunJaar);
 	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat_scenario_knmi/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
 
-	container VraagKentallen  := UserInput/VraagKentallen;
-	container AanbodKentallen := UserInput/AanbodKentallen;
+	container VraagKentallen  := UserInput/VraagKentallen/BaseLine;
+	container AanbodKentallen := UserInput/AanbodKentallen/BaseLine;
 
-	unit<uint32> WarmteBronnen := ScenarioSpecs/VestaRunOpties/WarmteBronnen/alleBRonnen;
+	unit<uint32> WarmteBronnen := UserInput/WarmteBronnen/alleBRonnen;
 
 	container VoorkEuren := UserInput/VoorkEuren
 	{
@@ -268,7 +268,7 @@ template VestaRun
 					+string(Classifications/BebouwingsComponent/IsNieuwbouw)+','
 					+string(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
-					'ScenarioSpecs/energievraag/'+BCN+','
+					'Model/BronData/energie/vraag_modelobject/'+BCN+'/results,'
 					'UserInput/RuimtelijkeVraagOpties/DragerSpecifiekeOpties,'
 					'UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/'+BCN+','
 					'float64(klimaat),'

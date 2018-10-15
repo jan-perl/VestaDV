@@ -53,8 +53,7 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
 
 	#include <BronData.dms>
 	#include <Bebouwing.dms>
-	#include <CalculationSchemes.dms>
-	#include <ScenarioSpecs.dms>
+
 	container Technology
 	{
 		#include<Leercurves.dms>
@@ -62,6 +61,8 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
 		#include<Transformations.dms>
 		#include<Infra.dms>
 	}
+
+	#include <CalculationSchemes.dms>
 
 	container t510_indicator_results_test
 	{

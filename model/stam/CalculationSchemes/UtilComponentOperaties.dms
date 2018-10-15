@@ -58,7 +58,7 @@ container UtilComponentOperaties
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel        := Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity];
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel         := Geography/rdc_grids/m100/blok1km_rel [nr_OrgEntity];
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel         := Geography/rdc_grids/m100/blok2km_rel [nr_OrgEntity];
-			attribute<Classifications/UtilTypeNieuwbouw>      BebouwingsType      := const(rlookup(utiliteit_lbl, Classifications/UtilTypeNieuwbouw/label), .);
+			attribute<Classifications/UtilTypeNieuwbouw>  BebouwingsType      := const(rlookup(utiliteit_lbl, Classifications/UtilTypeNieuwbouw/label), .);
 			attribute<Classifications/BouwJaar>           Bouwjaar            := const(classify(value(zichtjaar, Units/Yr) - value(0.5, units/yr),  classifications/bouwjaar/ClassBreak), .);
 			attribute<float64>                            AandeelWarmteVraag  := const(1.0, .); // alle util Nieuwbouw is geschikt voor WarmteOpties
 			

@@ -48,8 +48,8 @@ Container Nieuwbouw
 			)
 	{
 		container PerGrid := for_each_ne(Classifications/ZichtjaarWonen/HasMutations ? Classifications/ZichtjaarWonen/Name : ''
-				,  'CalculationSchemes/WoningComponentOperaties/Select(Model/Bebouwing/NieuwbouwWoning/' + Classifications/ZichtjaarWonen/Name + 
-				   ', value(' + String(Classifications/ZichtjaarWonen/WoningtypeNieuwbouw_rel) + ', Classifications/WoningtypeNieuwbouw) '+
+				,  'CalculationSchemes/WoningComponentOperaties/Select(Model/BronData/Nieuwbouw/Woning/' + Classifications/ZichtjaarWonen/Name + 
+				   '[nrWoningen], value(' + String(Classifications/ZichtjaarWonen/WoningtypeNieuwbouw_rel) + ', Classifications/WoningtypeNieuwbouw) '+
 				   ', value(' + String(Classifications/ZichtjaarWonen/zichtjaar_jaar )+ ',units/yr_uint16)'+
 				   ')'
 				);
@@ -61,7 +61,7 @@ Container Nieuwbouw
 			)
 	{
 		container PerGrid := for_each_ne(Classifications/ZichtjaarUtiliteit/HasMutations ?  Classifications/ZichtjaarUtiliteit/Name : ''
-				,  'CalculationSchemes/UtilComponentOperaties/Select(Model/Bebouwing/NieuwbouwUtil/' + Classifications/ZichtjaarUtiliteit/Name + 
+				,  'CalculationSchemes/UtilComponentOperaties/Select(Model/Bebouwing/impl/NieuwbouwUtil/' + Classifications/ZichtjaarUtiliteit/Name + 
 				   ', ' + quote(Classifications/ZichtjaarUtiliteit/utiliteit_Name) + 
 				   ', value(' + String(Classifications/ZichtjaarUtiliteit/zichtjaar_jaar)+ ',units/yr_uint16)'+
 				   ')'

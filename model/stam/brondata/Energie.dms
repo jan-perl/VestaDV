@@ -40,9 +40,9 @@
 
 container Energie: Descr = "Blok 2", FreeData = "False"
 {
-	container vraag
+	container vraag_modelobject
 	{
-		container ModelBagWoning :=
+		container BestaandeWoning :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160707_Woningen_BAG.csv', 
 				'WoningType_str', 
@@ -62,7 +62,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 				}
 			}
 		}
-		container ModelWoningNieuwbouw :=
+		container NieuwbouwWoning :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160525_Woningen_Nieuwbouw_BAG.csv',
 				'WoningType_str',
@@ -83,7 +83,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 				}
 			}
 		}
-		container ModelBagUtil :=
+		container BestaandeUtil :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160706_Utiliteiten_BAG.csv',
 				'UtiliteitType_str', 
@@ -104,7 +104,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 				}
 			}
 		}
-		container ModelUtilNieuwbouw :=
+		container NieuwbouwUtil :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160525_Utiliteiten_Nieuwbouw_BAG.csv',
 				'UtiliteitType_str', 
@@ -125,7 +125,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 				}
 			}
 		}
-		container ModelGlTb2010 :=
+		container BestaandeGlTb :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160706_Glastuinbouw_BAG.csv', 
 				'UtiliteitType_str',
@@ -146,7 +146,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 				}
 			}
 		}
-		container ModelGlTbNieuwbouw :=
+		container NieuwbouwGlTb :=
 			CalculationSchemes/EnergieKengetallen/import(
 				'20160525_Glastuinbouw_Nieuwbouw_BAG.csv',
 				'UtiliteitType_str',

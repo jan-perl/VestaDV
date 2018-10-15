@@ -46,7 +46,7 @@ container GlTbComponentOperaties
 		attribute<bool>            af  (Geography/rdc_grids/m100);
 		parameter<units/yr_uint16> zichtjaar;
 
-		unit<uint32> bron := Bebouwing/BestaandeGlTb;
+		unit<uint32> bron := Bebouwing/impl/BestaandeGlTb;
 
 		// einde case parameters
 

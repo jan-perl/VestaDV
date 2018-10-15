@@ -51,15 +51,7 @@ container Classifications: Using = "Units", KeepData = "True"
 			,'BestaandeGlTb'
 			,'NieuwbouwGlTb'
 		];
-		attribute<string> ModelName:
-		[
-			 'ModelBagWoning'
-			,'ModelWoningNieuwbouw'
-			,'ModelBagUtil'
-			,'ModelUtilNieuwbouw'
-			,'ModelGltb2010'
-			,'ModelGlTbNieuwbouw'
-		];
+
 		attribute<string> Code             := string(id(.));
 		attribute<string> Label            := Name, DialogType = "LabelText";
 
@@ -142,7 +134,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 		attribute<string> resterendFactorName := name;
 
-		parameter<float64> SymbolSize : DialogType = "SymbolSize" ,= 24.0;
+		parameter<float64> SymbolSize := 24.0, DialogType = "SymbolSize";
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
@@ -632,7 +624,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 
 // =========  Classificaties overig
-	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in ScenarioSpecs/VestaRunOpties/VoorkEuren/BaseLine/WarmteOpties
+	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in UserInput/VoorkEuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -659,25 +651,17 @@ container Classifications: Using = "Units", KeepData = "True"
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
-	unit<uint8> PlanRegioOptie := subset(AanbodOptie/IsPlanRegioOptie) {
+	unit<uint8> PlanRegioOptie := subset(AanbodOptie/IsPlanRegioOptie) 
+	{
 		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
 		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
 	}
 
-	unit<uint8> ClusterOptie := subset(!AanbodOptie/IsPlanRegioOptie) {
+	unit<uint8> ClusterOptie := subset(!AanbodOptie/IsPlanRegioOptie) 
+	{
 		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
 		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
 	}
-
-// 	unit<uint32> PlanRegioOptie := range(uint32, 0, #PlanRegioOptie_uint8) {
-// 		attribute<string> code := union_data(PlanRegioOptie, PlanRegioOptie_uint8/code);
-// 		attribute<string> name := union_data(PlanRegioOptie, PlanRegioOptie_uint8/name);
-// 	}
-
-// 	unit<uint32> ClusterOptie := range(uint32, 0, #CluseterOptie_uint8) {
-// 		attribute<string> code := union_data(ClusterOptie, CluseterOptie_uint8/code);
-// 		attribute<string> name := union_data(ClusterOptie, CluseterOptie_uint8/name);
-// 	}
 
 // =========  Classificaties voor montaire units
 	unit<uint8> Eur_M2_15K: nrofrows = 15
@@ -691,9 +675,9 @@ container Classifications: Using = "Units", KeepData = "True"
 			];
 
 		attribute<uint32> BrushColor: DialogType = "BrushColor",
-			[rgb(9,9,145),rgb(34,89,194), rgb(92,163,230),rgb(182,237,240),rgb(196,196,196), 
-			 rgb(255,245,0),rgb(255,216,0),rgb(255,180,0),
-			 rgb(255, 163, 0), rgb(255,140,0), rgb(255,132,0),rgb(255,128,0),rgb(255,51,0),rgb(230,0,0), rgb(153,0,0)];
+			[rgb(  9,  9,145),rgb( 34, 89,194),rgb( 92,163,230),rgb(182,237,240),rgb(196,196,196),
+			 rgb(255,245,  0),rgb(255,216,  0),rgb(255,180,  0),
+			 rgb(255,163,  0),rgb(255,140,  0),rgb(255,132,  0),rgb(255,128,0),rgb(255,51,0),rgb(230,0,0), rgb(153,0,0)];
 
 		attribute<string> Label: DialogType = "LabelText",
 			[' < -25','-25 tot -15','-15 tot -5',' -5 tot 0','     0     ','  0 tot  2','  2 tot  3','  3 tot  4','  4 tot  5',
