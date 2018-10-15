@@ -183,35 +183,36 @@ template VestaRun
 
 	container VoorkEuren := UserInput/VoorkEuren
 	{
-		unit<uint32> WarmteOpties_Org := Range(uint32, 0, AanbodOpties/Aantal) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
+		unit<uint8> WarmteOpties_Org := Range(uint8, 0b, uint8(AanbodOpties/Aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
 		{
 			attribute<string> Name := SchemaName;
 
 			attribute<Classifications/AanbodOptie> AanbodOptie := =AanbodOpties/Aantal > 0 
-				? 'union_data(.'+AsList(',AanbodOpties/Optie'+string(id(.) + 1), '')+')' 
-				: 'const((0 / 0)[Classifications/AanbodOptie], .)';
+				? 'union_data(.'+AsList(',AanbodOpties/Optie'+string(id(.) + 1b), '')+')' 
+				: 'const((0b / 0b)[Classifications/AanbodOptie], .)';
 			attribute<string> SchemaName := Classifications/AanbodOptie/Name[AanbodOptie];
 			attribute<string> code       := Classifications/AanbodOptie/Code[AanbodOptie];
 		}
+
 		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
 		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StartingState/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
-		
-		unit<uint32> WarmteOpties_Ext := union_unit(Range(uint32,0, 1), WarmteOpties_Org) // {  RestWarmte, ... } 
+
+		unit<uint8> WarmteOpties_Ext: = union_unit_uint8(Range(UInt8,0b, 1b), WarmteOpties_Org) // {  RestWarmte, ... } 
 		{
-			attribute<string> Name := SchemaName;
+			attribute<String> Name: = SchemaName;
 			
-			attribute<Classifications/AanbodOptie> AanbodOptie := union_data(., Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie);
-			attribute<string>                      SchemaName  := union_data(., 'RestWarmte', WarmteOpties_Org/SchemaName);
-			attribute<string>                      code        := union_data(., '0', WarmteOpties_Org/code);
+			attribute<Classifications/AanbodOptie> AanbodOptie: = union_data(., Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie);
+			attribute<String> SchemaName := union_data(., 'RestWarmte', WarmteOpties_Org/SchemaName);
+			attribute<String> code       := union_data(., '0', WarmteOpties_Org/code);
 		}
 
-		unit<uint32> WarmteOptiesBase := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
-		unit<uint32> WarmteOpties     := WarmteOptiesBase;
-		unit<uint32> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie)) {
+		unit<uint8> WarmteOptiesBase := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
+		unit<uint8> WarmteOpties     := WarmteOptiesBase;
+		unit<uint8> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie)) {
 			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
 			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
 		}
-		unit<uint32> ClusterOptie := subset(not(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))) {
+		unit<uint8> ClusterOptie := subset(not(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))) {
 			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
 			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
 		}
@@ -607,7 +608,7 @@ template VestaRun
 			for_each_ne(
 				VoorkEuren/WarmteOpties/Name, 
 				'CalculationSchemes/AanbodOptieTemplates/'+VoorkEuren/WarmteOpties/SchemaName+'(
-					'+MakeDefined(VoorkEuren/WarmteOpties/Name[ID(VoorkEuren/WarmteOpties)-1]+'/Results', 'Initieel')+',
+					'+MakeDefined(VoorkEuren/WarmteOpties/Name[ID(VoorkEuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
 					AanbodKentallen/'+VoorkEuren/WarmteOpties/SchemaName+', 
 					EnergiePrijzen, RunJaar
 				)'

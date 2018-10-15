@@ -65,14 +65,9 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		];
 	}
 
-	unit<uint32> BC := range(uint32, 0, #Classifications/BebouwingsComponent)
+	unit<uint8> BC := Classifications/BebouwingsComponent
 	{
-		attribute<string> name      := union_data(., Classifications/BebouwingsComponent/name);
-		attribute<string> code      := union_data(., Classifications/BebouwingsComponent/code);
-		attribute<string> entity    := 'VestaRunData/'+name+'/BebouwingsObject';
-		attribute<bool  > draagtBTW := union_data(., Classifications/BebouwingsComponent/DraagtBTW);
-		attribute<bool  > kanWKO    := union_data(., Classifications/BebouwingsComponent/KanWKO);
-		container V := for_each_nedv(name, string(id(.))+'[..]', void, .);
+		attribute<string> entity := 'VestaRunData/'+name+'/BebouwingsObject';
 	}
 	
 	unit<uint32> mutatieSchema: nrofrows = 142
@@ -864,7 +859,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		attribute<string> PlanRegioRel := Elements/Text[value(id(.)* nrAttr + 5, Elements)];
 	}
 
-	unit<uint32> BTWC := subset(BC/DraagtBTW)
+	unit<uint8> BTWC := subset(BC/DraagtBTW)
 	{
 		attribute<string> name := BC/name[nr_OrgEntity];
 	}

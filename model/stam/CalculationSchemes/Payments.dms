@@ -37,7 +37,7 @@ container Payments: FreeData = "False" // DEBUG
 	{
 		unit<uint32> src;
 		parameter<string> key;
-		unit<uint32> valueset;
+		unit<uint8> valueset;
 
 		attribute<bool>   subst       (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
 		attribute<uint32> firstResult (src) := uint32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
@@ -111,7 +111,7 @@ container Payments: FreeData = "False" // DEBUG
 		unit<float64> MQuantity   := 1000000 * Quantity;
 		unit<uint32>  PR          := PlanRegio;
 		unit<uint32>  Kostensoort := Accounting/KostenSoort;
-		unit<uint32>  BC          := Accounting/BC;
+		unit<uint8>   BC          := Accounting/BC;
 
 		unit<uint32>  Actor := union_unit(Accounting/Kostensoort, BC, BC, Classifications/AanbodOptie) //VoorkEuren/WarmteOpties)
 		{
@@ -123,14 +123,14 @@ container Payments: FreeData = "False" // DEBUG
 		}
 
 		container impl {
-			unit<uint32> WKOC := subset(BC/KanWKO)
+			unit<uint8> WKOC := subset(BC/KanWKO)
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
 			container applyBC  := subst(Accounting/mutatie,'@BC@' , BC); 
 			container applyWKO := subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO  := subst(applyWKO/result, '@RO@' , VoorkEuren/PlanRegioOptie);
-			container applyCO  := subst(applyRO/result,  '@CO@' , VoorkEuren/ClusterOptie);
+			container applyRO  := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
+			container applyCO  := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
 
 			unit<uint32> mutatie := applyCO/result
 			{

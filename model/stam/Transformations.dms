@@ -41,7 +41,7 @@
 
 container Transformations: Using = "Units;Geography", KeepData = "True"
 {
-	unit<uint32> BC := Accounting/BC, isHidden = "True";
+	unit<uint8> BC := Accounting/BC, isHidden = "True";
 
 	unit<uint32> mutatieSchema: nrofrows = 55
 	{

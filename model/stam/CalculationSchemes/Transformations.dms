@@ -39,7 +39,7 @@ container Transformations: FreeData = "False"
 		unit<uint32> src;
 		parameter<string> name_key;
 		parameter<string> code_key;
-		unit<uint32> valueset;
+		unit<uint8> valueset;
 
 		attribute<bool> subst (src) :=
 			strpos(src/name, name_key) >= 0 || strpos(src/actor, name_key) >= 0 || strpos(src/expr, name_key) >= 0 ||
@@ -115,10 +115,10 @@ container Transformations: FreeData = "False"
 
 		unit<float64> MQuantity := 1000000 * Quantity;
 		unit<uint32>  PR := PlanRegio;
-		unit<uint32>  BC := Transformation/BC;
+		unit<uint8>   BC := Transformation/BC;
 
 		container impl {
-			unit<uint32> WKOC := subset(BC/KanWKO)
+			unit<uint8> WKOC := subset(BC/KanWKO)
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 				attribute<string> code := BC/code[nr_OrgEntity];
