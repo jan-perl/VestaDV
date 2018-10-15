@@ -140,10 +140,10 @@ template GeoThermie
 		
 		container AanbodOpties := BeginStatus/AanbodOpties
 		{
-			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio): Expr = 
-				"GebruikOptie "
-					"? MakeDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie, Classifications/AanbodOptie/V/GeoThermie) "
-					": BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie";
+			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) :=
+				GebruikOptie
+					? MakeDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie, Classifications/AanbodOptie/V/GeoThermie)
+					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie;
 		}
 		container Stock := BeginStatus/Stock
 		{

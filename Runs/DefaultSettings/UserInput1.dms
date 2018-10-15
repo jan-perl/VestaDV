@@ -49,14 +49,14 @@ container UserInput1: Using = "Model/Units"
 	
 	container VraagKentallen: Descr = "Blok 3, zie FO $4.2"
 	{
-		container ComponentBase //: Expr = "GenericBase"
+		container ComponentBase //:= GenericBase
 		{
 			container Zon_PV
 			{
-				parameter<units/KWh_yr_m2> OpbrengstKWh:       [150.0];
-				parameter<units/GJ_yr_m2>  Opbrengst: Expr = "OpbrengstKWh * value (3600, Units/s / Units/hr) / value(1000000, Units/kJ / Units/GJ)";
-				parameter<units/Eur_m2>    InvesteringsKosten_Min: [  265 ], Source = "Wensenlijst";
-				parameter<units/Eur_m2>    InvesteringsKosten_Max: [  595 ], Source = "Wensenlijst";
+				parameter<units/KWh_yr_m2> OpbrengstKWh           : [150.0];
+				parameter<units/GJ_yr_m2>  Opbrengst              := OpbrengstKWh * value (3600, Units/s / Units/hr) / value(1000000, Units/kJ / Units/GJ);
+				parameter<units/Eur_m2>    InvesteringsKosten_Min : [  265 ], Source = "Wensenlijst";
+				parameter<units/Eur_m2>    InvesteringsKosten_Max : [  595 ], Source = "Wensenlijst";
 			}
 			container ZonneBoiler
 			{
@@ -97,9 +97,9 @@ container UserInput1: Using = "Model/Units"
 
 			container BestaandeWoning:= ComponentBase
 			{
-				unit<Float64> ModelEenheid := units/nrWoningen;
-				unit<Float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
-				unit<Float64> m2_MU        := units/m2 / ModelEenheid;
+				unit<float64> ModelEenheid := units/nrWoningen;
+				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
+				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
 				attribute<Units/Ratio> Deelname(Classifications/WoningtypeBestaand ):= Parameters/CollectieveOpwekking/Woning_bestaand/Deelname;
 
@@ -165,9 +165,9 @@ container UserInput1: Using = "Model/Units"
 			}
 			container BestaandeUtil := ComponentBase
 			{
-				unit<Float64> ModelEenheid := units/m2;
-				unit<Float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
-				unit<Float64> m2_MU        := units/m2 / ModelEenheid;
+				unit<float64> ModelEenheid := units/m2;
+				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
+				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
 				attribute<Units/Ratio> Deelname(Classifications/UtilTypeBestaand):= Parameters/CollectieveOpwekking/Utiliteit_bestaand/Deelname;
 
@@ -233,18 +233,18 @@ container UserInput1: Using = "Model/Units"
 				}
 			container BestaandeGlTb := ComponentBase
 			{
-				unit<Float64> ModelEenheid: Expr = "Units/m2";
-				unit<Float64> m2_Dak:       Expr = "units/m2 / (ModelEenheid / units/Bouwlaag)";
-				unit<Float64> m2_MU:        Expr = "units/m2 / ModelEenheid";
+				unit<float64> ModelEenheid := Units/m2;
+				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
+				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
 				attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_bestaand/Deelname;
 				
-				attribute<Units/Bouwlaag> StapelFactor (Classifications/GLTB): expr = "const(1.0, Classifications/GLTB, Units/Bouwlaag)";
+				attribute<Units/Bouwlaag> StapelFactor (Classifications/GLTB) := const(1.0[Units/Bouwlaag], Classifications/GLTB);
 
 				container Zon_PV := ComponentBase/Zon_PV
 				{
-					attribute<m2_Dak> dakopp   (Classifications/GLTB): Expr = "const(0, Classifications/GLTB, units/Bouwlaag)"; // m2 per (Dak = ModelEenheid Per Bouwlaag)
-					attribute<m2_MU > Oppervlak(Classifications/GLTB): Expr = "dakopp / StapelFactor"; 
+					attribute<m2_Dak> dakopp   (Classifications/GLTB) := const(0[units/Bouwlaag], Classifications/GLTB); // m2 per (Dak = ModelEenheid Per Bouwlaag)
+					attribute<m2_MU > Oppervlak(Classifications/GLTB) := dakopp / StapelFactor; 
 				}
 				container ZonneBoiler := ComponentBase/ZonneBoiler
 				{
@@ -351,10 +351,10 @@ container UserInput1: Using = "Model/Units"
 	{
 		container DragerSpecifiekeOpties
 		{
-			parameter<Float64> RuimteVerwarming:      [ 1.0 ];
-			parameter<Float64> Koude:                 [ 1.0 ];
-			parameter<Float64> WarmWater:             [ 1.0 ];
-			parameter<Float64> ElektrischeApparatuur: [ 1.0 ];
+			parameter<float64> RuimteVerwarming:      [ 1.0 ];
+			parameter<float64> Koude:                 [ 1.0 ];
+			parameter<float64> WarmWater:             [ 1.0 ];
+			parameter<float64> ElektrischeApparatuur: [ 1.0 ];
 		}
 		container LokaleSpecifiekeOpties
 		{
@@ -447,11 +447,11 @@ container UserInput1: Using = "Model/Units"
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
 			// in te stellen per actor en per technologie voorzover actor = opwekker en per zichtjaar als percentage van de investering 
 			container EigenarenBase {
-				parameter<Float64> R_SplitIncentiveFactor := 0.8; // 0.6 = eigenaar krijgt 60% van de door gebruiker vermeden kosten; dit speelt een rol igv SpringMeestRendabel
-				parameter<Float64> S_LokaleOpwekking      := 0.0; // 
-				parameter<Float64> S_GebouwVerbetering    := 0.0; // 0.1 = 10% subsidie op gebouwverbetering incl eWP en EWV
-				parameter<Float64> S_OngeriefsVergoeding  := 0.0; // 0.1 = 10% subsidie op ongeriefsvergoeding tbv gebiedsoptie
-				parameter<Float64> S_ProjectManagement    := 0.0; // 0.1 = 10% subsidie op projectmanagement   tbv gebiedsoptie
+				parameter<float64> R_SplitIncentiveFactor := 0.8; // 0.6 = eigenaar krijgt 60% van de door gebruiker vermeden kosten; dit speelt een rol igv SpringMeestRendabel
+				parameter<float64> S_LokaleOpwekking      := 0.0; // 
+				parameter<float64> S_GebouwVerbetering    := 0.0; // 0.1 = 10% subsidie op gebouwverbetering incl eWP en EWV
+				parameter<float64> S_OngeriefsVergoeding  := 0.0; // 0.1 = 10% subsidie op ongeriefsvergoeding tbv gebiedsoptie
+				parameter<float64> S_ProjectManagement    := 0.0; // 0.1 = 10% subsidie op projectmanagement   tbv gebiedsoptie
 			}
 			container bwe := EigenarenBase;
 			container nwe := EigenarenBase;
@@ -460,13 +460,13 @@ container UserInput1: Using = "Model/Units"
 			container bte := EigenarenBase;
 			container nte := EigenarenBase;
 
-			parameter<Float64> id := 0.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
-			parameter<Float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
-			parameter<Float64> pt := 0.0; // primair transport
-			parameter<Float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
+			parameter<float64> id := 0.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
+			parameter<float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
+			parameter<float64> pt := 0.0; // primair transport
+			parameter<float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
 			
 			// voor opwekkings-type specifieke investerings-subsidies
-			attribute<Float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			attribute<float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
 		}
 		container EEA: Descr = "Energie Exploitatie aftrek"
 		{
@@ -475,21 +475,21 @@ container UserInput1: Using = "Model/Units"
 			{
 				// percentage op totale kosten (kapitaallasten + O&M) per actor aan actor
 				container Base {
-					parameter<Float64> S_LokaleOpwekking   := 0.0;
-					parameter<Float64> S_GebouwVerbetering := 0.0;
-					parameter<Float64> S_Leverancier := 0.0;
-					parameter<Float64> S_Onderhoud   := 0.0;
-					parameter<Float64> S_Admin       := 0.0;
+					parameter<float64> S_LokaleOpwekking   := 0.0;
+					parameter<float64> S_GebouwVerbetering := 0.0;
+					parameter<float64> S_Leverancier := 0.0;
+					parameter<float64> S_Onderhoud   := 0.0;
+					parameter<float64> S_Admin       := 0.0;
 				}
 			}
-			parameter<Float64> ge := 0.0; // expoitatiesubsidie tbv gebouweigenaren obv kapitaallaasten investeringen en huurverlaging
-			parameter<Float64> id := 0.0; // inpandige distributie 0.20 = 20% subsidie op kapitaallasten, onderhoud en admin kosten
-			parameter<Float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
-			parameter<Float64> pt := 0.0; // primair transport
-			parameter<Float64> WKO := 0.0; // exploitatie subsidie op Ki_A (doublet) als fractie van de kapitaallasten
+			parameter<float64> ge := 0.0; // expoitatiesubsidie tbv gebouweigenaren obv kapitaallaasten investeringen en huurverlaging
+			parameter<float64> id := 0.0; // inpandige distributie 0.20 = 20% subsidie op kapitaallasten, onderhoud en admin kosten
+			parameter<float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
+			parameter<float64> pt := 0.0; // primair transport
+			parameter<float64> WKO := 0.0; // exploitatie subsidie op Ki_A (doublet) als fractie van de kapitaallasten
 			parameter<Eur_GJ> SDE_WKO := 0.0[Eur_GJ]; // exploitatie subsidie op WKO per GJ.
 			
-			attribute<Float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			attribute<float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
 			// SDE: subsidie [Eur per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.
 			attribute<Eur_GJ> SDE(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0[Eur_GJ], Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
 		}
