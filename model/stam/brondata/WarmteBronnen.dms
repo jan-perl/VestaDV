@@ -191,7 +191,6 @@ container WarmteBronnen
 				// obv (0.20 / 0.30) * N10[Eur/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
 				attribute<Eur_GJ> K_GJ (classifications/zichtjaar) := (0.20 / 0.30) * prijzen/BioMassa_GJ;
 			}
-
 			container BioWKK
 			{
 				// obv (0.20 / 0.30) * N10[Eur/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
@@ -449,7 +448,7 @@ container WarmteBronnen
 					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
 					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], MetaData/TypeInfoList/V/Onbekend)'
 				') / 1000000[Units/GJ / Units/PJ]'
-			,	'@RW@', 'RunContext/@YR@/GebiedsAllocatie/RestWarmte'
+			,	'@RW@', 'Output/@YR@/GebiedsAllocatie/RestWarmte'
 			,	'@YR@', Classifications/ZichtJaar/Name
 			)
 		,	MetaData/TypeInfoList, Units/PJ_yr

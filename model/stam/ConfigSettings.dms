@@ -40,8 +40,9 @@
 
 container ConfigSettings: isHidden = "True"
 {
-	container Overridable {
-		parameter<String> SourceDataProjDir: [ '%sourceDataDir%/Vesta' ];
+	container Overridable 
+	{
+		parameter<string> SourceDataProjDir: [ '%sourceDataDir%/Vesta' ];
 	}
 	parameter<string> EnergieDataProjDir: [ '%projdir%/data' ];
 }

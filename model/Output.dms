@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container RunContext :=
+container Output :=
 	for_each_ne(
 		Model/Classifications/zichtjaar/Name,
 		'CalculationSchemes/VestaRun('

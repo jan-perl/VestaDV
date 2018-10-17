@@ -81,21 +81,21 @@ container Geography: Using = "Units"
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
 			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-250.0, 250.0, rdc_meter);
-			attribute<Bool>                  IsNL      := IsDefined(buurt_rel);
+			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 
 		unit<wpoint> km1 := gridset(rdc_grids/m100, point(10w, 10w, m100), point(0w,0w, m100), wpoint)
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
 			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-500.0, 500.0, rdc_meter);
-			attribute<Bool>                  IsNL      := IsDefined(buurt_rel);
+			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 
 		unit<wpoint> km2 := gridset(rdc_grids/m100, point(20w, 20w, m100), point(0w, 0w, m100), wpoint)
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
 			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-1000.0, 1000.0, rdc_meter);
-			attribute<Bool>                  IsNL      := IsDefined(buurt_rel);
+			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 	}
 	container RegioIndelingen // Let op, voor planregio's moeten dit uint32 domeinen zijn.
@@ -189,7 +189,7 @@ container Geography: Using = "Units"
 	container DistMatrices : IsHidden = "True"
 	{
 		unit<uint32> Dist2Range;
-		
+
 		template potrange
 		{
 			// ===================== Begin Case Parameters
@@ -197,12 +197,12 @@ container Geography: Using = "Units"
 			parameter<m> radius_max;
 			// ===================== End Case Parameters
 
-			parameter<Float64> radius   := radius_max / gridsize;
+			parameter<float64> radius   := radius_max / gridsize;
 			unit<spoint>       tmpRange := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + 1s, int16(radius) + 1s));
 			unit<spoint>       potRange := tmpRange
 			{
 				attribute<Dist2Range> distMatr      := dist2(point(0s, 0s, tmpRange), Dist2Range);
-				attribute<Float64>    DecayedWeight := iif(distMatr <= uint32(radius * radius), 1.0 / (Float64(distMatr) + 0.08), 0.0);
+				attribute<float64>    DecayedWeight := iif(distMatr <= uint32(radius * radius), 1.0 / (float64(distMatr) + 0.08), 0.0);
 
 				attribute<float32>    Reciprocal    := float32(scalesum(Sqrt(DecayedWeight), 1.0 ));
 				attribute<float32>    Cilindrical   := float32(scalesum(float64(distMatr <= uint32(radius * radius)), 1.0 ));

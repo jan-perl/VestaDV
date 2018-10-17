@@ -32,9 +32,9 @@ container AllocExports: Using = "Units", isHidden = "True"
 			attribute<Percent> Inkomen_Huishoudens_met_midden_inkomen := Model/Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
 			attribute<Percent> Inkomen_p_checksum                     := Model/Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<GJ_yr> GebiedsOptie_totaal                      := RunContext/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
-			attribute<GJ_yr> Aardgas_totaal                           := RunContext/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
-			attribute<GJ_yr> Elektriciteit_totaal                     := RunContext/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<GJ_yr> GebiedsOptie_totaal                      := Output/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
+			attribute<GJ_yr> Aardgas_totaal                           := Output/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<GJ_yr> Elektriciteit_totaal                     := Output/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/PR.csv');

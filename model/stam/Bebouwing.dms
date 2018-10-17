@@ -60,29 +60,29 @@ container Bebouwing:=
 			unit<uint8>  BebouwingsTypeDomein  := Classifications/WoningtypeBestaand, isHidden = "True";
 			unit<uint8>  BouwjaarDomein        := Classifications/BouwjaarWoningBestaand, isHidden = "True";
 			unit<uint8>  ModelObjectKeyDomein  := Classifications/combine/WoningtypeBouwjaarBestaand, isHidden = "True";
-	
+
 			attribute<string>                   code               := BAG/vbo_woonfunctie/identificatie;
 			attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
 			attribute<RegioIndelingen/blok1km>  blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]], isHidden = "True";
 			attribute<RegioIndelingen/blok2km>  blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]], isHidden = "True";
 			attribute<RegioIndelingen/buurt>    buurt_rel          := point_in_polygon(point, RegioIndelingen/buurt/geometry), isHidden = "True";
-	
+
 			attribute<nrAansl>                  nrAansluitingen_i  := Impl/nrWon * 1[ nrAansl / nrWoningen];
 			attribute<nrWoningen>               nrWoonUnits_i      := Impl/nrWon;
 			attribute<nrWoningen>               nrJoinedUnits      := Impl/nrWon, isHidden = "True";
-	
+
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := Impl/WoningType, isHidden = "True";
 			attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwjaarWoningBestaand)) + Impl/BouwjaarWoningBestaand_rel, classifications/combine/WoningtypeBouwjaarBestaand);
 			attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwjaarWoningBestaand/ClassBreak), isHidden = "True";
-	
+
 			attribute<float64>                  AandeelWarmteVraag := MakeDefined(UserInput/VraagKentallen/BaseLine/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
-	
+
 			attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry, isHidden = "True"
 			{
 				parameter<float64> SymbolSize      := 14.0,  DialogType = "SymbolSize";
 				parameter<m>       SymbolWorldSize := 30[m], DialogType = "SymbolWorldSize";
 			}
-	
+
 			container Gebied: IsHidden = "True"
 			{
 				attribute<float64> n      (..) := const(1.0,..);
@@ -120,7 +120,7 @@ container Bebouwing:=
 		{
 	//REMOVE		unit<uint32> BebouwingsObject   := . ,isHidden = "True";
 			unit<uint8>  BebouwingsTypeDomein := Classifications/UtilTypeBestaand ,isHidden = "True";
-	
+
 			// external key
 			attribute<string>                   code              := BAG/vbo_utiliteit/identificatie;
 			attribute<string>                   postcode          := BAG/vbo_utiliteit/postcode;
@@ -140,12 +140,12 @@ container Bebouwing:=
 
 			container Gebied: IsHidden = "True"
 			{
-				attribute<float64> n     (..) := const(1.0, ..);
-				attribute<float64> MEAN_x(..) := PointCol(point);
-				attribute<float64> MEAN_y(..) := PointRow(point);
-				attribute<float64> SSD_xx(..) := const(0.0, ..);
-				attribute<float64> SSD_xy(..) := const(0.0, ..);
-				attribute<float64> SSD_yy(..) := const(0.0, ..);
+				attribute<float64> n      (..) := const(1.0, ..);
+				attribute<float64> MEAN_x (..) := PointCol(point);
+				attribute<float64> MEAN_y (..) := PointRow(point);
+				attribute<float64> SSD_xx (..) := const(0.0, ..);
+				attribute<float64> SSD_xy (..) := const(0.0, ..);
+				attribute<float64> SSD_yy (..) := const(0.0, ..);
 			}
 
 			// foreign key to model data
@@ -163,7 +163,7 @@ container Bebouwing:=
 			{
 			}
 		}
-	
+
 		container Util_Nieuwbouw_Inbreiding :=
 			for_each_nedv(
 				BronData/Nieuwbouw/SZU/HasMutations ? BronData/Nieuwbouw/SZU/Name : ''
@@ -231,7 +231,7 @@ container Bebouwing:=
 			attribute<Classifications/BouwJaar> BouwJaar           := const(Classifications/Bouwjaar/Onbekend, .), isHidden = "True";
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := GLTB_Code, isHidden = "True";
 			attribute<uint8>                    ModelObjectKey     := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
-	
+
 			attribute<float64>                  AandeelWarmteVraag := MakeDefined(UserInput/VraagKentallen/BaseLine/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
 			container Criteria
 			{

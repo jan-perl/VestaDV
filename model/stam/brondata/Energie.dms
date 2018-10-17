@@ -53,12 +53,12 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			{
 				container Verbeteringen
 				{
-					container S_H_T := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
-					container S_H_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
-					container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
-					container S_T_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'D');
-					container S_T_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'E');
-					container S_B_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
+					container S_H_T  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
+					container S_H_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
+					container S_H_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
+					container S_T_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'D');
+					container S_T_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'E');
+					container S_B_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
 				}
 			}
 		}
@@ -72,14 +72,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			container results {
 				container Verbeteringen
 				{
-					container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
+					container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 
-					container S_H_T := S_X_X;
-					container S_H_B := S_X_X;
-					container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
-					container S_T_B := S_X_X;
-					container S_T_AP:= S_X_X;
-					container S_B_AP:= S_H_AP;
+					container S_H_T  := S_X_X;
+					container S_H_B  := S_X_X;
+					container S_H_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
+					container S_T_B  := S_X_X;
+					container S_T_AP := S_X_X;
+					container S_B_AP := S_H_AP;
 				}
 			}
 		}
@@ -93,14 +93,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			container results {
 				container Verbeteringen
 				{
-					container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
+					container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 
-					container S_H_T := S_X_X;
-					container S_H_B := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
-					container S_H_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
-					container S_T_B := S_X_X;
-					container S_T_AP:= S_X_X;
-					container S_B_AP:= GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
+					container S_H_T  := S_X_X;
+					container S_H_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
+					container S_H_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
+					container S_T_B  := S_X_X;
+					container S_T_AP := S_X_X;
+					container S_B_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
 				}
 			}
 		}
@@ -114,14 +114,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			container results {
 				container Verbeteringen
 				{
-					container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
+					container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 
-					container S_H_T := S_X_X;
-					container S_H_B := S_X_X;
-					container S_H_AP:= S_X_X;
-					container S_T_B := S_X_X;
-					container S_T_AP:= S_X_X;
-					container S_B_AP:= S_X_X;
+					container S_H_T  := S_X_X;
+					container S_H_B  := S_X_X;
+					container S_H_AP := S_X_X;
+					container S_T_B  := S_X_X;
+					container S_T_AP := S_X_X;
+					container S_B_AP := S_X_X;
 				}
 			}
 		}
@@ -135,14 +135,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			container results {
 				container Verbeteringen
 				{
-					container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
+					container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 
-					container S_H_T := S_X_X;
-					container S_H_B := S_X_X;
-					container S_H_AP:= S_X_X;
-					container S_T_B := S_X_X;
-					container S_T_AP:= S_X_X;
-					container S_B_AP:= S_X_X;
+					container S_H_T  := S_X_X;
+					container S_H_B  := S_X_X;
+					container S_H_AP := S_X_X;
+					container S_T_B  := S_X_X;
+					container S_T_AP := S_X_X;
+					container S_B_AP := S_X_X;
 				}
 			}
 		}
@@ -156,14 +156,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			container results {
 				container Verbeteringen
 				{
-					container S_X_X := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
+					container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
 
-					container S_H_T := S_X_X;
-					container S_H_B := S_X_X;
-					container S_H_AP:= S_X_X;
-					container S_T_B := S_X_X;
-					container S_T_AP:= S_X_X;
-					container S_B_AP:= S_X_X;
+					container S_H_T  := S_X_X;
+					container S_H_B  := S_X_X;
+					container S_H_AP := S_X_X;
+					container S_T_B  := S_X_X;
+					container S_T_AP := S_X_X;
+					container S_B_AP := S_X_X;
 				}
 			}
 		}
@@ -223,8 +223,8 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 	// d	Onderdelen distributie warmte.
 	// e	Transport warmte (prijs per km rechte afstand; gedifferentieerd naar capaciteit; + 'omwegfactor')
 
-	container prijzen := CalculationSchemes/EnergiePrijzen/All(Parameters/prijzenBron, log(1.00)[_yr]), Descr = "zie FO $3.5";
-	
+	container prijzen := CalculationSchemes/EnergiePrijzen/All(UserInput/prijzenBron, log(1.00)[_yr]), Descr = "zie FO $3.5";
+
 	container label
 	{
 		unit<uint32> src

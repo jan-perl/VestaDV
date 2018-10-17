@@ -61,28 +61,15 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 			StorageName     = "%SourceDataProjDir%/CBS/kwb-2013.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
-		
+
 		unit<uint32> j2014:
 			StorageName     = "%SourceDataProjDir%/CBS/kwb-2014.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
-		
+
 		unit<uint32> j2015:
 			StorageName     = "%SourceDataProjDir%/CBS/kwb-2015.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
 	}
-
-	/*
-	container VraagReductiePrijzen: Descr = "zie FO $3.6"
-	{
-	}
-	container HuidigeNetten: Descr = "zie FO $3.8"
-	{
-	}
-	container DraagvlagIndicatoren: Descr = "zie FO $4.1"
-	{
-		
-	}
-	*/
 }

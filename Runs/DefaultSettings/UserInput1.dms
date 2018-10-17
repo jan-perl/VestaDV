@@ -87,13 +87,13 @@ container UserInput1: Using = "Model/Units"
 			}
 		}
 		
-		container BaseLine := Parameters/Discontovoeten, Source = "FO v7a $9.5 jo C.6 Tabel 6"
+		container BaseLine := Discontovoeten, Source = "FO v7a $9.5 jo C.6 Tabel 6"
 		{
 			parameter<Yr>    StartJaar: [ 2 ];
 			parameter<Yr>    StopJaar: [ 30 ];
 
 			// obv Warmtewet maximumprijs.
-			container Warmtewet := Parameters/NMDA_Prijzen;
+			container Warmtewet := NMDA_Prijzen;
 
 			container BestaandeWoning:= ComponentBase
 			{
@@ -101,18 +101,18 @@ container UserInput1: Using = "Model/Units"
 				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
 				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
-				attribute<Units/Ratio> Deelname(Classifications/WoningtypeBestaand ):= Parameters/CollectieveOpwekking/Woning_bestaand/Deelname;
+				attribute<Units/Ratio> Deelname (Classifications/WoningtypeBestaand) := CollectieveOpwekking/Woning_bestaand/Deelname;
 
 				container Zon_PV := ComponentBase/Zon_PV
 				{
-					attribute<m2_MU > Oppervlak(Classifications/WoningtypeBestaand ):= Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_dakopp / Classifications/WoningtypeBestaand/StapelFactor; // m2 per ModelUnit
+					attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := LokaleOpwekking/Woning_bestaand/Zon_PV_dakopp / Classifications/WoningtypeBestaand/StapelFactor; // m2 per ModelUnit
 				}
 				
 				container ZonneBoiler := ComponentBase/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak(Classifications/WoningtypeBestaand ) := Parameters/LokaleOpwekking/Woning_bestaand/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := UserInput/LokaleOpwekking/Woning_bestaand/ZonneBoiler_Oppervlak;
 				}
-				
+
 				container eWP
 				{
 					parameter<Ratio> COP: [ 3.00 ];
@@ -139,7 +139,7 @@ container UserInput1: Using = "Model/Units"
 			}
 			container NieuwbouwWoning := BestaandeWoning
 			{
-				attribute<Units/Ratio> Deelname(Classifications/WoningtypeNieuwbouw):= Parameters/CollectieveOpwekking/Woning_nieuw/Deelname;
+				attribute<Units/Ratio> Deelname(Classifications/WoningtypeNieuwbouw):= CollectieveOpwekking/Woning_nieuw/Deelname;
 				
 				container Zon_PV := BestaandeWoning/Zon_PV
 				{
@@ -149,7 +149,7 @@ container UserInput1: Using = "Model/Units"
 				
 				container ZonneBoiler := BestaandeWoning/ZonneBoiler
 				{
-					attribute<m2_MU> Oppervlak(Classifications/WoningtypeNieuwbouw) := Parameters/LokaleOpwekking/Woning_nieuw/ZonneBoiler_Oppervlak;
+					attribute<m2_MU> Oppervlak(Classifications/WoningtypeNieuwbouw) := LokaleOpwekking/Woning_nieuw/ZonneBoiler_Oppervlak;
 				}
 
 				container eWP := BestaandeWoning/eWP
@@ -169,21 +169,21 @@ container UserInput1: Using = "Model/Units"
 				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
 				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
-				attribute<Units/Ratio> Deelname(Classifications/UtilTypeBestaand):= Parameters/CollectieveOpwekking/Utiliteit_bestaand/Deelname;
+				attribute<Units/Ratio> Deelname(Classifications/UtilTypeBestaand):= CollectieveOpwekking/Utiliteit_bestaand/Deelname;
 
 				// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
-				// 302671365 de oppervlakte bij het oproepen van het item /RunContext/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
+				// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 				// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 				// SourceData\vesta\vraag\BestaandeUtil\pand-BAG_sel_LISA_2008_010611.shp
 				attribute<Units/Bouwlaag> StapelFactor (Classifications/UtilTypeBestaand): [4.13549775,2.48129865,4.13549775,3.3083982,2.48129865,1,3.3083982,3.3083982,3.3083982,3.3083982];
 
 				container Zon_PV := ComponentBase/Zon_PV
 				{
-					attribute<m2_MU > Oppervlak(Classifications/UtilTypeBestaand):= Parameters/LokaleOpwekking/Utiliteit_bestaand/Zon_PV_dakopp / StapelFactor; // m2 per ModelUnit
+					attribute<m2_MU > Oppervlak(Classifications/UtilTypeBestaand):= LokaleOpwekking/Utiliteit_bestaand/Zon_PV_dakopp / StapelFactor; // m2 per ModelUnit
 				}
 				container ZonneBoiler := ComponentBase/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak(Classifications/UtilTypeBestaand) := Parameters/LokaleOpwekking/Utiliteit_bestaand/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak(Classifications/UtilTypeBestaand) := LokaleOpwekking/Utiliteit_bestaand/ZonneBoiler_Oppervlak;
 				}
 				container eWP
 				{
@@ -199,10 +199,10 @@ container UserInput1: Using = "Model/Units"
 			}
 			container NieuwbouwUtil := BestaandeUtil
 			{
-				attribute<Units/Ratio> Deelname(Classifications/UtilTypeNieuwbouw):= Parameters/CollectieveOpwekking/Utiliteit_nieuw/Deelname;
+				attribute<Units/Ratio> Deelname(Classifications/UtilTypeNieuwbouw):= CollectieveOpwekking/Utiliteit_nieuw/Deelname;
 
 				// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
-				// 302671365 de oppervlakte bij het oproepen van het item /RunContext/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
+				// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 				// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 				// SourceData\vesta\vraag\BestaandeUtil\pand-BAG_sel_LISA_2008_010611.shp
 				attribute<Units/Bouwlaag> StapelFactor (Classifications/UtilTypeNieuwbouw): [  // 4
@@ -218,7 +218,7 @@ container UserInput1: Using = "Model/Units"
 				}
 				container ZonneBoiler := BestaandeUtil/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak(Classifications/UtilTypeNieuwbouw) := Parameters/LokaleOpwekking/Utiliteit_nieuw/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak(Classifications/UtilTypeNieuwbouw) := LokaleOpwekking/Utiliteit_nieuw/ZonneBoiler_Oppervlak;
 				}
 				container Opbrengsten := BestaandeUtil/Opbrengsten,  Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 				{
@@ -237,7 +237,7 @@ container UserInput1: Using = "Model/Units"
 				unit<float64> m2_Dak       := units/m2 / (ModelEenheid / units/Bouwlaag);
 				unit<float64> m2_MU        := units/m2 / ModelEenheid;
 
-				attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_bestaand/Deelname;
+				attribute<Units/Ratio> Deelname(Classifications/GLTB):= CollectieveOpwekking/Glastuinbouw_bestaand/Deelname;
 				
 				attribute<Units/Bouwlaag> StapelFactor (Classifications/GLTB) := const(1.0[Units/Bouwlaag], Classifications/GLTB);
 
@@ -248,7 +248,7 @@ container UserInput1: Using = "Model/Units"
 				}
 				container ZonneBoiler := ComponentBase/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak(Classifications/GLTB) := Parameters/LokaleOpwekking/Glastuinbouw_bestaand/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak(Classifications/GLTB) := LokaleOpwekking/Glastuinbouw_bestaand/ZonneBoiler_Oppervlak;
 				}
 				container eWP
 				{
@@ -270,7 +270,7 @@ container UserInput1: Using = "Model/Units"
 
 			container NieuwbouwGlTb := BestaandeGlTb
 			{
-				attribute<Units/Ratio> Deelname(Classifications/GLTB):= Parameters/CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
+				attribute<Units/Ratio> Deelname(Classifications/GLTB):= CollectieveOpwekking/Glastuinbouw_nieuw/Deelname;
 				container Opbrengsten := BestaandeGlTb/Opbrengsten,
 					Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36 jo http://www.mantis.objectvision.nl/view.php?id=841"
 				{
@@ -279,7 +279,7 @@ container UserInput1: Using = "Model/Units"
 				}
 				container ZonneBoiler := BestaandeGlTb/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak(Classifications/GLTB) := Parameters/LokaleOpwekking/Glastuinbouw_nieuw/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak(Classifications/GLTB) := LokaleOpwekking/Glastuinbouw_nieuw/ZonneBoiler_Oppervlak;
 				}
 			}
 		}
@@ -290,7 +290,7 @@ container UserInput1: Using = "Model/Units"
 			{
 				container Zon_PV
 				{
-					parameter<units/KWh_yr_m2> Opbr := Parameters/LokaleOpwekking/Woning_bestaand/Zon_PV_opbrengst;
+					parameter<units/KWh_yr_m2> Opbr := LokaleOpwekking/Woning_bestaand/Zon_PV_opbrengst;
 				}
 			}
 			container BestaandeUtil := BaseLine/BestaandeUtil
@@ -514,5 +514,120 @@ container UserInput1: Using = "Model/Units"
 		//'4=Eigendom(koop/huur/onbekend)',
 		//'8=inkomensklasse',
 		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep: [ 3 ];
+	}
+	
+	// parameter: prijzenbron
+	//
+	// moet verwijzen naar een geldige .csv quartet  in %projdir%/data
+	// dwz: *_Elek.csv, *_Gas.csv, *_OverigeKosten.csv, *_TypeInfo.csv
+	//
+	// vooalsnog beschikbaar:
+	// - 20160528_Vesta_energieprijzen_WLO_hoog
+	// - 20160528_Vesta_energieprijzen_WLO_hoog_Verhoging50cent
+	// - 20160528_Vesta_energieprijzen_WLO_laag
+
+	parameter<string> prijzenbron := '20160528_Vesta_energieprijzen_WLO_hoog'; 
+	
+	// parameter: WloScenarioFolder
+	//
+	// moet verwijzen naar een folder met nieuwbouw en sloop projecties t/m 2050
+	//
+	// vooalsnog beschikbaar: van 2 WLO scenario's afgeleide resultaten, te weten
+	// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115
+	// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115
+	
+	parameter<String> WloScenarioFolder := '%SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
+
+	container Bijstook
+	{
+		container vermogensaandelen {
+			parameter<Float64> Hulpketel := 0.85; // capaciteit hulpketels per eenheid piekvraag
+			parameter<Float64> Hoofdbron := 0.30; // capaciteit PrimairNet per eenheid piekvraag
+		}
+	}
+	container Discontovoeten {
+		parameter<Percent_yr> DiscontoVoet_mr  := 4.0 [Percent_yr], Descr = "Maatschappelijke discontovoet";
+		parameter<Percent_yr> DiscontoVoet_ow  := 6.0 [Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
+		parameter<Percent_yr> DiscontoVoet_wd  := 6.0 [Percent_yr], Descr = "Discontovoet voor wijkdistributEurs";
+		parameter<Percent_yr> DiscontoVoet_pt  := 6.0 [Percent_yr], Descr = "Discontovoet voor primaire transportEurs";
+		parameter<Percent_yr> DiscontoVoet_id  := 6.0 [Percent_yr], Descr = "Discontovoet voor inpandige distributEurs";
+		parameter<Percent_yr> DiscontoVoet_ebw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
+		parameter<Percent_yr> DiscontoVoet_enw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
+		parameter<Percent_yr> DiscontoVoet_ebu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
+		parameter<Percent_yr> DiscontoVoet_enu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe utiliteiten";
+		parameter<Percent_yr> DiscontoVoet_ebt := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
+		parameter<Percent_yr> DiscontoVoet_ent := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
+	}
+	container NMDA_Prijzen {
+		parameter<Percent> CPI_2013_08_31 := 115.39[Percent];
+		parameter<Percent> CPI_2010       := 106.72[Percent];
+		
+		container Aansluitbijdrage
+		{
+			parameter<Eur_Aansl> Maximum2014 := 753.53[Eur_Aansl]; // excl BTW in EurO's van 31-08-2013
+			parameter<Eur_Aansl> Maximum2016 := 795.83[Eur_Aansl]; // excl BTW in EurO's van 31-08-2015.
+			parameter<Eur_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+		}
+		container Vastrecht
+		{
+			parameter<Eur_yr_Aansl> Maximum2014 := 209.92[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2013.
+			parameter<Eur_yr_Aansl> Maximum2016 := 228.21[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2015.
+			parameter<Eur_yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+		}
+	}
+	container CollectieveOpwekking {
+		container Woning_bestaand {
+			attribute<Ratio> Deelname(Classifications/WoningtypeBestaand ):= const(1[Units/Ratio],Classifications/WoningtypeBestaand); // fractie deelnemers
+		}
+		container Woning_nieuw {
+			attribute<Ratio> Deelname(Classifications/WoningtypeNieuwbouw):= const(1[Units/Ratio],Classifications/WoningtypeNieuwbouw); // fractie deelnemers
+		}
+		container Utiliteit_bestaand {
+			attribute<Ratio> Deelname(Classifications/UtilTypeBestaand):= const(1[Units/Ratio],Classifications/UtilTypeBestaand); // fractie deelnemers
+		}
+		container Utiliteit_nieuw {
+			attribute<Ratio> Deelname(Classifications/UtilTypeNieuwbouw):= const(1[Units/Ratio],Classifications/UtilTypeNieuwbouw); // fractie deelnemers
+		}
+		container Glastuinbouw_bestaand {
+			attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
+		}
+		container Glastuinbouw_nieuw {
+			attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
+		}
+	}
+	container LokaleOpwekking {
+		//Descr = "Hoeveelheid beschikbaar dakoppervlak voor de aanleg van PV-panelen";
+		unit<Float64> m2_Dak       := m2 / (nrWoningen / Bouwlaag);
+		
+		container Woning_bestaand {
+			parameter<KWh_yr_m2> Zon_PV_opbrengst  := 150[KWh_yr_m2];
+			attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeBestaand ) := const(30[m2_Dak],Classifications/WoningtypeBestaand);
+			attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeBestaand ) := const(3.0[m2_woning],Classifications/WoningtypeBestaand);
+		}
+		container Woning_nieuw {
+			attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/WoningtypeNieuwbouw) := const(3.0[m2_Woning],Classifications/WoningtypeNieuwbouw);
+		}
+		container Utiliteit_bestaand {
+			attribute<Bouwlaag> Zon_PV_dakopp     (Classifications/UtilTypeBestaand ) := const(0.8[Bouwlaag],Classifications/UtilTypeBestaand);
+			attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeBestaand): [
+				0.001421186,0.001421186,0.014425039,
+				0.014093429,0.001737005,0.001421186,
+				0.012601184,0.001421186,0.001421186,
+				0.001421186
+			];
+		}
+		container Utiliteit_nieuw {
+			attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeNieuwbouw): [
+				0.001413423, 0.001413423, 0.001413423,
+				0.001413423, 0.009422819, 0.03533557,
+				0.001727517, 0.015312081, 0.001413423
+			];
+		}
+		container Glastuinbouw_bestaand {
+			attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
+		}
+		container Glastuinbouw_nieuw {
+			attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
+		}
 	}
 }

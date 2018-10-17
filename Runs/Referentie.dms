@@ -49,123 +49,6 @@ container Referentie
 	#include <%projDir%/Runs/DefaultSettings/UserInput4.dms>
 //	END OF INCLUDE SECTION
 
-	container Parameters : using = Model/Units
-	{
-		// parameter: prijzenbron
-		//
-		// moet verwijzen naar een geldige .csv quartet  in %projdir%/data
-		// dwz: *_Elek.csv, *_Gas.csv, *_OverigeKosten.csv, *_TypeInfo.csv
-		//
-		// vooalsnog beschikbaar:
-		// - 20160528_Vesta_energieprijzen_WLO_hoog
-		// - 20160528_Vesta_energieprijzen_WLO_hoog_Verhoging50cent
-		// - 20160528_Vesta_energieprijzen_WLO_laag
-
-		parameter<string> prijzenbron := '20160528_Vesta_energieprijzen_WLO_hoog'; 
-		
-		// parameter: WloScenarioFolder
-		//
-		// moet verwijzen naar een folder met nieuwbouw en sloop projecties t/m 2050
-		//
-		// vooalsnog beschikbaar: van 2 WLO scenario's afgeleide resultaten, te weten
-		// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115
-		// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115
-		
-		parameter<String> WloScenarioFolder := '%SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
-
-		container Bijstook
-		{
-			container vermogensaandelen {
-				parameter<Float64> Hulpketel := 0.85; // capaciteit hulpketels per eenheid piekvraag
-				parameter<Float64> Hoofdbron := 0.30; // capaciteit PrimairNet per eenheid piekvraag
-			}
-		}
-		container Discontovoeten {
-			parameter<Percent_yr> DiscontoVoet_mr  := 4.0 [Percent_yr], Descr = "Maatschappelijke discontovoet";
-			parameter<Percent_yr> DiscontoVoet_ow  := 6.0 [Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
-			parameter<Percent_yr> DiscontoVoet_wd  := 6.0 [Percent_yr], Descr = "Discontovoet voor wijkdistributEurs";
-			parameter<Percent_yr> DiscontoVoet_pt  := 6.0 [Percent_yr], Descr = "Discontovoet voor primaire transportEurs";
-			parameter<Percent_yr> DiscontoVoet_id  := 6.0 [Percent_yr], Descr = "Discontovoet voor inpandige distributEurs";
-			parameter<Percent_yr> DiscontoVoet_ebw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
-			parameter<Percent_yr> DiscontoVoet_enw := 5.5 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
-			parameter<Percent_yr> DiscontoVoet_ebu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
-			parameter<Percent_yr> DiscontoVoet_enu := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe utiliteiten";
-			parameter<Percent_yr> DiscontoVoet_ebt := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
-			parameter<Percent_yr> DiscontoVoet_ent := 8.0 [Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
-		}
-		container NMDA_Prijzen {
-			parameter<Percent> CPI_2013_08_31 := 115.39[Percent];
-			parameter<Percent> CPI_2010       := 106.72[Percent];
-			
-			container Aansluitbijdrage
-			{
-				parameter<Eur_Aansl> Maximum2014 := 753.53[Eur_Aansl]; // excl BTW in EurO's van 31-08-2013
-				parameter<Eur_Aansl> Maximum2016 := 795.83[Eur_Aansl]; // excl BTW in EurO's van 31-08-2015.
-				parameter<Eur_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
-			}
-			container Vastrecht
-			{
-				parameter<Eur_yr_Aansl> Maximum2014 := 209.92[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2013.
-				parameter<Eur_yr_Aansl> Maximum2016 := 228.21[Eur_yr_Aansl]; // excl BTW in EurO's van 31-08-2015.
-				parameter<Eur_yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
-			}
-		}
-		container CollectieveOpwekking {
-			container Woning_bestaand {
-				attribute<Ratio> Deelname(Classifications/WoningtypeBestaand ):= const(1[Units/Ratio],Classifications/WoningtypeBestaand); // fractie deelnemers
-			}
-			container Woning_nieuw {
-				attribute<Ratio> Deelname(Classifications/WoningtypeNieuwbouw):= const(1[Units/Ratio],Classifications/WoningtypeNieuwbouw); // fractie deelnemers
-			}
-			container Utiliteit_bestaand {
-				attribute<Ratio> Deelname(Classifications/UtilTypeBestaand):= const(1[Units/Ratio],Classifications/UtilTypeBestaand); // fractie deelnemers
-			}
-			container Utiliteit_nieuw {
-				attribute<Ratio> Deelname(Classifications/UtilTypeNieuwbouw):= const(1[Units/Ratio],Classifications/UtilTypeNieuwbouw); // fractie deelnemers
-			}
-			container Glastuinbouw_bestaand {
-				attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
-			}
-			container Glastuinbouw_nieuw {
-				attribute<Ratio> Deelname(Classifications/GLTB):= const(1.0, Classifications/GLTB);
-			}
-		}
-		container LokaleOpwekking {
-			//Descr = "Hoeveelheid beschikbaar dakoppervlak voor de aanleg van PV-panelen";
-			unit<Float64> m2_Dak       := m2 / (nrWoningen / Bouwlaag);
-			
-			container Woning_bestaand {
-				parameter<KWh_yr_m2> Zon_PV_opbrengst  := 150[KWh_yr_m2];
-				attribute<m2_Dak> Zon_PV_dakopp            (Classifications/WoningtypeBestaand ) := const(30[m2_Dak],Classifications/WoningtypeBestaand);
-				attribute<m2_woning > ZonneBoiler_Oppervlak(Classifications/WoningtypeBestaand ) := const(3.0[m2_woning],Classifications/WoningtypeBestaand);
-			}
-			container Woning_nieuw {
-				attribute<m2_woning> ZonneBoiler_Oppervlak(Classifications/WoningtypeNieuwbouw) := const(3.0[m2_Woning],Classifications/WoningtypeNieuwbouw);
-			}
-			container Utiliteit_bestaand {
-				attribute<Bouwlaag> Zon_PV_dakopp     (Classifications/UtilTypeBestaand ) := const(0.8[Bouwlaag],Classifications/UtilTypeBestaand);
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeBestaand): [
-					0.001421186,0.001421186,0.014425039,
-					0.014093429,0.001737005,0.001421186,
-					0.012601184,0.001421186,0.001421186,
-					0.001421186
-				];
-			}
-			container Utiliteit_nieuw {
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeNieuwbouw): [
-					0.001413423, 0.001413423, 0.001413423,
-					0.001413423, 0.009422819, 0.03533557,
-					0.001727517, 0.015312081, 0.001413423
-				];
-			}
-			container Glastuinbouw_bestaand {
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
-			}
-			container Glastuinbouw_nieuw {
-				attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/GLTB) := const(0[Ratio], Classifications/GLTB); // m2 per ModelUnit
-			}
-		}
-	}
 	container UserInput := UserInput1;
 	unit<UInt32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 
@@ -175,6 +58,6 @@ container Referentie
 	container UserInput2040 := UserInput2030;
 	container UserInput2050 := UserInput2040;
 	
-	#include <%projDir%/model/RunContext.dms>
+	#include <%projDir%/model/Output.dms>
 	#include <%projDir%/model/meta.dms>
 }

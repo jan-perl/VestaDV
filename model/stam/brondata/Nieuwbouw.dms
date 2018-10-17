@@ -49,7 +49,7 @@ container Nieuwbouw
 	container woning :=
 		for_each_ndva(SZW/HasMutations ? SZW/Name : ''
 			, Geography/rdc_grids/m100, nrWoningen_32
-			, Parameters/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
+			, UserInput/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
 			+ SZW/wonen_wlo_filename+ '.tif'
 		);
 
@@ -62,17 +62,17 @@ container Nieuwbouw
 	container UtilOppervlak :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_Nieuwbouw) > 0  ? SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, Parameters/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_Uitleg/'
+			, UserInput/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_Uitleg/'
 			+ SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
 	container InbreidingUtilFactor :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_Nieuwbouw) > 0  ? SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, Parameters/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
+			, UserInput/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
 			+ SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
-	
+
 	container Totalen {
 		attribute<nrWoningen> Woning        (SZW) := ='union_data(SZW,'+AsItemList(SZW/HasMutations ? 'sum(Nieuwbouw/Woning/' +SZW/Name+')' : '0[nrWoningen] / 0.0')+')';
 		attribute<string>     ScenYearTypeW (SZW) := SZW/Name;
