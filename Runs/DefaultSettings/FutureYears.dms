@@ -38,15 +38,15 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container FutureYears := StartYear, using = "Model/Units"
+container FutureYears := base, using = "Model/Units"
 {
-	container RuimtelijkeVraagOpties := StartYear/RuimtelijkeVraagOpties
+	container RuimtelijkeVraagOpties := base/RuimtelijkeVraagOpties
 	{
-		container LokaleSpecifiekeOpties := StartYear/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties
+		container LokaleSpecifiekeOpties := base/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties
 		{
-			container GenericBase := StartYear/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase
+			container GenericBase := base/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase
 			{
-				container Verbeteringen := StartYear/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Verbeteringen
+				container Verbeteringen := base/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Verbeteringen
 				{
 					// Letters verwijzen naar kolomheaders in het "Dataset_woningen2013_200313.xls"-bestand
 					parameter<String> S_H_T:   [ 'Criteria/Always' ]; // was: Sprong A (een initiele sprong)
@@ -80,7 +80,7 @@ container FutureYears := StartYear, using = "Model/Units"
 		}
 	}
 
-	container Voorkeuren := StartYear/Voorkeuren
+	container Voorkeuren := base/Voorkeuren
 	{
 		container AanbodOpties
 		{

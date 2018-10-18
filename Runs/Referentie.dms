@@ -49,26 +49,24 @@ container Referentie
 
 	container UserInputDefaults
 	{
-		#include <%projDir%/Runs/DefaultSettings/StartYear.dms>
+		#include <%projDir%/Runs/DefaultSettings/base.dms>
 		#include <%projDir%/Runs/DefaultSettings/FutureYears.dms>
 	}
 
-	container UserInput := UserInputDefaults/StartYear
+	container UserInput := UserInputDefaults/base
 	{
-		
+		container yr2010 := UserInputDefaults/base
+		{
+			parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; 
+		} // tot 2010 geldt nog het lagere BTW-percentage
+	
+		container yr2020 := UserInputDefaults/FutureYears;
+		container yr2030 := yr2020;
+		container yr2040 := yr2030;
+		container yr2050 := yr2040;
 	}
 	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 
-	container UserInput2010 := UserInputDefaults/StartYear
-	{
-		parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; 
-	} // tot 2010 geldt nog het lagere BTW-percentage
-
-	container UserInput2020 := UserInputDefaults/FutureYears;
-	container UserInput2030 := UserInput2020;
-	container UserInput2040 := UserInput2030;
-	container UserInput2050 := UserInput2040;
-
 	#include <%projDir%/model/Output.dms>
-	#include <%projDir%/model/meta.dms>
+	//#include <%projDir%/model/meta.dms>
 }

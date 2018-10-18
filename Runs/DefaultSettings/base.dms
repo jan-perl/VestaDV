@@ -38,19 +38,19 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container StartYear: Using = "Model/Units"
+container base: Using = "Model/Units"
 {
 	container BebouwingsScenario       := Model/Bebouwing;
 	parameter <string> KlimaatScenario := 'g_plus'; // other option = 'w';
 
-	parameter<string> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in StartYear.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
+	parameter<string> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in base.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
 //			'blok500m';
 //			'blok1km';
 //			'blok2km';
 	parameter<bool> HasStartingArcSet:= True;
 
-	parameter<Percent> VAT    := 21[Percent]; // @USERINPUT, zie ook: /StartYear/Beleidsopties/EIA/gebouw/bwe
+	parameter<Percent> VAT    := 21[Percent]; // @USERINPUT, zie ook: /base/Beleidsopties/EIA/gebouw/bwe
 	parameter<Percent> VAT_gv := 0.5*(21.0+6.0)[Percent]; // BTW op gebouwverbetering
 	
 	container VraagKentallen: Descr = "Blok 3, zie FO $4.2"

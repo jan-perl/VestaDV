@@ -49,11 +49,11 @@ container VestaRun
 
 	container UserInputDefaults
 	{
-		#include <%projDir%/Runs/DefaultSettings/StartYear.dms>
+		#include <%projDir%/Runs/DefaultSettings/base.dms>
 		#include <%projDir%/Runs/DefaultSettings/FutureYears.dms>
 	}
 
-	container UserInput := UserInputDefaults/StartYear
+	container UserInput := UserInputDefaults/base
 	{
 		parameter<string>  PlanRegioNaam := 'blok2km';
 		parameter<bool>    HasStartingArcSet := false; // Need to be always false if buurt is not used.
@@ -61,7 +61,7 @@ container VestaRun
 
 	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 	
-	container UserInput2010 := UserInputDefaults/StartYear
+	container UserInput2010 := UserInputDefaults/base
 	{
 		parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent];
 	} // tot 2010 geldt nog het lagere BTW-percentage

@@ -172,7 +172,7 @@ template VestaRun
 	}
 	// end case parameters
 
-	container UserInput       := ='UserInput'+string(RunJaar);
+	container UserInput       := ='/UserInput/yr'+string(RunJaar);
 	container Bebouwing       := ='UserInput/BebouwingsScenario/J'+string(RunJaar);
 	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat_scenario_knmi/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
 
