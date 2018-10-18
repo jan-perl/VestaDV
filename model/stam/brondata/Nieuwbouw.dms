@@ -44,7 +44,7 @@ container Nieuwbouw
 	unit<uInt32> SZW := Classifications/combine/ZichtjaarWonen;
 	unit<uInt32> SZU := Classifications/combine/ZichtjaarUtiliteit;
 
-	unit<float32> nrWoningen_32 := float32(Units/nrWoningen);
+	unit<float32> nrWoningen_32 := float32(Units/nrWoningen), isHidden = "True";
 
 	container woning :=
 		for_each_ndva(SZW/HasMutations ? SZW/Name : ''
@@ -52,12 +52,6 @@ container Nieuwbouw
 			, UserInput/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
 			+ SZW/wonen_wlo_filename+ '.tif'
 		);
-
-// 	container Woning :=
-// 		for_each_nedv(  BronData/Nieuwbouw/SZW/HasMutations ? BronData/Nieuwbouw/SZW/Name : ''
-// 			, 'Woning_src/'+BronData/Nieuwbouw/SZW/Name+'[nrWoningen]'
-// 			, Geography/rdc_grids/m100, nrWoningen
-// 		);
 
 	container UtilOppervlak :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_Nieuwbouw) > 0  ? SZU/Name : ''

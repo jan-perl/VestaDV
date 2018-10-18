@@ -31,13 +31,6 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
-//       In deze configuratiefile worden settings voor paden e.d. geconfigureerd.       //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 container ConfigSettings: isHidden = "True"
 {
 	container Overridable 

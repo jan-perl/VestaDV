@@ -76,7 +76,7 @@ container GlTbComponentOperaties
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel         := impl/lokatiesBij/blok2km_rel [nr_1];
 			attribute<BebouwingsTypeDomein>               BebouwingsType      := GLTB_Code;
 			attribute<Classifications/bouwjaar>           bouwjaarOrg         := const(classify(value(zichtjaar, units/Yr)-value(0.5, units/Yr),  classifications/bouwjaar/ClassBreak), .);
-			attribute<Classifications/bouwjaar>           bouwjaar            := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/Onbekend : bouwjaarOrg;
+			attribute<Classifications/bouwjaar>           bouwjaar            := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/V/Onbekend : bouwjaarOrg;
 			attribute<UInt8>                              ModelObjectKey      := BebouwingsType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 			attribute<m2>                                 NrJoinedunits       := Oppervlakte;
 			attribute<nrAansl>                            nrAansluitingen_i   := const(1[nrAansl   ], .), FreeData = "True";

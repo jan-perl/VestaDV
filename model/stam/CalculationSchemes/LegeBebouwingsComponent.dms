@@ -57,7 +57,7 @@ template LegeBebouwingsComponent
 
 		attribute<uint8>                              ModelObjectKey     := const(0b, .);
 		attribute<BebouwingsTypeDomein>               BebouwingsType     := const(0b, .);
-		attribute<Classifications/BouwJaar>           BouwJaar           := const(Classifications/BouwJaar/Onbekend, .);
+		attribute<Classifications/BouwJaar>           BouwJaar           := const(Classifications/BouwJaar/V/Onbekend, .);
 		attribute<nrAansl>                            nrAansluitingen_i  := const(0[nrAansl], .);
 		attribute<nrWoningen>                         nrWoonUnits_i      := const(0.0[nrWoningen], .);
 

@@ -55,7 +55,7 @@ container Blok2km
 //	Run specific overruling
 	container UserInput := UserInputDefaults/base
 	{
-		parameter<String>  PlanRegioNaam     := 'blok2km';
+		parameter<string>  PlanRegioNaam     := 'blok2km';
 		parameter<bool>    HasStartingArcSet := false; // Need to be always false if buurt is not used.
 		unit<uint32>       PlanRegio         := ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
 

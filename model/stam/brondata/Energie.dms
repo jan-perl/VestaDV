@@ -185,14 +185,14 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 			// fractie (1-x) de feitelijke besparing is.
 			attribute<Ratio> ReboundFactor_stap(ModelObject) :=
 				=(VerbeterCode!='X') 
-				? 'MakeDefined(table/RB_FAC_'+VerbeterCode+'[Ratio], 0.0[Ratio])' 
-				: 'const(0 / 0, ModelObject, Ratio)';
+					? 'MakeDefined(table/RB_FAC_'+VerbeterCode+'[Ratio], 0.0[Ratio])' 
+					: 'const(0 / 0, ModelObject, Ratio)';
 
 			// de volgende kenmerken betreffen ook aleen RuimteVerwarming
 			attribute<GJ_yr_per_Eenheid> verbruik(ModelObject) := 
 				=(VerbeterCode!='X') 
-				? 'MakeDefined(table/MV'+VerbeterCode+'_EG[GJ_yr_per_Eenheid], Functioneel/Ruimteverwarming)' 
-				: 'const(0 / 0, ModelObject, GJ_yr_per_Eenheid)';
+					? 'MakeDefined(table/MV'+VerbeterCode+'_EG[GJ_yr_per_Eenheid], Functioneel/Ruimteverwarming)' 
+					: 'const(0 / 0, ModelObject, GJ_yr_per_Eenheid)';
 
 			attribute<GJ_yr_per_Eenheid> energie_verbetering_stap  (ModelObject) := verbruik - verbruik_prev;
 			attribute<GJ_yr_per_Eenheid> totale_verbetering_stap   (ModelObject) := energie_verbetering_stap / (1.0 - ReboundFactor_stap);
@@ -207,12 +207,12 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 
 			attribute<Eur_per_eenheid> kosten_min (ModelObject) :=
 				=(VerbeterCode!='X')
-				? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MIN[Eur_per_eenheid], 0.0[Eur_per_eenheid])'
-				: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
+					? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MIN[Eur_per_eenheid], 0.0[Eur_per_eenheid])'
+					: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
 			attribute<Eur_per_eenheid> kosten_max (ModelObject) :=
 				=(VerbeterCode!='X')
-				? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MAX[Eur_per_eenheid], 0.0[Eur_per_eenheid])'
-				: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
+					? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MAX[Eur_per_eenheid], 0.0[Eur_per_eenheid])'
+					: 'const(0 / 0, ModelObject, Eur_per_eenheid)';
 		}
 	}
 

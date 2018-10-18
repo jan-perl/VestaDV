@@ -33,17 +33,11 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-// Dit is de basis van de configuratie voor het model VESTA                             //
-//                                                                                      //
-// Deze file verwijst m.b.v. include-statements naar de dms-files zoals:                //
-// - Eenheden                                           (stam/Units.dms)                //
-// - Geography                                          (stam/Geography.dms)            //
-// - Classificaties                                     (stam/Classifications.dms)      //
-// - Brondata                                           (stam/Brondata.dms)             //
+//        Dit is de root configuratie voor het model VESTA                              //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
+container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181"
 {
 	#include <ConfigSettings.dms>
 	#include <ExportSettings.dms>
@@ -64,26 +58,25 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
 
 	#include <CalculationSchemes.dms>
 
-	container t510_indicator_results_test
-	{
-		parameter<string> result := 
-			'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br><I>version</i>: 63219afbbd1928a9225de8ea0bd9df24dd31e239</description>' + 
-			'<result>' + 
-			' Flow, Maatschappelijk<br>2010 : ' + replace(string(Output/J2010/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-			' 2020 : ' + replace(string(Output/J2020/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-			' 2030 : ' + replace(string(Output/J2030/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
-			' Energy, O Totaal<br>2010 : ' + replace(string(sum(Output/J2010/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-			' 2020 : ' + replace(string(sum(Output/J2020/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-			' 2030 : ' + replace(string(sum(Output/J2030/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
-			' CO2, O Netto<br>2010 : ' + replace(string(sum(Output/J2010/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar <br>' + 
-			' 2020 : ' + replace(string(sum(Output/J2020/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar <br>' + 
-			' 2030 : ' + replace(string(sum(Output/J2030/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar </result>'
-		,	StorageType = "str"
-		,	storagename = "= '%LocalDataDir%/vesta_indicator_results_test.html'";
-	}
-	
 	container Exports
 	{
+		container t510_indicator_results_test
+		{
+			parameter<string> result := 
+				'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br><I>version</i>: 63219afbbd1928a9225de8ea0bd9df24dd31e239</description>' + 
+				'<result>' + 
+				' Flow, Maatschappelijk<br>2010 : ' + replace(string(Output/J2010/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2020 : ' + replace(string(Output/J2020/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2030 : ' + replace(string(Output/J2030/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
+				' Energy, O Totaal<br>2010 : ' + replace(string(sum(Output/J2010/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2020 : ' + replace(string(sum(Output/J2020/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2030 : ' + replace(string(sum(Output/J2030/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
+				' CO2, O Netto<br>2010 : ' + replace(string(sum(Output/J2010/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar <br>' + 
+				' 2020 : ' + replace(string(sum(Output/J2020/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar <br>' + 
+				' 2030 : ' + replace(string(sum(Output/J2030/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' giga J per jaar </result>'
+			,	StorageType = "str"
+			,	storagename = "= '%LocalDataDir%/vesta_indicator_results_test.html'";
+		}
 		container BAG
 		{
 			unit<uint32> vbo_oppervlak_gecorrigeerd_INV := BronData/BAG/import/vbo
@@ -93,7 +86,7 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", FreeData = "True"
 						? Oppervlakte[Units/m2]
 						: (0 / 0)[Units/m2]
 				,	Descr    = "Dataset van records die afvallen door het filter, statistieken geven inzicht in de verdeling in oppervlaktes";
-			
+
 				attribute<Units/m2> utiliteit :=
 					(BronData/BAG/import/vbo/oppervlak_filters/generiek || (Oppervlakte > 160000i && pand_bouwlagen_fictief > 45f))
 						? Oppervlakte[Units/m2]

@@ -80,7 +80,7 @@ container WarmteBronnen
 			attribute<string> JaarKosten; // [_yr]
 
 			attribute<TypeInfoList> TypeInfoList_rel := rlookup(Type, TypeInfoList/Naam);
-			attribute<RekenType> RekenType_rel := TypeInfoList/RekenType_rel[TypeInfoList_rel];
+			attribute<RekenType>    RekenType_rel    := TypeInfoList/RekenType_rel[TypeInfoList_rel];
 
 			attribute<Eur_GJ> K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2010]')+')[RekenType_rel]';
 			attribute<Eur_GJ> K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2020]')+')[RekenType_rel]';
@@ -314,9 +314,7 @@ container WarmteBronnen
 			,	DialogType = "Map"
 			,	DialogData = "Point"
 			{
-				attribute<string> Label:= AsItemList(BronElementen/Label, per_BronElementen), DialogType = "LabelText";
-
-//				attribute<WarmteBronnen> WarmteBron_rel := modus_weighted(BronElementen/WarmteBron_rel, Jaar+1[units/yr_uint16]-BronElementen/ingebruik, per_BronElementen);
+				attribute<string>                Label                             := AsItemList(BronElementen/Label, per_BronElementen), DialogType = "LabelText";
 
 				attribute<.>                     per_BronElementen (BronElementen) := rlookup(BronElementen/Point, Values);
 				attribute<MetaData/TypeInfoList> TypeInfoList_rel                  := modus_weighted(BronElementen/TypeInfoList_rel, BronElementen/MWth_max, per_BronElementen);
@@ -453,5 +451,5 @@ container WarmteBronnen
 			)
 		,	MetaData/TypeInfoList, Units/PJ_yr
 		);
-	
+
 }

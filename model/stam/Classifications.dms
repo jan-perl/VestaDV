@@ -134,8 +134,6 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 		attribute<string> resterendFactorName := name;
 
-		parameter<float64> SymbolSize := 24.0, DialogType = "SymbolSize";
-
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
@@ -191,11 +189,11 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<string> csv_output          := replace(excel_code, ', ', '_'); // no comma's in output to csv as Excel will treat them as seperate columns
 	}
 
-// =========  Classificaties voor combinaties met Bebouwingscomponenten
+// =========  Classificaties voor bouw/zichtjaren
 	unit<uint8> BouwjaarWoningBestaand: nrofrows = 6
 	{
-		attribute<units/Yr> ClassBreak: [ -9998 ,  1946 ,  1965 ,  1975 ,  1992 ,  2006];
-		attribute<string>   name      : ['v1946','v1965','v1974','v1991','v2005','v2014'];
+		attribute<units/Yr> ClassBreak : [ -9998 ,  1946 ,  1965 ,  1975 ,  1992 ,  2006];
+		attribute<string>   name       : ['v1946','v1965','v1974','v1991','v2005','v2014'];
 
 		attribute<string> Excel_code:
 		[
@@ -267,11 +265,8 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
-		parameter<.> onbekend := V/onbekend;
 	}
 
-
-// =========  Classificaties voor bouw- en zichtjaren
 	unit<uint8> bouwjaar: nrofrows = 16
 	{
 		attribute<units/Yr> ClassBreak : [      null,  -9998,  1800 ,  1900 ,  1920 ,  1940 , 1960 ,   1970,   1980 ,  1990 ,  1995 ,  2000 ,  2010 ,  2020 ,  2030 ,  2040 ];
@@ -336,7 +331,6 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
-		parameter<.> onbekend := V/onbekend;
 	}
 
 	unit<uint8> zichtjaar: nrofrows = 5
@@ -538,15 +532,18 @@ container Classifications: Using = "Units", KeepData = "True"
 		];
 		attribute<string> code_xtra: // sprongen bovenop zoals gegeven met modelwoning
 		[
-			null, null, null, null, null, null,
+			 null, null, null,
+			 null, null, null,
 
 			'eWP', 'eWP', 'eWP', 'eWP',
 			'EWV', 'EWV', 'EWV', 'EWV'
 		];
 
 		attribute<bool> NaWijziging: [
-			false, false, false, true, true, true,
-			false, true, true, true, 
+			false, false, false,
+			 true,  true,  true,
+
+			false, true, true, true,
 			false, true, true, true
 		];
 	}
@@ -702,7 +699,8 @@ container Classifications: Using = "Units", KeepData = "True"
 			,rgb(200,200,200)
 		];
 	}
-	
+
+// =========  Classificaties van combinaties (carthesianse producten) van class domains
 	container combine
 	{
 		unit<uint8> WoningtypeBouwjaarBestaand := combine_uint8(WoningtypeBestaand, BouwjaarWoningBestaand)
@@ -745,7 +743,7 @@ container Classifications: Using = "Units", KeepData = "True"
 			attribute<string>          Label                   := Name;
 		}
 
-		unit<uint32> LabelChange := Combine(energielabel, LabelSprong)
+		unit<uint32> LabelChange := combine(energielabel, LabelSprong)
 		{
 			attribute<string> Label := LabelSprong/code[nr_2]+': van ' + energieLabel/Label[nr_1] + ' naar ' + energieLabel/Label[Label_na], DialogType = "LabelText";
 	
