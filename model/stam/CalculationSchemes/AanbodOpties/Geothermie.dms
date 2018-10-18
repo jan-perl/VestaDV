@@ -39,10 +39,9 @@ template GeoThermie
 	parameter<units/yr_uint16> Jaar;
 	
 	// end of case param
-	
-//	unit<uint32> PlanRegio := RunImpl/PlanRegio;
-		
-	container TypeInfo := BronData/WarmteBronnen/GeoThermie/TypeInfo;
+
+	unit<uint32> PlanRegio := UserInput/PlanRegio;
+	container TypeInfo     := BronData/WarmteBronnen/GeoThermie/TypeInfo;
 	
 	container KostenBaten := BeginStatus/KostenBaten;
 	

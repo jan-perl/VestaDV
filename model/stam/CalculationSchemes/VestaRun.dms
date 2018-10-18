@@ -52,9 +52,10 @@ template VestaRun
 				string(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
 			')'
 		)
-	{
+	{		
 		container AanbodOpties
 		{
+			unit<uint32> PlanRegio := UserInput/PlanRegio;
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
 
 			container RestWarmte {
@@ -174,6 +175,9 @@ template VestaRun
 
 	container UserInput       := ='/UserInput/yr'+string(RunJaar);
 	container Bebouwing       := ='UserInput/BebouwingsScenario/J'+string(RunJaar);
+
+	unit<uint32> PlanRegio    := UserInput/PlanRegio;
+
 	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat_scenario_knmi/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
 
 	container VraagKentallen  := UserInput/VraagKentallen/BaseLine;
@@ -239,10 +243,10 @@ template VestaRun
 	
 	container LeerCurves {
 		// data
-		attribute <Ratio> LeerCurve1DataMin(Classifications/ZichtJaar): [ 1.00, 0.87, 0.77, 0.70, 0.65 ];
-		attribute <Ratio> LeerCurve1DataMax(Classifications/ZichtJaar): [ 1.00, 0.92, 0.87, 0.83, 0.80 ];
-		attribute <Ratio> LeerCurve2DataMin(Classifications/ZichtJaar): [ 1.00, 0.72, 0.58, 0.49, 0.43 ];
-		attribute <Ratio> LeerCurve2DataMax(Classifications/ZichtJaar): [ 1.00, 0.80, 0.70, 0.64, 0.59 ];
+		attribute <Ratio> LeerCurve1DataMin (Classifications/ZichtJaar):= Technology/Leercurves/C1Min;
+		attribute <Ratio> LeerCurve1DataMax (Classifications/ZichtJaar):= Technology/Leercurves/C1Max;
+		attribute <Ratio> LeerCurve2DataMin (Classifications/ZichtJaar):= Technology/Leercurves/C2Min;
+		attribute <Ratio> LeerCurve2DataMax (Classifications/ZichtJaar):= Technology/Leercurves/C2Max;
 
 		parameter<Ratio> Curve1Min:  = interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMin);
 		parameter<Ratio> Curve1Max:  = interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMax);
@@ -536,13 +540,6 @@ template VestaRun
 			}
 		}
 	}
-	container entiteiten
-	{
-//REMOVE		unit<uint32> BestaandeWoning     := VestaRunData/BestaandeWoning/BebouwingsObject;
-//REMOVE		unit<uint32> NieuwbouwWoning     := VestaRunData/NieuwbouwWoning/BebouwingsObject;
-		unit<uint8>  WoningType          := VestaRunData/BestaandeWoning/BebouwingsTypeDomein;
-		unit<uint8>  NieuwbouwWoningType := VestaRunData/NieuwbouwWoning/BebouwingsTypeDomein;
-	}
 
 	container NCW {
 		container ow28 := NcwSchema(AanbodKentallen/DiscontoVoet_ow, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
@@ -713,7 +710,6 @@ template VestaRun
 			for_each_ne(Classifications/BebouwingsComponent/Name, 
 				'AllocatieResultaatComponentTempl(
 					VestaRunData/'+Classifications/BebouwingsComponent/Name+'
-					,PlanRegio
 					,EndState/AanbodOpties/PlanRegioWarmteAllocatie
 					,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
 					,EndState/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie

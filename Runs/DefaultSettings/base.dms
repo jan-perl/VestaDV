@@ -48,6 +48,8 @@ container base: Using = "Model/Units"
 //			'blok500m';
 //			'blok1km';
 //			'blok2km';
+	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+
 	parameter<bool> HasStartingArcSet:= True;
 
 	parameter<Percent> VAT    := 21[Percent]; // @USERINPUT, zie ook: /base/Beleidsopties/EIA/gebouw/bwe

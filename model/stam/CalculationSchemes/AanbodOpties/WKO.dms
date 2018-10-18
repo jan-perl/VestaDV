@@ -44,7 +44,8 @@ template WKO
 	container VestaRunData := KostenBaten/VestaRunData;
 	
 	unit<uint8> WkoComponent := Classifications/WkoComponent;
-	
+	unit<uint32> PlanRegio   := UserInput/PlanRegio;
+
 	container impl
 	{
 		parameter<Eur_kW>     Ki_Doublet:= Leercurves/Curve2 * 1133[Eur_kW], Descr = "bron zonder distributiekosten";
@@ -125,7 +126,7 @@ template WKO
 			WoningDataTempl(
 				VestaRunData/BestaandeWoning, 
 				BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
-				Entiteiten/WoningType,
+				VestaRunData/BestaandeWoning/BebouwingsTypeDomein,
 				BeginStatus/KostenBaten/KostenD/Wonen/bbw
 			);
 
@@ -133,7 +134,7 @@ template WKO
 			WoningDataTempl(
 				VestaRunData/NieuwbouwWoning, 
 				BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
-				Entiteiten/NieuwbouwWoningType,
+				VestaRunData/NieuwbouwWoning/BebouwingsTypeDomein,
 				BeginStatus/KostenBaten/KostenD/Wonen/nbw
 			);
 
@@ -488,7 +489,8 @@ template WKO
 		container VestaRunDataComponent:= WkoDataComponent/VestaRunDataComponent;
 		container RuimtelijkeVraagComponent:= VestaRunDataComponent/RuimtelijkeVraagComponent;
 		unit<UInt32> BebouwingsObject:= VestaRunDataComponent/BebouwingsObject;
-		
+		unit<uint32> PlanRegio         := UserInput/PlanRegio;
+			
 		attribute<AllObjects> AllObjects_rel(BebouwingsObject):= value(ID(BebouwingsObject) + NrPrevAllObjects, AllObjects);
 		
 		unit<UINt32> AllowedObjects:= WkoData/AllowedObjects

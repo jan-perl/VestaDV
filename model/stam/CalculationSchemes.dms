@@ -117,6 +117,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 		
 		unit<uint32>                           BebouwingsObject                            := VestaRunDataComponent/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := VestaRunDataComponent/WarmteAllocatie;
+		unit<uint32>                           PlanRegio                                   := UserInput/PlanRegio;
 
 		parameter<Eur_GJ> WarmtePrijs := VestaRunDataComponent/Warmtewet/WarmtePrijs;
 
@@ -158,20 +159,22 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 			container NCW30;
 			container NCW50;
 			
-			attribute<Eur_yr> Oj_VastRechtG(PlanRegio);
-			attribute<Eur   > Oi_AansluitG (PlanRegio);
-			attribute<Eur_yr> Oj_VastRechtE(PlanRegio);
-			attribute<Eur   > Oi_AansluitE (PlanRegio);
-			
+			attribute<Eur_yr> Oj_VastRechtG (UserInput/PlanRegio);
+			attribute<Eur   > Oi_AansluitG  (UserInput/PlanRegio);
+			attribute<Eur_yr> Oj_VastRechtE (UserInput/PlanRegio);
+			attribute<Eur   > Oi_AansluitE  (UserInput/PlanRegio);
+
 			container PlanRegioKaartComponent;
-			
+
 			container VestaRunDataComponent    := AllocatieResultaatComponent/VestaRunDataComponent;
 			container RuimtelijkeVraagComponent:= AllocatieResultaatComponent/RuimtelijkeVraagComponent;
 			unit<uint32> BebouwingsObject      := VestaRunDataComponent/BebouwingsObject;
-			
+
 			parameter<Ratio> BTW_Factor    := VestaRunDataComponent/BTW_Factor;
 			parameter<Ratio> BTW_Factor_gv := VestaRunDataComponent/BTW_Factor_gv;
-			
+
+			unit<uint32> PlanRegio         := UserInput/PlanRegio;
+
 			container gebouwen {
 				container Elektriciteit {
 					attribute<Eur_yr> Verbruik      (PlanRegio) := sum(AllocatieResultaatComponent/Elektriciteit/eindgebruik_ex, VestaRunDataComponent/PlanRegio_rel);

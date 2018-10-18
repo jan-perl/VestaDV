@@ -2,7 +2,7 @@ container AllocExports: Using = "Units", isHidden = "True"
 {
 	container PlanRegioResults
 	{
-		Unit<UInt32>  table := PlanRegio
+		Unit<UInt32>  table := UserInput/PlanRegio
 		{
 			attribute<string> BU_CODE                                 := Model/Geography/RegioIndelingen/buurt/BU_CODE;
 			attribute<Classifications/AanbodOptie> AanbodOptie        := EndState/AanbodOpties/PlanRegioWarmteAllocatie;

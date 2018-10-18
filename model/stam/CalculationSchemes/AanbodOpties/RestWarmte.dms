@@ -40,9 +40,8 @@ template RestWarmte
 
 	// end of case param
 
-	//unit<uint32> PlanRegio := RunImpl/PlanRegio;
-
-	container KostenBaten := BeginStatus/KostenBaten;
+	unit<uint32> PlanRegio := UserInput/PlanRegio;
+	container KostenBaten  := BeginStatus/KostenBaten;
 
 	unit<uint32> Bronnen := ='/Model/BronData/WarmteBronnen/RestWarmte/BronSelecties/J'+String(Jaar)+'/Bronnen'
 	{

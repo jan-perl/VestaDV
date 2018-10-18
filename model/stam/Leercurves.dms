@@ -24,6 +24,10 @@ container Leercurves
 			attribute<units/Percent> Verder(ZichtJaar): [100, 72, 58, 49, 43]; // Huidige kosten E 60.000,- per woning
 		}
 	}
+	attribute<units/Ratio> C1Min (Classifications/ZichtJaar): [ 1.00, 0.87, 0.77, 0.70, 0.65 ];
+	attribute<units/Ratio> C1Max (Classifications/ZichtJaar): [ 1.00, 0.92, 0.87, 0.83, 0.80 ];
+	attribute<units/Ratio> C2Min (Classifications/ZichtJaar): [ 1.00, 0.72, 0.58, 0.49, 0.43 ];
+	attribute<units/Ratio> C2Max (Classifications/ZichtJaar): [ 1.00, 0.80, 0.70, 0.64, 0.59 ];
 	// Optie 1b en 5: gebouwmaatregelen
 		//	{HR-ketel, HRe-ketel, Zonneboiler, eWP (l/w), eWP (w/w), Zon-PV, LTV, EWV}  kosten in woningtabel
 		// jaren: 2010..2050

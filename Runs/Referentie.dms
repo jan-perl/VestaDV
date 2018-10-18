@@ -40,33 +40,36 @@
 
 container Referentie
 {
-//	INCLUDE MODEL AND FIXED SETTINGS SECTION	
+//	Include Model and defaults settings section, similar for each run
 	#include <%projDir%/model/stam.dms>
 	container ConfigSettings := Model/ConfigSettings, IsHidden = "True";
 	container ExportSettings := Model/ExportSettings, IsHidden = "True";
-
-//	END OF INCLUDE SECTION
 
 	container UserInputDefaults
 	{
 		#include <%projDir%/Runs/DefaultSettings/base.dms>
 		#include <%projDir%/Runs/DefaultSettings/FutureYears.dms>
 	}
+//	End
 
+//	Run specific overruling
 	container UserInput := UserInputDefaults/base
 	{
 		container yr2010 := UserInputDefaults/base
 		{
 			parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; 
 		} // tot 2010 geldt nog het lagere BTW-percentage
-	
+
 		container yr2020 := UserInputDefaults/FutureYears;
 		container yr2030 := yr2020;
 		container yr2040 := yr2030;
 		container yr2050 := yr2040;
 	}
-	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+//	End
 
+//	Include Output section, similar for each run
 	#include <%projDir%/model/Output.dms>
-	//#include <%projDir%/model/meta.dms>
+// End
+
+//#include <%projDir%/model/meta.dms>
 }
