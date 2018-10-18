@@ -42,18 +42,29 @@ container Referentie
 {
 //	INCLUDE MODEL AND FIXED SETTINGS SECTION	
 	#include <%projDir%/model/stam.dms>
-	container ConfigSettings := Model/ConfigSettings;
+	container ConfigSettings := Model/ConfigSettings, IsHidden = "True";
 	container ExportSettings := Model/ExportSettings, IsHidden = "True";
 
-	#include <%projDir%/Runs/DefaultSettings/UserInput1.dms>
-	#include <%projDir%/Runs/DefaultSettings/UserInput4.dms>
 //	END OF INCLUDE SECTION
 
-	container UserInput := UserInput1;
-	unit<UInt32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+	container UserInputDefaults
+	{
+		#include <%projDir%/Runs/DefaultSettings/StartYear.dms>
+		#include <%projDir%/Runs/DefaultSettings/FutureYears.dms>
+	}
 
-	container UserInput2010 := UserInput1 { parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; } // tot 2010 geldt nog het lagere BTW-percentage
-	container UserInput2020 := UserInput4;
+	container UserInput := UserInputDefaults/StartYear
+	{
+		
+	}
+	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+
+	container UserInput2010 := UserInputDefaults/StartYear
+	{
+		parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; 
+	} // tot 2010 geldt nog het lagere BTW-percentage
+
+	container UserInput2020 := UserInputDefaults/FutureYears;
 	container UserInput2030 := UserInput2020;
 	container UserInput2040 := UserInput2030;
 	container UserInput2050 := UserInput2040;
