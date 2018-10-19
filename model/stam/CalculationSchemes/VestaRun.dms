@@ -52,14 +52,14 @@ template VestaRun
 				string(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
 			')'
 		)
-	{		
+	{
 		container AanbodOpties
 		{
 			unit<uint32> PlanRegio := UserInput/PlanRegio;
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
 
 			container RestWarmte {
-				
+
 				attribute<CumulatedArcSet> CumulatedArcSet_rel (PlanRegio) := invert(CumulatedArcSet/planregio_rel);
 				attribute<bool>           GebruikRestWarmte    (PlanRegio) := IsDefined(CumulatedArcSet_rel);
 
@@ -114,18 +114,18 @@ template VestaRun
 
 				unit<uint32> EmptyArcSet: = EmptySequenceSetSource
 				{
-					attribute<rdc_meter> PrevPoint    :  = Point;
-					attribute<rdc_meter> BronPoint    :  = Point;
-					attribute<PlanRegio> PlanRegio_rel:  = const(0[PlanRegio], .);
-					attribute<Eur>       Ki_Netto:       = const(value(0, Eur), .);
+					attribute<rdc_meter> PrevPoint     : = Point;
+					attribute<rdc_meter> BronPoint     : = Point;
+					attribute<PlanRegio> PlanRegio_rel : = const(0[PlanRegio], .);
+					attribute<Eur>       Ki_Netto      : = const(value(0, Eur), .);
 					
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
 
 				unit<uint32> CumulatedArcSet := = /UserInput/HasStartingArcSet ? 'GivenStartArcSet' : 'EmptyArcSet';
 
-				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc): 
-					 = points2sequence_ps(
+				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc)
+					:= points2sequence_ps(
 						union_data(union_unit(CumulatedArcSet, CumulatedArcSet), CumulatedArcSet/PrevPoint, PlanRegio/Point[CumulatedArcSet/PlanRegio_rel]),
 						union_data(union_unit(CumulatedArcSet, CumulatedArcSet), ID(CumulatedArcSet), ID(CumulatedArcSet))
 					);
@@ -178,7 +178,7 @@ template VestaRun
 
 	unit<uint32> PlanRegio    := UserInput/PlanRegio;
 
-	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat_scenario_knmi/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
+	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
 
 	container VraagKentallen  := UserInput/VraagKentallen/BaseLine;
 	container AanbodKentallen := UserInput/AanbodKentallen/BaseLine;
@@ -223,22 +223,22 @@ template VestaRun
 	}
 	container Schuiven
 	{
-		parameter<Ratio> CurveMax: = UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Kosten/LeercurveMinMaxSchuif;
+		parameter<Ratio> CurveMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveMinMaxSchuif;
 		parameter<Ratio> CurveMin: = 1.0 - CurveMax;
 
-		parameter<Ratio> LerenAan: = UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Kosten/LeercurveGebruikSchuif;
+		parameter<Ratio> LerenAan: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveGebruikSchuif;
 		parameter<Ratio> LerenUit: = 1.0 - LerenAan;
 
-		parameter<Ratio> KostenMax: = UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Kosten/VerbeterMinMaxSchuif;
+		parameter<Ratio> KostenMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/VerbeterMinMaxSchuif;
 		parameter<Ratio> KostenMin: = 1.0 - KostenMax;
 
-		parameter<Ratio> OpbrMax: = UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Opbrengsten/MinMaxSchuif;
+		parameter<Ratio> OpbrMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/MinMaxSchuif;
 		parameter<Ratio> OpbrMin: = 1.0 - OpbrMax;
 
-		parameter<Ratio> VerketelingMax := UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Kosten/IndividueleVerwarmingSchuif;
+		parameter<Ratio> VerketelingMax := UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/IndividueleVerwarmingSchuif;
 		parameter<Ratio> VerketelingMin := 1.0 - VerketelingMax;
 
-		parameter<Ratio> HuurVerlagingBijGebiedsOptie := UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/GenericBase/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
+		parameter<Ratio> HuurVerlagingBijGebiedsOptie := UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
 	}
 	
 	container LeerCurves {
@@ -263,7 +263,7 @@ template VestaRun
 	attribute<string> BCN        (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
 	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
 		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCN+'ResterendFactors',',')+')';
-	
+
 	container VestaRunData :=
 			for_each_ne(BCN,
 				'CalculationSchemes/VestaRunDataComponent('
@@ -273,8 +273,8 @@ template VestaRun
 					+string(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
 					'Model/BronData/energie/vraag_modelobject/'+BCN+'/results,'
-					'UserInput/RuimtelijkeVraagOpties/DragerSpecifiekeOpties,'
-					'UserInput/RuimtelijkeVraagOpties/LokaleSpecifiekeOpties/'+BCN+','
+					'UserInput/RuimtelijkeVraagOpties/DragerSpecifiek,'
+					'UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/'+BCN+','
 					'float64(klimaat),'
 					'VraagKentallen/'+BCN+','
 					'StartingState/'+BCN+','

@@ -58,7 +58,7 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181"
 
 	#include <CalculationSchemes.dms>
 
-	container Exports
+	container Exports: isHidden = "True"
 	{
 		container t510_indicator_results_test
 		{
@@ -82,13 +82,13 @@ container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181"
 			unit<uint32> vbo_oppervlak_gecorrigeerd_INV := BronData/BAG/import/vbo
 			{
 				attribute<Units/m2> wonen :=
-					(BronData/BAG/import/vbo/oppervlak_filters/generiek || (Oppervlakte > 10000i && pand_bouwlagen_fictief > 10f))
+					(BronData/BAG/import/vbo/oppervlak_filters/rare_waarden  || (Oppervlakte > 10000i && pand_bouwlagen_fictief > 10f))
 						? Oppervlakte[Units/m2]
 						: (0 / 0)[Units/m2]
 				,	Descr    = "Dataset van records die afvallen door het filter, statistieken geven inzicht in de verdeling in oppervlaktes";
 
 				attribute<Units/m2> utiliteit :=
-					(BronData/BAG/import/vbo/oppervlak_filters/generiek || (Oppervlakte > 160000i && pand_bouwlagen_fictief > 45f))
+					(BronData/BAG/import/vbo/oppervlak_filters/rare_waarden  || (Oppervlakte > 160000i && pand_bouwlagen_fictief > 45f))
 						? Oppervlakte[Units/m2]
 						: (0 / 0)[Units/m2]
 				,	Descr = "Dataset van records die afvallen door het filter, statistieken geven inzicht in de verdeling in oppervlaktes";

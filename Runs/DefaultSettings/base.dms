@@ -366,14 +366,14 @@ container base: Using = "Model/Units"
 	}
 	container RuimtelijkeVraagOpties
 	{
-		container DragerSpecifiekeOpties
+		container DragerSpecifiek
 		{
 			parameter<float64> RuimteVerwarming:      [ 1.0 ];
 			parameter<float64> Koude:                 [ 1.0 ];
 			parameter<float64> WarmWater:             [ 1.0 ];
 			parameter<float64> ElektrischeApparatuur: [ 1.0 ];
 		}
-		container LokaleSpecifiekeOpties
+		container LokaalSpecifiek
 		{
 			container GenericBase
 			{
@@ -381,7 +381,7 @@ container base: Using = "Model/Units"
 				{
 					parameter<Ratio> Zon_PV:      [ 0.0 ];
 					parameter<Ratio> ZonneBoiler: [ 0.0 ];
-					
+
 					parameter<Ratio> mWKK:   [ 0.0 ]; // niet hier aanzetten als je het alleen voor woningen aan wilt, dan specifiek voor BebouwingsComponent Woning of NieuwbouwWoning instellen hieronder bij BaseLine
 					attribute<Ratio> hWP(Classifications/energielabel) := const(0.0, Classifications/energielabel); // uit in 2010
 				}
@@ -432,12 +432,12 @@ container base: Using = "Model/Units"
 				}
 			}
 
-			container BestaandeWoning:= GenericBase;
-			container BestaandeUtil  := GenericBase;
-			container BestaandeGlTb  := GenericBase;
-			container NieuwbouwWoning:= BestaandeWoning;
-			container NieuwbouwUtil  := BestaandeUtil;
-			container NieuwbouwGlTb  := BestaandeGlTb;
+			container BestaandeWoning := GenericBase;
+			container BestaandeUtil   := GenericBase;
+			container BestaandeGlTb   := GenericBase;
+			container NieuwbouwWoning := BestaandeWoning;
+			container NieuwbouwUtil   := BestaandeUtil;
+			container NieuwbouwGlTb   := BestaandeGlTb;
 		}
 	}
 	
@@ -477,14 +477,15 @@ container base: Using = "Model/Units"
 			container bte := EigenarenBase;
 			container nte := EigenarenBase;
 
-			parameter<float64> id := 0.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
-			parameter<float64> wd := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
-			parameter<float64> pt := 0.0; // primair transport
+			parameter<float64> id  := 0.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
+			parameter<float64> wd  := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
+			parameter<float64> pt  := 0.0; // primair transport
 			parameter<float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
 
 			// voor opwekkings-type specifieke investerings-subsidies
 			attribute<float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
 		}
+
 		container EEA: Descr = "Energie Exploitatie aftrek"
 		{
 			//	Exploitatiesubsidies: per geleverde GJ of per verkochte Eur.per zichtjaar in te stellen"
@@ -629,7 +630,7 @@ container base: Using = "Model/Units"
 		container Utiliteit_bestaand
 		{
 			attribute<Bouwlaag> Zon_PV_dakopp      (Classifications/UtilTypeBestaand ) := const(0.8[Bouwlaag],Classifications/UtilTypeBestaand);
-			attribute<Ratio> ZonneBoiler_Oppervlak(Classifications/UtilTypeBestaand): [
+			attribute<Ratio> ZonneBoiler_Oppervlak (Classifications/UtilTypeBestaand): [
 				0.001421186,0.001421186,0.014425039,
 				0.014093429,0.001737005,0.001421186,
 				0.012601184,0.001421186,0.001421186,

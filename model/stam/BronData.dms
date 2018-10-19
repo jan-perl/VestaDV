@@ -47,13 +47,13 @@ container BronData: Using = "Units;Geography", FreeData = "False"
 	#include <Energie.dms>
 	#include <WarmteBronnen.dms>
 
-	container Klimaat_scenario_knmi
+	container Klimaat
 	{
 		container g_plus :=
 			for_each_ndva(  Classifications/zichtjaar/name
 			, Geography/rdc_grids/m100, float32
 			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
-			);
+			), descr = "Klimaat_scenario_knmi";
 	}
 
 	container CBSWijkEnBuurt {
