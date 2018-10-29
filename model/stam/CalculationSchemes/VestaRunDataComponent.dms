@@ -75,7 +75,7 @@ template VestaRunDataComponent
 	unit<uint32>  WkoCluster := StartingState/AanbodOpties/WkoCluster;
 
 	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
-	attribute<UserInput/PlanRegio>         PlanRegio_rel     (BebouwingsObject) := ='BebouwingsObject/'+UserInput/PlanRegioNaam+'_rel';
+	attribute<SpecifiekeInstellingen/PlanRegio>         PlanRegio_rel     (BebouwingsObject) := ='BebouwingsObject/'+SpecifiekeInstellingen/PlanRegioNaam+'_rel';
 	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
 	attribute<Classifications/AanbodOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
 	attribute<Eur_yr>                      KoudeAllocatie    (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
@@ -140,8 +140,8 @@ template VestaRunDataComponent
 	
 	attribute<BebouwingsTypeDomein> BebouwingsType(BebouwingsObject) := RuimtelijkeVraagComponent/BebouwingsType;
 
-	container EIA_Opties := ='UserInput/BeleidsOpties/EIA/'+NcwRefBase + 'e';
-	container EEA_Opties := UserInput/BeleidsOpties/EEA/Kosten/Base;
+	container EIA_Opties := ='SpecifiekeInstellingen/BeleidsOpties/EIA/'+NcwRefBase + 'e';
+	container EEA_Opties := SpecifiekeInstellingen/BeleidsOpties/EEA/Kosten/Base;
 
 	container OpwekkingsOpties
 	{
@@ -486,7 +486,7 @@ template VestaRunDataComponent
 		container KanSpringen := for_each_nedv(
 			Classifications/LabelSprong/code, 
 			MakeDefined(Classifications/LabelSprong/code_xtra+' &&' , '') 
-			+'Toepasbaar/'+Classifications/LabelSprong/code+' && IsDefined(Classifications/combine/LabelChange/Label_na[value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + '+string(ID(Classifications/LabelSprong))+', Classifications/combine/LabelChange)])',
+			+'Toepasbaar/'+Classifications/LabelSprong/code+' && IsDefined(Classifications/combines/LabelChange/Label_na[value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + '+string(ID(Classifications/LabelSprong))+', Classifications/combines/LabelChange)])',
 			BebouwingsObject, bool)
 		{
 			attribute<bool> eWP (BebouwingsObject) := (OpwekkingsOpties/org_capaciteit/hWP == 0[Ratio]) && (OpwekkingsOpties/org_capaciteit/mWKK == 0[Ratio]) 
@@ -560,7 +560,7 @@ template VestaRunDataComponent
 
 		attribute<Classifications/EnergieLabel> NaarEnergieLabel (BebouwingsObject) :=
 			KanVerbeteren
-				? Classifications/combine/LabelChange/Label_na[ value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + uint32(LabelSprong), Classifications/combine/LabelChange) ] 
+				? Classifications/combines/LabelChange/Label_na[ value(uint32(EnergieLabel/LastValue)*#Classifications/LabelSprong + uint32(LabelSprong), Classifications/combines/LabelChange) ] 
 				: EnergieLabel/LastValue;
 
 		attribute<Eur_ModelUnit> kosten_min (BebouwingsObject) := 

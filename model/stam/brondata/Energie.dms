@@ -223,7 +223,7 @@ container Energie: Descr = "Blok 2", FreeData = "False"
 	// d	Onderdelen distributie warmte.
 	// e	Transport warmte (prijs per km rechte afstand; gedifferentieerd naar capaciteit; + 'omwegfactor')
 
-	container prijzen := CalculationSchemes/EnergiePrijzen/All(UserInput/prijzenBron, log(1.00)[_yr]), Descr = "zie FO $3.5";
+	container prijzen := CalculationSchemes/EnergiePrijzen/All(SpecifiekeInstellingen/prijzenBron, log(1.00)[_yr]), Descr = "zie FO $3.5";
 
 	container label
 	{

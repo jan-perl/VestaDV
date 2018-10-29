@@ -444,7 +444,7 @@ container Classifications: Using = "Units", KeepData = "True"
 		attribute<m3_yr>  gas_break_m3   : [-1e+10, 0,  5000, 170000,  1000000 ];
 		attribute<kwh_yr> elek_break_kwh : [-1e+10, 0, 10000,  50000, 10000000 ];
 
-		attribute<GJ_yr>  gas_break      := gas_break_m3  * UserInput/FysiekeConstanten/GasEnergie;
+		attribute<GJ_yr>  gas_break      := gas_break_m3  * SpecifiekeInstellingen/FysiekeConstanten/GasEnergie;
 		attribute<GJ_yr>  elek_break     := elek_break_kwh [GJ_yr];
 	}
 
@@ -560,7 +560,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 
 // =========  Classificaties overig
-	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in UserInput/Voorkeuren/BaseLine/WarmteOpties
+	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -701,7 +701,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 
 // =========  Classificaties van combinaties (carthesianse producten) van class domains
-	container combine
+	container combines
 	{
 		unit<uint8> WoningtypeBouwjaarBestaand := combine_uint8(WoningtypeBestaand, BouwjaarWoningBestaand)
 		{

@@ -74,8 +74,8 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 	parameter<Eur_yr_Aansl> Jaarlijks_w_g := Vastrecht_g + PA_g + meterhuur_g + capaciteitstarief_g + administatiekosten_g;
 	parameter<Eur_yr_Aansl> Jaarlijks_w_e := Vastrecht_e + PA_e + meterhuur_e + capaciteitstarief_e + administatiekosten_e;
 
-//	parameter<m2>        total_woning_area  := sum(Output/J2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[Output/J2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
-//	parameter<nrAansl>   total_woning_Aansl := sum(Output/J2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
+//	parameter<m2>        total_woning_area  := sum(Resultaten/J2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[Resultaten/J2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
+//	parameter<nrAansl>   total_woning_Aansl := sum(Resultaten/J2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
 	parameter<m2_Aansl> gem_Aansl_area   := 100[m2_Aansl];
 
 	// sectie Utiliteit
@@ -104,11 +104,11 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 	parameter<MEur_yr> K_g     := Kj_g + Ko_g      , Descr = "jaarlijkse kosten gas";          // K_g_m
 	parameter<MEur_yr> K_e     := Kj_e + Ko_e      , Descr = "jaarlijkse kosten electiciteit"; // K_e_m
 
-	parameter<m> L_g := sum(Output/J2010/Endstate/KostenBaten/KostenD/L_infra_g), Descr = "lengte gasnetwerk";
-	parameter<m> L_e := sum(Output/J2010/Endstate/KostenBaten/KostenD/L_infra_e), Descr = "lengte electiciteitnetwerk";
+	parameter<m> L_g := sum(Resultaten/J2010/Endstate/KostenBaten/KostenD/L_infra_g), Descr = "lengte gasnetwerk";
+	parameter<m> L_e := sum(Resultaten/J2010/Endstate/KostenBaten/KostenD/L_infra_e), Descr = "lengte electiciteitnetwerk";
 
-	parameter<Eur_yr> O_net_g := sum(Output/J2010/indicatoren/netwerk/AardGas/Oj_totaal)      , Descr = "netto opbrengst gas";
-	parameter<Eur_yr> O_net_e := sum(Output/J2010/indicatoren/netwerk/Elektriciteit/Oj_totaal), Descr = "netto opbrengst electiciteit";
+	parameter<Eur_yr> O_net_g := sum(Resultaten/J2010/indicatoren/netwerk/AardGas/Oj_totaal)      , Descr = "netto opbrengst gas";
+	parameter<Eur_yr> O_net_e := sum(Resultaten/J2010/indicatoren/netwerk/Elektriciteit/Oj_totaal), Descr = "netto opbrengst electiciteit";
 
 	// schalingsfactoren
 	parameter<float64> SF_g    := (1.0 - Winstmarge_g) * O_net_g / K_g[Eur_yr], Descr = "schalingsfactor gas";

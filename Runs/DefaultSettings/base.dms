@@ -48,7 +48,7 @@ container base: Using = "Model/Units"
 //			'blok500m';
 //			'blok1km';
 //			'blok2km';
-	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ UserInput/PlanRegioNaam;
+	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ SpecifiekeInstellingen/PlanRegioNaam;
 
 	parameter<bool> HasStartingArcSet:= True;
 
@@ -118,7 +118,7 @@ container base: Using = "Model/Units"
 
 				container ZonneBoiler := ComponentBase/ZonneBoiler
 				{
-					attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := UserInput/LokaleOpwekking/Woning_bestaand/ZonneBoiler_Oppervlak;
+					attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := SpecifiekeInstellingen/LokaleOpwekking/Woning_bestaand/ZonneBoiler_Oppervlak;
 				}
 
 				container eWP

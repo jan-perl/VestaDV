@@ -39,9 +39,9 @@ container meta
 	}
 
 	container vbo_woonfunctie:= ItemLijstT('/Model/BronData/BAG/vbo_woonfunctie');
-	container Run2010:= ItemLijstT('/Output/J2010');
-	container Run2020:= ItemLijstT('/Output/J2020');
-	container Run    := ItemLijstT('/Output');
+	container Run2010:= ItemLijstT('/Resultaten/J2010');
+	container Run2020:= ItemLijstT('/Resultaten/J2020');
+	container Run    := ItemLijstT('/Resultaten');
 	container Vesta  := ItemLijstT('/Model');
 	container VestaBrondata  := ItemLijstT('/Model/BronData');
 	

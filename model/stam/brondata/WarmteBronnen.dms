@@ -446,7 +446,7 @@ container WarmteBronnen
 					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
 					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], MetaData/TypeInfoList/V/Onbekend)'
 				') / 1000000[Units/GJ / Units/PJ]'
-			,	'@RW@', 'Output/@YR@/GebiedsAllocatie/RestWarmte'
+			,	'@RW@', 'Resultaten/@YR@/GebiedsAllocatie/RestWarmte'
 			,	'@YR@', Classifications/ZichtJaar/Name
 			)
 		,	MetaData/TypeInfoList, Units/PJ_yr

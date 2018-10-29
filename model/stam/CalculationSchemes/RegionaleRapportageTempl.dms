@@ -57,8 +57,8 @@ template RegionaleRapportageTempl
 	unit<uint32>               BebouwingsObject         := BebouwingscomponentGebiedsData/BebouwingsObject;
 	// end of ex-case param
 	
-	attribute<RapportageRegio>     PlanRegioRapportageRegio_rel           (UserInput/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
-	attribute<UserInput/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)    := VestaRunDataComponent/PlanRegio_rel;
+	attribute<RapportageRegio>     PlanRegioRapportageRegio_rel           (SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
+	attribute<SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)    := VestaRunDataComponent/PlanRegio_rel;
 	attribute<RapportageRegio>     BebouwingscomponentRapportageRegio_rel (BebouwingsObject)    := PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
 	attribute<RapGroep>            BebouwingscomponentRapGroep_rel        (BebouwingsObject)    := =RapGroepNaam ;
 

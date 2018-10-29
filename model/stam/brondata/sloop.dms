@@ -43,7 +43,7 @@ container Sloop
 	container WoningResterend :=
 		for_each_ndva(Nieuwbouw/SZW/HasMutations ? Nieuwbouw/SZW/Name : ''
 			, Geography/rdc_grids/m100, float32
-			, UserInput/WloScenarioFolder+'/'+Nieuwbouw/SZW/period_name+'/Wonen/Resterend/'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/SZW/period_name+'/Wonen/Resterend/'
 			+ Nieuwbouw/SZW/wonen_wlo_filename+ '.tif'
 		);
 
@@ -57,7 +57,7 @@ container Sloop
 	container UtilDeltaFactor :=
 		for_each_ndva(  Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0  ? Nieuwbouw/SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, UserInput/WloScenarioFolder+'/'+Nieuwbouw/SZU/period_name+'/Util/Resterend/'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/SZU/period_name+'/Util/Resterend/'
 			+ Nieuwbouw/SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 

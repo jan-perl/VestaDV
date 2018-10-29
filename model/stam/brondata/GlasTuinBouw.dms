@@ -56,13 +56,13 @@ container GlasTuinBouw
 	container Af :=
 		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
 			Geography/rdc_grids/m100, bool,
-			UserInput/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Af.tif'
+			SpecifiekeInstellingen/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Af.tif'
 		);
 
 	container Bij :=
 		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
 			Geography/rdc_grids/m100, bool,
-			UserInput/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
+			SpecifiekeInstellingen/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
 		);
 
 	container verdeling

@@ -41,29 +41,29 @@
 container Nieuwbouw
 {
 	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
-	unit<uInt32> SZW := Classifications/combine/ZichtjaarWonen;
-	unit<uInt32> SZU := Classifications/combine/ZichtjaarUtiliteit;
+	unit<uInt32> SZW := Classifications/combines/ZichtjaarWonen;
+	unit<uInt32> SZU := Classifications/combines/ZichtjaarUtiliteit;
 
 	unit<float32> nrWoningen_32 := float32(Units/nrWoningen), isHidden = "True";
 
 	container woning :=
 		for_each_ndva(SZW/HasMutations ? SZW/Name : ''
 			, Geography/rdc_grids/m100, nrWoningen_32
-			, UserInput/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+SZW/period_name+'/Wonen/Nieuwbouw/'
 			+ SZW/wonen_wlo_filename+ '.tif'
 		);
 
 	container UtilOppervlak :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_Nieuwbouw) > 0  ? SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, UserInput/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_Uitleg/'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_Uitleg/'
 			+ SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
 	container InbreidingUtilFactor :=
 		for_each_ndva(  SZU/HasMutations && strlen(SZU/wlo_filename_Nieuwbouw) > 0  ? SZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, UserInput/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+SZU/period_name+'/Util/Nieuwbouw_inbreiding/'
 			+ SZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 

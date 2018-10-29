@@ -40,7 +40,7 @@ template GeoThermie
 	
 	// end of case param
 
-	unit<uint32> PlanRegio := UserInput/PlanRegio;
+	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
 	container TypeInfo     := BronData/WarmteBronnen/GeoThermie/TypeInfo;
 	
 	container KostenBaten := BeginStatus/KostenBaten;
@@ -94,7 +94,7 @@ template GeoThermie
 				
 		attribute<Eur_yr> Kj_Totaal(PlanRegio) := Kj_pt_Base + Kj_ow_Base + Kj_WarmteWaarde + Kj_pt_Precario;
 		attribute<Eur_yr> Km_Totaal(PlanRegio) := Kj_pt_Base + Kj_ow_Base + Km_WarmteWaarde;
-		attribute<Eur_yr> Oj_SDE   (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
+		attribute<Eur_yr> Oj_SDE   (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	}
 
 	attribute<Eur   > Oi_Totaal  (PlanRegio):= KostenBaten/Oi_Aansluitbijdrage;
@@ -114,8 +114,8 @@ template GeoThermie
 	attribute<KG_yr>  CO2_e      (PlanRegio):= const(0[KG_yr], PlanRegio);
 	attribute<Eur_yr> Oj_Afweging(PlanRegio) := 
 		Oj_Netto + kosten/Oj_SDE
-		- Kosten/Installatie * NCW/ow28/AnnualisationFactor * ((1.0 - UserInput/BeleidsOpties/EIA/ow)*(1.0 - UserInput/BeleidsOpties/EEA/ow))[TypeInfo/TypeInfoList_rel]
-		- Kosten/PijpKosten  * NCW/pt28/AnnualisationFactor * ((1.0 - UserInput/BeleidsOpties/EIA/pt)*(1.0 - UserInput/BeleidsOpties/EEA/pt));
+		- Kosten/Installatie * NCW/ow28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/ow)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/ow))[TypeInfo/TypeInfoList_rel]
+		- Kosten/PijpKosten  * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/pt)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/pt));
 	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := Oj_Afweging > 0[Eur_yr];
 	attribute<Bool> Afweging2    (PlanRegio) := bron/IsInContour;
 	
@@ -148,12 +148,12 @@ template GeoThermie
 		{
 			attribute<Eur> Ki_ow(PlanRegio) := BeginStatus/Stock/Ki_ow + iif(NewGebruik, Kosten/Installatie, 0[Eur]);
 			attribute<Eur> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, 
-				Kosten/Installatie * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
+				Kosten/Installatie * SpecifiekeInstellingen/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
 				
-			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik,(Ki_ow - Oi_ow_subsidie) * UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
+			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik,(Ki_ow - Oi_ow_subsidie) * SpecifiekeInstellingen/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
 				
 			attribute<Eur> Ki_pt(PlanRegio) := BeginStatus/Stock/Ki_pt + iif(NewGebruik, Kosten/PijpKosten, 0[Eur]);
-			attribute<Eur> Oi_pt_subsidie(PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, Kosten/Installatie * UserInput/BeleidsOpties/EIA/pt, 0[Eur]);
+			attribute<Eur> Oi_pt_subsidie(PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, Kosten/Installatie * SpecifiekeInstellingen/BeleidsOpties/EIA/pt, 0[Eur]);
 		}
 		container Flow := BeginStatus/Flow
 		{

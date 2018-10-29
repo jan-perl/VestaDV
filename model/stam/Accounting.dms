@@ -93,8 +93,8 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
 			parameter<string> AFAB_GE := 'VestaRunData/@BC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@BC@/NcwRefs/_28/AnnualisationFactor';
 			parameter<string> ROSEL   := 'float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
-			parameter<string> VAT_F   := '(UserInput/VAT / 100[Percent])';
-			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT / 100[Percent], 0.0))';
+			parameter<string> VAT_F   := '(SpecifiekeInstellingen/VAT / 100[Percent])';
+			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))';
 			attribute<string> Text := union_data(.,
 				// name //leverancier //afnemer  
 					// item 
@@ -282,7 +282,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== Gebouwverbeteringen
 			,	'Gebouwverbetering', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], UserInput/VAT_gv / 100[Percent], 0.0))',
+					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT_gv / 100[Percent], 0.0))',
 					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
@@ -292,7 +292,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					PRR
 
 			,	'Gebouwverbetering@BTW@', 'BTW', 'KL_e', 
-					'VestaRunData/@BTW@/kosten/Ki_GebouwVerbetering * (UserInput/VAT_gv / 100[Percent])',
+					'VestaRunData/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])',
 					'NCW/mr30/AnnualisationFactor',
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
@@ -625,7 +625,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		// ===== WKO
 		// ===== WKO vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
 			,	'Aansluitbijdrage_@CO@', 'KL_e', '@WKOC@/Eigenaar',
-					'EndState/@CO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], UserInput/VAT / 100[Percent], 0.0))', 
+					'EndState/@CO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))', 
 					'VestaRunData/@WKOC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
 					''
 

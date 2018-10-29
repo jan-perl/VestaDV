@@ -230,7 +230,7 @@ container BAG
 		attribute<uint8>                                  nr_verdiepingen             := rjoin(pand_id, import/pand/identificatie, import/pand/nr_verdiepingen);
 	}
 
-	parameter<string> vbo_utiliteit_industrie_sub_expr := UserInput/BAG/IndustrieDoetMee == 0b ? '!import/vbo/gebruiksdoelen/Industrie' : UserInput/BAG/IndustrieDoetMee == 1b ? 'import/vbo/gebruiksdoelcombinatie <> 8w' : ''
+	parameter<string> vbo_utiliteit_industrie_sub_expr := SpecifiekeInstellingen/BAG/IndustrieDoetMee == 0b ? '!import/vbo/gebruiksdoelen/Industrie' : SpecifiekeInstellingen/BAG/IndustrieDoetMee == 1b ? 'import/vbo/gebruiksdoelcombinatie <> 8w' : ''
 	,	isHidden = "True";
 
 	unit<uint32> vbo_utiliteit:= ='Subset (

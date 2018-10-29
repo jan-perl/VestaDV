@@ -73,7 +73,7 @@ container Geography: Using = "Units"
 			attribute<RegioIndelingen/blok2km>  blok2km_rel  := RegioIndelingen/blok2km/BaseGrid[ ID(.)[km2 ] ];
 
 			attribute<RegioIndelingen/Buurt> Buurt_rel       := MakeDefined(buurt_rel_org, Connect/ArcID[invert(NearBuurt/nr_OrgEntity)]), FreeData = "False";
-			attribute<UserInput/PlanRegio>   PlanRegio_rel   := Buurt_rel;
+			attribute<SpecifiekeInstellingen/PlanRegio>   PlanRegio_rel   := Buurt_rel;
 		}
 
 		unit<wpoint> m500 := gridset(rdc_grids/m100, point( 5w, 5w, m100), point(0w,0w, m100), wpoint)

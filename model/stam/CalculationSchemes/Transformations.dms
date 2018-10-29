@@ -84,7 +84,7 @@ container Transformations: FreeData = "False"
 		}
 		unit<float64> MQuantity  := 1000000 * Quantity;
 		// '#unique(mut/full_name_ORG) == #mut'
-		unit<uint32> ActorEntity := UserInput/PlanRegio;
+		unit<uint32> ActorEntity := SpecifiekeInstellingen/PlanRegio;
 //		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(uint32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
 		container aggr_muts := for_each_nedv(location_rels/name, 'add('+AsItemList(mut/Expr, mut/location_rels_rel)+')', ActorEntity, Quantity);
 		attribute<Quantity> Saldo (ActorEntity) := =#location_rels>0 ? 'add('+AsItemList('aggr_muts/'+location/values[location_rels/values])+')' : 'const(0[Quantity], ActorEntity)';
@@ -114,7 +114,7 @@ container Transformations: FreeData = "False"
 		// end parameters
 
 		unit<float64> MQuantity := 1000000 * Quantity;
-		unit<uint32>  PR := UserInput/PlanRegio;
+		unit<uint32>  PR := SpecifiekeInstellingen/PlanRegio;
 		unit<uint8>   BC := Transformation/BC;
 
 		container impl {

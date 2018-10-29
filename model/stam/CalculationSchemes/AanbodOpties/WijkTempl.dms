@@ -45,7 +45,7 @@ template WijkTempl
 	
 	// end of case param
 
-	unit<uint32> PlanRegio := UserInput/PlanRegio
+	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio
 	{
 		attribute<units/yr_uint16> StartJaar := =StartJaarAttr != '' ? StartJaarAttr : 'const(2000[units/yr_uint16], .)';
 	}
@@ -62,7 +62,7 @@ template WijkTempl
 		;
 		
 		attribute<Eur> Ki_Totaal(PlanRegio) := Ki_Totaal_nu * LeerCurves/Curve2;
-		attribute<Eur> Oi_EIA   (PlanRegio) := Ki_Totaal * UserInput/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel];
+		attribute<Eur> Oi_EIA   (PlanRegio) := Ki_Totaal * SpecifiekeInstellingen/BeleidsOpties/EIA/ow[TypeInfo/TypeInfoList_rel];
 		attribute<Eur> Ki_Netto (PlanRegio) := Ki_Totaal - Oi_EIA;
 		
 		parameter<Eur_GJ> K_GJ := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
@@ -96,11 +96,11 @@ template WijkTempl
 	attribute<kg_yr>  CO2_e      (PlanRegio):= KostenBaten/Vj_WarmtePrimairD * Kosten/CO2e_GJ;
 	attribute<kg_yr>  CO2        (PlanRegio):= KostenBaten/CO2_BijstookD + CO2_Primair;
 	
-	attribute<Eur_yr> Oj_Yield   (PlanRegio) :=  Oj_Netto - Kosten/Ki_Netto * NCW/ow28/AnnualisationFactor * (1.0 - UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel]);
+	attribute<Eur_yr> Oj_Yield   (PlanRegio) :=  Oj_Netto - Kosten/Ki_Netto * NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel]);
 	
 	
 	attribute<GJ_yr>  Vj_Warmte  (PlanRegio) := max_elem(KostenBaten/Vj_WarmtePrimairD, 0.001[GJ_yr]);
-	attribute<Eur_GJ> YieldPerGJ (PlanRegio) := Oj_Yield / Vj_Warmte + UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
+	attribute<Eur_GJ> YieldPerGJ (PlanRegio) := Oj_Yield / Vj_Warmte + SpecifiekeInstellingen/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	parameter<Eur_GJ> Threshold := -nth_element_weighted( -YieldPerGJ  * Float64(not(OldGebruik)), MaxTotalDemand * 1000000[GJ / PJ], Vj_Warmte);
 	
 	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := YieldPerGJ > max_elem(Threshold, 0[Eur_GJ]);
@@ -126,7 +126,7 @@ template WijkTempl
 		{
 			attribute<Eur> Ki_ow         (PlanRegio) := BeginStatus/Stock/Ki_ow          + iif(NewGebruik, Kosten/Ki_Totaal, 0[Eur]);
 			attribute<Eur> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, Kosten/Oi_EIA   , 0[Eur]);
-			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik, Kosten/Ki_Netto * UserInput/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
+			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik, Kosten/Ki_Netto * SpecifiekeInstellingen/BeleidsOpties/EEA/ow[TypeInfo/TypeInfoList_rel], 0[Eur]);
 		}
 		container Flow := BeginStatus/Flow
 		{
@@ -134,7 +134,7 @@ template WijkTempl
 			attribute<Eur_yr> Kj_ow_admin    (PlanRegio) := BeginStatus/Flow/Kj_ow_Admin     + iif(GebruikOptie, Kosten/Kj_admin, 0[Eur_yr]);
 			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, Kosten/Kj_WarmteWaarde, 0[Eur_yr]);
 			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, Kosten/Km_WarmteWaarde, 0[Eur_yr]);
-			attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, Vj_Warmte * UserInput/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel], 0[Eur_yr]);
+			attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, Vj_Warmte * SpecifiekeInstellingen/BeleidsOpties/EEA/SDE[TypeInfo/TypeInfoList_rel], 0[Eur_yr]);
 		}
 	}
 }

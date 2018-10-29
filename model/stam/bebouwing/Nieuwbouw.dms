@@ -47,10 +47,10 @@ Container Nieuwbouw
 			:  'CalculationSchemes/LegeBebouwingsComponent(Units/NrWoningen, Classifications/WoningtypeNieuwbouw)'
 			)
 	{
-		container PerGrid := for_each_ne(Classifications/combine/ZichtjaarWonen/HasMutations ? Classifications/combine/ZichtjaarWonen/Name : ''
-				,  'CalculationSchemes/WoningComponentOperaties/Select(Model/BronData/Nieuwbouw/Woning/' + Classifications/combine/ZichtjaarWonen/Name + 
-				   '[nrWoningen], value(' + String(Classifications/combine/ZichtjaarWonen/WoningtypeNieuwbouw_rel) + ', Classifications/WoningtypeNieuwbouw) '+
-				   ', value(' + String(Classifications/combine/ZichtjaarWonen/zichtjaar_jaar )+ ',units/yr_uint16)'+
+		container PerGrid := for_each_ne(Classifications/combines/ZichtjaarWonen/HasMutations ? Classifications/combines/ZichtjaarWonen/Name : ''
+				,  'CalculationSchemes/WoningComponentOperaties/Select(Model/BronData/Nieuwbouw/Woning/' + Classifications/combines/ZichtjaarWonen/Name + 
+				   '[nrWoningen], value(' + String(Classifications/combines/ZichtjaarWonen/WoningtypeNieuwbouw_rel) + ', Classifications/WoningtypeNieuwbouw) '+
+				   ', value(' + String(Classifications/combines/ZichtjaarWonen/zichtjaar_jaar )+ ',units/yr_uint16)'+
 				   ')'
 				);
 	}
@@ -60,10 +60,10 @@ Container Nieuwbouw
 			:  'CalculationSchemes/LegeBebouwingsComponent(Units/m2, Classifications/UtilTypeNieuwbouw)'
 			)
 	{
-		container PerGrid := for_each_ne(Classifications/combine/ZichtjaarUtiliteit/HasMutations ?  Classifications/combine/ZichtjaarUtiliteit/Name : ''
-				,  'CalculationSchemes/UtilComponentOperaties/Select(Model/Bebouwing/impl/NieuwbouwUtil/' + Classifications/combine/ZichtjaarUtiliteit/Name + 
-				   ', ' + quote(Classifications/combine/ZichtjaarUtiliteit/utiliteit_Name) + 
-				   ', value(' + String(Classifications/combine/ZichtjaarUtiliteit/zichtjaar_jaar)+ ',units/yr_uint16)'+
+		container PerGrid := for_each_ne(Classifications/combines/ZichtjaarUtiliteit/HasMutations ?  Classifications/combines/ZichtjaarUtiliteit/Name : ''
+				,  'CalculationSchemes/UtilComponentOperaties/Select(Model/Bebouwing/impl/NieuwbouwUtil/' + Classifications/combines/ZichtjaarUtiliteit/Name + 
+				   ', ' + quote(Classifications/combines/ZichtjaarUtiliteit/utiliteit_Name) + 
+				   ', value(' + String(Classifications/combines/ZichtjaarUtiliteit/zichtjaar_jaar)+ ',units/yr_uint16)'+
 				   ')'
 				);
 	}

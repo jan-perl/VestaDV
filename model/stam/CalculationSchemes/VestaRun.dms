@@ -55,7 +55,7 @@ template VestaRun
 	{
 		container AanbodOpties
 		{
-			unit<uint32> PlanRegio := UserInput/PlanRegio;
+			unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
 
 			container RestWarmte {
@@ -122,7 +122,7 @@ template VestaRun
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
 
-				unit<uint32> CumulatedArcSet := = /UserInput/HasStartingArcSet ? 'GivenStartArcSet' : 'EmptyArcSet';
+				unit<uint32> CumulatedArcSet := = /SpecifiekeInstellingen/HasStartingArcSet ? 'GivenStartArcSet' : 'EmptyArcSet';
 
 				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc)
 					:= points2sequence_ps(
@@ -173,19 +173,19 @@ template VestaRun
 	}
 	// end case parameters
 
-	container UserInput       := ='/UserInput/yr'+string(RunJaar);
-	container Bebouwing       := ='UserInput/BebouwingsScenario/J'+string(RunJaar);
+	container SpecifiekeInstellingen       := ='/SpecifiekeInstellingen/yr'+string(RunJaar);
+	container Bebouwing       := ='SpecifiekeInstellingen/BebouwingsScenario/J'+string(RunJaar);
 
-	unit<uint32> PlanRegio    := UserInput/PlanRegio;
+	unit<uint32> PlanRegio    := SpecifiekeInstellingen/PlanRegio;
 
-	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat/' + UserInput/KlimaatScenario + '/J'+string(RunJaar);
+	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/Brondata/klimaat/' + SpecifiekeInstellingen/KlimaatScenario + '/J'+string(RunJaar);
 
-	container VraagKentallen  := UserInput/VraagKentallen/BaseLine;
-	container AanbodKentallen := UserInput/AanbodKentallen/BaseLine;
+	container VraagKentallen  := SpecifiekeInstellingen/VraagKentallen/BaseLine;
+	container AanbodKentallen := SpecifiekeInstellingen/AanbodKentallen/BaseLine;
 
-	unit<uint32> WarmteBronnen := UserInput/WarmteBronnen/alleBRonnen;
+	unit<uint32> WarmteBronnen := SpecifiekeInstellingen/WarmteBronnen/alleBRonnen;
 
-	container Voorkeuren := UserInput/Voorkeuren
+	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{
 		unit<uint8> WarmteOpties_Org := Range(uint8, 0b, uint8(AanbodOpties/Aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
 		{
@@ -223,22 +223,22 @@ template VestaRun
 	}
 	container Schuiven
 	{
-		parameter<Ratio> CurveMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveMinMaxSchuif;
+		parameter<Ratio> CurveMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveMinMaxSchuif;
 		parameter<Ratio> CurveMin: = 1.0 - CurveMax;
 
-		parameter<Ratio> LerenAan: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveGebruikSchuif;
+		parameter<Ratio> LerenAan: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveGebruikSchuif;
 		parameter<Ratio> LerenUit: = 1.0 - LerenAan;
 
-		parameter<Ratio> KostenMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/VerbeterMinMaxSchuif;
+		parameter<Ratio> KostenMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/VerbeterMinMaxSchuif;
 		parameter<Ratio> KostenMin: = 1.0 - KostenMax;
 
-		parameter<Ratio> OpbrMax: = UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/MinMaxSchuif;
+		parameter<Ratio> OpbrMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/MinMaxSchuif;
 		parameter<Ratio> OpbrMin: = 1.0 - OpbrMax;
 
-		parameter<Ratio> VerketelingMax := UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/IndividueleVerwarmingSchuif;
+		parameter<Ratio> VerketelingMax := SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/IndividueleVerwarmingSchuif;
 		parameter<Ratio> VerketelingMin := 1.0 - VerketelingMax;
 
-		parameter<Ratio> HuurVerlagingBijGebiedsOptie := UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
+		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
 	}
 	
 	container LeerCurves {
@@ -273,16 +273,16 @@ template VestaRun
 					+string(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
 					'Model/BronData/energie/vraag_modelobject/'+BCN+'/results,'
-					'UserInput/RuimtelijkeVraagOpties/DragerSpecifiek,'
-					'UserInput/RuimtelijkeVraagOpties/LokaalSpecifiek/'+BCN+','
+					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/DragerSpecifiek,'
+					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/'+BCN+','
 					'float64(klimaat),'
 					'VraagKentallen/'+BCN+','
 					'StartingState/'+BCN+','
 					'Prijzen/AardGas/'+(Classifications/BebouwingsComponent/IsGlastuinbouw ? 'Glastuinbouw' : 'Staffel')+','
 					'Prijzen/Elektriciteit/Staffel,'
 					+Quote(Classifications/BebouwingsComponent/NcwRefBase)+','
-					+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ UserInput/VAT    / 100[Percent]' : '')+','
-					+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ UserInput/VAT_gv / 100[Percent]' : '')
+					+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ SpecifiekeInstellingen/VAT    / 100[Percent]' : '')+','
+					+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ SpecifiekeInstellingen/VAT_gv / 100[Percent]' : '')
 				+')'
 			)
 	{
@@ -390,7 +390,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 
 				attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -418,7 +418,7 @@ template VestaRun
 					
 				attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 	
 				attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -452,7 +452,7 @@ template VestaRun
 				attribute<Eur_yr>  VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Technology/Infra/Jaarlijks_u_g;
 				attribute<Eur_yr>  VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Technology/Infra/Jaarlijks_u_e;
 
-				attribute<Eur_yr>  HeffingskortingE   (BebouwingsObject) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr>  HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 		container NieuwbouwUtil
@@ -481,7 +481,7 @@ template VestaRun
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Technology/Infra/Jaarlijks_u_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Technology/Infra/Jaarlijks_u_e;
 
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject)   := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject)   := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 
@@ -505,7 +505,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -532,7 +532,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Technology/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := UserInput/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -681,7 +681,7 @@ template VestaRun
 
 			attribute<Eur_yr> Kj_pt_Total    (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * float64(GebiedsOptie);
 			attribute<Eur_yr> Km_pt_Total    (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * float64(GebiedsOptie);
-			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * UserInput/BeleidsOpties/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
+			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/BeleidsOpties/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
 			attribute<Eur_yr> Oj_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
 			attribute<Eur_yr> Om_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
 			attribute<Eur_yr> Kj_pt_Netto    (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;
