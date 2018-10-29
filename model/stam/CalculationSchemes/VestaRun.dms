@@ -185,7 +185,7 @@ template VestaRun
 
 	unit<uint32> WarmteBronnen := UserInput/WarmteBronnen/alleBRonnen;
 
-	container VoorkEuren := UserInput/VoorkEuren
+	container Voorkeuren := UserInput/Voorkeuren
 	{
 		unit<uint8> WarmteOpties_Org := Range(uint8, 0b, uint8(AanbodOpties/Aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
 		{
@@ -294,7 +294,7 @@ template VestaRun
 				container prijzenbron  := Model/BronData/energie/prijzen/AardGas/results;
 				parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
 
-				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - VoorkEuren/GroenGasFactor);
+				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
 
 				unit<uint8> Staffel := classifications/gebruiksgrootteklasse 
 				{
@@ -603,15 +603,15 @@ template VestaRun
 
 	container GebiedsAllocatie :=
 			for_each_ne(
-				VoorkEuren/WarmteOpties/Name, 
-				'CalculationSchemes/AanbodOptieTemplates/'+VoorkEuren/WarmteOpties/SchemaName+'(
-					'+MakeDefined(VoorkEuren/WarmteOpties/Name[ID(VoorkEuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
-					AanbodKentallen/'+VoorkEuren/WarmteOpties/SchemaName+', 
+				Voorkeuren/WarmteOpties/Name, 
+				'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
+					'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
+					AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
 					EnergiePrijzen, RunJaar
 				)'
 			);
 
-	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(VoorkEuren/WarmteOpties/Name)+'/Results', 'Initieel');
+	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	container EndState   := FinalState
 	{
 		attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
@@ -721,7 +721,7 @@ template VestaRun
 			for_each_ne(Classifications/BebouwingsComponent/name, 
 				'CalculationSchemes/GridAggrComponent(
 					AllocatieResultaat/'+Classifications/BebouwingsComponent/name+
-					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, VoorkEuren/WarmteOpties/AanbodOptie))
+					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie))
 						? Quote('GebiedsAllocatie/WKO/ObjectResults/'+Classifications/BebouwingsComponent/name) 
 						: Quote(''))+
 				')'

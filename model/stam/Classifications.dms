@@ -560,7 +560,7 @@ container Classifications: Using = "Units", KeepData = "True"
 	}
 
 // =========  Classificaties overig
-	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in UserInput/VoorkEuren/BaseLine/WarmteOpties
+	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in UserInput/Voorkeuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[

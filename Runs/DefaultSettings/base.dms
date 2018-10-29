@@ -441,7 +441,7 @@ container base: Using = "Model/Units"
 		}
 	}
 	
-	container VoorkEuren: Descr = "Blok 4"
+	container Voorkeuren: Descr = "Blok 4"
 	{
 		container AanbodOpties
 		{

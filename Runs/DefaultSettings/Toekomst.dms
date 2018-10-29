@@ -38,7 +38,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container FutureYears := base, using = "Model/Units"
+container Toekomst := base, using = "Model/Units"
 {
 	container RuimtelijkeVraagOpties := base/RuimtelijkeVraagOpties
 	{

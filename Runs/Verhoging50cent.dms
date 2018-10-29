@@ -48,7 +48,7 @@ container Verhoging50cent
 	container UserInputDefaults
 	{
 		#include <%projDir%/Runs/DefaultSettings/base.dms>
-		#include <%projDir%/Runs/DefaultSettings/FutureYears.dms>
+		#include <%projDir%/Runs/DefaultSettings/Toekomst.dms>
 	}
 //	End
 
@@ -61,7 +61,7 @@ container Verhoging50cent
 			parameter<Model/Units/Percent> VAT := 19[Model/Units/Percent]; 
 		} // tot 2010 geldt nog het lagere BTW-percentage
 
-		container yr2020 := UserInputDefaults/FutureYears;
+		container yr2020 := UserInputDefaults/Toekomst;
 		container yr2030 := yr2020;
 		container yr2040 := yr2030;
 		container yr2050 := yr2040;

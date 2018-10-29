@@ -907,13 +907,13 @@ template VestaRunDataComponent
 		attribute<GJ_yr>     Verbruik           (BebouwingsObject) := (1.0 - AandeelElectric) * DragerOpties/Warmte/Warmte;
 	}
 	container Warmtewet {
-		parameter<float64> PrijsFactor_impl :=  sum( AandeelGas * DragerOpties/Warmte/Aardgas) / sum( AandeelGas * DragerOpties/Warmte/Warmte ) * VoorkEuren/MinderDanAndersFactor;
+		parameter<float64> PrijsFactor_impl :=  sum( AandeelGas * DragerOpties/Warmte/Aardgas) / sum( AandeelGas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
 		parameter<float64> PrijsFactor_corr :=  MakeDefined(PrijsFactor_impl, 1.25);
 		parameter<float64> PrijsFactor      :=  = 'VestaRunData/'+rjoin(TAG, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
 
 		parameter<Eur_GJ> WarmtePrijs := 
-			=VoorkEuren/IsVasteWarmtePrijs 
-			? 'VoorkEuren/VasteWarmtePrijs'
+			=Voorkeuren/IsVasteWarmtePrijs 
+			? 'Voorkeuren/VasteWarmtePrijs'
 			: 'PrijsFactor * PrijzenAardgas/KGJ_eindgebruik_ex[classify(0[GJ_yr], PrijzenAardgas/ClassBreak)]';
 	}
 }

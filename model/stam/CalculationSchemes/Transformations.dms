@@ -130,8 +130,8 @@ container Transformations: FreeData = "False"
 			}
 			container applyBC  := subst(Transformation_mutatie,'@BC@', '@BN@'  ,  BC); 
 			container applyWKO := subst(applyBC/result        , '@WKOC@', '@WKON@',WKOC); 
-			container applyRO  := subst(applyWKO/result       , '@ROC@' , '@RON@' , VoorkEuren/PlanRegioOptie);
-			container applyCO  := subst(applyRO/result        ,  '@COC@' , '@CON@' , VoorkEuren/ClusterOptie);
+			container applyRO  := subst(applyWKO/result       , '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
+			container applyCO  := subst(applyRO/result        ,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
 
 			unit<uint32> mutatie := applyCO/result
 			{

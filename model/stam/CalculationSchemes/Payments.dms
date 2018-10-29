@@ -113,7 +113,7 @@ container Payments: FreeData = "False" // DEBUG
 		unit<uint32>  Kostensoort := Accounting/KostenSoort;
 		unit<uint8>   BC          := Accounting/BC;
 
-		unit<uint32>  Actor := union_unit(Accounting/Kostensoort, BC, BC, Classifications/AanbodOptie) //VoorkEuren/WarmteOpties)
+		unit<uint32>  Actor := union_unit(Accounting/Kostensoort, BC, BC, Classifications/AanbodOptie) //Voorkeuren/WarmteOpties)
 		{
 			attribute<string> BaseName                 := union_data(., Kostensoort/name, BC/name, BC/name,  Classifications/AanbodOptie/name);
 			attribute<string> Name                     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Classifications/AanbodOptie/name);

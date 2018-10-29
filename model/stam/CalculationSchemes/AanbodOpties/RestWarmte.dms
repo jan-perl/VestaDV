@@ -134,7 +134,7 @@ template RestWarmte
 		attribute<MW>         MWth_below   (Bronnen):= sum(float64(Ranking < Threshold[Assignment/Bronnen_rel])*KostenBaten/CapaciteitsVraagD, Assignment/Bronnen_rel);
 
 		attribute<Bool> AanlegAfweging         (PlanRegio) := Ranking > max_elem(Threshold[Assignment/Bronnen_rel], 0.0[Eur_MW_yr]);
-		attribute<Bool> ExtraGebruikRestWarmte (PlanRegio) := =VoorkEuren/NewRestWarmte ? 'AanlegAfweging' : 'const(false, PlanRegio)';
+		attribute<Bool> ExtraGebruikRestWarmte (PlanRegio) := =Voorkeuren/NewRestWarmte ? 'AanlegAfweging' : 'const(false, PlanRegio)';
 
 		attribute<MW >  MWth_ExtraGebruik  (Bronnen) := sum(KostenBaten/CapaciteitsVraagD * float64(ExtraGebruikRestWarmte) , Assignment/Bronnen_rel);
 
@@ -185,7 +185,7 @@ template RestWarmte
 			}
 		}
 	}
-	parameter<uint32> NrIterations := VoorkEuren/NewRestWarmte ? 25 : 1;
+	parameter<uint32> NrIterations := Voorkeuren/NewRestWarmte ? 25 : 1;
 	unit<uint32> Iteration := Range(uint32, 0, NrIterations)
 	{
 		attribute<String> Name          := 'I'+String(id(.));
@@ -211,7 +211,7 @@ template RestWarmte
 	attribute<Bool> NewGebruik           (PlanRegio) := RentabiliteitsAfweging && not(OldGebruik);
 	attribute<Bool> GebruikOptieAfweging (PlanRegio) := NewGebruik || GebruiktOptie;
 	attribute<Bool> GebruikOptie         (PlanRegio) := 
-		=VoorkEuren/OldRestwarmte
+		=Voorkeuren/OldRestwarmte
 			?	'GebruiktOptie'
 			:	(Jaar == 2010[units/yr_uint16])
 				?	'bool(PlanRegio/RW)' 
