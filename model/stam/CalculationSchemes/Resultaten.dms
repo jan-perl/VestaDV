@@ -1,0 +1,134 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+// Dit is de configuratiefile met het VestaRun Rekenchema                               //
+//                                                                                      //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template Resultaten
+{
+	// begin case parameters
+	parameter<units/yr_uint16> RunJaar: ParamType = "Numeric";
+	// optional case parameter
+
+	container TussenResultaten := ='/TussenResultaten/J'+String(RunJaar);
+	unit<uint32> PlanRegio    := SpecifiekeInstellingen/PlanRegio;
+	
+	container VestaRunData := TussenResultaten/VestaRunData;
+	container NCW := TussenResultaten/NCW;
+	container GebiedsAllocatie := TussenResultaten/GebiedsAllocatie;
+	container EndState   := TussenResultaten/EndState;
+	container Voorkeuren := TussenResultaten/Voorkeuren;
+	
+	container RestWamte := GebiedsAllocatie/RestWarmte/results {
+		unit<uint32> CumulatedArcSet := RestWarmte/AanbodOpties/RestWarmte/CumulatedArcSet, StorageName = "=OutputFolder+'/RestWarmte.dbf'" //REMOVE , DialogType = "Map", DialogData = "CumulatedArcs"
+		{
+			attribute<float64>   BronPointX    := MakeDefined(PointCol(BronPoint), 280000.0 / 2.0);
+			attribute<float64>   BronPointY    := MakeDefined(PointRow(BronPoint), (300000.0 + 325000.0) / 2.0);
+			attribute<PlanRegio> PlanRegio_rel := CumulatedArcSet/PlanRegio_rel;
+		}
+	}
+	container AllocatieResultaat := TussenResultaten/AllocatieResultaat;
+	
+	container GridKaarten :=
+			for_each_ne(Classifications/BebouwingsComponent/name, 
+				'CalculationSchemes/GridAggrComponent(
+					AllocatieResultaat/'+Classifications/BebouwingsComponent/name+
+					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie))
+						? Quote('GebiedsAllocatie/WKO/ObjectResults/'+Classifications/BebouwingsComponent/name) 
+						: Quote(''))+
+				')'
+			)
+	{
+		container Totaal
+		{
+			container Vraag
+			{
+				attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
+				attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
+				attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
+				attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
+				attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
+				attribute<GJ_yr> Warmte        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
+				attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
+				attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := Warmte + Elektriciteit;
+			}
+			container AansluitCapaciteit
+			{
+				attribute<kW> Totaal           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Totaal')+')';
+				attribute<kW> AardGas          (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/AardGas')+')';
+				attribute<kW> Overig           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Overig')+')';
+			}
+			container WKO
+			{
+				attribute<GJ_yr> V_Warmte      (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
+				attribute<GJ_yr> V_Koude       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
+				attribute<GJ_yr> V_Elek        (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
+				attribute<GJ_yr> Onttrekking   (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
+				attribute<kW>    Capaciteit    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
+			}
+		}
+	}
+
+	container PotentiaalKaarten :=
+			for_each_ne(Classifications/BebouwingsComponent/name,
+				'CalculationSchemes/PotentialComponent(GridKaarten/'+Classifications/BebouwingsComponent/name+'/vraag)'
+			)
+	{
+		container Totaal := CalculationSchemes/PotentialComponent(GridKaarten/Totaal/vraag);
+	}
+
+	container FolderInfo {
+		parameter<string> CurrDir := Expand(., '%currDir%');
+		parameter<string> RunDir  := Expand(., '%configDir%');
+		parameter<string> RunName := Expand(., '%configName%');
+	}
+
+	parameter<string> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+string(RunJaar);
+
+	#include <Indicatoren.dms>
+
+	#include <AllocExports.dms>
+
+	container RegressieTest
+	{
+		parameter<bool>   PotentiaalKaartLeesbaar : = all(PotentiaalKaarten/totaal/totaal >= 0.0) && sum(PotentiaalKaarten/totaal/totaal) > 0.0;
+		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
+		parameter<string> Generate                := 'Ready'
+		,	IntegrityCheck    = "All"
+		,	ExplicitSuppliers = "Indicatoren/GenerateAll"; // Generates All reports.
+	}
+}

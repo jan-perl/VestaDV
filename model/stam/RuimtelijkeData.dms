@@ -1,0 +1,113 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden de brondata geconfigureerd.                    //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container RuimtelijkeData: Using = "Units;Geography", FreeData = "False"
+{
+	#include <BAG.dms>
+	#include <Nieuwbouw.dms>
+	#include <Sloop.dms>
+	#include <GlasTuinBouw.dms>
+	#include <Bebouwing.dms>
+	container EnergieLabel
+	{
+		unit<uint32> src
+		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		{
+			parameter<string> SQoute := '\''', IsHidden = "True";
+
+			attribute<string> HLT_unquoted := trim(replace(HLT,SQoute,''));
+			attribute<string> adres_key    :=
+				replace(Postcode,SQoute,'') + '_' + replace(HNR,SQoute,'') + 
+				(strlen(HLT_unquoted) > 0 
+					? '_' + HLT_unquoted
+					: ''
+				);
+			//order of replace matters!
+			attribute<Classifications/energielabel> energielabel_rel := rlookup(replace(replace(replace(replace(replace(label,SQoute,''),'A++++','eWP'),'A+++','eWP'),'A++','eWP'),'A','A+'), Classifications/energielabel/Label);
+			attribute<uint32>                       datum_numeriek   := uint32(replace(DATUM,SQoute,''));
+			attribute<voorkomend>                   voorkomend_rel   := rlookup(label, voorkomend/Values);
+		}
+
+		unit<uint32> voorkomend := unique(src/label)
+		{
+			attribute<uint32> aantal := pcount(src/voorkomend_rel);
+		}
+
+		container import := RuimtelijkeData/BAG/import;
+		unit<uint32> nummeraanduiding := import/nummeraanduiding;
+		unit<uint32> vbo := import/vbo;
+		
+		unit<uint32> data := unique(src/adres_key)
+		{
+			attribute<string>                       nummeraanduiding_id := nummeraanduiding/identificatie[rlookup(values, nummeraanduiding/adres_key)];
+			attribute<string>                       vbo_id              := rjoin(nummeraanduiding_id, vbo/nummeraanduiding_id, vbo/identificatie), FreeData = "False";
+
+			attribute<uint32>                       datum_laatste       := max(src/datum_numeriek, rlookup(src/adres_key, values));
+			attribute<Classifications/energielabel> energielabel_rel    := rjoin(values + '_' + string(datum_laatste), src/adres_key + '_' + string(src/datum_numeriek), src/energielabel_rel), FreeData = "False";
+		}
+	}
+	
+	#include <WarmteBronnen.dms>
+
+	container Klimaat :=
+			for_each_ndva(  Classifications/zichtjaar/name
+			, Geography/rdc_grids/m100, float32
+			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
+			), descr = "Klimaat_scenario_knmi";
+
+	container CBSWijkEnBuurt {
+		unit<uint32> j2013:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2013.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2014:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2014.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2015:
+			StorageName     = "%SourceDataProjDir%/CBS/kwb-2015.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+	}
+}
