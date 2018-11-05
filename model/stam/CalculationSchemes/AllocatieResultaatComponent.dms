@@ -131,8 +131,8 @@ template AllocatieResultaatComponentTempl
 	}
 	container CO2
 	{
-		attribute<KG_yr> AardGas           (BebouwingsObject) := MeterVraag/AardGas       * VestaRunData/prijzen/AardGas/CO2_GJ;
-		attribute<KG_yr> Elektriciteit     (BebouwingsObject) := MeterVraag/Elektriciteit * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+		attribute<KG_yr> AardGas           (BebouwingsObject) := MeterVraag/AardGas       * prijzen/AardGas/CO2_GJ;
+		attribute<KG_yr> Elektriciteit     (BebouwingsObject) := MeterVraag/Elektriciteit * prijzen/Elektriciteit/CO2_GJ;
 	}
 }
 

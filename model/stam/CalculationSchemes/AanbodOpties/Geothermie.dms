@@ -80,13 +80,13 @@ template GeoThermie
 			 TypeInfo/K_GJ50);
 		parameter<Eur_GJ> Km_GJ := K_GJ;
 			
-		attribute<Eur_yr> Kj_pt_Base     (PlanRegio) := PijpKosten * VestaRunData/Onderhoud/Rj_PrimairNet;
-		attribute<Eur_yr> Kj_pt_Admin    (PlanRegio) := Kj_pt_Base * VestaRunData/Onderhoud/R_Admin;
+		attribute<Eur_yr> Kj_pt_Base     (PlanRegio) := PijpKosten * Kengetallen/Onderhoud/Rj_PrimairNet;
+		attribute<Eur_yr> Kj_pt_Admin    (PlanRegio) := Kj_pt_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_pt_Onderhoud(PlanRegio) := Kj_pt_Base - Kj_pt_Admin;
-		attribute<Eur_yr> Kj_pt_Precario (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * bron/dist * VestaRunData/Onderhoud/Rj_Precario_m;
+		attribute<Eur_yr> Kj_pt_Precario (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * bron/dist * Kengetallen/Onderhoud/Rj_Precario_m;
 		
 		attribute<Eur_yr> Kj_ow_Base     (PlanRegio) := Installatie * TypeInfo/Rj_Onderhoud;
-		attribute<Eur_yr> Kj_ow_Admin    (PlanRegio) := Kj_ow_Base * VestaRunData/Onderhoud/R_Admin;
+		attribute<Eur_yr> Kj_ow_Admin    (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_ow_Onderhoud(PlanRegio) := Kj_ow_Base - Kj_ow_Admin;
 		
 		attribute<Eur_yr> Kj_WarmteWaarde(PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;

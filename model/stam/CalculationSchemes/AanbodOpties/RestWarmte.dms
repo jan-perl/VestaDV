@@ -98,9 +98,9 @@ template RestWarmte
 				Ki_pt * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/pt)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/pt))+
 				Ki_ow * NCW/ow28/AnnualisationFactor * MakeDefined(((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/ow)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/ow))[TypeInfoList_rel], 1.0);
 
-			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := aK_Buis * VestaRunData/Onderhoud/Rj_PrimairNet * VestaRunData/Onderhoud/R_Onderhoud;
-			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := aK_Buis * VestaRunData/Onderhoud/Rj_PrimairNet * VestaRunData/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * VestaRunData/Onderhoud/Rj_Precario_m;
+			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud;
+			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin;
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_m;
 
 			attribute<Eur_yr> Kj_pt           (PlanRegio) := Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario;
 
@@ -110,7 +110,7 @@ template RestWarmte
 			attribute<Eur_yr> Kj_WarmteWaarde (PlanRegio) := Kj_GJ * KostenBaten/Vj_WarmtePrimairD;
 			attribute<Eur_yr> Km_WarmteWaarde (PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
 			attribute<Eur_yr> Kj_ow_base      (PlanRegio) := Bronnen/Kj_kW[Assignment/Bronnen_rel] * Assignment/P * value(1000, kW / MW);
-			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := Kj_ow_base * VestaRunData/Onderhoud/R_Admin;
+			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := Kj_ow_base * Kengetallen/Onderhoud/R_Admin;
 			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := Kj_ow_base - Kj_ow_admin;
 
 			attribute<Eur_yr> Kj_ow           (PlanRegio) := Kj_WarmteWaarde + Kj_ow_onderhoud + Kj_ow_admin;

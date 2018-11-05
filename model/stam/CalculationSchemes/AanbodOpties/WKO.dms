@@ -88,7 +88,7 @@ template WKO
 			
 			attribute<kW>     P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * Lw1;
 			attribute<kW>     P_Koude     (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * Lw1;
-			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
+			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen/Elektriciteit/Staffel/ClassBreak);
 			
 
 			container Kosten
@@ -102,12 +102,12 @@ template WKO
 				
 				attribute<Eur_yr> Kj_ge_netto(BebouwingsObject) := KostenBase/Kj_ge_netto;
 
-				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
-				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
+				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
+				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
 				attribute<Eur_yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * Lw1;
 				
-				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
-				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
 				
 			}
 			
@@ -161,9 +161,9 @@ template WKO
 			attribute<kW>     P_Koude (BebouwingsObject) := 0.95[Ratio] * ASW_ku[kW_m2] * Lu;
 			
 			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := 
-				classify(V_Elek, VestaRunData/Prijzen/Elektriciteit/Staffel/ClassBreak);
-			attribute<Eur_GJ> KGJj_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex[gebruiksgrootteklasse_rel];
-			attribute<Eur_GJ> KGJm_Elek  (BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel];
+				classify(V_Elek, Prijzen/Elektriciteit/Staffel/ClassBreak);
+			attribute<Eur_GJ> KGJj_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex[gebruiksgrootteklasse_rel];
+			attribute<Eur_GJ> KGJm_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel];
 				
 			container Kosten
 			{
@@ -184,8 +184,8 @@ template WKO
 				attribute<Eur_yr> Kj_ow_o  (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_yr / m2] * Lu;
 				attribute<Eur_yr> Km_ow_e  (BebouwingsObject) := V_Elek * KGJm_Elek;
 				
-				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
-				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * VestaRunData/Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
 			}
 			
 			container Opbrengsten
@@ -251,7 +251,7 @@ template WKO
 			attribute<Eur   > Ki_ge_pm (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 			attribute<Eur   > Ki_ge_ov (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 // 			attribute<Eur_yr> Kj_ge_hv (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
-			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * VestaRunData/Onderhoud/Rj_Precario_m;
+			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_m;
 
 			attribute<Eur   > Oi_Aansl (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
 			attribute<Eur_yr> Oj_Aansl (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
@@ -271,7 +271,7 @@ template WKO
 			
 			attribute<GJ_yr > GJe(BebouwingsObject) := WkoDataComponent/V_Elek;
 			attribute<GJ_yr > GJw(BebouwingsObject) := WkoDataComponent/V_WKO;
-			attribute<KG_yr>  CO2(BebouwingsObject) := VestaRunData/Prijzen/Elektriciteit/CO2_GJ * GJe;
+			attribute<KG_yr>  CO2(BebouwingsObject) := Prijzen/Elektriciteit/CO2_GJ * GJe;
 			attribute<Eur_yr >SDE(BebouwingsObject) := GJw * SpecifiekeInstellingen/BeleidsOpties/EEA/SDE_WKO;
 			
 			attribute<Eur_yr> AC_Netto(BebouwingsObject) := 
@@ -580,10 +580,6 @@ template WKO
 				: 'BeginStatus/'+Classifications/BebouwingsComponent/Name
 		)
 	{
-		container Prijzen  : = BeginStatus/Prijzen;
-		container Onderhoud: = BeginStatus/Onderhoud;
-		container Domains  : = BeginStatus/Domains;
-		
 		container impl: = ../impl;
 		
 		container AanbodOpties : = BeginStatus/AanbodOpties
@@ -664,7 +660,7 @@ template WKO
 			
 			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
 			attribute<Eur_yr> KCO2_ow_e  (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/KCO2_ow_e')+')';
-			attribute<KG_yr>  CO2        (PlanRegio): = GJe_Totaal * VestaRunData/prijzen/Elektriciteit/CO2_GJ;
+			attribute<KG_yr>  CO2        (PlanRegio): = GJe_Totaal * prijzen/Elektriciteit/CO2_GJ;
 
 			attribute<GJ_yr>  GJe_Totaal (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/GJe')+')';
 			attribute<GJ_yr>  GJw_Totaal (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/GJw')+')';

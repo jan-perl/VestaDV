@@ -439,16 +439,16 @@ template VestaRunDataComponent
 		}
 		container OA_j // Onderhoud, nu ook meegewogen in LabelSprong_eg en LabelSprong_m
 		{
-			attribute<Eur_yr> S_H_T    (BebouwingsObject) := VerbeterKosten_i/S_H_T  * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> S_H_B    (BebouwingsObject) := VerbeterKosten_i/S_H_B  * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> S_H_AP   (BebouwingsObject) := VerbeterKosten_i/S_H_AP * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> S_T_B    (BebouwingsObject) := VerbeterKosten_i/S_T_B  * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> S_T_AP   (BebouwingsObject) := VerbeterKosten_i/S_T_AP * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> S_B_AP   (BebouwingsObject) := VerbeterKosten_i/S_B_AP * Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_H_T    (BebouwingsObject) := VerbeterKosten_i/S_H_T  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_H_B    (BebouwingsObject) := VerbeterKosten_i/S_H_B  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_H_AP   (BebouwingsObject) := VerbeterKosten_i/S_H_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_T_B    (BebouwingsObject) := VerbeterKosten_i/S_T_B  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_T_AP   (BebouwingsObject) := VerbeterKosten_i/S_T_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> S_B_AP   (BebouwingsObject) := VerbeterKosten_i/S_B_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
 
-			attribute<Eur_yr> LTAS     (BebouwingsObject) := VerbeterKosten_i/LTAS * Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
-			attribute<Eur_yr> EWV      (BebouwingsObject) := VerbeterKosten_i/EWV  * Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> LTAS     (BebouwingsObject) := VerbeterKosten_i/LTAS * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
+			attribute<Eur_yr> EWV      (BebouwingsObject) := VerbeterKosten_i/EWV  * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
 
 			attribute<Eur_yr> S_AP_eWP (BebouwingsObject) := eWP + LTAS;
 			attribute<Eur_yr> S_H_eWP  (BebouwingsObject) := S_H_AP + S_AP_eWP;
@@ -530,8 +530,8 @@ template VestaRunDataComponent
 					'( (VermedenKosten_eg_ex/@ + ComfortVerbetering_eg_ex/@) * EIA_Opties/R_SplitIncentiveFactor * BTW_Factor'
 					'- GebouwVerbetering_j/@ * S_gv                                   * BTW_Factor_gv'
 					'- LokaleOpwekking_j/@   * S_lo                                   * BTW_Factor'
-					'- OA_j/@ * Onderhoud/R_Onderhoud * (1.0 - EEA_Opties/S_Onderhoud)* BTW_Factor'
-					'- OA_j/@ * Onderhoud/R_Admin     * (1.0 - EEA_Opties/S_Admin)    * BTW_Factor'
+					'- OA_j/@ * Kengetallen/Onderhoud/R_Onderhoud * (1.0 - EEA_Opties/S_Onderhoud)* BTW_Factor'
+					'- OA_j/@ * Kengetallen/Onderhoud/R_Admin     * (1.0 - EEA_Opties/S_Admin)    * BTW_Factor'
 					') * float64(KanSpringen/@)'
 				,	'@', Classifications/LabelSprong/code
 				)
@@ -689,9 +689,9 @@ template VestaRunDataComponent
 
 		attribute<Eur_yr> Kj_OA                 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 			add(
-				Ki_gv_w  * Onderhoud/Rj_GebouwVerbetering
-			,	Ki_eWP_w * Onderhoud/Rj_LokaleOpwekking 
-			, 	Ki_EWV_w * Onderhoud/Rj_LokaleOpwekking 
+				Ki_gv_w  * Kengetallen/Onderhoud/Rj_GebouwVerbetering
+			,	Ki_eWP_w * Kengetallen/Onderhoud/Rj_LokaleOpwekking 
+			, 	Ki_EWV_w * Kengetallen/Onderhoud/Rj_LokaleOpwekking 
 			);
 
 		container subsidie {
@@ -708,8 +708,8 @@ template VestaRunDataComponent
 
 			attribute<Eur_yr> EEA (BebouwingsObject) := 
 				Kj_OA* add(
-					Onderhoud/R_Onderhoud * EEA_Opties/S_Onderhoud 
-				,	Onderhoud/R_Admin     * EEA_Opties/S_Admin
+					Kengetallen/Onderhoud/R_Onderhoud * EEA_Opties/S_Onderhoud 
+				,	Kengetallen/Onderhoud/R_Admin     * EEA_Opties/S_Admin
 				)
 			+	RuimtelijkeVraagComponent/nrModelUnits * add(
 					Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/S_GebouwVerbetering 

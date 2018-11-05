@@ -37,8 +37,8 @@ container indicatoren
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
 	container CO2: Source = "FO v7a C5"
 	{
-		parameter<KG_GJ> CO2_GJe := VestaRunData/Prijzen/Elektriciteit/CO2_GJ;
-		parameter<KG_GJ> CO2_GJg := VestaRunData/Prijzen/AardGas/CO2_GJ;
+		parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
+		parameter<KG_GJ> CO2_GJg := Prijzen/AardGas/CO2_GJ;
 		
 		container gebouwen
 		{

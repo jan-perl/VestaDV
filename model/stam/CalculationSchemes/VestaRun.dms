@@ -260,6 +260,68 @@ template VestaRun
 		parameter<Ratio> Curve2 := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerenUit;
 	}
 
+	container Prijzen
+	{
+		container AardGas
+		{
+			unit<uint32> Tabel := /model/energieprijzen/AardGas/Table;
+			container prijzenbron  := /model/energieprijzen/AardGas/results;
+			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
+
+			parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
+
+			unit<uint8> Staffel := classifications/gebruiksgrootteklasse 
+			{
+				attribute<GJ_yr>  ClassBreak := gas_break;
+				attribute<Eur_GJ> KGJ_Commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
+			}
+
+			unit<uint8>  Glastuinbouw: nrofrows = 1
+			{
+				attribute<GJ_yr>  ClassBreak := union_data(., first(staffel/Classbreak));
+				attribute<Eur_GJ> KGJ_eindgebruik_ex  := prijzenbron/Glastuinbouw/eindgebruik_ex [const(JaarIndex,.)];
+				attribute<Eur_GJ> KGJ_maatschappelijk := prijzenbron/Glastuinbouw/maatschappelijk[const(JaarIndex,.)];
+				attribute<Eur_GJ> KGJ_netwerk         := prijzenbron/Glastuinbouw/netwerk        [const(JaarIndex,.)];
+				attribute<Eur_GJ> KGJ_EnergieHeffing  := prijzenbron/Glastuinbouw/EnergieHeffing [const(JaarIndex,.)];
+				attribute<Eur_GJ> KGJ_CO2Heffing      := prijzenbron/Glastuinbouw/CO2Heffing     [const(JaarIndex,.)];
+			}
+
+			container Bijstook := prijzenbron/KleinMiddelGebruik
+			{
+				parameter<Eur_GJ> KGJ_eindgebruik_ex  := eindgebruik_ex [JaarIndex];
+				parameter<Eur_GJ> KGJ_maatschappelijk := maatschappelijk[JaarIndex];
+				parameter<Eur_GJ> KGJ_netwerk         := netwerk        [JaarIndex];
+				parameter<Eur_GJ> KGJ_CO2Heffing      := CO2Heffing     [JaarIndex];
+				parameter<Eur_GJ> KGJ_EnergieHeffing  := EnergieHeffing [JaarIndex];
+			}
+		}
+
+		container Elektriciteit
+		{
+			unit<uint32> Tabel := /model/energieprijzen/Elektriciteit/Table;
+			container prijzenbron  := /model/energieprijzen/Elektriciteit/results;
+
+			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
+
+			parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex];
+
+			unit<uint8> Staffel := classifications/gebruiksgrootteklasse
+			{
+				attribute<GJ_yr>  ClassBreak := elek_break_kWh [GJ_yr];
+				attribute<Eur_GJ> KGJ_commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
+				attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
+			}
+		}
+	}
 	attribute<string> BCN        (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
 	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
 		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCN+'ResterendFactors',',')+')';
@@ -286,90 +348,6 @@ template VestaRun
 				+')'
 			)
 	{
-		container Prijzen
-		{
-			container AardGas
-			{
-				unit<uint32> Tabel := /model/energieprijzen/AardGas/Table;
-				container prijzenbron  := /model/energieprijzen/AardGas/results;
-				parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
-
-				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
-
-				unit<uint8> Staffel := classifications/gebruiksgrootteklasse 
-				{
-					attribute<GJ_yr>  ClassBreak := gas_break;
-					attribute<Eur_GJ> KGJ_Commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
-				}
-
-				unit<uint8>  Glastuinbouw: nrofrows = 1
-				{
-					attribute<GJ_yr>  ClassBreak := union_data(., first(staffel/Classbreak));
-					attribute<Eur_GJ> KGJ_eindgebruik_ex  := prijzenbron/Glastuinbouw/eindgebruik_ex [const(JaarIndex,.)];
-					attribute<Eur_GJ> KGJ_maatschappelijk := prijzenbron/Glastuinbouw/maatschappelijk[const(JaarIndex,.)];
-					attribute<Eur_GJ> KGJ_netwerk         := prijzenbron/Glastuinbouw/netwerk        [const(JaarIndex,.)];
-					attribute<Eur_GJ> KGJ_EnergieHeffing  := prijzenbron/Glastuinbouw/EnergieHeffing [const(JaarIndex,.)];
-					attribute<Eur_GJ> KGJ_CO2Heffing      := prijzenbron/Glastuinbouw/CO2Heffing     [const(JaarIndex,.)];
-				}
-
-				container Bijstook := prijzenbron/KleinMiddelGebruik
-				{
-					parameter<Eur_GJ> KGJ_eindgebruik_ex  := eindgebruik_ex [JaarIndex];
-					parameter<Eur_GJ> KGJ_maatschappelijk := maatschappelijk[JaarIndex];
-					parameter<Eur_GJ> KGJ_netwerk         := netwerk        [JaarIndex];
-					parameter<Eur_GJ> KGJ_CO2Heffing      := CO2Heffing     [JaarIndex];
-					parameter<Eur_GJ> KGJ_EnergieHeffing  := EnergieHeffing [JaarIndex];
-				}
-			}
-
-			container Elektriciteit
-			{
-				unit<uint32> Tabel := /model/energieprijzen/Elektriciteit/Table;
-				container prijzenbron  := /model/energieprijzen/Elektriciteit/results;
-
-				parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
-
-				parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex];
-
-				unit<uint8> Staffel := classifications/gebruiksgrootteklasse
-				{
-					attribute<GJ_yr>  ClassBreak := elek_break_kWh [GJ_yr];
-					attribute<Eur_GJ> KGJ_commodity      := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_eindgebruik_ex := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_ex [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_maatschappelijk:= ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk[JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_netwerk        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk        [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_EnergieHeffing := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing [JaarIndex]')+')';
-					attribute<Eur_GJ> KGJ_CO2Heffing     := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing     [JaarIndex]')+')';
-				}
-			}
-		}
-		container Onderhoud: Source = "Fo v7a C.3.1"
-		{
-			parameter<_yr> Rj_WOS          := 0.03 [_yr] / R_Onderhoud;
-			parameter<_yr> Rj_OnderStation := 0.03 [_yr] / R_Onderhoud;
-			parameter<_yr> Rj_PrimairNet   := 0.01 [_yr] / R_Onderhoud; // Wordt gebruikt bij Restwarmte en Geothermie voor pijpen, excl Precario
-			parameter<_yr> Rj_SecundairNet := 0.01 [_yr] / R_Onderhoud; // excl Precario
-			parameter<_yr> Rj_wd           := 0.025[_yr] / R_Onderhoud; // excl Precario
-			parameter<_yr> Rj_id           := 0.025[_yr]; // geen Admin.
-			parameter<_yr> Rj_Installatie:       [ 0.00 ]; // @@@ Moet dit echt nul zijn?
-			parameter<_yr> Rj_GebouwVerbetering: [ 0.00 ];
-			parameter<_yr> Rj_LokaleOpwekking:   [ 0.05 ];   // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, eWP, hWP en EWV
-			// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden. 
-			// TODO: onderzoeken bij WKO: onderhoudskosten, min-max kosten en leercurvetoepassing, toepassing NMDA tariefswijziging
-			parameter<Eur_yr_m> Rj_Precario_m := 4.3[Eur_yr_m], Source = "email Gijs de Man dd 22-02-2016", Descr = "Precario als prijs per meter pijp per jaar",
-				url = "http://decentrale.regelgeving.overheid.nl/cvdr/xhtmloutput/Historie/Leiden/386935/386935_1.html";
-
-			parameter<Ratio> R_lv_Admin:  [ 0.1 ]; // Fractie van vastrecht dat de leveancier aan administratiekosten besteedt.
-
-			parameter<Ratio> R_Admin:     [ 0.5 ]; // Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking. 
-			parameter<Ratio> R_Onderhoud := 1.0 - R_Admin;
-		}
-
 		container BestaandeWoning // specific AansluitTarief (per nrAansluitingen)
 		{
 			unit<uint32> BebouwingsObject;

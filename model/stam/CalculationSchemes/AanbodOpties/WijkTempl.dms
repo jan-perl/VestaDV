@@ -67,19 +67,19 @@ template WijkTempl
 		
 		parameter<Eur_GJ> K_GJ := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
 			
-		parameter<KG_GJ> CO2g_GJ := TypeInfo/RekenType/Aardgas_Factor       * VestaRunData/Prijzen/AardGas/CO2_GJ;
-		parameter<KG_GJ> CO2e_GJ := TypeInfo/RekenType/Elektriciteit_Factor * VestaRunData/Prijzen/Elektriciteit/CO2_GJ;
+		parameter<KG_GJ> CO2g_GJ := TypeInfo/RekenType/Aardgas_Factor       * Prijzen/AardGas/CO2_GJ;
+		parameter<KG_GJ> CO2e_GJ := TypeInfo/RekenType/Elektriciteit_Factor * Prijzen/Elektriciteit/CO2_GJ;
 		parameter<KG_GJ> CO2_GJ := CO2g_GJ + CO2e_GJ, Source = "FO v7a C.5 WijkWKK";
 			
 		parameter<Eur_GJ> Km_GJ := K_GJ;
 				
 		attribute<Eur_yr> Kj_Base        (PlanRegio):= Ki_Totaal * TypeInfo/Rj_Onderhoud;
-		attribute<Eur_yr> Kj_Admin       (PlanRegio):= Kj_Base * VestaRunData/Onderhoud/R_Admin;
+		attribute<Eur_yr> Kj_Admin       (PlanRegio):= Kj_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_Onderhoud   (PlanRegio):= Kj_Base - Kj_Admin;
 		attribute<Eur_yr> Kj_WarmteWaarde(PlanRegio):= K_GJ  * KostenBaten/Vj_WarmtePrimairD;
 		attribute<Eur_yr> Km_WarmteWaarde(PlanRegio):= Km_GJ * KostenBaten/Vj_WarmtePrimairD;
 		
-		attribute<Eur_yr> Ke_Totaal(PlanRegio) := TypeInfo/RekenType/Elektriciteit_Factor * KostenBaten/Vj_WarmtePrimairD * last(VestaRunData/prijzen/Elektriciteit/Staffel/KGJ_Commodity);
+		attribute<Eur_yr> Ke_Totaal(PlanRegio) := TypeInfo/RekenType/Elektriciteit_Factor * KostenBaten/Vj_WarmtePrimairD * last(prijzen/Elektriciteit/Staffel/KGJ_Commodity);
 
 		attribute<Eur_yr> Kj_Totaal(PlanRegio) := Kj_Base + Kj_WarmteWaarde;
 		attribute<Eur_yr> Km_Totaal(PlanRegio) := Kj_Base + Km_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.

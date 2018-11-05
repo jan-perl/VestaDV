@@ -47,6 +47,7 @@ template Resultaten
 	container TussenResultaten := ='/TussenResultaten/J'+String(RunJaar);
 	unit<uint32> PlanRegio    := SpecifiekeInstellingen/PlanRegio;
 	
+	container Prijzen := TussenResultaten/Prijzen;
 	container VestaRunData := TussenResultaten/VestaRunData;
 	container NCW := TussenResultaten/NCW;
 	container GebiedsAllocatie := TussenResultaten/GebiedsAllocatie;

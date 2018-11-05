@@ -271,12 +271,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
 			,	'LokaleOpwekking', 'Onderhoud', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking * VestaRunData/Onderhoud/Rj_LokaleOpwekking',
+					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking',
 					'',
 					PRR
 
 			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
-					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking * VestaRunData/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
+					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
 					'',
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
