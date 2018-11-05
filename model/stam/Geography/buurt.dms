@@ -65,7 +65,7 @@ unit<uint32> buurt:
 	attribute<yr_uint16> BioWKK_Start  := const(2020[yr_uint16], .); // jaar waar vanaf BMC in een planregio is toegestaan. gebruik 9999 of ieder getal hoger dan laatste zichtjaar om geheel te verbieden.
 	
 	// =========== sociaal economische kenmerken obv laatst bekenden CBS buurtgegevens
-	container Eigendom: Using = Brondata/CBSWijkEnBuurt {
+	container Eigendom: Using = RuimtelijkeData/CBSWijkEnBuurt {
 		
 		// Koopwoningen
 		attribute<Units/Percent> p_koopw(..) := MakeDefined(
@@ -104,7 +104,7 @@ unit<uint32> buurt:
 
 		attribute<Units/Percent> p_checksum(..) := p_koopw + p_wcorpw + p_ov_hw + p_e_o_w;
 	}
-	container Inkomen : Using = Brondata/CBSWijkEnBuurt {
+	container Inkomen : Using = RuimtelijkeData/CBSWijkEnBuurt {
 		attribute<Units/Percent> p_hh_li(..) := MakeDefined(
 			rjoin(BU_CODE, j2015/GWB_CODE_10, j2015/p_hh_li[Units/Percent])
 		,	rjoin(BU_CODE, j2014/GWB_CODE_10, j2014/p_hh_li[Units/Percent])
