@@ -40,9 +40,6 @@
 
 container base: Using = "Model/Units"
 {
-	container BebouwingsScenario       := Model/Bebouwing;
-	parameter <string> KlimaatScenario := 'g_plus'; // other option = 'w';
-
 	parameter<string> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in base.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
 //			'blok500m';
@@ -347,11 +344,6 @@ container base: Using = "Model/Units"
 		container Toekomst := BaseLine;
 	}
 
-	container WarmteBronnen
-	{
-		unit<uInt32> AlleBronnen := BronData/WarmteBronnen/RestWarmte/bron;
-	}
-
 	container BAG
 	{
 		parameter<uint8> IndustrieDoetMee := 1b;
@@ -458,7 +450,7 @@ container base: Using = "Model/Units"
 
 	container Beleidsopties {
 		parameter<Eur_yr_Aansl> Heffingskorting := 284[Eur_yr_Aansl];
-		
+		unit<uint32> TypeInfoList := Model/Kengetallen/WarmteBronnen/MetaData/TypeInfoList;
 		container EIA: Descr = "Energie Inversterings aftrek, zoals  MIA/VAMIL etc."
 		{
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
@@ -483,7 +475,7 @@ container base: Using = "Model/Units"
 			parameter<float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
 
 			// voor opwekkings-type specifieke investerings-subsidies
-			attribute<float64> ow(Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			attribute<float64> ow(TypeInfoList) := const(0.0, TypeInfoList);
 		}
 
 		container EEA: Descr = "Energie Exploitatie aftrek"
@@ -507,9 +499,9 @@ container base: Using = "Model/Units"
 			parameter<float64> WKO    := 0.0; // exploitatie subsidie op Ki_A (doublet) als fractie van de kapitaallasten
 			parameter<Eur_GJ> SDE_WKO := 0.0[Eur_GJ]; // exploitatie subsidie op WKO per GJ.
 			
-			attribute<float64> ow (Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0, Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			attribute<float64> ow (TypeInfoList) := const(0.0, TypeInfoList);
 			// SDE: subsidie [Eur per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.
-			attribute<Eur_GJ> SDE (Model/BronData/WarmteBronnen/MetaData/TypeInfoList) := const(0.0[Eur_GJ], Model/BronData/WarmteBronnen/MetaData/TypeInfoList);
+			attribute<Eur_GJ> SDE (TypeInfoList) := const(0.0[Eur_GJ], TypeInfoList);
 		}
 	}
 

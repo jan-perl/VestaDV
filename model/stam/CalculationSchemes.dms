@@ -55,6 +55,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 	#include <StartingStateComponent.dms>
 	#include <VestaRunDataComponent.dms>
 	
+	#include <Resultaten.dms>
 	#include <AllocatieResultaatComponent.dms>
 	
 	Template GridAggrComponent

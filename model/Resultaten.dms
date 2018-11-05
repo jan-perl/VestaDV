@@ -34,13 +34,25 @@
 container Resultaten :=
 	for_each_ne(
 		Model/Classifications/zichtjaar/Name,
-		'CalculationSchemes/VestaRun('
+		'CalculationSchemes/Resultaten('
 			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Model/Classifications/zichtjaar/Name+']'
-			+MakeDefined(', '+Model/Classifications/zichtjaar/Name[ID(Model/Classifications/zichtjaar)-1b]+'/EndState','')
 		+')'
 	)
 	, using = "Model"
 {
+	container ProductiePerBron := 
+		for_each_nedv(Classifications/ZichtJaar/period_name
+		,	replace(
+				'sum('
+					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
+					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], Kengetallen/WarmteBronnen/MetaData/TypeInfoList/V/Onbekend)'
+				') / 1000000[Units/GJ / Units/PJ]'
+			,	'@RW@', 'TussenResultaten/@YR@/GebiedsAllocatie/RestWarmte'
+			,	'@YR@', Classifications/ZichtJaar/Name
+			)
+		,	Kengetallen/WarmteBronnen/MetaData/TypeInfoList, Units/PJ_yr
+		);
+
 	parameter<String> GenerateAll := 'Ready', 
 		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')", IsHidden = "True";
 

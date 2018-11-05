@@ -84,7 +84,7 @@ container GlTbComponentOperaties
 
 			// overige attributen
 			attribute<Classifications/GLTB>               GLTB_code           := nr_2;
-			attribute<units/ratio>                        Verdeling           := BronData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
+			attribute<units/ratio>                        Verdeling           := RuimtelijkeData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
 			attribute<m2>                                 Oppervlakte         := Verdeling * 10000[units/m2];
 			attribute<float64>                            AandeelWarmteVraag  := const(1.0, .); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
 

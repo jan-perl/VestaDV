@@ -69,7 +69,8 @@ container Verhoging50cent
 //	End
 
 //	Include Output section, similar for each run
-	#include <%projDir%/model/Output.dms>
+	#include <%projDir%/model/TussenResultaten.dms>
+	#include <%projDir%/model/Resultaten.dms>
 // End
 
 //#include <%projDir%/model/meta.dms>

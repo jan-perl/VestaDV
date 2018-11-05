@@ -48,14 +48,14 @@ template FlowTempl: using = "Classifications"
 		parameter<string>   name;
 		attribute<Float64> Factor (SpecifiekeInstellingen/PlanRegio);
 		
-		container Flow  := CalculationSchemes/Payments/MainTempl(Model/Technology/Accounting,   Eur_yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
-		container Stock := CalculationSchemes/Payments/MainTempl(Model/Technology/Accounting,   Eur,    false, ReportFolder+'/'+Name+'_Stock', Factor);
-		container Energy:= CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, GJ_yr,  ReportFolder+'/'+Name+'_Energy', Factor, '', PJ_yr);
-		container CO2   := CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, kg_yr,  ReportFolder+'/'+Name+'_CO2', Factor, 'CO2_'+String(RunJaar), kg_GJ);
-		container NOx   := CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_NOx', Factor, 'NOx_'+String(RunJaar), g_GJ);
-		container SO2   := CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_SO2', Factor, 'SO2_'+String(RunJaar), g_GJ);
-		container VOS   := CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_VOS', Factor, 'VOS_'+String(RunJaar), g_GJ);
-		container TS    := CalculationSchemes/Transformations/MainTempl(Model/Technology/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_TS',  Factor, 'TS_' +String(RunJaar), g_GJ);
+		container Flow  := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting,   Eur_yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
+		container Stock := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting,   Eur,    false, ReportFolder+'/'+Name+'_Stock', Factor);
+		container Energy:= CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, GJ_yr,  ReportFolder+'/'+Name+'_Energy', Factor, '', PJ_yr);
+		container CO2   := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, kg_yr,  ReportFolder+'/'+Name+'_CO2', Factor, 'CO2_'+String(RunJaar), kg_GJ);
+		container NOx   := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_NOx', Factor, 'NOx_'+String(RunJaar), g_GJ);
+		container SO2   := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_SO2', Factor, 'SO2_'+String(RunJaar), g_GJ);
+		container VOS   := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_VOS', Factor, 'VOS_'+String(RunJaar), g_GJ);
+		container TS    := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr ,  ReportFolder+'/'+Name+'_TS',  Factor, 'TS_' +String(RunJaar), g_GJ);
 		
 		parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll;CO2/GenerateAll;NOx/GenerateAll;SO2/GenerateAll;VOS/GenerateAll;TS/GenerateAll";
 	}

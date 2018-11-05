@@ -68,6 +68,7 @@ container Referentie
 //	End
 
 //	Include Output section, similar for each run
+	#include <%projDir%/model/TussenResultaten.dms>
 	#include <%projDir%/model/Resultaten.dms>
 // End
 

@@ -44,7 +44,7 @@ template VestaRunDataComponent
 	container              LocatieSpecifiekeOpties;
 	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100);
 
-	container Kengetallen;
+	container Instellingen;
 	container StartingStateComponent;
 
 	unit<uint8> PrijzenAardgas;
@@ -177,8 +177,8 @@ template VestaRunDataComponent
 
 	container Hoeveelheden
 	{
-		attribute<m2>      ZonneBoiler (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/ZonneBoiler * Kengetallen/ZonneBoiler/Oppervlak[ BebouwingsType ];
-		attribute<m2>      Zon_PV      (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/Zon_PV      * Kengetallen/Zon_PV/Oppervlak     [ BebouwingsType ];
+		attribute<m2>      ZonneBoiler (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/ZonneBoiler * Instellingen/ZonneBoiler/Oppervlak[ BebouwingsType ];
+		attribute<m2>      Zon_PV      (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/Zon_PV      * Instellingen/Zon_PV/Oppervlak     [ BebouwingsType ];
 		attribute<nrAansl> mWKK        (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/mWKK;
 		attribute<nrAansl> hWP         (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/hWP;
 	}
@@ -341,7 +341,7 @@ template VestaRunDataComponent
 			attribute<Eur_ModelUnit> S_B_AP (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min[Model_rel];
 
 			attribute<Eur_ModelUnit> LTAS   (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_min[Model_rel];
-			attribute<Eur_ModelUnit> eWP    (BebouwingsObject) := const(Kengetallen/eWP/InvesteringsKosten_min, BebouwingsObject);
+			attribute<Eur_ModelUnit> eWP    (BebouwingsObject) := const(Instellingen/eWP/InvesteringsKosten_min, BebouwingsObject);
 			attribute<Eur_ModelUnit> EWV    (BebouwingsObject) := (10[Percent] / 100[Percent]) * 192[Eur_m2] * EnergieVraagModellen/area/min[Model_rel];
 		}
 		container VerbeterKostenMax_nu
@@ -355,7 +355,7 @@ template VestaRunDataComponent
 
 			// kosten excl Investeringskosten eWP want deze moeten langs een andere leercurve gelegd worden.
 			attribute<Eur_ModelUnit> LTAS(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_max[Model_rel];
-			attribute<Eur_ModelUnit> eWP (BebouwingsObject) := const(Kengetallen/eWP/InvesteringsKosten_max, BebouwingsObject);
+			attribute<Eur_ModelUnit> eWP (BebouwingsObject) := const(Instellingen/eWP/InvesteringsKosten_max, BebouwingsObject);
 			attribute<Eur_ModelUnit> EWV (BebouwingsObject) := (75[Percent] / 100[Percent]) * 352[Eur_m2] * EnergieVraagModellen/area/max[Model_rel];
 		}
 		container VerbeterKosten_nu
@@ -608,15 +608,15 @@ template VestaRunDataComponent
 		{
 			container Optimistisch 
 			{
-				parameter<Percent> Cmin   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Cmin);
-				parameter<Percent> Bpls   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Bpls);
-				parameter<Percent> Verder := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Optimistisch/Verder);
+				parameter<Percent> Cmin   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Cmin);
+				parameter<Percent> Bpls   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Bpls);
+				parameter<Percent> Verder := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Verder);
 			}
 			container Pessimistisch
 			{
-				parameter<Percent> Cmin   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Cmin);
-				parameter<Percent> Bpls   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Bpls);
-				parameter<Percent> Verder := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Schil/Pessimistisch/Verder);
+				parameter<Percent> Cmin   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Cmin);
+				parameter<Percent> Bpls   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Bpls);
+				parameter<Percent> Verder := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Verder);
 			}
 			parameter<Percent> Cmin         := Optimistisch/Cmin  * (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Cmin  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
 			parameter<Percent> Bpls         := Optimistisch/Bpls  * (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Bpls  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
@@ -751,8 +751,8 @@ template VestaRunDataComponent
 					? Sprongen/RuimteVerwarming/efficiency
 					: EnergieVraagModellen/Efficiency/RuimteVerwarming/AardGas[Model_rel];
 			attribute<units/Ratio> Warmte (BebouwingsObject) := const(1.0, BebouwingsObject, units/Ratio);
-			attribute<units/Ratio> eWP    (BebouwingsObject) := const(Kengetallen/eWP/COP, BebouwingsObject, units/Ratio);
-			attribute<units/Ratio> EWV    (BebouwingsObject) := const(Kengetallen/EWV/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> eWP    (BebouwingsObject) := const(Instellingen/eWP/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> EWV    (BebouwingsObject) := const(Instellingen/EWV/COP, BebouwingsObject, units/Ratio);
 		}
 		container Koude
 		{
@@ -762,8 +762,8 @@ template VestaRunDataComponent
 		{
 			attribute<units/Ratio> AardGas (BebouwingsObject) := EnergieVraagModellen/Efficiency/WarmWater/AardGas[Model_rel];
 			attribute<units/Ratio> Warmte  (BebouwingsObject) := const(1.0, BebouwingsObject, units/Ratio);
-			attribute<units/Ratio> eWP     (BebouwingsObject) := const(Kengetallen/eWP/COP, BebouwingsObject, units/Ratio);
-			attribute<units/Ratio> EWV     (BebouwingsObject) := const(Kengetallen/EWV/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> eWP     (BebouwingsObject) := const(Instellingen/eWP/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> EWV     (BebouwingsObject) := const(Instellingen/EWV/COP, BebouwingsObject, units/Ratio);
 		}
 		container Apparatuur
 		{
@@ -776,31 +776,30 @@ template VestaRunDataComponent
 
 	container Opwekking
 	{
-		attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Kengetallen/ZonneBoiler/Opbrengst;
-		attribute<GJ_yr> Zon_PV      (BebouwingsObject) := Hoeveelheden/Zon_PV      * Kengetallen/Zon_PV/Opbrengst;
+		attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Instellingen/ZonneBoiler/Opbrengst;
+		attribute<GJ_yr> Zon_PV      (BebouwingsObject) := Hoeveelheden/Zon_PV      * Instellingen/Zon_PV/Opbrengst;
 
 		container LeerCurves
 		{
-			container BronData:= /Model/BronData;
 			container Optimistisch 
 			{
-				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/ZonB);
-				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/ZonPV);
-				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/eWPlw);
-				parameter<Percent> eWPww := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/eWPww);
-				parameter<Percent> EWV   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/EWV);
-				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/mWKK);
-				parameter<Percent> hWP   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/hWP);
+				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonB);
+				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonPV);
+				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPlw);
+				parameter<Percent> eWPww := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPww);
+				parameter<Percent> EWV   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/EWV);
+				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/mWKK);
+				parameter<Percent> hWP   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/hWP);
 			}
 			container Pessimistisch
 			{
-				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/ZonB);
-				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/ZonPV);
-				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/eWPlw);
-				parameter<Percent> eWPww := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/eWPww);
-				parameter<Percent> EWV   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/EWV);
-				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Pessimistisch/mWKK);
-				parameter<Percent> hWP   := interpolate_linear(RunJaar, Technology/Leercurves/ZichtJaar/Jaar, Technology/Leercurves/Installatie/Optimistisch/hWP);
+				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonB);
+				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonPV);
+				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPlw);
+				parameter<Percent> eWPww := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPww);
+				parameter<Percent> EWV   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/EWV);
+				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/mWKK);
+				parameter<Percent> hWP   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/hWP);
 			}
 
 			parameter<Percent> ZonB  := Optimistisch/ZonB  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonB  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
@@ -822,11 +821,11 @@ template VestaRunDataComponent
 	container Kosten
 	{
 		container Inv {
-			parameter<Eur_m2> ZonneBoiler  := Kengetallen/ZonneBoiler/InvesteringsKosten_Min * Schuiven/KostenMin +Kengetallen/ZonneBoiler/InvesteringsKosten_Max * Schuiven/KostenMax;
-			parameter<Eur_m2> Zon_PV       := Kengetallen/Zon_PV/InvesteringsKosten_Min      * Schuiven/KostenMin +Kengetallen/Zon_PV/InvesteringsKosten_Max      * Schuiven/KostenMax;
+			parameter<Eur_m2> ZonneBoiler  := Instellingen/ZonneBoiler/InvesteringsKosten_Min * Schuiven/KostenMin +Instellingen/ZonneBoiler/InvesteringsKosten_Max * Schuiven/KostenMax;
+			parameter<Eur_m2> Zon_PV       := Instellingen/Zon_PV/InvesteringsKosten_Min      * Schuiven/KostenMin +Instellingen/Zon_PV/InvesteringsKosten_Max      * Schuiven/KostenMax;
 			
-			parameter<Eur_Aansl> mWKK := Kengetallen/mWKK/InvesteringsKosten_Min * Schuiven/KostenMin + Kengetallen/mWKK/InvesteringsKosten_Max * Schuiven/KostenMax;
-			parameter<Eur_Aansl> hWP  := Kengetallen/hWP/InvesteringsKosten_Min  * Schuiven/KostenMin + Kengetallen/hWP/InvesteringsKosten_Max  * Schuiven/KostenMax;
+			parameter<Eur_Aansl> mWKK := Instellingen/mWKK/InvesteringsKosten_Min * Schuiven/KostenMin + Instellingen/mWKK/InvesteringsKosten_Max * Schuiven/KostenMax;
+			parameter<Eur_Aansl> hWP  := Instellingen/hWP/InvesteringsKosten_Min  * Schuiven/KostenMin + Instellingen/hWP/InvesteringsKosten_Max  * Schuiven/KostenMax;
 		}
 	
 		attribute<Eur> Ki_ZonneBoiler       (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Inv/ZonneBoiler * Opwekking/LeerCurves/ZonB  / 100[Percent];

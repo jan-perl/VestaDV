@@ -43,7 +43,7 @@ template RestWarmte
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
 	container KostenBaten  := BeginStatus/KostenBaten;
 
-	unit<uint32> Bronnen := ='/Model/BronData/WarmteBronnen/RestWarmte/BronSelecties/J'+String(Jaar)+'/Bronnen'
+	unit<uint32> Bronnen := ='/Model/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/J'+String(Jaar)+'/Bronnen'
 	{
 		attribute<Eur_kW   > Ki_kW_Org:= (Ki_kW_min * Schuiven/KostenMin + Ki_kW_max * Schuiven/KostenMax);
 		attribute<Eur_kW   > Ki_kW    := Ki_kW_org  * LeerCurves/Curve2;
@@ -76,7 +76,7 @@ template RestWarmte
 		attribute<BronConnections> Assignment (PlanRegio) := MakeDefined(PrevState/CurrConnection, NewAssignment)
 		{
 			attribute<Bronnen> Bronnen_rel(PlanRegio):= BronConnections/Bronnen_rel[Assignment];
-			attribute<BronData/WarmteBronnen/MetaData/TypeInfoList> TypeInfoList_rel (PlanRegio) :=  Bronnen/TypeInfoList_rel[Bronnen_rel];
+			attribute<Kengetallen/WarmteBronnen/MetaData/TypeInfoList> TypeInfoList_rel (PlanRegio) :=  Bronnen/TypeInfoList_rel[Bronnen_rel];
 
 			attribute<m>   dist      (PlanRegio):= value(dist(PlanRegio/Point, BronConnections/Point[Assignment]), m);
 			attribute<m>   cumulDist (PlanRegio):= dist + BronConnections/cumulDist[Assignment];
@@ -280,11 +280,9 @@ template RestWarmte
 					attribute<PlanRegio>           PlanRegio_rel           := nr_OrgEntity;
 					attribute<LastCumulatedArcSet> LastCumulatedArcSet_rel := rlookup(PlanRegio_rel, LastCumulatedArcSet/PlanRegio_rel);
 				}
-				unit<uint32> CumulatedArcSet := union_unit(StartArcSet, ExtraArcSet), StorageName = "=OutputFolder+'/RestWarmte.dbf'", DialogType = "Map", DialogData = "CumulatedArcs"
+				unit<uint32> CumulatedArcSet := union_unit(StartArcSet, ExtraArcSet), DialogType = "Map", DialogData = "CumulatedArcs"
 				{
 					attribute<rdc_meter> BronPoint     := union_data(., StartArcSet/BronPoint, LastCumulatedArcSet/BronPoint[ExtraArcSet/LastCumulatedArcSet_rel]), DisableStorage = "True";
-					attribute<float64>   BronPointX    := MakeDefined(PointCol(BronPoint), 280000.0 / 2.0);
-					attribute<float64>   BronPointY    := MakeDefined(PointRow(BronPoint), (300000.0 + 325000.0) / 2.0);
 					attribute<PlanRegio> PlanRegio_rel := union_data(., StartArcSet/PlanRegio_rel, ExtraArcSet/PlanRegio_rel);
 
 					parameter<bool> HasArcs := true, DisableStorage = "True";

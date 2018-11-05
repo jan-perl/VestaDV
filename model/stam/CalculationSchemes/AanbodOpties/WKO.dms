@@ -236,7 +236,7 @@ template WKO
 				attribute<Float64> SSD_yy(BebouwingsObject) := VestaRunDataComponent/BebouwingsObject/Gebied/SSD_yy;
 			}
 			
-			attribute <Bool> InContour  (BebouwingsObject) := IsDefined( BronData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
+			attribute <Bool> InContour  (BebouwingsObject) := IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
 			attribute <Bool> GeoGeschikt(BebouwingsObject) := =AanbodKentallen/BuitenContour ? 'const(true, BebouwingsObject)' : 'InContour';
 			
 			attribute <Bool> LtVerwarmingGeschikt(BebouwingsObject) := VestaRunDataComponent/LtVerwarmingGeschikt;

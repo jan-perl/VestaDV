@@ -41,13 +41,13 @@ template GeoThermie
 	// end of case param
 
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
-	container TypeInfo     := BronData/WarmteBronnen/GeoThermie/TypeInfo;
+	container TypeInfo     := Kengetallen/WarmteBronnen/GeoThermie/TypeInfo;
 	
 	container KostenBaten := BeginStatus/KostenBaten;
 	
 	unit<uint32> bron := PlanRegio
 	{
-		unit<uint32> ContourSet:= BronData/WarmteBronnen/GeoThermie/ContourSet;
+		unit<uint32> ContourSet:= RuimtelijkeData/WarmteBronnen/GeoThermie/ContourSet;
 		unit<uint32> PointSet:=ContourSet/PointSet;
 		attribute<bool> IsInContour:= IsDefined(ContourSet/grid[point[Geography/rdc_grids/m100]]), FreeData = "False"; // > value(0, ContourSet);
 		unit<uint32> OutsideContourSet:= Subset(not(IsInContour))
