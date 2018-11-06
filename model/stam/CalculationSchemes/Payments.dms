@@ -79,7 +79,7 @@ container Payments: FreeData = "False" // DEBUG
 
 		unit<float64> MQuantity := 1000000 * Quantity;
 		// '#unique(mut/full_name_ORG) == #mut'
-		unit<uint32> ActorEntity := SpecifiekeInstellingen/PlanRegio;
+		unit<uint32> ActorEntity := Invoer/SpecifiekeInstellingen/PlanRegio;
 		container all_muts  := for_each_neidv(mut/full_name,  mut/expr, 'sum(uint32(mut/full_name == '+Quote(mut/full_name)+')) == 1', ActorEntity, Quantity);
 		container aggr_muts := for_each_nedv(Actor/full_name[actor_rels/values], 'add('+AsItemList('all_muts/'+mut/full_name, mut/actor_rels_rel)+')', ActorEntity, Quantity);
 		attribute<Quantity> Saldo (ActorEntity) := ='add('+AsItemList('aggr_muts/'+Actor/full_name[actor_rels/values])+')';
@@ -109,7 +109,7 @@ container Payments: FreeData = "False" // DEBUG
 		// end parameters
 
 		unit<float64> MQuantity   := 1000000 * Quantity;
-		unit<uint32>  PR          := SpecifiekeInstellingen/PlanRegio;
+		unit<uint32>  PR          := Invoer/SpecifiekeInstellingen/PlanRegio;
 		unit<uint32>  Kostensoort := Accounting/KostenSoort;
 		unit<uint8>   BC          := Accounting/BC;
 

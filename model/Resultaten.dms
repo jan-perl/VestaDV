@@ -33,9 +33,9 @@
 
 container Resultaten :=
 	for_each_ne(
-		Model/Classifications/zichtjaar/Name,
-		'CalculationSchemes/Resultaten('
-			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Model/Classifications/zichtjaar/Name+']'
+		Classifications/zichtjaar/Name,
+		'Model/CalculationSchemes/Resultaten('
+			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Classifications/zichtjaar/Name+']'
 		+')'
 	)
 	, using = "Model"

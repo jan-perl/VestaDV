@@ -38,14 +38,14 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container base: Using = "Model/Units"
+container base: Using = "Units"
 {
 	parameter<string> PlanRegioNaam :=  // @USERINPUT, grids vereisen RapportageRegio NL in base.dms bestand en EmptyArcSet in VestaRun.dms anders error-meldingen;
 			'buurt';
 //			'blok500m';
 //			'blok1km';
 //			'blok2km';
-	unit<uint32> PlanRegio:= ='Model/Geography/RegioIndelingen/'+ SpecifiekeInstellingen/PlanRegioNaam;
+	unit<uint32> PlanRegio:= ='Geography/RegioIndelingen/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam;
 
 	parameter<bool> HasStartingArcSet:= True;
 
@@ -450,7 +450,7 @@ container base: Using = "Model/Units"
 
 	container Beleidsopties {
 		parameter<Eur_yr_Aansl> Heffingskorting := 284[Eur_yr_Aansl];
-		unit<uint32> TypeInfoList := Model/Kengetallen/WarmteBronnen/MetaData/TypeInfoList;
+		unit<uint32> TypeInfoList := invoer/Kengetallen/WarmteBronnen/MetaData/TypeInfoList;
 		container EIA: Descr = "Energie Inversterings aftrek, zoals  MIA/VAMIL etc."
 		{
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
@@ -507,8 +507,8 @@ container base: Using = "Model/Units"
 
 	container ReportOpties
 	{
-		unit<UInt32> RapportageRegio := Model/Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
-//		unit<UInt32> RapportageRegio := Model/Geography/RegioIndelingen/Provincie;
+		unit<UInt32> RapportageRegio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente'
+//		unit<UInt32> RapportageRegio := Geography/RegioIndelingen/Provincie;
 		
 		//'0=geen onderverdeling',
 		//'1=woningtype',

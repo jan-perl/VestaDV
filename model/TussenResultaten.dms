@@ -33,10 +33,9 @@
 
 container TussenResultaten :=
 	for_each_ne(
-		Model/Classifications/zichtjaar/Name,
-		'CalculationSchemes/VestaRun('
-			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Model/Classifications/zichtjaar/Name+']'
-			+MakeDefined(', '+Model/Classifications/zichtjaar/Name[ID(Model/Classifications/zichtjaar)-1b]+'/EndState','')
+		Classifications/zichtjaar/Name,
+		'Model/CalculationSchemes/VestaRun('
+			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Classifications/zichtjaar/Name+']'
+			+MakeDefined(', '+Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b]+'/EndState','')
 		+')'
-	)
-	, using = "Model";
+	);

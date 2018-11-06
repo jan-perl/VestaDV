@@ -41,12 +41,12 @@ template FlowTempl: using = "Classifications"
 	
 	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
 	
-	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
-	attribute<Float64>         PlanRegioInRapportageFactor  (SpecifiekeInstellingen/PlanRegio) := Float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
+	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
+	attribute<Float64>         PlanRegioInRapportageFactor  (Invoer/SpecifiekeInstellingen/PlanRegio) := Float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
 	
 	template ComponentsT {
 		parameter<string>   name;
-		attribute<Float64> Factor (SpecifiekeInstellingen/PlanRegio);
+		attribute<Float64> Factor (Invoer/SpecifiekeInstellingen/PlanRegio);
 		
 		container Flow  := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting,   Eur_yr,  true, ReportFolder+'/'+Name+'_Flow', Factor);
 		container Stock := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting,   Eur,    false, ReportFolder+'/'+Name+'_Stock', Factor);

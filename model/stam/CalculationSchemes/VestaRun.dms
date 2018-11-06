@@ -55,7 +55,7 @@ template VestaRun
 	{
 		container AanbodOpties
 		{
-			unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
+			unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie(PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
 
 			container RestWarmte {
@@ -70,9 +70,9 @@ template VestaRun
 					attribute<string> BU_code_dk;
 					attribute<string> pntnr;
 
-					// error when PlanRegio != Model/Geography/RegioIndelingen/buurt
-					attribute<PlanRegio>     BU_rel    := rlookup(BU_Code,    Model/Geography/RegioIndelingen/buurt/BU_code);
-					attribute<PlanRegio>     BU_DK_rel := rlookup(BU_Code_dk, Model/Geography/RegioIndelingen/buurt/BU_code);
+					// error when PlanRegio != Geography/RegioIndelingen/buurt
+					attribute<PlanRegio>     BU_rel    := rlookup(BU_Code,    Geography/RegioIndelingen/buurt/BU_code);
+					attribute<PlanRegio>     BU_DK_rel := rlookup(BU_Code_dk, Geography/RegioIndelingen/buurt/BU_code);
 					attribute<.>             up_rel    := rlookup(BU_DK_rel, BU_rel);
 
 					attribute<rdc_meter>     Point     := PlanRegio/Point[BU_rel];
@@ -122,7 +122,7 @@ template VestaRun
 					parameter<bool> HasArcs := false; // avoid reading the dbf to find this out.
 				}
 
-				unit<uint32> CumulatedArcSet := = /SpecifiekeInstellingen/HasStartingArcSet ? 'GivenStartArcSet' : 'EmptyArcSet';
+				unit<uint32> CumulatedArcSet := = SpecifiekeInstellingen/HasStartingArcSet ? 'GivenStartArcSet' : 'EmptyArcSet';
 
 				attribute<rdc_meter> CumulatedArcs(CumulatedArcSet, arc)
 					:= points2sequence_ps(
@@ -173,12 +173,12 @@ template VestaRun
 	}
 	// end case parameters
 
-	container SpecifiekeInstellingen := ='/SpecifiekeInstellingen/yr'+string(RunJaar);
+	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/yr'+string(RunJaar);
 	container Bebouwing              := ='RuimtelijkeData/Bebouwing/J'+string(RunJaar);
 
-	unit<uint32> PlanRegio    := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32> PlanRegio    := Invoer/SpecifiekeInstellingen/PlanRegio;
 
-	attribute<float32> klimaat (Model/Geography/rdc_grids/m100) := = 'Model/RuimtelijkeData/klimaat/J'+string(RunJaar);
+	attribute<float32> klimaat (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar);
 
 	container VraagKentallen  := SpecifiekeInstellingen/VraagKentallen/BaseLine;
 	container AanbodKentallen := SpecifiekeInstellingen/AanbodKentallen/BaseLine;
@@ -264,8 +264,8 @@ template VestaRun
 	{
 		container AardGas
 		{
-			unit<uint32> Tabel := /model/energieprijzen/AardGas/Table;
-			container prijzenbron  := /model/energieprijzen/AardGas/results;
+			unit<uint32> Tabel := invoer/energieprijzen/AardGas/Table;
+			container prijzenbron  := invoer/energieprijzen/AardGas/results;
 			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
 
 			parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
@@ -303,8 +303,8 @@ template VestaRun
 
 		container Elektriciteit
 		{
-			unit<uint32> Tabel := /model/energieprijzen/Elektriciteit/Table;
-			container prijzenbron  := /model/energieprijzen/Elektriciteit/results;
+			unit<uint32> Tabel := invoer/energieprijzen/Elektriciteit/Table;
+			container prijzenbron  := invoer/energieprijzen/Elektriciteit/results;
 
 			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
 
@@ -334,7 +334,7 @@ template VestaRun
 					+string(Classifications/BebouwingsComponent/IsNieuwbouw)+','
 					+string(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
-					'Model/Kengetallen/Bebouwing/'+BCN+'/results,'
+					'invoer/Kengetallen/Bebouwing/'+BCN+'/results,'
 					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/DragerSpecifiek,'
 					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/'+BCN+','
 					'float64(klimaat),'
@@ -576,7 +576,7 @@ template VestaRun
 			attribute<Eur_yr> Kc_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
 			attribute<Eur_yr> Oj_SDE         (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 		}
-		container KostenBaten := KostenBatenSchema(VestaRunData, /model/Energieprijzen, RunJaar);
+		container KostenBaten := KostenBatenSchema(VestaRunData, invoer/Energieprijzen, RunJaar);
 	}
 
 	container GebiedsAllocatie :=

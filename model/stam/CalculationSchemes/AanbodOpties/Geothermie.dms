@@ -40,7 +40,7 @@ template GeoThermie
 	
 	// end of case param
 
-	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 	container TypeInfo     := Kengetallen/WarmteBronnen/GeoThermie/TypeInfo;
 	
 	container KostenBaten := BeginStatus/KostenBaten;

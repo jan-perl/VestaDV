@@ -37,23 +37,12 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181"
+container Model: IntegrityCheck = "GeoDmsVersion() >= 7.181", using = "Invoer"
 {
-	#include <ConfigSettings.dms>
-	#include <ExportSettings.dms>
-	#include <Units.dms>
-	#include <Geography.dms>
-	#include <Classifications.dms>
-
-	#include <RuimtelijkeData.dms>
-	#include <Kengetallen.dms>
-	#include <EnergiePrijzen.dms>
-
+	#include <CalculationSchemes.dms>
 	container ReportingMetaData
 	{
 		#include<Accounting.dms>
 		#include<Transformations.dms>
 	}
-
-	#include <CalculationSchemes.dms>
 }

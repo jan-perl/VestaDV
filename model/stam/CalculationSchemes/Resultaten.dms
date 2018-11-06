@@ -45,7 +45,7 @@ template Resultaten
 	// optional case parameter
 
 	container TussenResultaten := ='/TussenResultaten/J'+String(RunJaar);
-	unit<uint32> PlanRegio    := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32> PlanRegio    := Invoer/SpecifiekeInstellingen/PlanRegio;
 	
 	container Prijzen := TussenResultaten/Prijzen;
 	container VestaRunData := TussenResultaten/VestaRunData;

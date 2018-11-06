@@ -118,7 +118,7 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 		
 		unit<uint32>                           BebouwingsObject                            := VestaRunDataComponent/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := VestaRunDataComponent/WarmteAllocatie;
-		unit<uint32>                           PlanRegio                                   := SpecifiekeInstellingen/PlanRegio;
+		unit<uint32>                           PlanRegio                                   := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 		parameter<Eur_GJ> WarmtePrijs := VestaRunDataComponent/Warmtewet/WarmtePrijs;
 
@@ -160,10 +160,10 @@ container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
 			container NCW30;
 			container NCW50;
 			
-			attribute<Eur_yr> Oj_VastRechtG (SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur   > Oi_AansluitG  (SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur_yr> Oj_VastRechtE (SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur   > Oi_AansluitE  (SpecifiekeInstellingen/PlanRegio);
+			attribute<Eur_yr> Oj_VastRechtG (Invoer/SpecifiekeInstellingen/PlanRegio);
+			attribute<Eur   > Oi_AansluitG  (Invoer/SpecifiekeInstellingen/PlanRegio);
+			attribute<Eur_yr> Oj_VastRechtE (Invoer/SpecifiekeInstellingen/PlanRegio);
+			attribute<Eur   > Oi_AansluitE  (Invoer/SpecifiekeInstellingen/PlanRegio);
 
 			container PlanRegioKaartComponent;
 

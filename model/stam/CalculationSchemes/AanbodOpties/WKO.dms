@@ -44,7 +44,7 @@ template WKO
 	container VestaRunData := KostenBaten/VestaRunData;
 	
 	unit<uint8> WkoComponent := Classifications/WkoComponent;
-	unit<uint32> PlanRegio   := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32> PlanRegio   := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container impl
 	{
@@ -489,7 +489,7 @@ template WKO
 		container VestaRunDataComponent:= WkoDataComponent/VestaRunDataComponent;
 		container RuimtelijkeVraagComponent:= VestaRunDataComponent/RuimtelijkeVraagComponent;
 		unit<UInt32> BebouwingsObject:= VestaRunDataComponent/BebouwingsObject;
-		unit<uint32> PlanRegio         := SpecifiekeInstellingen/PlanRegio;
+		unit<uint32> PlanRegio         := Invoer/SpecifiekeInstellingen/PlanRegio;
 			
 		attribute<AllObjects> AllObjects_rel(BebouwingsObject):= value(ID(BebouwingsObject) + NrPrevAllObjects, AllObjects);
 		

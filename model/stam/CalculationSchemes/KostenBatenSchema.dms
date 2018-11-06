@@ -38,7 +38,7 @@ template KostenBatenSchema
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
 
-	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container PlanRegioKaarten :=
 		for_each_ne(

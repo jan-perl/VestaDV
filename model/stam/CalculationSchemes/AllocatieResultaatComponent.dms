@@ -34,7 +34,7 @@
 template AllocatieResultaatComponentTempl
 {
 	container VestaRunDataComponent;
-	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (SpecifiekeInstellingen/PlanRegio);
+	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (Invoer/SpecifiekeInstellingen/PlanRegio);
 
 	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject);
 	attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject);
@@ -43,7 +43,7 @@ template AllocatieResultaatComponentTempl
 	container     RuimtelijkeVraagComponent := VestaRunDataComponent/RuimtelijkeVraagComponent;
 	container     Instellingen              := VestaRunDataComponent/Instellingen;
 	unit<uint32>  BebouwingsObject          := VestaRunDataComponent/BebouwingsObject;
-	unit<uint32>  PlanRegio                 := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32>  PlanRegio                 := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[ VestaRunDataComponent/PlanRegio_rel ]);
 
