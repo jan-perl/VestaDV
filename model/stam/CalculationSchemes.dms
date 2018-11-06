@@ -37,7 +37,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container CalculationSchemes: Using = "Units;Geography", isHidden = "True"
+container CalculationSchemes: Using = "Units;Geography"
 {
 
 	#include <EnergieKengetallen.dms>
