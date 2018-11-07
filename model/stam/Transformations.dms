@@ -83,7 +83,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'A2_eLevering', 'e20_eNet', 
 					'-AllocatieResultaat/@BC@/MeterVraag/Elektriciteit', 
 					PRR
-				,	'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
@@ -102,7 +102,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_RV'
 					'-AllocatieResultaat/@BC@/MeterVraag/Aardgas_WW', 
 					PRR
-				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g per GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -274,7 +274,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'C7_mWKK', 'a@BN@1_Gas_@BC@',
 					'-AllocatieResultaat/@BC@/MeterVraag/AardGas_mWKK', 
 					PRR
-				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0'  // g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -395,7 +395,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'D2_Bijstook', 'e10_GNet',
 					'-EndState/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(EndState/GebiedsOptie)', 
 					''
-				,	'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg', 'indicatoren/CO2/CO2_GJg' // KG/GJ CO2
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
 				,	'20.0', '20.0', '20.0', '20.0', '20.0' // g/GJ NOx
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -430,7 +430,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'E@RON@_@ROC@', 'e20_eNet',  // Elektriciteit
 					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor', 
 					''
-				,	'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
@@ -510,7 +510,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'E4_WKO_Warmte', 'e20_eNet',
 					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
-				,	'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
@@ -535,7 +535,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 			,	'E5_WKO_Koude', 'e20_eNet',
 					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC', 
 					'VestaRunData/@WKOC@/PlanRegio_rel'
-				,	'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ', 'Prijzen/AardGas/CO2_GJ'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
