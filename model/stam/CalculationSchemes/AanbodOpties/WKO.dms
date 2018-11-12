@@ -102,8 +102,8 @@ template WKO
 				
 				attribute<Eur_yr> Kj_ge_netto(BebouwingsObject) := KostenBase/Kj_ge_netto;
 
-				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex [gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
-				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
+				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
+				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk [gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
 				attribute<Eur_yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * Lw1;
 				
 				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
@@ -162,8 +162,8 @@ template WKO
 			
 			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := 
 				classify(V_Elek, Prijzen/Elektriciteit/Staffel/ClassBreak);
-			attribute<Eur_GJ> KGJj_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_ex[gebruiksgrootteklasse_rel];
-			attribute<Eur_GJ> KGJm_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk[gebruiksgrootteklasse_rel];
+			attribute<Eur_GJ> KGJj_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel];
+			attribute<Eur_GJ> KGJm_Elek  (BebouwingsObject) := Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk [gebruiksgrootteklasse_rel];
 				
 			container Kosten
 			{

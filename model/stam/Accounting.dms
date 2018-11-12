@@ -117,7 +117,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					PRR
 
 			,	'Aardgas', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/AardGas/eindgebruik_ex * '+VAT_F, 
+					'AllocatieResultaat/@BTW@/AardGas/eindgebruik_excl * '+VAT_F, 
 					'', 
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
@@ -162,7 +162,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					PRR
 
 			,	'Elektriciteit', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/Elektriciteit/eindgebruik_ex * '+VAT_F,
+					'AllocatieResultaat/@BTW@/Elektriciteit/eindgebruik_excl * '+VAT_F,
 					'', 
 					'VestaRunData/@BTW@/PlanRegio_rel'
 
@@ -302,12 +302,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					PRR
 			,	'VergoedingZonPV', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV * VestaRunData/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_ex[AllocatieResultaat/@BC@/Elektriciteit/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor',
+					'VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV * VestaRunData/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_excl[AllocatieResultaat/@BC@/Elektriciteit/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor',
 					'',
 					PRR
 
 			,	'VergoedingZonneBoiler', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler * VestaRunData/@BC@/PrijzenAardgas/KGJ_eindgebruik_ex[AllocatieResultaat/@BC@/AardGas/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
+					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler * VestaRunData/@BC@/PrijzenAardgas/KGJ_eindgebruik_excl[AllocatieResultaat/@BC@/AardGas/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
 					'',
 					PRR
 		

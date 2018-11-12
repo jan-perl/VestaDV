@@ -83,7 +83,7 @@ template KostenBatenSchema
 		attribute<units/GJ_yr>   Lq6 (PlanRegio) : Descr = "Warmtevraag glastuinbouw",   = PlanRegioKaarten/BestaandeGlTb/VerbruikD + PlanRegioKaarten/NieuwbouwGlTb/VerbruikD;
 
 		parameter<Ratio>  N1   := 80[Percent] / 100[Percent], Source = "FO v7a F 35", Descr = "Percentage grootschalige warmte dat niet wordt bijgestookt";
-		parameter<Eur_GJ> N2   := Prijzen/AardGas/Bijstook/KGJ_eindgebruik_ex;
+		parameter<Eur_GJ> N2   := Prijzen/AardGas/Bijstook/KGJ_eindgebruik_excl;
 		parameter<Eur_GJ> N2_m := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
 		parameter<Ratio>  N3   := 0.20, Descr = "WarmteVerlies in de wijkdistributie", Source ="FO v7a F 35";
 	}
