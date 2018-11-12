@@ -72,10 +72,10 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<uint32> aantal := pcount(src/voorkomend_rel);
 		}
 
-		container import := RuimtelijkeData/BAG/import;
-		unit<uint32> nummeraanduiding := import/nummeraanduiding;
-		unit<uint32> vbo := import/vbo;
-		
+		// Voor koppeling aan de BAG
+		unit<uint32> nummeraanduiding := RuimtelijkeData/BAG/import/nummeraanduiding;
+		unit<uint32> vbo              := RuimtelijkeData/BAG/import/vbo;
+
 		unit<uint32> data := unique(src/adres_key)
 		{
 			attribute<string>                       nummeraanduiding_id := nummeraanduiding/identificatie[rlookup(values, nummeraanduiding/adres_key)];

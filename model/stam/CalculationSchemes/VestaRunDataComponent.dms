@@ -141,7 +141,7 @@ template VestaRunDataComponent
 	attribute<BebouwingsTypeDomein> BebouwingsType(BebouwingsObject) := RuimtelijkeVraagComponent/BebouwingsType;
 
 	container EIA_Opties := ='SpecifiekeInstellingen/BeleidsOpties/EIA/'+NcwRefBase + 'e';
-	container EEA_Opties := SpecifiekeInstellingen/BeleidsOpties/EEA/Kosten/Base;
+	container EEA_Opties := SpecifiekeInstellingen/BeleidsOpties/EEA/Kosten/Basis;
 
 	container OpwekkingsOpties
 	{

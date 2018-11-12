@@ -83,7 +83,7 @@ template GeoThermie
 		attribute<Eur_yr> Kj_pt_Base     (PlanRegio) := PijpKosten * Kengetallen/Onderhoud/Rj_PrimairNet;
 		attribute<Eur_yr> Kj_pt_Admin    (PlanRegio) := Kj_pt_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_pt_Onderhoud(PlanRegio) := Kj_pt_Base - Kj_pt_Admin;
-		attribute<Eur_yr> Kj_pt_Precario (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * bron/dist * Kengetallen/Onderhoud/Rj_Precario_m;
+		attribute<Eur_yr> Kj_pt_Precario (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * bron/dist * Kengetallen/Onderhoud/Rj_Precario_pm;
 		
 		attribute<Eur_yr> Kj_ow_Base     (PlanRegio) := Installatie * TypeInfo/Rj_Onderhoud;
 		attribute<Eur_yr> Kj_ow_Admin    (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;

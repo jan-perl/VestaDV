@@ -251,7 +251,7 @@ template WKO
 			attribute<Eur   > Ki_ge_pm (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 			attribute<Eur   > Ki_ge_ov (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 // 			attribute<Eur_yr> Kj_ge_hv (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
-			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_m;
+			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/VestaRunDataComponent/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
 			attribute<Eur   > Oi_Aansl (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
 			attribute<Eur_yr> Oj_Aansl (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);

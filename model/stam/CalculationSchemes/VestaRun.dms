@@ -256,8 +256,8 @@ template VestaRun
 		parameter<Ratio> LeerCurve1Base := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
 		parameter<Ratio> LeerCurve2Base := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
 
-		parameter<Ratio> Curve1 := LeerCurve1Base * Schuiven/LerenAan + Schuiven/LerenUit;
-		parameter<Ratio> Curve2 := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerenUit;
+		parameter<Ratio> Curve1 := LeerCurve1Base * Schuiven/LerenAan + Schuiven/LerenUit, descr = "overige onderdelen";
+		parameter<Ratio> Curve2 := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerenUit, descr = "warmteleidingen en uitkoppeling van warmte";
 	}
 
 	container Prijzen

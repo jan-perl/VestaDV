@@ -100,7 +100,7 @@ template RestWarmte
 
 			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud;
 			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_m;
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_pm;
 
 			attribute<Eur_yr> Kj_pt           (PlanRegio) := Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario;
 

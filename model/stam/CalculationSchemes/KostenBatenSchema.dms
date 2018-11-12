@@ -110,7 +110,7 @@ template KostenBatenSchema
 				// en dof case parameters
 
 				attribute<bool>      IsMeergezins  (WoonObject) := Type/IsMeergezins[VestaRunDataComponent/BebouwingsType];
-				attribute<Eur_Aansl> Ki_wd_w       (WoonObject) := IsMeergezins ? 2700[Eur_Aansl] : 5000[Eur_Aansl];
+				attribute<Eur_Aansl> Ki_wd_w       (WoonObject) := IsMeergezins ? 2700[Eur_Aansl] : 5000[Eur_Aansl]; // zie FO Vesta 3.0, Tabel 6/7/8
 
 				parameter<Eur_Aansl> Oi_vermeden_gasketel := 1900[Eur_Aansl] * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
 
@@ -458,7 +458,7 @@ template KostenBatenSchema
 		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
-		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_m;
+		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_pm;
 		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_Verbruik + Kj_wd_Admin + Kj_lv_Admin + Kj_Precario + Kj_ge_hv, Source = "FO v7a F 2";
 		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_Verbruik + Kj_wd_Admin + Kj_lv_Admin;
 	}
