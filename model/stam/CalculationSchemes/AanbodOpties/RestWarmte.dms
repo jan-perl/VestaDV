@@ -95,12 +95,12 @@ template RestWarmte
 			// TODO: ordenen, controleer of alle Kj zijn opgenomen, precario op pt, admin op pt en ow.
 
 			attribute<Eur_yr> Kj_KL_ptow(PlanRegio) :=
-				Ki_pt * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/pt)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/pt))+
-				Ki_ow * NCW/ow28/AnnualisationFactor * MakeDefined(((1.0 - SpecifiekeInstellingen/BeleidsOpties/EIA/ow)*(1.0 - SpecifiekeInstellingen/BeleidsOpties/EEA/ow))[TypeInfoList_rel], 1.0);
+				Ki_pt * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/Beleid/EIA/pt)*(1.0 - SpecifiekeInstellingen/Beleid/EEA/pt))+
+				Ki_ow * NCW/ow28/AnnualisationFactor * MakeDefined(((1.0 - SpecifiekeInstellingen/Beleid/EIA/ow)*(1.0 - SpecifiekeInstellingen/Beleid/EEA/ow))[TypeInfoList_rel], 1.0);
 
 			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud;
 			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_m;
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_pm;
 
 			attribute<Eur_yr> Kj_pt           (PlanRegio) := Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario;
 
@@ -119,7 +119,7 @@ template RestWarmte
 			attribute<Eur_yr> Kj_owpt         (PlanRegio) := Kj_ow + Kj_pt;
 			attribute<Eur_yr> Oj_Netto        (PlanRegio) := KostenBaten/Oj_NettoD- Kj_owpt;
 
-			attribute<Eur_yr> Oj_SDE          (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(SpecifiekeInstellingen/BeleidsOpties/EEA/SDE[TypeInfoList_rel], 0[Eur_GJ]);
+			attribute<Eur_yr> Oj_SDE          (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfoList_rel], 0[Eur_GJ]);
 			attribute<Eur_MW_yr> Mr           (PlanRegio) := (Oj_Netto + Oj_SDE - Kj_KL_ptow) / KostenBaten/CapaciteitsVraagD; // contribution  margin per consumed MW capacity
 		}
 		attribute<Eur_MW_yr>  Ranking         (PlanRegio) := Assignment/Mr// ranking niet op prijs per GJ maar op opbrengsten per MW capaciteit, itt FO v7a $7.
@@ -256,12 +256,12 @@ template RestWarmte
 		container Stock := BeginStatus/Stock
 		{
 			attribute<Eur> Ki_ow          (PlanRegio) := BeginStatus/Stock/Ki_ow          + iif(NewGebruik, lastiter/Assignment/ki_ow, 0[Eur]);
-			attribute<Eur> Oi_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, MakeDefined(lastiter/Assignment/ki_ow * SpecifiekeInstellingen/BeleidsOpties/EIA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0[Eur]), 0[Eur]);
+			attribute<Eur> Oi_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, MakeDefined(lastiter/Assignment/ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0[Eur]), 0[Eur]);
 			attribute<Eur> Oe_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik, 
-				(Ki_ow - Oi_ow_subsidie) * MakeDefined(SpecifiekeInstellingen/BeleidsOpties/EEA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0.0), 0[Eur]);
+				(Ki_ow - Oi_ow_subsidie) * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0.0), 0[Eur]);
 
 			attribute<Eur> Ki_pt          (PlanRegio) := BeginStatus/Stock/Ki_pt          + iif(NewGebruik, lastiter/Assignment/ki_pt, 0[Eur]);
-			attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, lastiter/Assignment/ki_pt * SpecifiekeInstellingen/BeleidsOpties/EIA/pt, 0[Eur]);
+			attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, lastiter/Assignment/ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt, 0[Eur]);
 		}
 
 		container AanbodOpties := BeginStatus/AanbodOpties

@@ -72,7 +72,7 @@ container Bebouwing :=
 			attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwjaarWoningBestaand)) + Impl/BouwjaarWoningBestaand_rel, classifications/combines/WoningtypeBouwjaarBestaand);
 			attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwjaarWoningBestaand/ClassBreak), isHidden = "True";
 
-			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
+			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 			attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry
 			{
@@ -151,7 +151,7 @@ container Bebouwing :=
 			attribute<int16>                                SymbolIndex              := BebouwingsTypeDomein/SymbolIndex[BebouwingsType], DialogType = "SymbolIndex", isHidden = "True";
 
 			//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
-			attribute<float64>                              AandeelWarmteVraag       := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
+			attribute<float64>                              AandeelWarmteVraag       := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 			container Criteria
 			{
@@ -160,14 +160,14 @@ container Bebouwing :=
 
 		container Util_Nieuwbouw_Inbreiding :=
 			for_each_nedv(
-				RuimtelijkeData/Nieuwbouw/SZU/HasMutations ? RuimtelijkeData/Nieuwbouw/SZU/Name : ''
-				,	RuimtelijkeData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(RuimtelijkeData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
+				RuimtelijkeData/Nieuwbouw/ZU/HasMutations ? RuimtelijkeData/Nieuwbouw/ZU/Name : ''
+				,	RuimtelijkeData/Nieuwbouw/ZU/Zichtjaar_jaar > 2010w && strlen(RuimtelijkeData/Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0 
 				?	'int32(sum( '
 						'BestaandeUtil/NrJoinedUnits * ' +
-						'float64(BestaandeUtil/BebouwingsTypeDomein/UtilTypeNieuwbouw_rel[BestaandeUtil/BebouwingsType] == '+string(RuimtelijkeData/Nieuwbouw/SZU/nr_2)+'[uint8])'
+						'float64(BestaandeUtil/BebouwingsTypeDomein/UtilTypeNieuwbouw_rel[BestaandeUtil/BebouwingsType] == '+string(RuimtelijkeData/Nieuwbouw/ZU/nr_2)+'[uint8])'
 				 	+	', BestaandeUtil/point[rdc_grids/m100]'
 					')'
-					'*max_elem(float64(RuimtelijkeData/Nieuwbouw/InbreidingUtilFactor/'+RuimtelijkeData/Nieuwbouw/SZU/Name+') - 1.0 , 0.0)'
+					'*max_elem(float64(RuimtelijkeData/Nieuwbouw/InbreidingUtilFactor/'+RuimtelijkeData/Nieuwbouw/ZU/Name+') - 1.0 , 0.0)'
 					')'
 				:	'const(0i, Geography/rdc_grids/m100)'
 				,	Geography/rdc_grids/m100, int32
@@ -175,9 +175,9 @@ container Bebouwing :=
 
 		container Util_Nieuwbouw_Nieuwbouw :=
 			for_each_nedv(
-				RuimtelijkeData/Nieuwbouw/SZU/HasMutations ? RuimtelijkeData/Nieuwbouw/SZU/Name : ''
-				,	RuimtelijkeData/Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(RuimtelijkeData/Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 
-					?	'int32(RuimtelijkeData/Nieuwbouw/UtilOppervlak/'+RuimtelijkeData/Nieuwbouw/SZU/Name +')'
+				RuimtelijkeData/Nieuwbouw/ZU/HasMutations ? RuimtelijkeData/Nieuwbouw/ZU/Name : ''
+				,	RuimtelijkeData/Nieuwbouw/ZU/Zichtjaar_jaar > 2010w && strlen(RuimtelijkeData/Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0 
+					?	'int32(RuimtelijkeData/Nieuwbouw/UtilOppervlak/'+RuimtelijkeData/Nieuwbouw/ZU/Name +')'
 						''
 					:	'const(0i, Geography/rdc_grids/m100)'
 				,	Geography/rdc_grids/m100, int32
@@ -185,8 +185,8 @@ container Bebouwing :=
 
 		container NieuwbouwUtil :=
 			for_each_nedv(
-				RuimtelijkeData/Nieuwbouw/SZU/HasMutations ? RuimtelijkeData/Nieuwbouw/SZU/Name : ''
-				,	'Util_Nieuwbouw_Nieuwbouw/'+RuimtelijkeData/Nieuwbouw/SZU/Name + ' + Util_Nieuwbouw_Inbreiding/'+RuimtelijkeData/Nieuwbouw/SZU/Name
+				RuimtelijkeData/Nieuwbouw/ZU/HasMutations ? RuimtelijkeData/Nieuwbouw/ZU/Name : ''
+				,	'Util_Nieuwbouw_Nieuwbouw/'+RuimtelijkeData/Nieuwbouw/ZU/Name + ' + Util_Nieuwbouw_Inbreiding/'+RuimtelijkeData/Nieuwbouw/ZU/Name
 				,	Geography/rdc_grids/m100, int32
 			);
 
@@ -224,7 +224,7 @@ container Bebouwing :=
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := GLTB_Code, isHidden = "True";
 			attribute<uint8>                    ModelObjectKey     := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 
-			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
+			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
 			container Criteria
 			{
 			//	attribute<Bool>     KanBesparen := const(false, BebouwingsObject); // Vul  hier iets anders in als je in RuimtelijkeVraagMetBesparing wel besparingen voor glastuinbouw wilt

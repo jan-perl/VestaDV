@@ -31,14 +31,6 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-// Dit is de configuratiefile met het Rekenchema om de model objectdata te importeren   //
-// uit Excel bestanden en deze van heldere namen en values units te voorzien            //
-//                                                                                      //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 template Import
 {
 	parameter<string> FileName;

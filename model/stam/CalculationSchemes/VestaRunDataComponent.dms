@@ -140,8 +140,8 @@ template VestaRunDataComponent
 	
 	attribute<BebouwingsTypeDomein> BebouwingsType(BebouwingsObject) := RuimtelijkeVraagComponent/BebouwingsType;
 
-	container EIA_Opties := ='SpecifiekeInstellingen/BeleidsOpties/EIA/'+NcwRefBase + 'e';
-	container EEA_Opties := SpecifiekeInstellingen/BeleidsOpties/EEA/Kosten/Base;
+	container EIA_Opties := ='SpecifiekeInstellingen/Beleid/EIA/E_'+NcwRefBase;
+	container EEA_Opties := SpecifiekeInstellingen/Beleid/EEA/Kosten/Basis;
 
 	container OpwekkingsOpties
 	{
@@ -228,10 +228,10 @@ template VestaRunDataComponent
 			attribute<units/GJ_yr> S_T_AP (BebouwingsObject) := VermedenGas/S_T_AP* EnergieVraagModellen/Verbeteringen/S_T_AP/ComfortFactor_stap[Model_rel];
 			attribute<units/GJ_yr> S_B_AP (BebouwingsObject) := VermedenGas/S_B_AP *EnergieVraagModellen/Verbeteringen/S_B_AP/ComfortFactor_stap[Model_rel];
 		}
-		container VermedenKosten_eg_ex
+		container VermedenKosten_eg_excl
 		{
-			attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_eindgebruik_ex[classify(VermedenGas/RV + VermedenGas/WW, PrijzenAardgas/ClassBreak)];
-			attribute<Eur_GJ> ElektriciteitPrijs (BebouwingsObject) := PrijzenElektriciteit/KGJ_eindgebruik_ex[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
+			attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_eindgebruik_excl[classify(VermedenGas/RV + VermedenGas/WW, PrijzenAardgas/ClassBreak)];
+			attribute<Eur_GJ> ElektriciteitPrijs (BebouwingsObject) := PrijzenElektriciteit/KGJ_eindgebruik_excl[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
 
 			attribute<Eur_yr> S_H_T  (BebouwingsObject) := VermedenGas/S_H_T  * AardgasPrijs;
 			attribute<Eur_yr> S_H_B  (BebouwingsObject) := VermedenGas/S_H_B  * AardgasPrijs;
@@ -262,14 +262,14 @@ template VestaRunDataComponent
 			attribute<Eur_yr> S_B_EWV         (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_EWV;
 			attribute<Eur_yr> S_AP_EWV        (BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_EWV;
 		}
-		container ComfortVerbetering_eg_ex
+		container ComfortVerbetering_eg_excl
 		{
-			attribute<Eur_yr> S_H_T    (BebouwingsObject) :=  ComfortVerbetering/S_H_T  * VermedenKosten_eg_ex/AardgasPrijs;
-			attribute<Eur_yr> S_H_B    (BebouwingsObject) :=  ComfortVerbetering/S_H_B  * VermedenKosten_eg_ex/AardgasPrijs;
-			attribute<Eur_yr> S_H_AP   (BebouwingsObject) :=  ComfortVerbetering/S_H_AP * VermedenKosten_eg_ex/AardgasPrijs;
-			attribute<Eur_yr> S_T_B    (BebouwingsObject) :=  ComfortVerbetering/S_T_B  * VermedenKosten_eg_ex/AardgasPrijs;
-			attribute<Eur_yr> S_T_AP   (BebouwingsObject) :=  ComfortVerbetering/S_T_AP * VermedenKosten_eg_ex/AardgasPrijs;
-			attribute<Eur_yr> S_B_AP   (BebouwingsObject) :=  ComfortVerbetering/S_B_AP * VermedenKosten_eg_ex/AardgasPrijs;
+			attribute<Eur_yr> S_H_T    (BebouwingsObject) :=  ComfortVerbetering/S_H_T  * VermedenKosten_eg_excl/AardgasPrijs;
+			attribute<Eur_yr> S_H_B    (BebouwingsObject) :=  ComfortVerbetering/S_H_B  * VermedenKosten_eg_excl/AardgasPrijs;
+			attribute<Eur_yr> S_H_AP   (BebouwingsObject) :=  ComfortVerbetering/S_H_AP * VermedenKosten_eg_excl/AardgasPrijs;
+			attribute<Eur_yr> S_T_B    (BebouwingsObject) :=  ComfortVerbetering/S_T_B  * VermedenKosten_eg_excl/AardgasPrijs;
+			attribute<Eur_yr> S_T_AP   (BebouwingsObject) :=  ComfortVerbetering/S_T_AP * VermedenKosten_eg_excl/AardgasPrijs;
+			attribute<Eur_yr> S_B_AP   (BebouwingsObject) :=  ComfortVerbetering/S_B_AP * VermedenKosten_eg_excl/AardgasPrijs;
 
 			attribute<Eur_yr> S_AP_eWP (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 			attribute<Eur_yr> S_H_eWP  (BebouwingsObject) := S_H_AP + S_AP_eWP;
@@ -521,13 +521,13 @@ template VestaRunDataComponent
 				+')-1'
 			', Classifications/LabelSprong)';
 
-		parameter<float64> S_gv := (1.0 - EIA_Opties/S_GebouwVerbetering) * (1.0 - EEA_Opties/S_GebouwVerbetering);
-		parameter<float64> S_lo := (1.0 - EIA_Opties/S_LokaleOpwekking  ) * (1.0 - EEA_Opties/S_LokaleOpwekking);
+		parameter<float64> S_gv := (1.0 - EIA_Opties/Rs_GebouwVerbetering) * (1.0 - EEA_Opties/Rs_GebouwVerbetering);
+		parameter<float64> S_lo := (1.0 - EIA_Opties/Rs_LokaleOpwekking  ) * (1.0 - EEA_Opties/Rs_LokaleOpwekking);
 
 		container Rentabiliteit_eg := 
 			for_each_nedv(Classifications/LabelSprong/code,
 				replace(
-					'( (VermedenKosten_eg_ex/@ + ComfortVerbetering_eg_ex/@) * EIA_Opties/R_SplitIncentiveFactor * BTW_Factor'
+					'( (VermedenKosten_eg_excl/@ + ComfortVerbetering_eg_excl/@) * EIA_Opties/R_SplitIncentiveFactor * BTW_Factor'
 					'- GebouwVerbetering_j/@ * S_gv                                   * BTW_Factor_gv'
 					'- LokaleOpwekking_j/@   * S_lo                                   * BTW_Factor'
 					'- OA_j/@ * Kengetallen/Onderhoud/R_Onderhoud * (1.0 - EEA_Opties/S_Onderhoud)* BTW_Factor'
@@ -645,47 +645,47 @@ template VestaRunDataComponent
 
 		attribute<Eur_ModelUnit> Ki_gv_w            (BebouwingsObject) := kosten_sprong_w + StartingStateComponent/Sprongen/Ki_gv_w[StartingState_rel]; // Ki_eWP_w en Ki_EWV_w worden in sectie kosten apart opgenomen.
 		
-		attribute<Eur_yr> Vermeden_ex (BebouwingsObject) :=
+		attribute<Eur_yr> Vermeden_excl (BebouwingsObject) :=
 			MakeDefined(
 				merge(LabelSprong, Eur_yr, 
-					VermedenKosten_eg_ex/S_H_T,
-					VermedenKosten_eg_ex/S_H_B,
-					VermedenKosten_eg_ex/S_H_AP,
-					VermedenKosten_eg_ex/S_T_B,
-					VermedenKosten_eg_ex/S_T_AP,
-					VermedenKosten_eg_ex/S_B_AP,
-					VermedenKosten_eg_ex/S_H_eWP,
-					VermedenKosten_eg_ex/S_T_eWP,
-					VermedenKosten_eg_ex/S_B_eWP,
-					VermedenKosten_eg_ex/S_AP_eWP,
-					VermedenKosten_eg_ex/S_H_EWV,
-					VermedenKosten_eg_ex/S_T_EWV,
-					VermedenKosten_eg_ex/S_B_EWV,
-					VermedenKosten_eg_ex/S_AP_EWV
+					VermedenKosten_eg_excl/S_H_T,
+					VermedenKosten_eg_excl/S_H_B,
+					VermedenKosten_eg_excl/S_H_AP,
+					VermedenKosten_eg_excl/S_T_B,
+					VermedenKosten_eg_excl/S_T_AP,
+					VermedenKosten_eg_excl/S_B_AP,
+					VermedenKosten_eg_excl/S_H_eWP,
+					VermedenKosten_eg_excl/S_T_eWP,
+					VermedenKosten_eg_excl/S_B_eWP,
+					VermedenKosten_eg_excl/S_AP_eWP,
+					VermedenKosten_eg_excl/S_H_EWV,
+					VermedenKosten_eg_excl/S_T_EWV,
+					VermedenKosten_eg_excl/S_B_EWV,
+					VermedenKosten_eg_excl/S_AP_EWV
 				)
 			,	0[Eur_yr]
 			);
-		attribute<Eur_yr> Comfort_ex (BebouwingsObject) :=
+		attribute<Eur_yr> Comfort_excl (BebouwingsObject) :=
 			MakeDefined(
 				merge(LabelSprong, Eur_yr, 
-					ComfortVerbetering_eg_ex/S_H_T,
-					ComfortVerbetering_eg_ex/S_H_B,
-					ComfortVerbetering_eg_ex/S_H_AP,
-					ComfortVerbetering_eg_ex/S_T_B,
-					ComfortVerbetering_eg_ex/S_T_AP,
-					ComfortVerbetering_eg_ex/S_B_AP,
-					ComfortVerbetering_eg_ex/S_H_eWP,
-					ComfortVerbetering_eg_ex/S_T_eWP,
-					ComfortVerbetering_eg_ex/S_B_eWP,
-					ComfortVerbetering_eg_ex/S_AP_eWP,
-					ComfortVerbetering_eg_ex/S_H_EWV,
-					ComfortVerbetering_eg_ex/S_T_EWV,
-					ComfortVerbetering_eg_ex/S_B_EWV,
-					ComfortVerbetering_eg_ex/S_AP_EWV
+					ComfortVerbetering_eg_excl/S_H_T,
+					ComfortVerbetering_eg_excl/S_H_B,
+					ComfortVerbetering_eg_excl/S_H_AP,
+					ComfortVerbetering_eg_excl/S_T_B,
+					ComfortVerbetering_eg_excl/S_T_AP,
+					ComfortVerbetering_eg_excl/S_B_AP,
+					ComfortVerbetering_eg_excl/S_H_eWP,
+					ComfortVerbetering_eg_excl/S_T_eWP,
+					ComfortVerbetering_eg_excl/S_B_eWP,
+					ComfortVerbetering_eg_excl/S_AP_eWP,
+					ComfortVerbetering_eg_excl/S_H_EWV,
+					ComfortVerbetering_eg_excl/S_T_EWV,
+					ComfortVerbetering_eg_excl/S_B_EWV,
+					ComfortVerbetering_eg_excl/S_AP_EWV
 				)
 			,	0[Eur_yr]
 			);
-		attribute<Eur_yr> Incentive_eigenaar_ex (BebouwingsObject) := (Vermeden_ex + Comfort_ex) * EIA_Opties/R_SplitIncentiveFactor;
+		attribute<Eur_yr> Incentive_eigenaar_excl (BebouwingsObject) := (Vermeden_excl + Comfort_excl) * EIA_Opties/R_SplitIncentiveFactor;
 
 		attribute<Eur_yr> Kj_OA                 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 			add(
@@ -697,13 +697,13 @@ template VestaRunDataComponent
 		container subsidie {
 			attribute<Eur> EIA30 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 				add(
-					Ki_gv_w  * EIA_Opties/S_GebouwVerbetering
-				,	Ki_EWV_w * EIA_Opties/S_LokaleOpwekking
+					Ki_gv_w  * EIA_Opties/Rs_GebouwVerbetering
+				,	Ki_EWV_w * EIA_Opties/Rs_LokaleOpwekking
 				);
 
 			attribute<Eur> EIA15 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 				add(
-				 	Ki_eWP_w  * EIA_Opties/S_LokaleOpwekking
+				 	Ki_eWP_w  * EIA_Opties/Rs_LokaleOpwekking
 				);
 
 			attribute<Eur_yr> EEA (BebouwingsObject) := 
@@ -712,13 +712,13 @@ template VestaRunDataComponent
 				,	Kengetallen/Onderhoud/R_Admin     * EEA_Opties/S_Admin
 				)
 			+	RuimtelijkeVraagComponent/nrModelUnits * add(
-					Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/S_GebouwVerbetering 
-				,	Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/S_LokaleOpwekking 
-				,	Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/S_LokaleOpwekking 
+					Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering 
+				,	Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
+				,	Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
 				)
 			;
 		}
-		attribute<Yr> TVT (BebouwingsObject) := Ki_gv_w * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_ex;
+		attribute<Yr> TVT (BebouwingsObject) := Ki_gv_w * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_excl;
 	}
 	
 	container Efficiency
@@ -839,7 +839,7 @@ template VestaRunDataComponent
 		attribute<Eur> Ki_LokaleOpwekking15 (BebouwingsObject) := Ki_mWKK + Ki_hWP + Ki_eWP;
 		
 		attribute<Eur> Ki_GebouwVerbetering (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_gv_w; // cumulatief
-		attribute<Eur_yr> Kj_gv_incentive   (BebouwingsObject) := Sprongen/Incentive_eigenaar_ex + StartingStateComponent/Kosten/Kj_gv_incentive[StartingState_rel];
+		attribute<Eur_yr> Kj_gv_incentive   (BebouwingsObject) := Sprongen/Incentive_eigenaar_excl + StartingStateComponent/Kosten/Kj_gv_incentive[StartingState_rel];
 
 		attribute<Eur> Ki_LokaleOpwekking   (BebouwingsObject) := Ki_LokaleOpwekking30 + Ki_LokaleOpwekking15;
 		attribute<Eur> Ki_Totaal            (BebouwingsObject) := Ki_LokaleOpwekking + Ki_GebouwVerbetering;
@@ -913,6 +913,6 @@ template VestaRunDataComponent
 		parameter<Eur_GJ> WarmtePrijs := 
 			=Voorkeuren/IsVasteWarmtePrijs 
 			? 'Voorkeuren/VasteWarmtePrijs'
-			: 'PrijsFactor * PrijzenAardgas/KGJ_eindgebruik_ex[classify(0[GJ_yr], PrijzenAardgas/ClassBreak)]';
+			: 'PrijsFactor * PrijzenAardgas/KGJ_eindgebruik_excl[classify(0[GJ_yr], PrijzenAardgas/ClassBreak)]';
 	}
 }

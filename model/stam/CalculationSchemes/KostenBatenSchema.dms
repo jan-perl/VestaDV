@@ -83,7 +83,7 @@ template KostenBatenSchema
 		attribute<units/GJ_yr>   Lq6 (PlanRegio) : Descr = "Warmtevraag glastuinbouw",   = PlanRegioKaarten/BestaandeGlTb/VerbruikD + PlanRegioKaarten/NieuwbouwGlTb/VerbruikD;
 
 		parameter<Ratio>  N1   := 80[Percent] / 100[Percent], Source = "FO v7a F 35", Descr = "Percentage grootschalige warmte dat niet wordt bijgestookt";
-		parameter<Eur_GJ> N2   := Prijzen/AardGas/Bijstook/KGJ_eindgebruik_ex;
+		parameter<Eur_GJ> N2   := Prijzen/AardGas/Bijstook/KGJ_eindgebruik_excl;
 		parameter<Eur_GJ> N2_m := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
 		parameter<Ratio>  N3   := 0.20, Descr = "WarmteVerlies in de wijkdistributie", Source ="FO v7a F 35";
 	}
@@ -110,7 +110,7 @@ template KostenBatenSchema
 				// en dof case parameters
 
 				attribute<bool>      IsMeergezins  (WoonObject) := Type/IsMeergezins[VestaRunDataComponent/BebouwingsType];
-				attribute<Eur_Aansl> Ki_wd_w       (WoonObject) := IsMeergezins ? 2700[Eur_Aansl] : 5000[Eur_Aansl];
+				attribute<Eur_Aansl> Ki_wd_w       (WoonObject) := IsMeergezins ? 2700[Eur_Aansl] : 5000[Eur_Aansl]; // zie FO Vesta 3.0, Tabel 6/7/8
 
 				parameter<Eur_Aansl> Oi_vermeden_gasketel := 1900[Eur_Aansl] * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
 
@@ -132,10 +132,10 @@ template KostenBatenSchema
 				attribute<kW>      Capaciteit    (WoonObject) := VestaRunDataComponent/WarmteVraagD/AansluitCapaciteit * float64(!IsDefined(VestaRunDataComponent/WarmteAllocatie));
 
 				attribute<Eur>     Ki_ge_bruto   (WoonObject) := Ki_ge_ov_o + Ki_ge_pm_o - Oi_vermeden_gasketel * NrDeelnemers;
-				attribute<Eur>     Oi_ge_subsidie(WoonObject) := Ki_ge_ov_o * SpecifiekeInstellingen/BeleidsOpties/EIA/bwe/S_OngeriefsVergoeding + Ki_ge_pm_o * SpecifiekeInstellingen/BeleidsOpties/EIA/bwe/S_ProjectManagement;
+				attribute<Eur>     Oi_ge_subsidie(WoonObject) := Ki_ge_ov_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding + Ki_ge_pm_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement;
 				attribute<Eur>     Ki_ge_netto   (WoonObject) := Ki_ge_bruto - Oi_ge_subsidie;
 				attribute<Eur_yr>  Kj_ge_base    (WoonObject) := Ki_ge_netto * NCW/bw28/AnnualisationFactor + Kj_hv_o;
-				attribute<Eur_yr>  Oe_ge_subsidie(WoonObject) := Kj_ge_base * SpecifiekeInstellingen/BeleidsOpties/EEA/ge;
+				attribute<Eur_yr>  Oe_ge_subsidie(WoonObject) := Kj_ge_base * SpecifiekeInstellingen/Beleid/EEA/ge;
 				attribute<Eur_yr>  Oj_ge_subsidie(WoonObject) := Oi_ge_subsidie *NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
 				attribute<Eur_yr>  Kj_ge_netto   (WoonObject) := Kj_ge_base - Oe_ge_subsidie;
 
@@ -458,7 +458,7 @@ template KostenBatenSchema
 		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
-		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_m;
+		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_pm;
 		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_Verbruik + Kj_wd_Admin + Kj_lv_Admin + Kj_Precario + Kj_ge_hv, Source = "FO v7a F 2";
 		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_Verbruik + Kj_wd_Admin + Kj_lv_Admin;
 	}
@@ -474,15 +474,15 @@ template KostenBatenSchema
 	attribute<Eur>    Ki_ge_Bruto         (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
 	attribute<Eur   > Ki_id_Bruto         (PlanRegio) := KostenD/Ki_id;
 	attribute<Eur   > Ki_wd_Bruto         (PlanRegio) := KostenD/Ki_wd;
-	attribute<Eur>    Oi_ge_subsidie      (PlanRegio) := Ki_ge_ov * SpecifiekeInstellingen/BeleidsOpties/EIA/bwe/S_OngeriefsVergoeding + Ki_ge_pm * SpecifiekeInstellingen/BeleidsOpties/EIA/bwe/S_ProjectManagement;
-	attribute<Eur>    Oi_id_subsidie      (PlanRegio) := Ki_id_Bruto * SpecifiekeInstellingen/BeleidsOpties/EIA/id;
-	attribute<Eur>    Oi_wd_subsidie      (PlanRegio) := Ki_wd_Bruto * SpecifiekeInstellingen/BeleidsOpties/EIA/wd;
+	attribute<Eur>    Oi_ge_subsidie      (PlanRegio) := Ki_ge_ov * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding + Ki_ge_pm * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement;
+	attribute<Eur>    Oi_id_subsidie      (PlanRegio) := Ki_id_Bruto * SpecifiekeInstellingen/Beleid/EIA/id;
+	attribute<Eur>    Oi_wd_subsidie      (PlanRegio) := Ki_wd_Bruto * SpecifiekeInstellingen/Beleid/EIA/wd;
 	attribute<Eur_yr> Kj_ge_base          (PlanRegio) := (Ki_ge_Bruto - Oi_ge_subsidie) * NCW/bw28/AnnualisationFactor + Kj_ge_hv;
 	attribute<Eur_yr> Kj_id_base          (PlanRegio) := (Ki_id_Bruto - Oi_id_subsidie) * NCW/id28/AnnualisationFactor + KostenD/Kj_id_Onderhoud;
 	attribute<Eur_yr> Kj_wd_base          (PlanRegio) := (Ki_wd_Bruto - Oi_wd_subsidie) * NCW/wd28/AnnualisationFactor + KostenD/Kj_wd_Onderhoud + KostenD/Kj_wd_Admin;
-	attribute<Eur_yr> Oe_ge_subsidie      (PlanRegio) := Kj_ge_base * SpecifiekeInstellingen/BeleidsOpties/EEA/ge;
-	attribute<Eur_yr> Oe_id_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/BeleidsOpties/EEA/id;
-	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/BeleidsOpties/EEA/wd;
+	attribute<Eur_yr> Oe_ge_subsidie      (PlanRegio) := Kj_ge_base * SpecifiekeInstellingen/Beleid/EEA/ge;
+	attribute<Eur_yr> Oe_id_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/Beleid/EEA/id;
+	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
 	attribute<Eur_yr> Kj_ge_Netto         (PlanRegio) := Kj_ge_base - Oe_ge_subsidie;
 	attribute<Eur_yr> Kj_id_Netto         (PlanRegio) := Kj_id_base - Oe_id_subsidie;
 	attribute<Eur_yr> Kj_wd_Netto         (PlanRegio) := Kj_wd_base  + KostenD/Kj_Verbruik + KostenD/Kj_Precario - Oe_wd_subsidie - Oj_wd_KL;

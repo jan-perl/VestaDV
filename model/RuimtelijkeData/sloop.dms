@@ -41,40 +41,40 @@
 container Sloop
 {
 	container WoningResterend :=
-		for_each_ndva(Nieuwbouw/SZW/HasMutations ? Nieuwbouw/SZW/Name : ''
+		for_each_ndva(Nieuwbouw/ZW/HasMutations ? Nieuwbouw/ZW/Name : ''
 			, Geography/rdc_grids/m100, float32
-			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/SZW/period_name+'/Wonen/Resterend/'
-			+ Nieuwbouw/SZW/wonen_wlo_filename+ '.tif'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/ZW/period_name+'/Wonen/Resterend/'
+			+ Nieuwbouw/ZW/wonen_wlo_filename+ '.tif'
 		);
 
 	container WoningResterendFactors :=
-		for_each_nedv(  Nieuwbouw/SZW/HasMutations ? Nieuwbouw/SZW/Name : ''
-			, 'median(0.0, Float64(WoningResterend/'+Nieuwbouw/SZW/Name +'), '
-				+ (Nieuwbouw/SZW/Zichtjaar_jaar > 2020w ? Nieuwbouw/SZW/prev_name : '1.0')+')' 
+		for_each_nedv(  Nieuwbouw/ZW/HasMutations ? Nieuwbouw/ZW/Name : ''
+			, 'median(0.0, Float64(WoningResterend/'+Nieuwbouw/ZW/Name +'), '
+				+ (Nieuwbouw/ZW/Zichtjaar_jaar > 2020w ? Nieuwbouw/ZW/prev_name : '1.0')+')' 
 			, Geography/rdc_grids/m100, Float64
 		);
 
 	container UtilDeltaFactor :=
-		for_each_ndva(  Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0  ? Nieuwbouw/SZU/Name : ''
+		for_each_ndva(  Nieuwbouw/ZU/HasMutations && strlen(Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0  ? Nieuwbouw/ZU/Name : ''
 			, Geography/rdc_grids/m100, Float32
-			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/SZU/period_name+'/Util/Resterend/'
-			+ Nieuwbouw/SZU/wlo_filename_Nieuwbouw + '.tif'
+			, SpecifiekeInstellingen/WloScenarioFolder+'/'+Nieuwbouw/ZU/period_name+'/Util/Resterend/'
+			+ Nieuwbouw/ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
 	container UtilResterendFactors :=
-		for_each_nedv(  Nieuwbouw/SZU/HasMutations ? Nieuwbouw/SZU/Name : ''
-			, Nieuwbouw/SZU/Zichtjaar_jaar > 2010w && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0  
-					? 'median(0.0, Float64(UtilDeltaFactor/'+Nieuwbouw/SZU/Name +'), '
-						+ (Nieuwbouw/SZU/Zichtjaar_jaar > 2020w ? Nieuwbouw/SZU/prev_name : '1.0')+')' 
+		for_each_nedv(  Nieuwbouw/ZU/HasMutations ? Nieuwbouw/ZU/Name : ''
+			, Nieuwbouw/ZU/Zichtjaar_jaar > 2010w && strlen(Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0  
+					? 'median(0.0, Float64(UtilDeltaFactor/'+Nieuwbouw/ZU/Name +'), '
+						+ (Nieuwbouw/ZU/Zichtjaar_jaar > 2020w ? Nieuwbouw/ZU/prev_name : '1.0')+')' 
 					: 'const(1.0, Geography/rdc_grids/m100)'
 			, Geography/rdc_grids/m100, float64
 		);
 
 	container Totalen {
-		attribute<float32> WoningResterend     (Nieuwbouw/SZW) := ='union_data(Nieuwbouw/SZW,'+AsItemList(Nieuwbouw/SZW/HasMutations ? 'sum(Sloop/WoningResterend/' +Nieuwbouw/SZW/Name+')' : '0f / 0f')+')';
-		attribute<string>  ScenYearTypeW       (Nieuwbouw/SZW) := Nieuwbouw/SZW/Name;
-		attribute<float32> UtilDeltaFactorSum  (Nieuwbouw/SZU) := ='union_data(Nieuwbouw/SZU,'+AsItemList(Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 ? 'sum(UtilDeltaFactor/'+Nieuwbouw/SZU/Name+')' : '0f / 0f')+')';
-		attribute<float32> UtilDeltaFactorMean (Nieuwbouw/SZU) := ='union_data(Nieuwbouw/SZU,'+AsItemList(Nieuwbouw/SZU/HasMutations && strlen(Nieuwbouw/SZU/wlo_filename_Nieuwbouw) > 0 ? 'mean(UtilDeltaFactor/'+Nieuwbouw/SZU/Name+')' : '0f / 0f')+')';
-		attribute<string>  ScenYearTypeU       (Nieuwbouw/SZU) := Nieuwbouw/SZU/Name;
+		attribute<float32> WoningResterend     (Nieuwbouw/ZW) := ='union_data(Nieuwbouw/ZW,'+AsItemList(Nieuwbouw/ZW/HasMutations ? 'sum(Sloop/WoningResterend/' +Nieuwbouw/ZW/Name+')' : '0f / 0f')+')';
+		attribute<string>  YearTypeW           (Nieuwbouw/ZW) := Nieuwbouw/ZW/Name;
+		attribute<float32> UtilDeltaFactorSum  (Nieuwbouw/ZU) := ='union_data(Nieuwbouw/ZU,'+AsItemList(Nieuwbouw/ZU/HasMutations && strlen(Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0 ? 'sum(UtilDeltaFactor/'+Nieuwbouw/ZU/Name+')' : '0f / 0f')+')';
+		attribute<float32> UtilDeltaFactorMean (Nieuwbouw/ZU) := ='union_data(Nieuwbouw/ZU,'+AsItemList(Nieuwbouw/ZU/HasMutations && strlen(Nieuwbouw/ZU/wlo_filename_Nieuwbouw) > 0 ? 'mean(UtilDeltaFactor/'+Nieuwbouw/ZU/Name+')' : '0f / 0f')+')';
+		attribute<string>  YearTypeU           (Nieuwbouw/ZU) := Nieuwbouw/ZU/Name;
 	}
 }

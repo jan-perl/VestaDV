@@ -110,11 +110,11 @@ template AllocatieResultaatComponentTempl
 
 		unit<uint8> ggk := VestaRunDataComponent/PrijzenAardgas; // gebruiksgrootte klasse
 		attribute<ggk>    ggk_rel          (BebouwingsObject) := classify(MeterVraag/AardGas, ggk/ClassBreak);
-		attribute<Eur_yr> eindgebruik_ex   (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_eindgebruik_ex [ggk_rel];
-		attribute<Eur_yr> maatschappelijk  (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_maatschappelijk[ggk_rel];
-		attribute<Eur_yr> netwerk          (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_netwerk        [ggk_rel];
-		attribute<Eur_yr> EnergieHeffing   (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_EnergieHeffing [ggk_rel];
-		attribute<Eur_yr> CO2Heffing       (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_CO2Heffing     [ggk_rel];
+		attribute<Eur_yr> eindgebruik_excl (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_eindgebruik_excl[ggk_rel];
+		attribute<Eur_yr> maatschappelijk  (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_maatschappelijk [ggk_rel];
+		attribute<Eur_yr> netwerk          (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_netwerk         [ggk_rel];
+		attribute<Eur_yr> EnergieHeffing   (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_EnergieHeffing  [ggk_rel];
+		attribute<Eur_yr> CO2Heffing       (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_CO2Heffing      [ggk_rel];
 	}
 	container Elektriciteit {
 		attribute<Eur>    AansluitBijdrage (BebouwingsObject) := VestaRunDataComponent/Opbrengsten/AansluitBijdrageE;
@@ -123,11 +123,11 @@ template AllocatieResultaatComponentTempl
 
 		unit<uint8> ggk := VestaRunDataComponent/PrijzenElektriciteit; // gebruiksgrootte klasse
 		attribute<ggk>    ggk_rel          (BebouwingsObject) := classify(MeterVraag/Elektriciteit, ggk/ClassBreak);
-		attribute<Eur_yr> eindgebruik_ex   (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_eindgebruik_ex [ggk_rel];
-		attribute<Eur_yr> maatschappelijk  (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_maatschappelijk[ggk_rel];
-		attribute<Eur_yr> netwerk          (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_netwerk        [ggk_rel];
-		attribute<Eur_yr> EnergieHeffing   (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing [ggk_rel] - Heffingskorting;
-		attribute<Eur_yr> CO2Heffing       (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_CO2Heffing     [ggk_rel];
+		attribute<Eur_yr> eindgebruik_excl (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_eindgebruik_excl[ggk_rel];
+		attribute<Eur_yr> maatschappelijk  (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_maatschappelijk [ggk_rel];
+		attribute<Eur_yr> netwerk          (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_netwerk         [ggk_rel];
+		attribute<Eur_yr> EnergieHeffing   (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_EnergieHeffing  [ggk_rel] - Heffingskorting;
+		attribute<Eur_yr> CO2Heffing       (BebouwingsObject) := MeterVraag/Elektriciteit * ggk/KGJ_CO2Heffing      [ggk_rel];
 	}
 	container CO2
 	{

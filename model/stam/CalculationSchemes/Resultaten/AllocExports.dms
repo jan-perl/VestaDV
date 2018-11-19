@@ -73,8 +73,8 @@ container AllocExports: Using = "Units", isHidden = "True"
 			attribute<Eur> AansluitBijdrage_Elek          := AllocatieResultaatComponent/Elektriciteit/AansluitBijdrage;
 			attribute<Eur_yr> CO2Heffing_Gas              := AllocatieResultaatComponent/AardGas/CO2Heffing;
 			attribute<Eur_yr> CO2Heffing_Elek             := AllocatieResultaatComponent/Elektriciteit/CO2Heffing;
-			attribute<Eur_yr> Eindgebruik_ex_Gas          := AllocatieResultaatComponent/AardGas/eindgebruik_ex;
-			attribute<Eur_yr> Eindgebruik_ex_Elek         := AllocatieResultaatComponent/Elektriciteit/eindgebruik_ex;
+			attribute<Eur_yr> Eindgebruik_ex_Gas          := AllocatieResultaatComponent/AardGas/eindgebruik_excl;
+			attribute<Eur_yr> Eindgebruik_ex_Elek         := AllocatieResultaatComponent/Elektriciteit/eindgebruik_excl;
 			attribute<Eur_yr> EnergieHeffing_Gas          := AllocatieResultaatComponent/AardGas/EnergieHeffing;
 			attribute<Eur_yr> EnergieHeffing_Elek         := AllocatieResultaatComponent/Elektriciteit/EnergieHeffing;
 			attribute<uint8> ggk_rel_Gas                  := AllocatieResultaatComponent/AardGas/ggk_rel;
