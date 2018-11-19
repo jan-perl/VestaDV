@@ -67,8 +67,9 @@ container Resultaten :=
 		container t510_indicator_results_test
 		{
 			parameter<string> result := 
-				'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br><I>version</i>: 63219afbbd1928a9225de8ea0bd9df24dd31e239</description>' + 
-				'<result>' + 
+				'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br>'
+				'<I>version</i>: </description>' + 
+				'<result><br><br>' + 
 				' Flow, Maatschappelijk<br>2010 : ' + replace(string(J2010/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
 				' 2020 : ' + replace(string(J2020/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
 				' 2030 : ' + replace(string(J2030/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
