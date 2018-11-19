@@ -140,8 +140,8 @@ template VestaRunDataComponent
 	
 	attribute<BebouwingsTypeDomein> BebouwingsType(BebouwingsObject) := RuimtelijkeVraagComponent/BebouwingsType;
 
-	container EIA_Opties := ='SpecifiekeInstellingen/BeleidsOpties/EIA/'+NcwRefBase + 'e';
-	container EEA_Opties := SpecifiekeInstellingen/BeleidsOpties/EEA/Kosten/Basis;
+	container EIA_Opties := ='SpecifiekeInstellingen/Beleid/EIA/E_'+NcwRefBase;
+	container EEA_Opties := SpecifiekeInstellingen/Beleid/EEA/Kosten/Basis;
 
 	container OpwekkingsOpties
 	{
@@ -521,8 +521,8 @@ template VestaRunDataComponent
 				+')-1'
 			', Classifications/LabelSprong)';
 
-		parameter<float64> S_gv := (1.0 - EIA_Opties/S_GebouwVerbetering) * (1.0 - EEA_Opties/S_GebouwVerbetering);
-		parameter<float64> S_lo := (1.0 - EIA_Opties/S_LokaleOpwekking  ) * (1.0 - EEA_Opties/S_LokaleOpwekking);
+		parameter<float64> S_gv := (1.0 - EIA_Opties/Rs_GebouwVerbetering) * (1.0 - EEA_Opties/Rs_GebouwVerbetering);
+		parameter<float64> S_lo := (1.0 - EIA_Opties/Rs_LokaleOpwekking  ) * (1.0 - EEA_Opties/Rs_LokaleOpwekking);
 
 		container Rentabiliteit_eg := 
 			for_each_nedv(Classifications/LabelSprong/code,
@@ -697,13 +697,13 @@ template VestaRunDataComponent
 		container subsidie {
 			attribute<Eur> EIA30 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 				add(
-					Ki_gv_w  * EIA_Opties/S_GebouwVerbetering
-				,	Ki_EWV_w * EIA_Opties/S_LokaleOpwekking
+					Ki_gv_w  * EIA_Opties/Rs_GebouwVerbetering
+				,	Ki_EWV_w * EIA_Opties/Rs_LokaleOpwekking
 				);
 
 			attribute<Eur> EIA15 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 				add(
-				 	Ki_eWP_w  * EIA_Opties/S_LokaleOpwekking
+				 	Ki_eWP_w  * EIA_Opties/Rs_LokaleOpwekking
 				);
 
 			attribute<Eur_yr> EEA (BebouwingsObject) := 
@@ -712,9 +712,9 @@ template VestaRunDataComponent
 				,	Kengetallen/Onderhoud/R_Admin     * EEA_Opties/S_Admin
 				)
 			+	RuimtelijkeVraagComponent/nrModelUnits * add(
-					Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/S_GebouwVerbetering 
-				,	Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/S_LokaleOpwekking 
-				,	Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/S_LokaleOpwekking 
+					Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering 
+				,	Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
+				,	Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
 				)
 			;
 		}

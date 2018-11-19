@@ -180,8 +180,8 @@ template VestaRun
 
 	attribute<float32> klimaat (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar);
 
-	container VraagKentallen  := SpecifiekeInstellingen/VraagKentallen/BaseLine;
-	container AanbodKentallen := SpecifiekeInstellingen/AanbodKentallen/BaseLine;
+	container VraagKentallen  := SpecifiekeInstellingen/VraagKentallen;
+	container AanbodKentallen := SpecifiekeInstellingen/AanbodKentallen;
 
 	unit<uint32> WarmteBronnen := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 
@@ -223,22 +223,22 @@ template VestaRun
 	}
 	container Schuiven
 	{
-		parameter<Ratio> CurveMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveMinMaxSchuif;
+		parameter<Ratio> CurveMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveMinMaxSchuif;
 		parameter<Ratio> CurveMin: = 1.0 - CurveMax;
 
-		parameter<Ratio> LerenAan: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/LeercurveGebruikSchuif;
+		parameter<Ratio> LerenAan: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveGebruikSchuif;
 		parameter<Ratio> LerenUit: = 1.0 - LerenAan;
 
-		parameter<Ratio> KostenMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/VerbeterMinMaxSchuif;
+		parameter<Ratio> KostenMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/VerbeterMinMaxSchuif;
 		parameter<Ratio> KostenMin: = 1.0 - KostenMax;
 
-		parameter<Ratio> OpbrMax: = SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/MinMaxSchuif;
+		parameter<Ratio> OpbrMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/MinMaxSchuif;
 		parameter<Ratio> OpbrMin: = 1.0 - OpbrMax;
 
-		parameter<Ratio> VerketelingMax := SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Kosten/IndividueleVerwarmingSchuif;
+		parameter<Ratio> VerketelingMax := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/IndividueleVerwarmingSchuif;
 		parameter<Ratio> VerketelingMin := 1.0 - VerketelingMax;
 
-		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/GenericBase/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
+		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
 	}
 	
 	container LeerCurves {
@@ -335,8 +335,8 @@ template VestaRun
 					+string(HasFactors)+','
 					+(HasFactors ? 'Bebouwing/'+BCN+'ResterendFactors' : 'Bebouwing')+','
 					'invoer/Kengetallen/Bebouwing/'+BCN+'/results,'
-					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/DragerSpecifiek,'
-					'SpecifiekeInstellingen/RuimtelijkeVraagOpties/LokaalSpecifiek/'+BCN+','
+					'SpecifiekeInstellingen/RuimtelijkeVraag/Drager,'
+					'SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/'+BCN+','
 					'float64(klimaat),'
 					'VraagKentallen/'+BCN+','
 					'StartingState/'+BCN+','
@@ -368,7 +368,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 
 				attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -396,7 +396,7 @@ template VestaRun
 					
 				attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 	
 				attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -430,7 +430,7 @@ template VestaRun
 				attribute<Eur_yr>  VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_g;
 				attribute<Eur_yr>  VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_e;
 
-				attribute<Eur_yr>  HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr>  HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 		container NieuwbouwUtil
@@ -459,7 +459,7 @@ template VestaRun
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_e;
 
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject)   := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject)   := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 			}
 		}
 
@@ -483,7 +483,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -510,7 +510,7 @@ template VestaRun
 
 				attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 				attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
-				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleidsopties/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+				attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
 				
 				attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
 				attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
@@ -520,42 +520,42 @@ template VestaRun
 	}
 	
 	container NCW {
-		container ow28 := NcwSchema(AanbodKentallen/DiscontoVoet_ow, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container id28 := NcwSchema(AanbodKentallen/DiscontoVoet_id, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container wd28 := NcwSchema(AanbodKentallen/DiscontoVoet_wd, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container pt28 := NcwSchema(AanbodKentallen/DiscontoVoet_pt, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container mr28 := NcwSchema(AanbodKentallen/DiscontoVoet_mr, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
+		container ow28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ow, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container id28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/id, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container wd28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/wd, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container pt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/pt, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container mr28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
 
-		container bw28 := NcwSchema(AanbodKentallen/DiscontoVoet_ebw, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container nw28 := NcwSchema(AanbodKentallen/DiscontoVoet_enw, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container bu28 := NcwSchema(AanbodKentallen/DiscontoVoet_ebu, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container nu28 := NcwSchema(AanbodKentallen/DiscontoVoet_enu, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container bt28 := NcwSchema(AanbodKentallen/DiscontoVoet_ebt, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
-		container nt28 := NcwSchema(AanbodKentallen/DiscontoVoet_ent, AanbodKentallen/StartJaar, AanbodKentallen/StopJaar);
+		container bw28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container nw28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container bu28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container nu28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container bt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+		container nt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
 
-		container mr50 := NcwSchema(AanbodKentallen/DiscontoVoet_mr , 0[Yr], 50[Yr]);
-		container bw50 := NcwSchema(AanbodKentallen/DiscontoVoet_ebw, 0[Yr], 50[Yr]);
-		container nw50 := NcwSchema(AanbodKentallen/DiscontoVoet_enw, 0[Yr], 50[Yr]);
-		container bu50 := NcwSchema(AanbodKentallen/DiscontoVoet_ebu, 0[Yr], 50[Yr]);
-		container nu50 := NcwSchema(AanbodKentallen/DiscontoVoet_enu, 0[Yr], 50[Yr]);
-		container bt50 := NcwSchema(AanbodKentallen/DiscontoVoet_ebt, 0[Yr], 50[Yr]);
-		container nt50 := NcwSchema(AanbodKentallen/DiscontoVoet_ent, 0[Yr], 50[Yr]);
+		container mr50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 50[Yr]);
+		container bw50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 50[Yr]);
+		container nw50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 50[Yr]);
+		container bu50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 50[Yr]);
+		container nu50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 50[Yr]);
+		container bt50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 50[Yr]);
+		container nt50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 50[Yr]);
 
-		container mr30 := NcwSchema(AanbodKentallen/DiscontoVoet_mr , 0[Yr], 30[Yr]);
-		container bw30 := NcwSchema(AanbodKentallen/DiscontoVoet_ebw, 0[Yr], 30[Yr]);
-		container nw30 := NcwSchema(AanbodKentallen/DiscontoVoet_enw, 0[Yr], 30[Yr]);
-		container bu30 := NcwSchema(AanbodKentallen/DiscontoVoet_ebu, 0[Yr], 30[Yr]);
-		container nu30 := NcwSchema(AanbodKentallen/DiscontoVoet_enu, 0[Yr], 30[Yr]);
-		container bt30 := NcwSchema(AanbodKentallen/DiscontoVoet_ebt, 0[Yr], 30[Yr]);
-		container nt30 := NcwSchema(AanbodKentallen/DiscontoVoet_ent, 0[Yr], 30[Yr]);
+		container mr30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 30[Yr]);
+		container bw30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 30[Yr]);
+		container nw30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 30[Yr]);
+		container bu30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 30[Yr]);
+		container nu30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 30[Yr]);
+		container bt30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 30[Yr]);
+		container nt30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 30[Yr]);
 
-		container mr15 := NcwSchema(AanbodKentallen/DiscontoVoet_mr , 0[Yr], 15[Yr]);
-		container bw15 := NcwSchema(AanbodKentallen/DiscontoVoet_ebw, 0[Yr], 15[Yr]);
-		container nw15 := NcwSchema(AanbodKentallen/DiscontoVoet_enw, 0[Yr], 15[Yr]);
-		container bu15 := NcwSchema(AanbodKentallen/DiscontoVoet_ebu, 0[Yr], 15[Yr]);
-		container nu15 := NcwSchema(AanbodKentallen/DiscontoVoet_enu, 0[Yr], 15[Yr]);
-		container bt15 := NcwSchema(AanbodKentallen/DiscontoVoet_ebt, 0[Yr], 15[Yr]);
-		container nt15 := NcwSchema(AanbodKentallen/DiscontoVoet_ent, 0[Yr], 15[Yr]);
+		container mr15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 15[Yr]);
+		container bw15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 15[Yr]);
+		container nw15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 15[Yr]);
+		container bu15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 15[Yr]);
+		container nu15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 15[Yr]);
+		container bt15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 15[Yr]);
+		container nt15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 15[Yr]);
 	}
 
 	container Initieel := VestaRunData
@@ -659,7 +659,7 @@ template VestaRun
 
 			attribute<Eur_yr> Kj_pt_Total    (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * float64(GebiedsOptie);
 			attribute<Eur_yr> Km_pt_Total    (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * float64(GebiedsOptie);
-			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/BeleidsOpties/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
+			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
 			attribute<Eur_yr> Oj_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
 			attribute<Eur_yr> Om_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
 			attribute<Eur_yr> Kj_pt_Netto    (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;

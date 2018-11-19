@@ -72,7 +72,7 @@ container Bebouwing :=
 			attribute<uint8>                    ModelObjectKey     := value(BebouwingsType *  uint8(#(Classifications/BouwjaarWoningBestaand)) + Impl/BouwjaarWoningBestaand_rel, classifications/combines/WoningtypeBouwjaarBestaand);
 			attribute<BouwjaarDomein>           BouwJaar:           = classify(BAG/vbo_woonfunctie/bouwjaar, Classifications/BouwjaarWoningBestaand/ClassBreak), isHidden = "True";
 
-			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
+			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeWoning/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 			attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry
 			{
@@ -151,7 +151,7 @@ container Bebouwing :=
 			attribute<int16>                                SymbolIndex              := BebouwingsTypeDomein/SymbolIndex[BebouwingsType], DialogType = "SymbolIndex", isHidden = "True";
 
 			//AandeelWarmteVraag voor elk bebouwingsobject aanzetten: activeer dan de onderste regel en deactiveer de bovenste regel
-			attribute<float64>                              AandeelWarmteVraag       := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
+			attribute<float64>                              AandeelWarmteVraag       := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeUtil/Deelname[BebouwingsType], 0.0), FreeData = "True";
 
 			container Criteria
 			{
@@ -224,7 +224,7 @@ container Bebouwing :=
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := GLTB_Code, isHidden = "True";
 			attribute<uint8>                    ModelObjectKey     := GLTB_Code *  uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 
-			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BaseLine/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
+			attribute<float64>                  AandeelWarmteVraag := MakeDefined(SpecifiekeInstellingen/VraagKentallen/BestaandeGlTb/Deelname[BebouwingsType], 0.0);
 			container Criteria
 			{
 			//	attribute<Bool>     KanBesparen := const(false, BebouwingsObject); // Vul  hier iets anders in als je in RuimtelijkeVraagMetBesparing wel besparingen voor glastuinbouw wilt
