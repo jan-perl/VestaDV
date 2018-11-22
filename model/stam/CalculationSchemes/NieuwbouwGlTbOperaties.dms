@@ -31,13 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//           Dit is de container met rekenschema's die werken op UtiliteitsComponenten  //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
-container GlTbComponentOperaties
+container NieuwbouwGlTbOperaties
 {
 	template MaakMutatieNieuwbouw
 	{
@@ -47,7 +41,6 @@ container GlTbComponentOperaties
 		parameter<units/yr_uint16> zichtjaar;
 
 		unit<uint32> bron := Bebouwing/impl/BestaandeGlTb;
-
 		// einde case parameters
 
 		container impl: IsHidden = "True"
@@ -65,28 +58,28 @@ container GlTbComponentOperaties
 		,	DialogData ="Point"
 		{
 			// units en attributen van BebouwingsComponent
-			attribute<String>              Code                         := String(ModelObjectKey)+ String(Bouwjaar) + String(Point);
-			attribute<string>              Label                        := Code, DialogType = "LabelText";
+			attribute<string>                             Code               := string(ModelObjectKey) + string(Bouwjaar) + string(Point);
+			attribute<string>                             Label              := Code, DialogType = "LabelText";
 
-			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB;
+			unit<uint8> BebouwingsTypeDomein := Classifications/GLTB;
 
-			attribute<Geography/rdc_meter>                point               := impl/lokatiesBij/point[nr_1];
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel        := impl/lokatiesBij/blok500m_rel[nr_1];
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel         := impl/lokatiesBij/blok1km_rel [nr_1];
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel         := impl/lokatiesBij/blok2km_rel [nr_1];
-			attribute<BebouwingsTypeDomein>               BebouwingsType      := GLTB_Code;
-			attribute<Classifications/bouwjaar>           bouwjaarOrg         := const(classify(value(zichtjaar, units/Yr)-value(0.5, units/Yr),  classifications/bouwjaar/ClassBreak), .);
-			attribute<Classifications/bouwjaar>           bouwjaar            := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/V/Onbekend : bouwjaarOrg;
-			attribute<UInt8>                              ModelObjectKey      := BebouwingsType * UInt8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
-			attribute<m2>                                 NrJoinedunits       := Oppervlakte;
-			attribute<nrAansl>                            nrAansluitingen_i   := const(1[nrAansl   ], .), FreeData = "True";
-			attribute<nrWoningen>                         nrWoonunits_i       := const(0[nrWoningen], .), FreeData = "True";
+			attribute<Geography/rdc_meter>                point              := impl/lokatiesBij/point[nr_1];
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := impl/lokatiesBij/blok500m_rel[nr_1];
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := impl/lokatiesBij/blok1km_rel [nr_1];
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := impl/lokatiesBij/blok2km_rel [nr_1];
+			attribute<BebouwingsTypeDomein>               BebouwingsType     := GLTB_Code;
+			attribute<Classifications/bouwjaar>           bouwjaarOrg        := const(classify(value(zichtjaar, units/Yr) - 0.5[units/Yr],  classifications/bouwjaar/ClassBreak), .);
+			attribute<Classifications/bouwjaar>           bouwjaar           := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/V/Onbekend : bouwjaarOrg;
+			attribute<uint8>                              ModelObjectKey     := BebouwingsType * uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
+			attribute<m2>                                 NrJoinedunits      := Oppervlakte;
+			attribute<nrAansl>                            nrAansluitingen_i  := const(1[nrAansl   ], .), FreeData = "True";
+			attribute<nrWoningen>                         nrWoonunits_i      := const(0[nrWoningen], .), FreeData = "True";
 
 			// overige attributen
-			attribute<Classifications/GLTB>               GLTB_code           := nr_2;
-			attribute<units/ratio>                        Verdeling           := RuimtelijkeData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
-			attribute<m2>                                 Oppervlakte         := Verdeling * 10000[units/m2];
-			attribute<float64>                            AandeelWarmteVraag  := const(1.0, .); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
+			attribute<Classifications/GLTB>               GLTB_code          := nr_2;
+			attribute<units/ratio>                        Verdeling          := RuimtelijkeData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
+			attribute<m2>                                 Oppervlakte        := Verdeling * 10000[units/m2];
+			attribute<float64>                            AandeelWarmteVraag := const(1.0, .); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
 
 			container Criteria;
 			container Gebied: FreeData = "True" // noodzakelijk voor Bebouwingscomponent interfact, hoewel gtb niet gebruikt wordt voor WKO.
@@ -100,5 +93,4 @@ container GlTbComponentOperaties
 			}
 		}
 	}
-
 }

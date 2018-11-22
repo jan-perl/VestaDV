@@ -31,13 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//           Dit is de container met rekenschema's die werken op WoningComponenten      //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
-container WoningComponentOperaties
+container NieuwbouwWoningOperaties
 {
 	template Select
 	{
@@ -92,37 +86,37 @@ container WoningComponentOperaties
 			,	DialogType = "Map"
 			,	DialogData = "Point"
 		{
-			
-			attribute<string>              Code := Label;
-			attribute<String>              TypeName := ='Union_Data(., ' + asItemList('const(' + Quote(WoningType/Name) + ',bron/' + WoningType/Name + '/results/BebouwingsObject)') + ')';
-			attribute<String>              Label                   := TypeName+String(BouwJaar)+String(Point), DialogType = "LabelText";
-			parameter<m> SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
+
+			attribute<string> Code     := Label;
+			attribute<String> TypeName := ='union_data(., ' + asItemList('const(' + Quote(WoningType/Name) + ',bron/' + WoningType/Name + '/results/BebouwingsObject)') + ')';
+			attribute<String> Label    := TypeName+String(BouwJaar)+String(Point), DialogType = "LabelText";
+			parameter<m>      SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
 
 			unit<uint8> BebouwingsTypeDomein := WoningType;
 
-			attribute<Units/nrWoningen>                   NrJoinedUnits       := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/NrWoningen') + ')';
-			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel        := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok500m_rel') + ')';
-			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel         := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok1km_rel') + ')';
-			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel         := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok2km_rel') + ')';
-			attribute<Geography/rdc_meter>                Point               := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/Point') + ')';
-			attribute<BebouwingsTypeDomein>               BebouwingsType      := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/woningtype') + ')';
-			attribute<Classifications/BouwJaar>           Bouwjaar            := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/Bouwjaar') + ')';
-			attribute<Classifications/BouwJaar>           ModelObjectKey      := BebouwingsType * uint8(#Classifications/BouwJaar) + BouwJaar;
-			attribute<nrAansl>                            nrAansluitingen_i   := NrJoinedUnits * 1.0[nrAansl / NrWoningen];
-			attribute<nrWoningen>                         nrWoonUnits_i       := nrJoinedUnits;
+			attribute<Units/nrWoningen>                   NrJoinedUnits      := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/NrWoningen') + ')';
+			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok500m_rel') + ')';
+			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok1km_rel') + ')';
+			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/blok2km_rel') + ')';
+			attribute<Geography/rdc_meter>                Point              := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/Point') + ')';
+			attribute<BebouwingsTypeDomein>               BebouwingsType     := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/woningtype') + ')';
+			attribute<Classifications/BouwJaar>           Bouwjaar           := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/Bouwjaar') + ')';
+			attribute<Classifications/BouwJaar>           ModelObjectKey     := BebouwingsType * uint8(#Classifications/BouwJaar) + BouwJaar;
+			attribute<nrAansl>                            nrAansluitingen_i  := NrJoinedUnits * 1.0[nrAansl / NrWoningen];
+			attribute<nrWoningen>                         nrWoonUnits_i      := nrJoinedUnits;
 
-			attribute<float64>                            AandeelWarmteVraag  := ='Union_Data(., ' + asItemList('bron/' + WoningType/Name + '/results/AandeelWarmteVraag') + ')';
+			attribute<float64>                            AandeelWarmteVraag := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/results/AandeelWarmteVraag') + ')';
 
 			container Gebied
 			{
-				attribute<float64> n      (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/n'     ) + ')';
-				attribute<float64> MEAN_x (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/MEAN_X') + ')';
-				attribute<float64> MEAN_y (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/MEAN_y') + ')';
-				attribute<float64> SSD_xx (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_xx') + ')';
-				attribute<float64> SSD_xy (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_xy') + ')';
-				attribute<float64> SSD_yy (..) := ='Union_Data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_yy') + ')';
+				attribute<float64> n      (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/n'     ) + ')';
+				attribute<float64> MEAN_x (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/MEAN_X') + ')';
+				attribute<float64> MEAN_y (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/MEAN_y') + ')';
+				attribute<float64> SSD_xx (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_xx') + ')';
+				attribute<float64> SSD_xy (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_xy') + ')';
+				attribute<float64> SSD_yy (..) := ='union_data(.., ' + asItemList('bron/' + WoningType/Name + '/results/Gebied/SSD_yy') + ')';
 			}
- 			container Criteria;
+			container Criteria;
 		}
 	}
 }

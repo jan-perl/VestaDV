@@ -39,12 +39,11 @@
 
 container CalculationSchemes: Using = "Units;Geography"
 {
+	#include <EnergieKengetallenImport.dms>
 
-	#include <EnergieKengetallen.dms>
-
-	#include <WoningComponentOperaties.dms>
-	#include <UtilComponentOperaties.dms>
-	#include <GlTbComponentOperaties.dms>
+	#include <NieuwbouwWoningOperaties.dms>
+	#include <NieuwbouwUtilOperaties.dms>
+	#include <NieuwbouwGlTbOperaties.dms>
 	#include <LegeBebouwingsComponent.dms>
 	#include <BebouwingsOperaties.dms>
 

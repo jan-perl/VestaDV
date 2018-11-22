@@ -31,20 +31,16 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//           Het schema om een lege bebouwingscomponent te configureren                 //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 template LegeBebouwingsComponent
 {
+	// begin case parameters
 	unit<float64> JoinedUnit;
 	unit<uint8>   BebouwingsTypeDomeinArg;
+	// end case parameters
 
 	unit<uint32> results := Range(uint32, 0, 0)
 	{
-		attribute<string>              code      := const('', .);
+		attribute<string>                             code               := const('', .);
 		unit<uint8> BebouwingsTypeDomein := BebouwingsTypeDomeinArg;
 
 		attribute<Geography/rdc_meter>                point              := point(const(0.0, .), const(0.0, .), Geography/rdc_meter);
