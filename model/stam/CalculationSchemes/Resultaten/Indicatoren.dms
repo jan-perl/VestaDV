@@ -42,12 +42,12 @@ container indicatoren
 		
 		container gebouwen
 		{
-			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
 			{
 				attribute<KG_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
-			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/CO2/AardGas, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
+			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
 			{
 				attribute<KG_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
@@ -74,17 +74,17 @@ container indicatoren
 	{
 		container gebouwen
 		{
-			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
 				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
-			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
 				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
-			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(AllocatieResultaat/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
 				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
@@ -113,7 +113,7 @@ container indicatoren
 			container ElektriciteitsVraag := // excl WKO vraag
 					for_each_nedv(Classifications/BebouwingsComponent/Name, 
 						replace(
-							'sum(AllocatieResultaat/@BC@/Elektriciteit/maatschappelijk, VestaRunData/@BC@/PlanRegio_rel)'
+							'sum(Allocatie/@BC@/Elektriciteit/maatschappelijk, BebouwingsComponenten/@BC@/PlanRegio_rel)'
 						,	'@BC@', Classifications/BebouwingsComponent/Name
 						)
 					, PlanRegio, Eur_yr
@@ -125,7 +125,7 @@ container indicatoren
 			container AardGasVerbruik := // incl mWKK excl Wijk_wkk en kosten bijstook WOS
 					for_each_nedv(Classifications/BebouwingsComponent/Name,
 						replace(
-							'sum(AllocatieResultaat/@BC@/AardGas/maatschappelijk, VestaRunData/@BC@/PlanRegio_rel)'
+							'sum(Allocatie/@BC@/AardGas/maatschappelijk, BebouwingsComponenten/@BC@/PlanRegio_rel)'
 						,	'@BC@', Classifications/BebouwingsComponent/Name
 						)
 					, PlanRegio, Eur_yr
@@ -134,7 +134,7 @@ container indicatoren
 				attribute<Eur_yr> Km_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
-			attribute<Eur>    Ki_GebouwVerbetering (PlanRegio) := ='add('+AsItemList('sum(VestaRunData/'+Classifications/BebouwingsComponent/Name+'/Kosten/Ki_GebouwVerbetering, VestaRunData/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)')+')';
+			attribute<Eur>    Ki_GebouwVerbetering (PlanRegio) := ='add('+AsItemList('sum(BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/Kosten/Ki_GebouwVerbetering, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)')+')';
 			attribute<Eur_yr> Km_GebouwVerbetering (PlanRegio) :=  Ki_GebouwVerbetering *NCW/mr30/AnnualisationFactor;
 
 			attribute<Eur_yr> Kj_Onderhoud         (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Kj_Onderh_excl')+')';
@@ -181,14 +181,14 @@ container indicatoren
 			for_each_ne(Classifications/BebouwingsComponent/name,
 				replace(
 					'Rapportage/EindgebruikerComponentTempl(
-						AllocatieResultaat/@BC@,
+						Allocatie/@BC@,
 						NCW/@NC@15,
 						NCW/@NC@30,
 						NCW/@NC@50,
-						sum(AllocatieResultaat/@BC@/AardGas/Vastrecht,              VestaRunData/@BC@/PlanRegio_rel),
-						sum(AllocatieResultaat/@BC@/AardGas/AansluitBijdrage,       VestaRunData/@BC@/PlanRegio_rel), 
-						sum(AllocatieResultaat/@BC@/Elektriciteit/Vastrecht,        VestaRunData/@BC@/PlanRegio_rel),
-						sum(AllocatieResultaat/@BC@/Elektriciteit/AansluitBijdrage, VestaRunData/@BC@/PlanRegio_rel),
+						sum(Allocatie/@BC@/AardGas/Vastrecht,              BebouwingsComponenten/@BC@/PlanRegio_rel),
+						sum(Allocatie/@BC@/AardGas/AansluitBijdrage,       BebouwingsComponenten/@BC@/PlanRegio_rel), 
+						sum(Allocatie/@BC@/Elektriciteit/Vastrecht,        BebouwingsComponenten/@BC@/PlanRegio_rel),
+						sum(Allocatie/@BC@/Elektriciteit/AansluitBijdrage, BebouwingsComponenten/@BC@/PlanRegio_rel),
 						EndState/KostenBaten/PlanRegioKaarten/@BC@
 					)'
 				,	'@BC@', Classifications/BebouwingsComponent/name
@@ -240,8 +240,8 @@ container indicatoren
 		attribute<Eur> Ki_Totaal      (PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
 	}
 	container netwerk {
-		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(VestaRunData/@BC@/BebouwingsObject/nrWoonUnits_i, VestaRunData/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
-		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(VestaRunData/@BC@/BebouwingsObject/nrWoonUnits_i * AllocatieResultaat/@BC@/Aandelen/AllElectric, VestaRunData/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
+		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
+		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i * Allocatie/@BC@/Aandelen/AllElectric, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
 		attribute<float64>    R_all_electric  (Planregio) := makedefined(nrAllElectric / nrWoonUnits, 0.0);
 		attribute<bool >      all_electric    (Planregio) := R_all_electric > 0.999, // tolereer afronding fouten en kleine afwijkingen
 			IntegrityCheck = "!(heeft_gas && all_electric)";
@@ -293,7 +293,7 @@ container indicatoren
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/BestaandeWoning, '+quote('BestaandeWoning')+'
+					, Allocatie/BestaandeWoning, '+quote('BestaandeWoning')+'
 					, '+Classifications/WoningBestaandRapGroep/ClassRef[SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel]+'
 					, '+quote('BebouwingsObject/'+Classifications/WoningBestaandRapGroep/AttrRef [ SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel ])+'
 					, Classifications/WoningBestaandRapGroep/ExportLabel [ SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel ]
@@ -305,8 +305,8 @@ container indicatoren
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
-					, VestaRunData/NieuwbouwWoning/BebouwingsTypeDomein
+					, Allocatie/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
+					, BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('WoningType')+'
 					, units/nrWoningen
@@ -317,8 +317,8 @@ container indicatoren
 				 RapportageRegio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/BestaandeUtil, '+quote('BestaandeUtil')+'
-					, VestaRunData/BestaandeUtil/BebouwingsTypeDomein
+					, Allocatie/BestaandeUtil, '+quote('BestaandeUtil')+'
+					, BebouwingsComponenten/BestaandeUtil/BebouwingsTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
@@ -329,8 +329,8 @@ container indicatoren
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
-					, VestaRunData/NieuwbouwUtil/BebouwingsTypeDomein
+					, Allocatie/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
+					, BebouwingsComponenten/NieuwbouwUtil/BebouwingsTypeDomein
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('UtiliteitsType')+'
 					, units/m2
@@ -341,7 +341,7 @@ container indicatoren
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/BestaandeGlTb, '+quote('BestaandeGlTb')+'
+					, Allocatie/BestaandeGlTb, '+quote('BestaandeGlTb')+'
 					, Classifications/GLTB
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('GlasTuinBouwType')+'
@@ -353,7 +353,7 @@ container indicatoren
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
 				, 'Rapportage/RegionaleRapportageTempl(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
-					, AllocatieResultaat/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
+					, Allocatie/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
 					, Classifications/GlTb
 					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
 					, '+quote('NieuwbouwGlTb')+'

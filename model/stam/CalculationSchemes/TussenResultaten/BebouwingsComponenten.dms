@@ -31,9 +31,9 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container VestaRunData :=
+container BebouwingsComponenten :=
 	for_each_ne(BCname,
-		'CalculationSchemes/VestaRunDataComponent('
+		'CalculationSchemes/BCdata('
 			'Bebouwing/'+BCname+','
 			+Quote(BCname)+','
 			+string(Classifications/BebouwingsComponent/IsNieuwbouw)+','

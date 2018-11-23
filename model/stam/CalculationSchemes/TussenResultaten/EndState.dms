@@ -1,0 +1,128 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container EndState := FinalState
+{
+	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
+	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StartingState/AanbodOpties/PlanRegioWarmteAllocatie));
+	container Stock := FinalState/Stock
+	{
+		// gebiedsmaatregelen
+		attribute<Eur> Ki_ge_ov               (PlanRegio) := StartingState/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * float64(NewGebruik);
+		attribute<Eur> Ki_ge_pm               (PlanRegio) := StartingState/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * float64(NewGebruik);
+		attribute<Eur> Ki_ge                  (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
+
+		attribute<Eur> Ki_id                  (PlanRegio) := StartingState/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * float64(NewGebruik);
+		attribute<Eur> Ki_wd                  (PlanRegio) := StartingState/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * float64(NewGebruik);
+		attribute<Eur> Oi_ge_subsidie         (PlanRegio) := StartingState/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * float64(NewGebruik);
+		attribute<Eur> Oi_id_subsidie         (PlanRegio) := StartingState/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * float64(NewGebruik);
+		attribute<Eur> Oi_wd_subsidie         (PlanRegio) := StartingState/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * float64(NewGebruik);
+		attribute<Eur> Oi_wd_Aansluitbijdrage (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage * float64(GebiedsOptie);
+
+		attribute<Eur> Ki_Totaal              (PlanRegio) := Ki_ge + Ki_id + Ki_wd + Ki_pt + Ki_ow;
+	}
+	container Flow := FinalState/Flow 
+	{
+		attribute<Eur_yr> Kj_ge_KL        (PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
+		attribute<Eur_yr> Kj_id_KL        (PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
+		attribute<Eur_yr> Kj_wd_KL        (PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
+		attribute<Eur_yr> Kj_pt_KL        (PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
+		attribute<Eur_yr> Kj_ow_KL        (PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
+
+		attribute<Eur_yr> Kj_KL           (PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
+
+		attribute<Eur_yr> Km_ge_KL        (PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Km_id_KL        (PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Km_wd_KL        (PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Km_pt_KL        (PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Km_ow_KL        (PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
+
+		attribute<Eur_yr> Km_KL           (PlanRegio) := Km_ge_KL + Km_id_KL + Km_wd_KL + Km_pt_KL + Km_ow_KL;
+
+		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * float64(GebiedsOptie);
+
+		attribute<Eur_yr> Kj_id_onderhoud (PlanRegio) := KostenBaten/KostenD/Kj_id_Onderhoud * float64(GebiedsOptie);
+
+		attribute<Eur_yr> Kj_ge_Total     (PlanRegio) := Kj_ge_KL + Kj_ge_hv;
+		attribute<Eur_yr> Km_ge_Total     (PlanRegio) := Km_ge_KL + Kj_ge_hv;
+		attribute<Eur_yr> Oe_ge_subsidie  (PlanRegio) := KostenBaten/Oe_ge_subsidie * float64(GebiedsOptie);
+		attribute<Eur_yr> Oj_ge_subsidie  (PlanRegio) := Stock/Oi_ge_subsidie * NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
+		attribute<Eur_yr> Om_ge_subsidie  (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
+		attribute<Eur_yr> Kj_ge_Netto     (PlanRegio) := Kj_ge_Total - Oj_ge_subsidie;
+
+		attribute<Eur_yr> Kj_id_Total     (PlanRegio) := Kj_id_KL + Kj_id_onderhoud;
+		attribute<Eur_yr> Km_id_Total     (PlanRegio) := Km_id_KL + Kj_id_onderhoud;
+		attribute<Eur_yr> Oe_id_subsidie  (PlanRegio) := KostenBaten/Oe_id_subsidie * float64(GebiedsOptie);
+		attribute<Eur_yr> Oj_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
+		attribute<Eur_yr> Om_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
+		attribute<Eur_yr> Kj_id_Netto     (PlanRegio) := Kj_id_Total - Oj_id_subsidie;
+
+		attribute<Eur_yr> Kj_wd_onderhoud (PlanRegio) := KostenBaten/KostenD/Kj_wd_Onderhoud * float64(GebiedsOptie);
+		attribute<Eur_yr> Kj_wd_admin     (PlanRegio) := KostenBaten/KostenD/Kj_wd_Admin     * float64(GebiedsOptie);
+		attribute<Eur_yr> Kj_wd_precario  (PlanRegio) := KostenBaten/KostenD/Kj_Precario     * float64(GebiedsOptie);
+		attribute<Eur_yr> Kj_wd_verbruik  (PlanRegio) := KostenBaten/KostenD/Kj_Verbruik     * float64(GebiedsOptie); // gas van bijstook
+		attribute<Eur_yr> Km_wd_verbruik  (PlanRegio) := KostenBaten/KostenD/Km_Verbruik     * float64(GebiedsOptie); // gas van bijstook
+
+		attribute<Eur_yr> Kj_wd_Total     (PlanRegio) := Kj_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik;
+		attribute<Eur_yr> Km_wd_Total     (PlanRegio) := Km_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik;
+		attribute<Eur_yr> Oe_wd_subsidie  (PlanRegio) := KostenBaten/Oe_wd_subsidie          * float64(GebiedsOptie);
+		attribute<Eur_yr> Oj_wd_subsidie  (PlanRegio) := Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie;
+		attribute<Eur_yr> Om_wd_subsidie  (PlanRegio) := Stock/Oi_wd_subsidie * NCW/mr28/AnnualisationFactor + Oe_wd_subsidie;
+		attribute<Eur_yr> Kj_wd_Netto     (PlanRegio) := Kj_wd_Total - Oj_wd_subsidie;
+
+		attribute<Eur_yr> Kj_pt_Total     (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * float64(GebiedsOptie);
+		attribute<Eur_yr> Km_pt_Total     (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * float64(GebiedsOptie);
+		attribute<Eur_yr> Oe_pt_subsidie  (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
+		attribute<Eur_yr> Oj_pt_subsidie  (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
+		attribute<Eur_yr> Om_pt_subsidie  (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
+		attribute<Eur_yr> Kj_pt_Netto     (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;
+
+		attribute<Eur_yr> Kj_ow_Total     (PlanRegio) := (Kj_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik) * float64(GebiedsOptie);
+		attribute<Eur_yr> Km_ow_Total     (PlanRegio) := (Km_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik) * float64(GebiedsOptie);
+		attribute<Eur_yr> Oe_ow_subsidie  (PlanRegio) := Stock/Oe_ow_subsidie * NCW/ow28/AnnualisationFactor + Oj_SDE; // exploitatie-subsidie over gehele kapitaallasten
+		attribute<Eur_yr> Oj_ow_subsidie  (PlanRegio) := Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie;
+		attribute<Eur_yr> Om_ow_subsidie  (PlanRegio) := Stock/Oi_ow_subsidie * NCW/mr28/AnnualisationFactor + Oe_ow_subsidie;
+		attribute<Eur_yr> Kj_ow_Netto     (PlanRegio) := Kj_ow_Total - Oj_ow_subsidie;
+
+		attribute<Eur_yr> Kj_lv_admin     (PlanRegio) := KostenBaten/KostenD/Kj_lv_Admin * float64(GebiedsOptie);
+		
+		attribute<Eur_yr> Kj_Total        (PlanRegio) := Kj_ge_Total + Kj_id_Total + Kj_wd_Total + Kj_pt_Total + Kj_ow_Total + Kj_lv_admin;
+		attribute<Eur_yr> Km_Total        (PlanRegio) := Km_ge_Total +Km_id_Total + Km_wd_Total + Km_pt_Total + Km_ow_Total + Kj_lv_admin;
+		attribute<Eur_yr> Kj_Precario     (PlanRegio) := Kj_wd_precario + Kj_pt_precario;
+
+		attribute<Eur_yr> Oj_subsidie     (PlanRegio) := Oj_id_subsidie + Oj_wd_subsidie + Oj_pt_subsidie + Oj_ow_subsidie;
+		attribute<Eur_yr> Om_subsidie     (PlanRegio) := Om_id_subsidie + Om_wd_subsidie + Om_pt_subsidie + Om_ow_subsidie;
+		attribute<Eur_yr> Kj_Netto        (PlanRegio) := Kj_Total - Oj_subsidie;
+		attribute<Eur_yr> Km_Netto        (PlanRegio) := Km_Total - Om_subsidie;
+	}
+}

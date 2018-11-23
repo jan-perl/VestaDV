@@ -86,7 +86,6 @@ template TussenResultaten
 	}
 	// end case parameters
 
-	// context specifieke korte verwijzingen
 	unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/yr'+string(RunJaar);
@@ -138,17 +137,17 @@ template TussenResultaten
 	}
 	container Schuiven
 	{
-		parameter<Ratio> CurveMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveMinMaxSchuif;
-		parameter<Ratio> CurveMin: = 1.0 - CurveMax;
+		parameter<Ratio> CurveMax       := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveMinMaxSchuif;
+		parameter<Ratio> CurveMin       := 1.0 - CurveMax;
 
-		parameter<Ratio> LerenAan: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveGebruikSchuif;
-		parameter<Ratio> LerenUit: = 1.0 - LerenAan;
+		parameter<Ratio> LerenAan       := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveGebruikSchuif;
+		parameter<Ratio> LerenUit       := 1.0 - LerenAan;
 
-		parameter<Ratio> KostenMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/VerbeterMinMaxSchuif;
-		parameter<Ratio> KostenMin: = 1.0 - KostenMax;
+		parameter<Ratio> KostenMax      : = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/VerbeterMinMaxSchuif;
+		parameter<Ratio> KostenMin      := 1.0 - KostenMax;
 
-		parameter<Ratio> OpbrMax: = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/MinMaxSchuif;
-		parameter<Ratio> OpbrMin: = 1.0 - OpbrMax;
+		parameter<Ratio> OpbrMax        := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/MinMaxSchuif;
+		parameter<Ratio> OpbrMin        := 1.0 - OpbrMax;
 
 		parameter<Ratio> VerketelingMax := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/IndividueleVerwarmingSchuif;
 		parameter<Ratio> VerketelingMin := 1.0 - VerketelingMax;
@@ -156,12 +155,12 @@ template TussenResultaten
 		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
 	}
 
-	container LeerCurves 
+	container LeerCurves
 	{
-		attribute <Ratio> LeerCurve1DataMin (Classifications/ZichtJaar):= Kengetallen/Leercurves/C1Min;
-		attribute <Ratio> LeerCurve1DataMax (Classifications/ZichtJaar):= Kengetallen/Leercurves/C1Max;
-		attribute <Ratio> LeerCurve2DataMin (Classifications/ZichtJaar):= Kengetallen/Leercurves/C2Min;
-		attribute <Ratio> LeerCurve2DataMax (Classifications/ZichtJaar):= Kengetallen/Leercurves/C2Max;
+		attribute <Ratio> LeerCurve1DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Min;
+		attribute <Ratio> LeerCurve1DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Max;
+		attribute <Ratio> LeerCurve2DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
+		attribute <Ratio> LeerCurve2DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
 
 		parameter<Ratio> Curve1Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMin);
 		parameter<Ratio> Curve1Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMax);
@@ -175,248 +174,103 @@ template TussenResultaten
 		parameter<Ratio> Curve2         := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerenUit, descr = "warmteleidingen en uitkoppeling van warmte";
 	}
 
-	container Prijzen
-	{
-		container AardGas
-		{
-			unit<uint32> Tabel := invoer/energieprijzen/AardGas/Table;
-			container prijzenbron  := invoer/energieprijzen/AardGas/results;
-			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
+	#include<Prijzen.dms>
 
-			parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex] * (1.0 - Voorkeuren/GroenGasFactor);
-
-			unit<uint8> Staffel := classifications/gebruiksgrootteklasse 
-			{
-				attribute<GJ_yr>  ClassBreak := gas_break;
-				attribute<Eur_GJ> KGJ_Commodity        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice  [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_netwerk          := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk         [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_eindgebruik_excl := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_excl[JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_maatschappelijk  := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_EnergieHeffing   := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing  [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_CO2Heffing       := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing      [JaarIndex]')+')';
-			}
-
-			unit<uint8>  Glastuinbouw: nrofrows = 1
-			{
-				attribute<GJ_yr>  ClassBreak := union_data(., first(staffel/Classbreak));
-				attribute<Eur_GJ> KGJ_eindgebruik_excl := prijzenbron/Glastuinbouw/eindgebruik_excl[const(JaarIndex,.)];
-				attribute<Eur_GJ> KGJ_maatschappelijk  := prijzenbron/Glastuinbouw/maatschappelijk [const(JaarIndex,.)];
-				attribute<Eur_GJ> KGJ_netwerk          := prijzenbron/Glastuinbouw/netwerk         [const(JaarIndex,.)];
-				attribute<Eur_GJ> KGJ_EnergieHeffing   := prijzenbron/Glastuinbouw/EnergieHeffing  [const(JaarIndex,.)];
-				attribute<Eur_GJ> KGJ_CO2Heffing       := prijzenbron/Glastuinbouw/CO2Heffing      [const(JaarIndex,.)];
-			}
-
-			container Bijstook := prijzenbron/KleinMiddelGebruik
-			{
-				parameter<Eur_GJ> KGJ_eindgebruik_excl := eindgebruik_excl[JaarIndex];
-				parameter<Eur_GJ> KGJ_maatschappelijk  := maatschappelijk [JaarIndex];
-				parameter<Eur_GJ> KGJ_netwerk          := netwerk         [JaarIndex];
-				parameter<Eur_GJ> KGJ_CO2Heffing       := CO2Heffing      [JaarIndex];
-				parameter<Eur_GJ> KGJ_EnergieHeffing   := EnergieHeffing  [JaarIndex];
-			}
-		}
-
-		container Elektriciteit
-		{
-			unit<uint32> Tabel := invoer/energieprijzen/Elektriciteit/Table;
-			container prijzenbron  := invoer/energieprijzen/Elektriciteit/results;
-
-			parameter<Tabel> JaarIndex := classify(RunJaar, prijzenbron/Jaar);
-
-			parameter<KG_GJ> CO2_GJ := prijzenbron/CO2_GJ[JaarIndex];
-
-			unit<uint8> Staffel := classifications/gebruiksgrootteklasse
-			{
-				attribute<GJ_yr>  ClassBreak := elek_break_kWh [GJ_yr];
-				attribute<Eur_GJ> KGJ_commodity        := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CommodityPrice  [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_eindgebruik_excl := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/eindgebruik_excl[JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_maatschappelijk  := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/maatschappelijk [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_netwerk          := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/netwerk         [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_EnergieHeffing   := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/EnergieHeffing  [JaarIndex]')+')';
-				attribute<Eur_GJ> KGJ_CO2Heffing       := ='union_data(., '+AsItemList('prijzenbron/'+Name+'/CO2Heffing      [JaarIndex]')+')';
-			}
-		}
-	}
 	attribute<string> BCname     (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
 	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
 		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCname+'ResterendFactors',',')+')';
 
-	#include<VestaRunData.dms>
-	
-	container NCW {
-		container ow28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ow, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container id28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/id, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container wd28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/wd, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container pt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/pt, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container mr28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+	#include<BebouwingsComponenten.dms>
 
-		container bw28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container nw28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container bu28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container nu28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container bt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
-		container nt28 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, SpecifiekeInstellingen/investering/BeginOpbrengstJaar, SpecifiekeInstellingen/investering/EindOpbrengstJaar );
+	container NCW
+	{
+		container DV := SpecifiekeInstellingen/DiscontoVoet;
+		container IN := SpecifiekeInstellingen/investering;
 
-		container mr50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 50[Yr]);
-		container bw50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 50[Yr]);
-		container nw50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 50[Yr]);
-		container bu50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 50[Yr]);
-		container nu50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 50[Yr]);
-		container bt50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 50[Yr]);
-		container nt50 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 50[Yr]);
+		container ow28 := NcwSchema(DV/ow, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container id28 := NcwSchema(DV/id, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container wd28 := NcwSchema(DV/wd, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container pt28 := NcwSchema(DV/pt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container mr28 := NcwSchema(DV/mr, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 
-		container mr30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 30[Yr]);
-		container bw30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 30[Yr]);
-		container nw30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 30[Yr]);
-		container bu30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 30[Yr]);
-		container nu30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 30[Yr]);
-		container bt30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 30[Yr]);
-		container nt30 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 30[Yr]);
+		container bw28 := NcwSchema(DV/ebw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nw28 := NcwSchema(DV/enw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bu28 := NcwSchema(DV/ebu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nu28 := NcwSchema(DV/enu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bt28 := NcwSchema(DV/ebt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nt28 := NcwSchema(DV/ent, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 
-		container mr15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/mr , 0[Yr], 15[Yr]);
-		container bw15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebw, 0[Yr], 15[Yr]);
-		container nw15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enw, 0[Yr], 15[Yr]);
-		container bu15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebu, 0[Yr], 15[Yr]);
-		container nu15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/enu, 0[Yr], 15[Yr]);
-		container bt15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ebt, 0[Yr], 15[Yr]);
-		container nt15 := NcwSchema(SpecifiekeInstellingen/DiscontoVoet/ent, 0[Yr], 15[Yr]);
+		container mr50 := NcwSchema(DV/mr , 0[Yr], 50[Yr]);
+		container bw50 := NcwSchema(DV/ebw, 0[Yr], 50[Yr]);
+		container nw50 := NcwSchema(DV/enw, 0[Yr], 50[Yr]);
+		container bu50 := NcwSchema(DV/ebu, 0[Yr], 50[Yr]);
+		container nu50 := NcwSchema(DV/enu, 0[Yr], 50[Yr]);
+		container bt50 := NcwSchema(DV/ebt, 0[Yr], 50[Yr]);
+		container nt50 := NcwSchema(DV/ent, 0[Yr], 50[Yr]);
+
+		container mr30 := NcwSchema(DV/mr , 0[Yr], 30[Yr]);
+		container bw30 := NcwSchema(DV/ebw, 0[Yr], 30[Yr]);
+		container nw30 := NcwSchema(DV/enw, 0[Yr], 30[Yr]);
+		container bu30 := NcwSchema(DV/ebu, 0[Yr], 30[Yr]);
+		container nu30 := NcwSchema(DV/enu, 0[Yr], 30[Yr]);
+		container bt30 := NcwSchema(DV/ebt, 0[Yr], 30[Yr]);
+		container nt30 := NcwSchema(DV/ent, 0[Yr], 30[Yr]);
+
+		container mr15 := NcwSchema(DV/mr , 0[Yr], 15[Yr]);
+		container bw15 := NcwSchema(DV/ebw, 0[Yr], 15[Yr]);
+		container nw15 := NcwSchema(DV/enw, 0[Yr], 15[Yr]);
+		container bu15 := NcwSchema(DV/ebu, 0[Yr], 15[Yr]);
+		container nu15 := NcwSchema(DV/enu, 0[Yr], 15[Yr]);
+		container bt15 := NcwSchema(DV/ebt, 0[Yr], 15[Yr]);
+		container nt15 := NcwSchema(DV/ent, 0[Yr], 15[Yr]);
 	}
 
-	container Initieel := VestaRunData
+	container Initieel := BebouwingsComponenten
 	{
-		container AanbodOpties:  = StartingState/AanbodOpties;
-		container Stock := StartingState/Stock;
-		container WKO := StartingState/WKO;
+		container AanbodOpties := StartingState/AanbodOpties;
+		container Stock        := StartingState/Stock;
+		container WKO          := StartingState/WKO;
 
-		container Flow {
-			attribute<Eur_yr> Kj_pt_onderhoud(PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_pt_admin    (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_pt_precario (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			
-			attribute<Eur_yr> Kj_ow_onderhoud(PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_admin    (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kc_ow_verbruik (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
-			attribute<Eur_yr> Oj_SDE         (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
+		container Flow 
+		{
+			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+
+			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
+			attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 		}
-		container KostenBaten := KostenBatenSchema(VestaRunData, invoer/Energieprijzen, RunJaar);
+
+		container KostenBaten := KostenBatenSchema(BebouwingsComponenten, invoer/Energieprijzen, RunJaar);
 	}
 
 	container GebiedsAllocatie :=
-			for_each_ne(
-				Voorkeuren/WarmteOpties/Name, 
-				'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
-					'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
-					AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
-					EnergiePrijzen, RunJaar
-				)'
-			);
+		for_each_ne(
+			Voorkeuren/WarmteOpties/Name,
+			'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
+				'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
+				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
+				EnergiePrijzen, RunJaar
+			)'
+		);
 
 	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
-	container EndState   := FinalState
-	{
-		attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
-		attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StartingState/AanbodOpties/PlanRegioWarmteAllocatie));
-		container Stock := FinalState/Stock
-		{
-			// gebiedsmaatregelen
-			attribute<Eur> Ki_ge_ov      (PlanRegio) := StartingState/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * float64(NewGebruik);
-			attribute<Eur> Ki_ge_pm      (PlanRegio) := StartingState/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * float64(NewGebruik);
-			attribute<Eur> Ki_ge         (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
-			attribute<Eur> Ki_id         (PlanRegio) := StartingState/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * float64(NewGebruik);
-			attribute<Eur> Ki_wd         (PlanRegio) := StartingState/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * float64(NewGebruik);
-			attribute<Eur> Oi_ge_subsidie(PlanRegio) := StartingState/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * float64(NewGebruik);
-			attribute<Eur> Oi_id_subsidie(PlanRegio) := StartingState/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * float64(NewGebruik);
-			attribute<Eur> Oi_wd_subsidie(PlanRegio) := StartingState/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * float64(NewGebruik);
-			attribute<Eur> Oi_wd_Aansluitbijdrage(PlanRegio) := KostenBaten/Oi_Aansluitbijdrage * float64(GebiedsOptie);
-			
-			attribute<Eur> Ki_Totaal   (PlanRegio) := Ki_ge + Ki_id + Ki_wd + Ki_pt + Ki_ow;
-		}
-		container Flow := FinalState/Flow {
-			attribute<Eur_yr> Kj_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_id_KL(PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
 
-			attribute<Eur_yr> Kj_KL(PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
+	#include<EndState.dms>
 
-			attribute<Eur_yr> Km_ge_KL(PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
-			attribute<Eur_yr> Km_id_KL(PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
-			attribute<Eur_yr> Km_wd_KL(PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
-			attribute<Eur_yr> Km_pt_KL(PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
-			attribute<Eur_yr> Km_ow_KL(PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
-
-			attribute<Eur_yr> Km_KL(PlanRegio) := Km_ge_KL + Km_id_KL + Km_wd_KL + Km_pt_KL + Km_ow_KL;
-
-			attribute<Eur_yr> Kj_ge_hv       (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * float64(GebiedsOptie);
-
-			attribute<Eur_yr> Kj_id_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_id_Onderhoud * float64(GebiedsOptie);
-
-			attribute<Eur_yr> Kj_ge_Total    (PlanRegio) := Kj_ge_KL + Kj_ge_hv;
-			attribute<Eur_yr> Km_ge_Total    (PlanRegio) := Km_ge_KL + Kj_ge_hv;
-			attribute<Eur_yr> Oe_ge_subsidie (PlanRegio) := KostenBaten/Oe_ge_subsidie * float64(GebiedsOptie);
-			attribute<Eur_yr> Oj_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
-			attribute<Eur_yr> Om_ge_subsidie (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
-			attribute<Eur_yr> Kj_ge_Netto    (PlanRegio) := Kj_ge_Total - Oj_ge_subsidie;
-
-			attribute<Eur_yr> Kj_id_Total    (PlanRegio) := Kj_id_KL + Kj_id_onderhoud;
-			attribute<Eur_yr> Km_id_Total    (PlanRegio) := Km_id_KL + Kj_id_onderhoud;
-			attribute<Eur_yr> Oe_id_subsidie (PlanRegio) := KostenBaten/Oe_id_subsidie * float64(GebiedsOptie);
-			attribute<Eur_yr> Oj_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
-			attribute<Eur_yr> Om_id_subsidie (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
-			attribute<Eur_yr> Kj_id_Netto    (PlanRegio) := Kj_id_Total - Oj_id_subsidie;
-
-			attribute<Eur_yr> Kj_wd_onderhoud(PlanRegio) := KostenBaten/KostenD/Kj_wd_Onderhoud * float64(GebiedsOptie);
-			attribute<Eur_yr> Kj_wd_admin    (PlanRegio) := KostenBaten/KostenD/Kj_wd_Admin     * float64(GebiedsOptie);
-			attribute<Eur_yr> Kj_wd_precario (PlanRegio) := KostenBaten/KostenD/Kj_Precario     * float64(GebiedsOptie);
-			attribute<Eur_yr> Kj_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Kj_Verbruik     * float64(GebiedsOptie); // gas van bijstook
-			attribute<Eur_yr> Km_wd_verbruik (PlanRegio) := KostenBaten/KostenD/Km_Verbruik     * float64(GebiedsOptie); // gas van bijstook
-
-			attribute<Eur_yr> Kj_wd_Total    (PlanRegio) := Kj_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik;
-			attribute<Eur_yr> Km_wd_Total    (PlanRegio) := Km_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik;
-			attribute<Eur_yr> Oe_wd_subsidie (PlanRegio) := KostenBaten/Oe_wd_subsidie          * float64(GebiedsOptie);
-			attribute<Eur_yr> Oj_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie;
-			attribute<Eur_yr> Om_wd_subsidie (PlanRegio) := Stock/Oi_wd_subsidie * NCW/mr28/AnnualisationFactor + Oe_wd_subsidie;
-			attribute<Eur_yr> Kj_wd_Netto    (PlanRegio) := Kj_wd_Total - Oj_wd_subsidie;
-
-			attribute<Eur_yr> Kj_pt_Total    (PlanRegio) := (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario) * float64(GebiedsOptie);
-			attribute<Eur_yr> Km_pt_Total    (PlanRegio) := (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin                 ) * float64(GebiedsOptie);
-			attribute<Eur_yr> Oe_pt_subsidie (PlanRegio) := (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/pt; // exploitatie-subsidie over gehele kapitaallasten
-			attribute<Eur_yr> Oj_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie;
-			attribute<Eur_yr> Om_pt_subsidie (PlanRegio) := Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie;
-			attribute<Eur_yr> Kj_pt_Netto    (PlanRegio) := Kj_pt_Total - Oj_pt_subsidie;
-
-			attribute<Eur_yr> Kj_ow_Total    (PlanRegio) := (Kj_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik) * float64(GebiedsOptie);
-			attribute<Eur_yr> Km_ow_Total    (PlanRegio) := (Km_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik) * float64(GebiedsOptie);
-			attribute<Eur_yr> Oe_ow_subsidie (PlanRegio) := Stock/Oe_ow_subsidie * NCW/ow28/AnnualisationFactor + Oj_SDE; // exploitatie-subsidie over gehele kapitaallasten
-			attribute<Eur_yr> Oj_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie;
-			attribute<Eur_yr> Om_ow_subsidie (PlanRegio) := Stock/Oi_ow_subsidie * NCW/mr28/AnnualisationFactor + Oe_ow_subsidie;
-			attribute<Eur_yr> Kj_ow_Netto    (PlanRegio) := Kj_ow_Total - Oj_ow_subsidie;
-
-			attribute<Eur_yr> Kj_lv_admin    (PlanRegio) := KostenBaten/KostenD/Kj_lv_Admin * float64(GebiedsOptie);
-			
-			attribute<Eur_yr> Kj_Total       (PlanRegio) := Kj_ge_Total + Kj_id_Total + Kj_wd_Total + Kj_pt_Total + Kj_ow_Total + Kj_lv_admin;
-			attribute<Eur_yr> Km_Total       (PlanRegio) := Km_ge_Total +Km_id_Total + Km_wd_Total + Km_pt_Total + Km_ow_Total + Kj_lv_admin;
-			attribute<Eur_yr> Kj_Precario    (PlanRegio) := Kj_wd_precario + Kj_pt_precario;
-
-			attribute<Eur_yr> Oj_subsidie    (PlanRegio) := Oj_id_subsidie + Oj_wd_subsidie + Oj_pt_subsidie + Oj_ow_subsidie;
-			attribute<Eur_yr> Om_subsidie    (PlanRegio) := Om_id_subsidie + Om_wd_subsidie + Om_pt_subsidie + Om_ow_subsidie;
-			attribute<Eur_yr> Kj_Netto       (PlanRegio) := Kj_Total - Oj_subsidie;
-			attribute<Eur_yr> Km_Netto       (PlanRegio) := Km_Total - Om_subsidie;
-		}
-	}
-
-	container AllocatieResultaat :=
-			for_each_ne(Classifications/BebouwingsComponent/Name, 
-				'AllocatieResultaatComponentTempl(
-					VestaRunData/'+Classifications/BebouwingsComponent/Name+'
-					,EndState/AanbodOpties/PlanRegioWarmteAllocatie
-					,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
-					,EndState/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
-					,EndState/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
-				)'
-			);
-	attribute<bool> heeft_gas(PlanRegio) := ='or('+AsItemList(replace('any(AllocatieResultaat/@BC@/MeterVraag/Aardgas > 0.0, VestaRunData/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+	container Allocatie :=
+		for_each_ne(Classifications/BebouwingsComponent/Name,
+			'AllocatieComponentTempl(
+				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
+				,EndState/AanbodOpties/PlanRegioWarmteAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
+			)'
+		);
+	attribute<bool> heeft_gas (PlanRegio) := ='or('+AsItemList(replace('any(Allocatie/@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
 }

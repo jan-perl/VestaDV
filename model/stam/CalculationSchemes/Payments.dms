@@ -35,16 +35,19 @@ container Payments: FreeData = "False" // DEBUG
 {
 	template subst
 	{
+		// begin case parameters
 		unit<uint32> src;
 		parameter<string> key;
 		unit<uint8> valueset;
+		// end case parameters
 
 		attribute<bool>   subst       (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
-		attribute<uint32> firstResult (src) := uint32(Int32(ID(src)) + makedefined(cumulate(Int32(subst))[ID(src)-1]*(Int32(#valueset)-1i),0i));
-		unit<uint32> result := range(uint32, 0, uint32(Int32(#src) + sum(Int32(subst))*(Int32(#valueset)-1i)))
+		attribute<uint32> firstResult (src) := uint32(int32(id(src)) + makedefined(cumulate(int32(subst))[id(src)-1]*(int32(#valueset)-1i),0i));
+
+		unit<uint32> result := range(uint32, 0, uint32(int32(#src) + sum(int32(subst))*(int32(#valueset)-1i)))
 		{
-			attribute<src>    src_rel       := classify(ID(.), firstResult);
-			attribute<string> valueset_name := MakeDefined(valueset/name[value(ID(.)-firstResult[src_rel], valueset)], 'xxx');
+			attribute<src>    src_rel       := classify(id(.), firstResult);
+			attribute<string> valueset_name := MakeDefined(valueset/name[value(id(.)-firstResult[src_rel], valueset)], 'xxx');
 			attribute<string> name          := replace(src/name        [src_rel], key, valueset_name);
 			attribute<string> leverancier   := replace(src/leverancier [src_rel], key, valueset_name);
 			attribute<string> afnemer       := replace(src/afnemer     [src_rel], key, valueset_name);
@@ -53,10 +56,14 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<string> PlanRegioRel  := replace(src/PlanRegioRel[src_rel], key, valueset_name);
 		}
 	}
-	template actor_mut_table {
+
+	template actor_mut_table
+	{
+		// begin case parameters
 		unit<uint32> Actor;
 		parameter<Actor> Actor_rel;
 		unit<float64> Quantity;
+		// end case parameters
 
 		unit<uint32> mutatie_elem := impl/mutatie_elem;
 		unit<uint32> mut          := subset(mutatie_elem/actor_rel == Actor_rel && mutatie_elem/is_active)
@@ -89,7 +96,7 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<string>    all_mut_names (mut)        := mut/full_name;
 			attribute<MQuantity> all_muts      (mut)        := ='union_data(mut, '       +AsItemList('sum(../all_muts/'+mut/full_name+')')+')[MQuantity]';
 			attribute<MQuantity> aggr_muts     (actor_rels) := sum(all_muts, mut/actor_rels_rel);
-			parameter<MQuantity> saldo :=sum(aggr_muts);
+			parameter<MQuantity> saldo                      := sum(aggr_muts);
 		}
 
 		parameter<string> all_csv :=
@@ -122,15 +129,17 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
 		}
 
-		container impl {
+		container impl
+		{
 			unit<uint8> WKOC := subset(BC/KanWKO)
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
-			container applyBC  := subst(Accounting/mutatie,'@BC@' , BC); 
-			container applyWKO := subst(applyBC/result , '@WKOC@' , WKOC); 
-			container applyRO  := subst(applyWKO/result, '@RO@' , Voorkeuren/PlanRegioOptie);
-			container applyCO  := subst(applyRO/result,  '@CO@' , Voorkeuren/ClusterOptie);
+
+			container applyBC  := subst(Accounting/mutatie,'@BC@'   ,BC);
+			container applyWKO := subst(applyBC/result    ,'@WKOC@' ,WKOC);
+			container applyRO  := subst(applyWKO/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
+			container applyCO  := subst(applyRO/result    ,'@CO@'   ,Voorkeuren/ClusterOptie);
 
 			unit<uint32> mutatie := applyCO/result
 			{
@@ -166,7 +175,8 @@ container Payments: FreeData = "False" // DEBUG
 
 		container actor_mut_tables := for_each_ne(impl/active_actor/name, 'Payments/actor_mut_table(Actor,'+string(impl/active_actor/nr_OrgEntity)+'[Actor], Quantity)');
 
-		container matrix {
+		container matrix
+		{
 			unit<uint32> aggr := ='union_unit('+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/actor_rels')+')'
 			{
 				attribute<MQuantity> Saldo := ='union_data(.,'+AsItemList('actor_mut_tables/'+impl/active_actor/name+'/totals/aggr_muts')+')';
@@ -178,20 +188,24 @@ container Payments: FreeData = "False" // DEBUG
 			unit<uint32> RowSet := ColSet;
 
 			container Table := for_each_nedv(ColSet/name,
-				'(1.0 / 1000000.0) * float64(int64(0.5+1000000.0*sum(aggr/Saldo * Float64(aggr/from == '+string(ColSet/Actor_rel)+'), aggr/to)[RowSet/Actor_rel]))', 
-				RowSet, MQuantity)
+				'(1.0 / 1000000.0) * float64(int64(0.5 + 1000000.0*sum(aggr/Saldo * Float64(aggr/from == '+string(ColSet/Actor_rel)+'), aggr/to)[RowSet/Actor_rel]))'
+				, RowSet
+				, MQuantity
+				)
 			{
 				attribute<string>    name      (RowSet) := RowSet/name;
 				attribute<MQuantity> Oj_Totaal (RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
 				attribute<MQuantity> Kj_Totaal (RowSet) := ='union_data(RowSet, '+AsItemList('sum(max_elem(Table/'+RowSet/Name+', 0[MQuantity]))')+')';
-				attribute<MQuantity> Oj_Netto  (RowSet) := (1.0 / 1000000.0) * float64(int64(0.5+1000000.0*(Oj_Totaal - Kj_Totaal)));
+				attribute<MQuantity> Oj_Netto  (RowSet) := (1.0 / 1000000.0) * float64(int64(0.5 + 1000000.0*(Oj_Totaal - Kj_Totaal)));
 			}
 			attribute<string>        rows      (RowSet) := ='add('+AsItemList(quote(';')+'+string(Table/'+ColSet/Name+')')+')';
+
 			parameter<string> csv := 
 				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+
 				'[text];[MEur/Yr];[MEur/Yr];[MEur/Yr];'+AsList(const('[MEur/Yr]', ColSet),';')+'\n'
 				+ AsList(RowSet/name+';'+string(table/Oj_Totaal)+';'+string(table/Kj_Totaal)+';'+string(table/Oj_Netto)+rows+'\n', '')
-			,	StorageType = "str", StorageName = "=OutputSubFolder+'/Matrix.csv'";
+			,	StorageType = "str"
+			,	StorageName = "=OutputSubFolder+'/Matrix.csv'";
 		}
 		attribute<MQuantity> mut_overview   (impl/Active_Actor) := matrix/table/Oj_Netto;
 

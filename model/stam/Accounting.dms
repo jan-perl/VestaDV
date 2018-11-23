@@ -67,7 +67,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 	unit<uint8> BC := Classifications/BebouwingsComponent
 	{
-		attribute<string> entity := 'VestaRunData/'+name+'/BebouwingsObject';
+		attribute<string> entity := 'BebouwingsComponenten/'+name+'/BebouwingsObject';
 	}
 	
 	unit<uint32> mutatieSchema: nrofrows = 142
@@ -75,7 +75,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
 		{
-			parameter<string> PRR := 'VestaRunData/@BC@/PlanRegio_rel';
+			parameter<string> PRR := 'BebouwingsComponenten/@BC@/PlanRegio_rel';
 
 			// Annualisation Factors
 			parameter<string> AF28_OW := 'NCW/ow28/AnnualisationFactor'; 
@@ -84,14 +84,14 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 			parameter<string> AF28_ID := 'NCW/id28/AnnualisationFactor'; 
 			parameter<string> AF28_MR := 'NCW/mr28/AnnualisationFactor';
 			parameter<string> AF28_BW := 'NCW/bw28/AnnualisationFactor';
-			parameter<string> AF15_GE := 'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor';
-			parameter<string> AF30_GE := 'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor';
+			parameter<string> AF15_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor';
+			parameter<string> AF30_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor';
 			parameter<string> AF15_MR := 'NCW/mr15/AnnualisationFactor';
 			parameter<string> AF30_MR := 'NCW/mr30/AnnualisationFactor';
 			parameter<string> AFAB_ID := 'NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor'; 
 			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
 			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
-			parameter<string> AFAB_GE := 'VestaRunData/@BC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@BC@/NcwRefs/_28/AnnualisationFactor';
+			parameter<string> AFAB_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@BC@/NcwRefs/_28/AnnualisationFactor';
 			parameter<string> ROSEL   := 'float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
 			parameter<string> VAT_F   := '(SpecifiekeInstellingen/VAT / 100[Percent])';
 			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))';
@@ -103,36 +103,36 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
 				'maatschappelijk', 'AardGas', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/AardGas/maatschappelijk',
+					'Allocatie/@BC@/AardGas/maatschappelijk',
 					'', 
 					PRR
 			,	'AardGas' , 'EnergieHeffing', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/AardGas/EnergieHeffing',
+					'Allocatie/@BC@/AardGas/EnergieHeffing',
 					'',
 					PRR
 
 			,	'CO2@BC@' , 'EmissieRechten', 'AardGas', 
-					'AllocatieResultaat/@BC@/AardGas/CO2Heffing',
+					'Allocatie/@BC@/AardGas/CO2Heffing',
 					'',
 					PRR
 
 			,	'Aardgas', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/AardGas/eindgebruik_excl * '+VAT_F, 
+					'Allocatie/@BTW@/AardGas/eindgebruik_excl * '+VAT_F, 
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Netkosten_@BC@', 'GasNet', 'AardGas', 
-					'AllocatieResultaat/@BC@/AardGas/netwerk',
+					'Allocatie/@BC@/AardGas/netwerk',
 					'', 
 					PRR
 			,	'Vastrecht', 'GasNet', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/AardGas/Vastrecht',
+					'Allocatie/@BC@/AardGas/Vastrecht',
 					'', 
 					PRR
 			,	'VastrechtGasNet', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/AardGas/VastRecht * '+VAT_F,
+					'Allocatie/@BTW@/AardGas/VastRecht * '+VAT_F,
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'AardGas', 'KL_e', '@BC@/Eigenaar',
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
@@ -148,36 +148,36 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					''
 
 			,	'maatschappelijk', 'Elektriciteit', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/Elektriciteit/maatschappelijk',
+					'Allocatie/@BC@/Elektriciteit/maatschappelijk',
 					'', 
 					PRR
 			,	'Elektriciteit', 'EnergieHeffing', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/Elektriciteit/EnergieHeffing', 
+					'Allocatie/@BC@/Elektriciteit/EnergieHeffing', 
 					'', 
 					PRR
 
 			,	'CO2@BC@', 'EmissieRechten', 'Elektriciteit', 
-					'AllocatieResultaat/@BC@/Elektriciteit/CO2Heffing', 
+					'Allocatie/@BC@/Elektriciteit/CO2Heffing', 
 					'', 
 					PRR
 
 			,	'Elektriciteit', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/Elektriciteit/eindgebruik_excl * '+VAT_F,
+					'Allocatie/@BTW@/Elektriciteit/eindgebruik_excl * '+VAT_F,
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Netkosten@BC@', 'ElektriciteitsNet', 'Elektriciteit', 
-					'AllocatieResultaat/@BC@/Elektriciteit/netwerk',
+					'Allocatie/@BC@/Elektriciteit/netwerk',
 					'', 
 					PRR
 			,	'Vastrecht', 'ElektriciteitsNet', '@BC@/Gebruiker', 
-					'AllocatieResultaat/@BC@/Elektriciteit/Vastrecht',
+					'Allocatie/@BC@/Elektriciteit/Vastrecht',
 					'', 
 					PRR
 			,	'VastrechtElektriciteitsNet', 'BTW', '@BTW@/Gebruiker',
-					'AllocatieResultaat/@BTW@/Elektriciteit/VastRecht * '+VAT_F,
+					'Allocatie/@BTW@/Elektriciteit/VastRecht * '+VAT_F,
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Elektriciteit', 'KL_e', '@BC@/Eigenaar',
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
@@ -222,160 +222,160 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== Lokale opwekking: eigenaar investeringen
 			,	'ZonneBoiler', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_ZonneBoiler * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_ZonneBoiler * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
 			,	'Zon_PV', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_Zon_PV * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_Zon_PV * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
 			,	'mWKK', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_mWKK * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_mWKK * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
 					PRR
 
 			,	'eWP', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_eWP * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_eWP * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
 					PRR
 
 			,	'EWV', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_EWV * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_EWV * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
 			,	'hWP', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_hWP * '+ VAT_R,
-					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_hWP * '+ VAT_R,
+					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
 					PRR
 
 			,	'@BC@30j', 'LokaleOpwekking', 'KL_e', 
-					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking30',
+					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking30',
 					'NCW/mr30/AnnualisationFactor',
 					PRR
 
 			,	'@BTW@30j', 'BTW', 'KL_e', 
-					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking30 * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking30 * '+VAT_F,
 					'NCW/mr30/AnnualisationFactor',
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'@BC@15j', 'LokaleOpwekking', 'KL_e', 
-					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking15',
+					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking15',
 					'NCW/mr15/AnnualisationFactor',
 					PRR
 			,	'@BTW@15j', 'BTW', 'KL_e', 
-					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking15 * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking15 * '+VAT_F,
 					'NCW/mr15/AnnualisationFactor',
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'LokaleOpwekking', 'Onderhoud', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking',
+					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking',
 					'',
 					PRR
 
 			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
-					'VestaRunData/@BTW@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
 					'',
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Gebouwverbeteringen
 			,	'Gebouwverbetering', 'KL_e', '@BC@/Eigenaar', 
-					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT_gv / 100[Percent], 0.0))',
-					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT_gv / 100[Percent], 0.0))',
+					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
 			,	'Gebouwverbetering@BC@', 'Gebouw', 'KL_e', 
-					'VestaRunData/@BC@/kosten/Ki_GebouwVerbetering',
+					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering',
 					'NCW/mr30/AnnualisationFactor',
 					PRR
 
 			,	'Gebouwverbetering@BTW@', 'BTW', 'KL_e', 
-					'VestaRunData/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])',
+					'BebouwingsComponenten/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])',
 					'NCW/mr30/AnnualisationFactor',
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== split incentive
 			,	'VergoedingLabelSprong', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/kosten/Kj_gv_incentive * VestaRunData/@BC@/BTW_Factor',
+					'BebouwingsComponenten/@BC@/kosten/Kj_gv_incentive * BebouwingsComponenten/@BC@/BTW_Factor',
 					'',
 					PRR
 			,	'VergoedingZonPV', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/DragerOpties/Apparatuur/Zon_PV * VestaRunData/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_excl[AllocatieResultaat/@BC@/Elektriciteit/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor',
+					'BebouwingsComponenten/@BC@/DragerOpties/Apparatuur/Zon_PV * BebouwingsComponenten/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_excl[Allocatie/@BC@/Elektriciteit/ggk_rel] * BebouwingsComponenten/@BC@/BTW_Factor * BebouwingsComponenten/@BC@/EIA_Opties/R_SplitIncentiveFactor',
 					'',
 					PRR
 
 			,	'VergoedingZonneBoiler', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/DragerOpties/WarmWater/ZonneBoiler * VestaRunData/@BC@/PrijzenAardgas/KGJ_eindgebruik_excl[AllocatieResultaat/@BC@/AardGas/ggk_rel] * VestaRunData/@BC@/BTW_Factor * VestaRunData/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
+					'BebouwingsComponenten/@BC@/DragerOpties/WarmWater/ZonneBoiler * BebouwingsComponenten/@BC@/PrijzenAardgas/KGJ_eindgebruik_excl[Allocatie/@BC@/AardGas/ggk_rel] * BebouwingsComponenten/@BC@/BTW_Factor * BebouwingsComponenten/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
 					'',
 					PRR
 		
 		// ===== subsidie
 			,	'LokaleOpwekking', '@BC@/Eigenaar', 'Subsidie',
-					'VestaRunData/@BC@/sprongen/subsidie/EEA',
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EEA',
 					'',
 					PRR
 			,	'EIA30', '@BC@/Eigenaar', 'KL_e',
-					'VestaRunData/@BC@/sprongen/subsidie/EIA30',
-					'VestaRunData/@BC@/NcwRefs/_30/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
+					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
 			,	'EIA30@BC@', 'KL_e', 'Subsidie',
-					'VestaRunData/@BC@/sprongen/subsidie/EIA30',
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
 					'NCW/mr30/AnnualisationFactor',
 					PRR
 
 			,	'EIA15', '@BC@/Eigenaar', 'KL_e',
-					'VestaRunData/@BC@/sprongen/subsidie/EIA15',
-					'VestaRunData/@BC@/NcwRefs/_15/AnnualisationFactor',
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15',
+					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
 					PRR
 
 			,	'EIA15@BC@', 'KL_e', 'Subsidie',
-					'VestaRunData/@BC@/sprongen/subsidie/EIA15',
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15',
 					'NCW/mr15/AnnualisationFactor',
 					PRR
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
 			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
-					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@ * '+VAT_R,
+					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@ * '+VAT_R,
 					AFAB_GE, 
 					PRR
 
 			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
-					'VestaRunData/@BTW@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BTW@/Aandelen/@RO@ * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/Opbrengsten/AansluitbijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
 					AFAB_MR,
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
-					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
+					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
 					AFAB_MR, 
 					PRR
 
 			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
-					'VestaRunData/@BC@/Opbrengsten/AansluitbijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
+					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
 					AFAB_WD, 
 					PRR
 
 		// ===== vergoedingen van vastrecht en warmte aan leveranciers
 			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/Opbrengsten/VastrechtBijdrageD * AllocatieResultaat/@BC@/Aandelen/@RO@', 
+					'BebouwingsComponenten/@BC@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BC@/Aandelen/@RO@', 
 					'', 
 					PRR
 
 			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'VestaRunData/@BTW@/Opbrengsten/VastrechtBijdrageD * AllocatieResultaat/@BTW@/Aandelen/@RO@ * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'VestaRunData/@BC@/WarmteVraagD/Verbruik * AllocatieResultaat/@BC@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
+					'BebouwingsComponenten/@BC@/WarmteVraagD/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
 					'', 
 					PRR
 			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'VestaRunData/@BTW@/WarmteVraagD/Verbruik * AllocatieResultaat/@BTW@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/WarmteVraagD/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
 					'', 
-					'VestaRunData/@BTW@/PlanRegio_rel'
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Eigenaar kosten
 			,	'projectmanagement', 'KL_e', 'BestaandeWoning/Eigenaar',
@@ -593,8 +593,8 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 				
 //				,	'warmte_pt_@RO@', 'PrimairTransporteur', 'WijkDistributeur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
 //				,	'warmte_ow_@RO@', '@RO@',             'PrimairTransporteur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
-//				,	'Km_Opwekking', 'LokaleOpwekking', 'KL_e',   'VestaRunData/@BC@/kosten/Ki_totaal',AF15_m, PRR, PRR
-//				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'VestaRunData/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
+//				,	'Km_Opwekking', 'LokaleOpwekking', 'KL_e',   'BebouwingsComponenten/@BC@/kosten/Ki_totaal',AF15_m, PRR, PRR
+//				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'BebouwingsComponenten/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
 				
 
 		// ===== LEVERANCIER
@@ -626,7 +626,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		// ===== WKO vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
 			,	'Aansluitbijdrage_@CO@', 'KL_e', '@WKOC@/Eigenaar',
 					'EndState/@CO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))', 
-					'VestaRunData/@WKOC@/NcwRefs/_28/StartDiscountFactor * VestaRunData/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
+					'BebouwingsComponenten/@WKOC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
 					''
 
 			,	'Aansluitbijdrage_@CO@_@BTW@', 'BTW', 'KL_e',
