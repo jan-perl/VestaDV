@@ -1,0 +1,225 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container BebouwingsComponenten :=
+	for_each_ne(BCname,
+		'CalculationSchemes/BCdata('
+			'Bebouwing/'+BCname+','
+			+Quote(BCname)+','
+			+string(Classifications/BebouwingsComponent/IsNieuwbouw)+','
+			+string(HasFactors)+','
+			+(HasFactors ? 'Bebouwing/'+BCname+'ResterendFactors' : 'Bebouwing')+','
+			'invoer/Kengetallen/Bebouwing/'+BCname+'/results,'
+			'SpecifiekeInstellingen/RuimtelijkeVraag/Drager,'
+			'SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/'+BCname+','
+			'float64(klimaat),'
+			'VraagKentallen/'+BCname+','
+			'StartingState/'+BCname+','
+			'Prijzen/AardGas/'+(Classifications/BebouwingsComponent/IsGlastuinbouw ? 'Glastuinbouw' : 'Staffel')+','
+			'Prijzen/Elektriciteit/Staffel,'
+			+Quote(Classifications/BebouwingsComponent/NcwRefBase)+','
+			+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ SpecifiekeInstellingen/VAT    / 100[Percent]' : '')+','
+			+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ SpecifiekeInstellingen/VAT_gv / 100[Percent]' : '')
+		+')'
+	)
+{
+	container BestaandeWoning // specific AansluitTarief (per nrAansluitingen)
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten: Source = "FO v7a F 6 en 12"
+		{
+			attribute<float64> AansluitTarief (BebouwingsObject) := 
+				float64(J2010/heeft_gas[Planregio_rel]) * 
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+//
+			parameter<float64> VastRechtTarief := 
+				(Instellingen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
+				Instellingen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+			attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
+			attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
+			attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+
+			attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageA (BebouwingsObject) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+		}
+	}
+	container NieuwbouwWoning
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten: Source = "Fo v7a F 6"
+		{
+			attribute<float64> AansluitTarief     (BebouwingsObject) := 
+				float64(J2010/heeft_gas[Planregio_rel]) * 
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				Source = "FO v7a F 6 en 12";
+
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_nw_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_nw_e;
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+
+			parameter<float64> VastRechtTarief := 
+				(Instellingen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin + 
+				Instellingen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				
+			attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
+			attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
+			attribute<Eur_yr> HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+
+			attribute<Eur_yr> VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageA (BebouwingsObject) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+		}
+	}
+	container BestaandeUtil // specific AansluitTarief (per AansluitCapaciteit)
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten
+		{
+			attribute<float64> AansluitTarief     (BebouwingsObject) :=
+				float64(J2010/heeft_gas[Planregio_rel]) *
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				Source = "FO v7a F 6 en 12";
+
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraagD/AansluitCapaciteit;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraagA/AansluitCapaciteit;
+			
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/AansluitTarief_bu_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/AansluitTarief_bu_e;
+
+			attribute<float64> VastRechtTarief    (BebouwingsObject) := 96.84[Eur_kW_yr] * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+			attribute<float64> VastRechtTariefA   (BebouwingsObject) := 96.84[Eur_kW_yr] * Min_elem(WarmteVraagA/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+			attribute<float64> VastRechtTariefD   (BebouwingsObject) := 96.84[Eur_kW_yr] * Min_elem(WarmteVraagD/AansluitCapaciteit, 4000[ kW ]) ^ -0.22, Source = "Fo v7a F 11";
+
+			attribute<Eur_Yr>  VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
+			attribute<Eur_yr>  VastRechtBijdrageD (BebouwingsObject) := WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
+			attribute<Eur_yr>  VastRechtBijdrageA (BebouwingsObject) := WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
+
+			attribute<Eur_yr>  VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_g;
+			attribute<Eur_yr>  VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_e;
+
+			attribute<Eur_yr>  HeffingskortingE   (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+		}
+	}
+	container NieuwbouwUtil
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten
+		{
+			attribute<float64> AansluitTarief (BebouwingsObject) := 
+				float64(J2010/heeft_gas[Planregio_rel]) * 
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				Source = "FO v7a F 6 en 12";
+			
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief * WarmteVraagD/AansluitCapaciteit;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief * WarmteVraagA/AansluitCapaciteit;
+
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/AansluitTarief_nu_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/AansluitTarief_nu_e;
+
+			attribute<float64> VastRechtTarief    (BebouwingsObject) : Source = "F 11", = 96.84[Eur_kW_yr] * Min_elem(RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte, 4000[kW])^- 0.22;
+			attribute<float64> VastRechtTariefD   (BebouwingsObject) : Source = "F 11", = 96.84[Eur_kW_yr] * Min_elem(WarmteVraagD/AansluitCapaciteit, 4000[kW])^- 0.22;
+			attribute<float64> VastRechtTariefA   (BebouwingsObject) : Source = "F 11", = 96.84[Eur_kW_yr] * Min_elem(WarmteVraagA/AansluitCapaciteit, 4000[kW])^- 0.22;
+			attribute<Eur_yr>  VastRechtBijdrage  (BebouwingsObject) := RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte * VastRechtTarief;
+			attribute<Eur_yr>  VastRechtBijdrageD (BebouwingsObject) : Source = "Fo v7a F 11",  = WarmteVraagD/AansluitCapaciteit * VastRechtTariefD;
+			attribute<Eur_yr>  VastRechtBijdrageA (BebouwingsObject) : Source = "Fo v7a F 11",  = WarmteVraagA/AansluitCapaciteit * VastRechtTariefA;
+
+			attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_g;
+			attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject)   := RuimtelijkeVraagComponent/nrModelUnits * Kengetallen/Infra/Jaarlijks_u_e;
+
+			attribute<Eur_yr> HeffingskortingE  (BebouwingsObject)   := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+		}
+	}
+
+	container BestaandeGlTb // specific Bijdragen
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten
+		{
+			attribute<float64> AansluitTarief     (BebouwingsObject) := 
+				float64(J2010/heeft_gas[Planregio_rel]) * 
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+			
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+//
+			parameter<float64> VastRechtTarief := 
+				(Instellingen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
+				Instellingen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+			attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
+			attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
+			attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+			
+			attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageA(BebouwingsObject) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+		}
+	}
+	container NieuwbouwGlTb // specific Bijdragen
+	{
+		unit<uint32> BebouwingsObject;
+		container opbrengsten
+		{
+			attribute<float64> AansluitTarief     (BebouwingsObject) := 
+				float64(J2010/heeft_gas[Planregio_rel]) * 
+				(Instellingen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + Instellingen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+			
+			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
+			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
+			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraagD/nrAansluitingen;
+			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraagA/nrAansluitingen;
+//
+			parameter<float64> VastRechtTarief := 
+				(Instellingen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
+				Instellingen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+
+			attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
+			attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
+			attribute<Eur_yr> HeffingskortingE  (BebouwingsObject) := SpecifiekeInstellingen/Beleid/Heffingskorting * RuimtelijkeVraagComponent/nrAansluitingen;
+			
+			attribute<Eur_yr> VastRechtBijdrage (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageD(BebouwingsObject) := WarmteVraagD/nrAansluitingen * VastRechtTarief;
+			attribute<Eur_yr> VastRechtBijdrageA(BebouwingsObject) := WarmteVraagA/nrAansluitingen * VastRechtTarief;
+		}
+	}
+}

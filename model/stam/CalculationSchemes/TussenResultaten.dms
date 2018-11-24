@@ -1,0 +1,276 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: Bron: Planbureau voor de Leefomgeving  //
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       Gebaseerd op Planbureau voor de Leefomgeving gegevens.                         //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template TussenResultaten
+{
+	// begin case parameters
+	parameter<units/yr_uint16> RunJaar: ParamType = "Numeric";
+	// optional case parameter
+
+	container StartingState := // overridable by called 
+		for_each_ne(Classifications/BebouwingsComponent/name, 
+			'CalculationSchemes/StartingStateComponent('+
+				'Bebouwing/'+Classifications/BebouwingsComponent/Name+','+
+				'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results, '+
+				string(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
+			')'
+		)
+	{
+		#include<Aanbodopties.dms>
+
+		container Stock
+		{
+			attribute<Eur> Ki_ge_ov       (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_ge_pm       (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_id          (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_wd          (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_pt          (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_ow          (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_ge_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_id_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_wd_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_pt_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oi_ow_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Oe_ow_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
+		}
+
+		container Wko := Stock
+		{
+			container Oi_Aansl    := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur]   , PlanRegio)', PlanRegio, Eur);
+			container Oj_Verbruik := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+			container Om_comfort  := for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+
+			attribute<Eur_yr> Kj_ge     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_wd_pr  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Km_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> KEH_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> KCO2_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_o   (PlanRegio) := const(0[Eur_yr], PlanRegio);
+
+			attribute<Eur_yr> Se        (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<GJ_yr> GJw_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
+			attribute<GJ_yr> GJe_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
+			attribute<KG_yr> CO2        (PlanRegio) := const(0[KG_yr], PlanRegio);
+		}
+	}
+	// end case parameters
+
+	unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
+
+	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/yr'+string(RunJaar);
+	container VraagKentallen         := SpecifiekeInstellingen/VraagKentallen;
+	container AanbodKentallen        := SpecifiekeInstellingen/AanbodKentallen;
+
+	container Bebouwing              := ='RuimtelijkeData/Bebouwing/J'+string(RunJaar);
+
+	unit<uint32> WarmteBronnen       := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
+	attribute<float32> klimaat (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar);
+
+	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
+	{
+		unit<uint8> WarmteOpties_Org := range(uint8, 0b, uint8(AanbodOpties/Aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
+		{
+			attribute<string> Name := SchemaName;
+
+			attribute<Classifications/AanbodOptie> AanbodOptie := =AanbodOpties/Aantal > 0 
+				? 'union_data(.'+AsList(',AanbodOpties/Optie'+string(id(.) + 1b), '')+')' 
+				: 'const((0b / 0b)[Classifications/AanbodOptie], .)';
+			attribute<string> SchemaName := Classifications/AanbodOptie/Name[AanbodOptie];
+			attribute<string> code       := Classifications/AanbodOptie/Code[AanbodOptie];
+		}
+
+		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
+		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StartingState/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
+
+		unit<uint8> WarmteOpties_Ext: = union_unit_uint8(range(UInt8,0b, 1b), WarmteOpties_Org) // {  RestWarmte, ... } 
+		{
+			attribute<string> Name: = SchemaName;
+
+			attribute<Classifications/AanbodOptie> AanbodOptie := union_data(., Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie);
+			attribute<string>                      SchemaName  := union_data(., 'RestWarmte', WarmteOpties_Org/SchemaName);
+			attribute<string>                      code        := union_data(., '0', WarmteOpties_Org/code);
+		}
+
+		unit<uint8> WarmteOptiesBase := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
+		unit<uint8> WarmteOpties     := WarmteOptiesBase;
+		unit<uint8> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))
+		{
+			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
+			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
+		}
+		unit<uint8> ClusterOptie := subset(not(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie)))
+		{
+			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
+			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
+		}
+	}
+	container Schuiven
+	{
+		parameter<Ratio> CurveMax       := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveMinMaxSchuif;
+		parameter<Ratio> CurveMin       := 1.0 - CurveMax;
+
+		parameter<Ratio> LerenAan       := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveGebruikSchuif;
+		parameter<Ratio> LerenUit       := 1.0 - LerenAan;
+
+		parameter<Ratio> KostenMax      : = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/VerbeterMinMaxSchuif;
+		parameter<Ratio> KostenMin      := 1.0 - KostenMax;
+
+		parameter<Ratio> OpbrMax        := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/MinMaxSchuif;
+		parameter<Ratio> OpbrMin        := 1.0 - OpbrMax;
+
+		parameter<Ratio> VerketelingMax := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/IndividueleVerwarmingSchuif;
+		parameter<Ratio> VerketelingMin := 1.0 - VerketelingMax;
+
+		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
+	}
+
+	container LeerCurves
+	{
+		attribute <Ratio> LeerCurve1DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Min;
+		attribute <Ratio> LeerCurve1DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Max;
+		attribute <Ratio> LeerCurve2DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
+		attribute <Ratio> LeerCurve2DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
+
+		parameter<Ratio> Curve1Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMin);
+		parameter<Ratio> Curve1Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMax);
+		parameter<Ratio> Curve2Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve2DataMin);
+		parameter<Ratio> Curve2Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve2DataMax);
+
+		parameter<Ratio> LeerCurve1Base := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
+		parameter<Ratio> LeerCurve2Base := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
+
+		parameter<Ratio> Curve1         := LeerCurve1Base * Schuiven/LerenAan + Schuiven/LerenUit, descr = "overige onderdelen";
+		parameter<Ratio> Curve2         := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerenUit, descr = "warmteleidingen en uitkoppeling van warmte";
+	}
+
+	#include<Prijzen.dms>
+
+	attribute<string> BCname     (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
+	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
+		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCname+'ResterendFactors',',')+')';
+
+	#include<BebouwingsComponenten.dms>
+
+	container NCW
+	{
+		container DV := SpecifiekeInstellingen/DiscontoVoet;
+		container IN := SpecifiekeInstellingen/investering;
+
+		container ow28 := NcwSchema(DV/ow, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container id28 := NcwSchema(DV/id, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container wd28 := NcwSchema(DV/wd, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container pt28 := NcwSchema(DV/pt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container mr28 := NcwSchema(DV/mr, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+
+		container bw28 := NcwSchema(DV/ebw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nw28 := NcwSchema(DV/enw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bu28 := NcwSchema(DV/ebu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nu28 := NcwSchema(DV/enu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bt28 := NcwSchema(DV/ebt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nt28 := NcwSchema(DV/ent, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+
+		container mr50 := NcwSchema(DV/mr , 0[Yr], 50[Yr]);
+		container bw50 := NcwSchema(DV/ebw, 0[Yr], 50[Yr]);
+		container nw50 := NcwSchema(DV/enw, 0[Yr], 50[Yr]);
+		container bu50 := NcwSchema(DV/ebu, 0[Yr], 50[Yr]);
+		container nu50 := NcwSchema(DV/enu, 0[Yr], 50[Yr]);
+		container bt50 := NcwSchema(DV/ebt, 0[Yr], 50[Yr]);
+		container nt50 := NcwSchema(DV/ent, 0[Yr], 50[Yr]);
+
+		container mr30 := NcwSchema(DV/mr , 0[Yr], 30[Yr]);
+		container bw30 := NcwSchema(DV/ebw, 0[Yr], 30[Yr]);
+		container nw30 := NcwSchema(DV/enw, 0[Yr], 30[Yr]);
+		container bu30 := NcwSchema(DV/ebu, 0[Yr], 30[Yr]);
+		container nu30 := NcwSchema(DV/enu, 0[Yr], 30[Yr]);
+		container bt30 := NcwSchema(DV/ebt, 0[Yr], 30[Yr]);
+		container nt30 := NcwSchema(DV/ent, 0[Yr], 30[Yr]);
+
+		container mr15 := NcwSchema(DV/mr , 0[Yr], 15[Yr]);
+		container bw15 := NcwSchema(DV/ebw, 0[Yr], 15[Yr]);
+		container nw15 := NcwSchema(DV/enw, 0[Yr], 15[Yr]);
+		container bu15 := NcwSchema(DV/ebu, 0[Yr], 15[Yr]);
+		container nu15 := NcwSchema(DV/enu, 0[Yr], 15[Yr]);
+		container bt15 := NcwSchema(DV/ebt, 0[Yr], 15[Yr]);
+		container nt15 := NcwSchema(DV/ent, 0[Yr], 15[Yr]);
+	}
+
+	container Initieel := BebouwingsComponenten
+	{
+		container AanbodOpties := StartingState/AanbodOpties;
+		container Stock        := StartingState/Stock;
+		container WKO          := StartingState/WKO;
+
+		container Flow 
+		{
+			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+
+			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
+			attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
+		}
+
+		container KostenBaten := KostenBatenSchema(BebouwingsComponenten, invoer/Energieprijzen, RunJaar);
+	}
+
+	container GebiedsAllocatie :=
+		for_each_ne(
+			Voorkeuren/WarmteOpties/Name,
+			'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
+				'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
+				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
+				EnergiePrijzen, RunJaar
+			)'
+		);
+
+	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+
+	#include<EndState.dms>
+
+	container Allocatie :=
+		for_each_ne(Classifications/BebouwingsComponent/Name,
+			'AllocatieComponentTempl(
+				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
+				,EndState/AanbodOpties/PlanRegioWarmteAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
+				,EndState/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
+			)'
+		);
+	attribute<bool> heeft_gas (PlanRegio) := ='or('+AsItemList(replace('any(Allocatie/@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+}

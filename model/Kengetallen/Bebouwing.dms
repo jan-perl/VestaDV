@@ -34,7 +34,7 @@
 container Bebouwing
 {
 	container BestaandeWoning :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160707_Woningen_BAG.csv', 
 			'WoningType_str', 
 			Classifications/WoningtypeBestaand, Classifications/BouwjaarWoningBestaand, Units/nrWoningen, Units/nrWoningen
@@ -54,7 +54,7 @@ container Bebouwing
 		}
 	}
 	container NieuwbouwWoning :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160525_Woningen_Nieuwbouw_BAG.csv',
 			'WoningType_str',
 			Classifications/WoningtypeNieuwbouw, Classifications/BouwJaar, Units/nrWoningen, Units/nrWoningen
@@ -75,7 +75,7 @@ container Bebouwing
 		}
 	}
 	container BestaandeUtil :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160706_Utiliteiten_BAG.csv',
 			'UtiliteitType_str', 
 			Classifications/UtilTypeBestaand,Classifications/BouwjaarUtilBestaand,  Units/m2, Units/m2
@@ -96,7 +96,7 @@ container Bebouwing
 		}
 	}
 	container NieuwbouwUtil :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160525_Utiliteiten_Nieuwbouw_BAG.csv',
 			'UtiliteitType_str', 
 			Classifications/UtilTypeNieuwbouw, Classifications/BouwJaar,  Units/m2, Units/m2
@@ -117,7 +117,7 @@ container Bebouwing
 		}
 	}
 	container BestaandeGlTb :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160706_Glastuinbouw_BAG.csv', 
 			'UtiliteitType_str',
 			Classifications/GlTb, Classifications/bouwjaar, Units/m2, Units/m2
@@ -138,7 +138,7 @@ container Bebouwing
 		}
 	}
 	container NieuwbouwGlTb :=
-		model/CalculationSchemes/EnergieKengetallen/import(
+		model/CalculationSchemes/EnergieKengetallenImport(
 			'20160525_Glastuinbouw_Nieuwbouw_BAG.csv',
 			'UtiliteitType_str',
 			Classifications/GlTb, classifications/bouwjaar, Units/m2, Units/m2

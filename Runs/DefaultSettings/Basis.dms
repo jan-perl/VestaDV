@@ -253,7 +253,7 @@ container Basis: Using = "Units"
 			attribute<Units/Ratio> Deelname (Classifications/UtilTypeBestaand):= CollectieveOpwekking/BestaandeUtil/Deelname;
 
 			// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
-			// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
+			// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/BebouwingsComponenten/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 			// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 			// SourceData\vesta\vraag\BestaandeUtil\pand-BAG_sel_LISA_2008_010611.shp
 
@@ -288,7 +288,7 @@ container Basis: Using = "Units"
 			attribute<Units/Ratio> Deelname (Classifications/UtilTypeNieuwbouw) := CollectieveOpwekking/NieuwbouwUtil/Deelname;
 
 			// 16082013 Aanpassing Stapelfactor op basis van de berekening 302671365m2/182971545m2=1.6541991
-			// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/VestaRunData/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
+			// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/BebouwingsComponenten/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 			// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 			// SourceData\vesta\vraag\BestaandeUtil\pand-BAG_sel_LISA_2008_010611.shp
 			attribute<Units/Bouwlaag> StapelFactor (Classifications/UtilTypeNieuwbouw): [  // 4
@@ -525,9 +525,9 @@ container Basis: Using = "Units"
 	{
 		parameter<Percent_yr> mr  := 4.0[Percent_yr], Descr = "Maatschappelijke discontovoet";
 		parameter<Percent_yr> ow  := 6.0[Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
-		parameter<Percent_yr> wd  := 6.0[Percent_yr], Descr = "Discontovoet voor wijkdistributEurs";
-		parameter<Percent_yr> pt  := 6.0[Percent_yr], Descr = "Discontovoet voor primaire transportEurs";
-		parameter<Percent_yr> id  := 6.0[Percent_yr], Descr = "Discontovoet voor inpandige distributEurs";
+		parameter<Percent_yr> wd  := 6.0[Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
+		parameter<Percent_yr> pt  := 6.0[Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
+		parameter<Percent_yr> id  := 6.0[Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
 		parameter<Percent_yr> ebw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
 		parameter<Percent_yr> enw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
 		parameter<Percent_yr> ebu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";

@@ -43,74 +43,74 @@ container AllocExports: Using = "Units", isHidden = "True"
 	template BebouwingsComponentTempl
 	{
 		parameter<String> ComponentName;
-		container AllocatieResultaatComponent;
+		container AllocatieComponent;
 		
-		container VestaRunDataComponent     := AllocatieResultaatComponent/VestaRunDataComponent;
-		container RuimtelijkeVraagComponent := AllocatieResultaatComponent/RuimtelijkeVraagComponent;
+		container BCdata     := AllocatieComponent/BCdata;
+		container RuimtelijkeVraagComponent := AllocatieComponent/RuimtelijkeVraagComponent;
 
-		Unit<UInt32>  table := AllocatieResultaatComponent/BebouwingsObject
+		Unit<UInt32>  table := AllocatieComponent/BebouwingsObject
 		{
 			//attribute<String> BAG_id := /Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/identificatie;
 			attribute<string>  id              := code;
-			attribute<string>  Label           := VestaRunDataComponent/bebouwing/label;
+			attribute<string>  Label           := BCdata/bebouwing/label;
 			attribute<nrAansl> nrAansluitingen := RuimtelijkeVraagComponent/nrAansluitingen;
 
-			attribute<Classifications/AanbodOptie> AanbodOptie : = AllocatieResultaatComponent/WarmteAllocatie;
+			attribute<Classifications/AanbodOptie> AanbodOptie : = AllocatieComponent/WarmteAllocatie;
 
-			attribute<GJ_yr> MV_RW                        := AllocatieResultaatComponent/MeterVraag/RestWarmte;
-			attribute<GJ_yr> MV_GT                        := AllocatieResultaatComponent/MeterVraag/GeoThermie;
-			attribute<GJ_yr> MV_WKO                       := AllocatieResultaatComponent/MeterVraag/WKO;
-			attribute<GJ_yr> MV_WKK                       := AllocatieResultaatComponent/MeterVraag/WijkWKK;
-			attribute<GJ_yr> MV_BIOWKK                    := AllocatieResultaatComponent/MeterVraag/BioWKK;
-			attribute<GJ_yr> MV_GAS                       := AllocatieResultaatComponent/MeterVraag/AardGas;
-			attribute<GJ_yr> MV_ELEK                      := AllocatieResultaatComponent/MeterVraag/Elektriciteit;
-			attribute<GJ_yr> MV_TOTL                      := AllocatieResultaatComponent/MeterVraag/Totaal;
+			attribute<GJ_yr> MV_RW                        := AllocatieComponent/MeterVraag/RestWarmte;
+			attribute<GJ_yr> MV_GT                        := AllocatieComponent/MeterVraag/GeoThermie;
+			attribute<GJ_yr> MV_WKO                       := AllocatieComponent/MeterVraag/WKO;
+			attribute<GJ_yr> MV_WKK                       := AllocatieComponent/MeterVraag/WijkWKK;
+			attribute<GJ_yr> MV_BIOWKK                    := AllocatieComponent/MeterVraag/BioWKK;
+			attribute<GJ_yr> MV_GAS                       := AllocatieComponent/MeterVraag/AardGas;
+			attribute<GJ_yr> MV_ELEK                      := AllocatieComponent/MeterVraag/Elektriciteit;
+			attribute<GJ_yr> MV_TOTL                      := AllocatieComponent/MeterVraag/Totaal;
 
-			attribute<KG_yr> CO2_GAS                      := AllocatieResultaatComponent/CO2/AardGas;
-			attribute<KG_yr> CO2_ELEK                     := AllocatieResultaatComponent/CO2/Elektriciteit;
+			attribute<KG_yr> CO2_GAS                      := AllocatieComponent/CO2/AardGas;
+			attribute<KG_yr> CO2_ELEK                     := AllocatieComponent/CO2/Elektriciteit;
 
-			attribute<Eur> AansluitBijdrage_Gas           := AllocatieResultaatComponent/AardGas/AansluitBijdrage;
-			attribute<Eur> AansluitBijdrage_Elek          := AllocatieResultaatComponent/Elektriciteit/AansluitBijdrage;
-			attribute<Eur_yr> CO2Heffing_Gas              := AllocatieResultaatComponent/AardGas/CO2Heffing;
-			attribute<Eur_yr> CO2Heffing_Elek             := AllocatieResultaatComponent/Elektriciteit/CO2Heffing;
-			attribute<Eur_yr> Eindgebruik_ex_Gas          := AllocatieResultaatComponent/AardGas/eindgebruik_excl;
-			attribute<Eur_yr> Eindgebruik_ex_Elek         := AllocatieResultaatComponent/Elektriciteit/eindgebruik_excl;
-			attribute<Eur_yr> EnergieHeffing_Gas          := AllocatieResultaatComponent/AardGas/EnergieHeffing;
-			attribute<Eur_yr> EnergieHeffing_Elek         := AllocatieResultaatComponent/Elektriciteit/EnergieHeffing;
-			attribute<uint8> ggk_rel_Gas                  := AllocatieResultaatComponent/AardGas/ggk_rel;
-			attribute<uint8> ggk_rel_Elek                 := AllocatieResultaatComponent/Elektriciteit/ggk_rel;
+			attribute<Eur> AansluitBijdrage_Gas           := AllocatieComponent/AardGas/AansluitBijdrage;
+			attribute<Eur> AansluitBijdrage_Elek          := AllocatieComponent/Elektriciteit/AansluitBijdrage;
+			attribute<Eur_yr> CO2Heffing_Gas              := AllocatieComponent/AardGas/CO2Heffing;
+			attribute<Eur_yr> CO2Heffing_Elek             := AllocatieComponent/Elektriciteit/CO2Heffing;
+			attribute<Eur_yr> Eindgebruik_ex_Gas          := AllocatieComponent/AardGas/eindgebruik_excl;
+			attribute<Eur_yr> Eindgebruik_ex_Elek         := AllocatieComponent/Elektriciteit/eindgebruik_excl;
+			attribute<Eur_yr> EnergieHeffing_Gas          := AllocatieComponent/AardGas/EnergieHeffing;
+			attribute<Eur_yr> EnergieHeffing_Elek         := AllocatieComponent/Elektriciteit/EnergieHeffing;
+			attribute<uint8> ggk_rel_Gas                  := AllocatieComponent/AardGas/ggk_rel;
+			attribute<uint8> ggk_rel_Elek                 := AllocatieComponent/Elektriciteit/ggk_rel;
 
-			attribute<Eur_yr> Maatschappelijk_Gas         := AllocatieResultaatComponent/AardGas/maatschappelijk;
-			attribute<Eur_yr> Maatschappelijk_Elek        := AllocatieResultaatComponent/Elektriciteit/maatschappelijk;
-			attribute<Eur_yr> Netwerk_Gas                 := AllocatieResultaatComponent/AardGas/netwerk;
-			attribute<Eur_yr> Netwerk_Elek                := AllocatieResultaatComponent/Elektriciteit/netwerk;
+			attribute<Eur_yr> Maatschappelijk_Gas         := AllocatieComponent/AardGas/maatschappelijk;
+			attribute<Eur_yr> Maatschappelijk_Elek        := AllocatieComponent/Elektriciteit/maatschappelijk;
+			attribute<Eur_yr> Netwerk_Gas                 := AllocatieComponent/AardGas/netwerk;
+			attribute<Eur_yr> Netwerk_Elek                := AllocatieComponent/Elektriciteit/netwerk;
 
-			attribute<classifications/EnergieLabel> EL_LV := VestaRunDataComponent/energielabel/LastValue;
-			attribute<classifications/EnergieLabel> EL_CV := VestaRunDataComponent/energielabel/CurrValue;
-			attribute<bool> EL_WC                         := VestaRunDataComponent/energielabel/WasChanged;
-			attribute<bool> EL_ICN                        := VestaRunDataComponent/energielabel/IsChangedNow;
-			attribute<bool> EL_IC                         := VestaRunDataComponent/energielabel/IsChanged;
+			attribute<classifications/EnergieLabel> EL_LV := BCdata/energielabel/LastValue;
+			attribute<classifications/EnergieLabel> EL_CV := BCdata/energielabel/CurrValue;
+			attribute<bool> EL_WC                         := BCdata/energielabel/WasChanged;
+			attribute<bool> EL_ICN                        := BCdata/energielabel/IsChangedNow;
+			attribute<bool> EL_IC                         := BCdata/energielabel/IsChanged;
 
-			attribute<m2> ZonneBoiler_m2                  := VestaRunDataComponent/Hoeveelheden/ZonneBoiler;
-			attribute<m2> Zon_PV_m2                       := VestaRunDataComponent/Hoeveelheden/Zon_PV;
-			attribute<nrAansl> mWKK_aantal                := VestaRunDataComponent/Hoeveelheden/mWKK;
-			attribute<nrAansl> hWP_aantal                 := VestaRunDataComponent/Hoeveelheden/hWP;
+			attribute<m2> ZonneBoiler_m2                  := BCdata/Hoeveelheden/ZonneBoiler;
+			attribute<m2> Zon_PV_m2                       := BCdata/Hoeveelheden/Zon_PV;
+			attribute<nrAansl> mWKK_aantal                := BCdata/Hoeveelheden/mWKK;
+			attribute<nrAansl> hWP_aantal                 := BCdata/Hoeveelheden/hWP;
 
-			attribute<Eur> Ki_Totaal                      := VestaRunDataComponent/Kosten/Ki_Totaal;
-			attribute<Eur> Ki_ZonneBoiler                 := VestaRunDataComponent/Kosten/Ki_ZonneBoiler;
-			attribute<Eur> Ki_Zon_PV                      := VestaRunDataComponent/Kosten/Ki_Zon_PV;
-			attribute<Eur> Ki_mWKK                        := VestaRunDataComponent/Kosten/Ki_mWKK;
-			attribute<Eur> Ki_hWP                         := VestaRunDataComponent/Kosten/Ki_hWP;
-			attribute<Eur> Ki_eWP                         := VestaRunDataComponent/Kosten/Ki_eWP;
-			attribute<Eur> Ki_EWV                         := VestaRunDataComponent/Kosten/Ki_EWV;
-			attribute<Eur_yr> Kj_gv_incentive             := VestaRunDataComponent/Kosten/Kj_gv_incentive;
+			attribute<Eur> Ki_Totaal                      := BCdata/Kosten/Ki_Totaal;
+			attribute<Eur> Ki_ZonneBoiler                 := BCdata/Kosten/Ki_ZonneBoiler;
+			attribute<Eur> Ki_Zon_PV                      := BCdata/Kosten/Ki_Zon_PV;
+			attribute<Eur> Ki_mWKK                        := BCdata/Kosten/Ki_mWKK;
+			attribute<Eur> Ki_hWP                         := BCdata/Kosten/Ki_hWP;
+			attribute<Eur> Ki_eWP                         := BCdata/Kosten/Ki_eWP;
+			attribute<Eur> Ki_EWV                         := BCdata/Kosten/Ki_EWV;
+			attribute<Eur_yr> Kj_gv_incentive             := BCdata/Kosten/Kj_gv_incentive;
 		}
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/'+ComponentName+'.csv');
 	}
 
 	container BebouwingsComponentResults :=
 		for_each_ne(Classifications/BebouwingsComponent/name,
-			'BebouwingsComponentTempl('+Quote(Classifications/BebouwingsComponent/name)+',AllocatieResultaat/'+Classifications/BebouwingsComponent/name+')');
+			'BebouwingsComponentTempl('+Quote(Classifications/BebouwingsComponent/name)+',Allocatie/'+Classifications/BebouwingsComponent/name+')');
 
 	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = 
 		"='PlanRegioResults/export/result;'"

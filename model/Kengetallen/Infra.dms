@@ -74,8 +74,6 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 	parameter<Eur_yr_Aansl> Jaarlijks_w_g := Vastrecht_g + PA_g + meterhuur_g + capaciteitstarief_g + administatiekosten_g;
 	parameter<Eur_yr_Aansl> Jaarlijks_w_e := Vastrecht_e + PA_e + meterhuur_e + capaciteitstarief_e + administatiekosten_e;
 
-//	parameter<m2>        total_woning_area  := sum(Resultaten/J2010/VestaRunData/Woning/EnergieVraagModellen/Area/gem[Resultaten/J2010/VestaRunData/Woning/Model_rel]) * 1[nrWoningen];
-//	parameter<nrAansl>   total_woning_Aansl := sum(Resultaten/J2010/VestaRunData/Woning/RuimtelijkeVraagComponent/nrAansluitingen);
 	parameter<m2_Aansl> gem_Aansl_area   := 100[m2_Aansl];
 
 	// sectie Utiliteit

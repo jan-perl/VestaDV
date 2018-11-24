@@ -52,13 +52,13 @@ template RegionaleRapportageTempl
 	// end of case param
 	parameter<String>          ReportRegioNaam      :=RapportageRegio/Name[RapportageRegio_sel];
 	
-	container                  VestaRunDataComponent    := BebouwingscomponentGebiedsData/VestaRunDataComponent;
+	container                  BCdata    := BebouwingscomponentGebiedsData/BCdata;
 	container                  RuimtelijkeVraagComponent:= BebouwingscomponentGebiedsData/RuimtelijkeVraagComponent;
 	unit<uint32>               BebouwingsObject         := BebouwingscomponentGebiedsData/BebouwingsObject;
 	// end of ex-case param
 	
 	attribute<RapportageRegio>     PlanRegioRapportageRegio_rel           (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
-	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)    := VestaRunDataComponent/PlanRegio_rel;
+	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)    := BCdata/PlanRegio_rel;
 	attribute<RapportageRegio>     BebouwingscomponentRapportageRegio_rel (BebouwingsObject)    := PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
 	attribute<RapGroep>            BebouwingscomponentRapGroep_rel        (BebouwingsObject)    := =RapGroepNaam ;
 

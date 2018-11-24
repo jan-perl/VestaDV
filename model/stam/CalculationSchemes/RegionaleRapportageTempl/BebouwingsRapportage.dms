@@ -8,10 +8,10 @@ container BebouwingsRapportage:Using = "impl/RegioSelectie"
 			{
 				attribute<string>       Label            (RapGroep) := RapGroep/Label;
 				attribute<QuantityUnit> Aantal           (RapGroep) := impl/Aantal;
-				attribute<QuantityUnit> Schil            (RapGroep) := sum(Float64(VestaRunDataComponent/Sprongen/KanVerbeteren[nr_OrgEntity])* RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
-				attribute<QuantityUnit> RuimteVerwarming (RapGroep) := sum(Float64(VestaRunDataComponent/Sprongen/RuimteVerwarming/KanVerbeteren[nr_OrgEntity] ) * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
+				attribute<QuantityUnit> Schil            (RapGroep) := sum(Float64(BCdata/Sprongen/KanVerbeteren[nr_OrgEntity])* RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
+				attribute<QuantityUnit> RuimteVerwarming (RapGroep) := sum(Float64(BCdata/Sprongen/RuimteVerwarming/KanVerbeteren[nr_OrgEntity] ) * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
 
-				container EL := for_each_nedv(Classifications/EnergieLabel/Name, 'sum(Float64(VestaRunDataComponent/Sprongen/NaarEnergieLabel[nr_OrgEntity]=='+String(ID(Classifications/EnergieLabel))+'[Classifications/EnergieLabel])* RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)', RapGroep, QuantityUnit);
+				container EL := for_each_nedv(Classifications/EnergieLabel/Name, 'sum(Float64(BCdata/Sprongen/NaarEnergieLabel[nr_OrgEntity]=='+String(ID(Classifications/EnergieLabel))+'[Classifications/EnergieLabel])* RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel)', RapGroep, QuantityUnit);
 			}
 			container csv := 
 				WriteToCSV(
@@ -27,8 +27,8 @@ container BebouwingsRapportage:Using = "impl/RegioSelectie"
 			{
 				attribute<string>       Label       (RapGroep) := RapGroep/Label;
 				attribute<QuantityUnit> Aantal      (RapGroep) := impl/Aantal;
-				attribute<QuantityUnit> Zon_PV      (RapGroep) := sum(VestaRunDataComponent/OpwekkingsOpties/capaciteit/Zon_PV     [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
-				attribute<QuantityUnit> Zonneboiler (RapGroep) := sum(VestaRunDataComponent/OpwekkingsOpties/capaciteit/Zonneboiler[nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
+				attribute<QuantityUnit> Zon_PV      (RapGroep) := sum(BCdata/OpwekkingsOpties/capaciteit/Zon_PV     [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
+				attribute<QuantityUnit> Zonneboiler (RapGroep) := sum(BCdata/OpwekkingsOpties/capaciteit/Zonneboiler[nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
 
 				attribute<QuantityUnit> mWKK        (RapGroep) := sum(BebouwingsComponentGebiedsData/Aandelen/mWKK[nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
 				attribute<QuantityUnit> eWP         (RapGroep) := sum(BebouwingsComponentGebiedsData/Aandelen/eWP [nr_OrgEntity] * RuimtelijkeVraagComponent/NrModelUnits[nr_OrgEntity], BCGroep_rel);
