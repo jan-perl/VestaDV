@@ -231,7 +231,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'C5_hWP', 'a@BN@3_@BC@_RV', 
-					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Instellingen/hWP/DekkingsGraad * Allocatie/@BC@/Instellingen/hWP/COP',  // RV
+					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Vraagkentallen/hWP/DekkingsGraad * Allocatie/@BC@/Vraagkentallen/hWP/COP',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -239,7 +239,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'C5_hWP', 'h10_OmgevingsWarmteWinst', 
-					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Instellingen/hWP/DekkingsGraad * (1.0 - 1.0 * Allocatie/@BC@/Instellingen/hWP/COP)',  // RV
+					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Vraagkentallen/hWP/DekkingsGraad * (1.0 - 1.0 * Allocatie/@BC@/Vraagkentallen/hWP/COP)',  // RV
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'

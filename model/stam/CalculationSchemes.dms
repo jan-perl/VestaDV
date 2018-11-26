@@ -68,32 +68,32 @@ container CalculationSchemes: Using = "Units;Geography"
 			container RuimtelijkeVraagComponent := AllocatieComponent/RuimtelijkeVraagComponent;
 			unit<UInt32> BebouwingsObject       := AllocatieComponent/BebouwingsObject;
 			
-			attribute<Geography/rdc_grids/m100> GridCellID (BebouwingsObject) := RuimtelijkeVraagComponent/GridCellID;
+			attribute<Geography/rdc_grids/m100> gridm100_rel (BebouwingsObject) := RuimtelijkeVraagComponent/gridm100_rel;
 		}
 		container Vraag
 		{
-			attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/AardGas      , impl/GridCellID);
-			attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/RestWarmte   , impl/GridCellID);
-			attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/GeoThermie   , impl/GridCellID);
-			attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WijkWKK      , impl/GridCellID);
-			attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WKO          , impl/GridCellID);
-			attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/Elektriciteit, impl/GridCellID);
+			attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/AardGas      , impl/gridm100_rel);
+			attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/RestWarmte   , impl/gridm100_rel);
+			attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/GeoThermie   , impl/gridm100_rel);
+			attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WijkWKK      , impl/gridm100_rel);
+			attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WKO          , impl/gridm100_rel);
+			attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/Elektriciteit, impl/gridm100_rel);
 			attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO + Elektriciteit;
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW> Totaal  (Geography/rdc_grids/m100) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/GridCellID);
-			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraagA/AansluitCapaciteit, impl/GridCellID);
+			attribute<kW> Totaal  (Geography/rdc_grids/m100) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/gridm100_rel);
+			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraagA/AansluitCapaciteit, impl/gridm100_rel);
 			attribute<kW> Overig  (Geography/rdc_grids/m100) := Totaal - AardGas;
 		}
 		container WKO
 		{
-			attribute<GJ_yr>  V_Warmte    (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Warmte, impl/GridCellID)';
-			attribute<GJ_yr>  V_Koude     (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Koude , impl/GridCellID)';
-			attribute<GJ_yr>  V_Elek      (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Elek  , impl/GridCellID)';
+			attribute<GJ_yr>  V_Warmte    (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Warmte, impl/gridm100_rel)';
+			attribute<GJ_yr>  V_Koude     (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Koude , impl/gridm100_rel)';
+			attribute<GJ_yr>  V_Elek      (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Elek  , impl/gridm100_rel)';
 			attribute<GJ_yr>  Onttrekking (Geography/rdc_grids/m100) := V_Warmte - (V_Koude + V_Elek);
 
-			attribute<kW>     Capaciteit  (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/GridCellID)';
+			attribute<kW>     Capaciteit  (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/gridm100_rel)';
 		}
 	}
 	
