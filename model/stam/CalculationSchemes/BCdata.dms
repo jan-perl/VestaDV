@@ -33,38 +33,37 @@
 
 template BCdata
 {
-	unit<uint32>      BestaandeOfExtraBebouwingsObject;
-	parameter<string> Tag;
+	// begin case parameters
+	unit<uint32>      BebouwingsObjectZonderNieuwbouw;
+	parameter<string> BCname;
 	parameter<bool>   IsNieuwbouw;
-	parameter<bool>   HasFactors;
+	parameter<bool>   HasResterendFactors;
 
-	container              ResterendFactorMaps;
-	container              EnergieVraagModellen;
-	container              DragerSpecifiekeOpties;
-	container              LocatieSpecifiekeOpties;
-	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100);
-
+	container ResterendFactorMaps;
+	container EnergieVraagModellen;
+	container LocatieSpecifiekeOpties;
 	container Instellingen;
 	container StartingStateComponent;
 
 	unit<uint8> PrijzenAardgas;
-	unit<uint8> PrijzenElektriciteit;
 
 	parameter<string> NcwRefBase;
 	parameter<Ratio>  BTW_Factor;
 	parameter<Ratio>  BTW_Factor_gv;
-
 	// end of case parameters
 
-	container NcwRefs {
+	container NcwRefs 
+	{
 		container _15 := ='NCW/'+NcwRefBase+'15';
 		container _30 := ='NCW/'+NcwRefBase+'30';
 		container _50 := ='NCW/'+NcwRefBase+'50';
 		container _28 := ='NCW/'+NcwRefBase+'28';
 	}
-	
-	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BestaandeOfExtraBebouwingsObject)' : '..';
-	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BestaandeOfExtraBebouwingsObject'
+
+	unit<uint8> PrijzenElektriciteit:= Prijzen/Elektriciteit/Staffel;
+
+	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BebouwingsObjectZonderNieuwbouw)' : '..';
+	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BebouwingsObjectZonderNieuwbouw'
 	{
 		attribute<Geography/RegioIndelingen/buurt> buurt_rel(BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
 	}
@@ -90,7 +89,7 @@ template BCdata
 //REMOVE		attribute<Geography/rdc_meter>           Point          (BebouwingsObject) := BebouwingsObject/point;
 		attribute<Geography/rdc_grids/m100>      GridCellID     (BebouwingsObject) := point[Geography/rdc_grids/m100];
 
-		attribute<Ratio> ResterendFactorBase := = HasFactors
+		attribute<Ratio> ResterendFactorBase := = HasResterendFactors
 			? 'MakeDefined(merge(BebouwingsType, Ratio, '+AsItemList('ResterendFactorMaps/'+BebouwingsTypeDomein/ResterendFactorName+'[GridCellID]')+'), 1.0)'
 			: 'const(1.0, BebouwingsObject)';
 
@@ -112,6 +111,8 @@ template BCdata
 		// impl
 		container Functioneel
 		{
+			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
+
 			attribute<GJ_yr> WarmWater            (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
 			attribute<GJ_yr> Koude                (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
 			attribute<GJ_yr> ElektrischeApparatuur(..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
@@ -908,7 +909,7 @@ template BCdata
 	container Warmtewet {
 		parameter<float64> PrijsFactor_impl :=  sum( AandeelGas * DragerOpties/Warmte/Aardgas) / sum( AandeelGas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
 		parameter<float64> PrijsFactor_corr :=  MakeDefined(PrijsFactor_impl, 1.25);
-		parameter<float64> PrijsFactor      :=  = 'BebouwingsComponenten/'+rjoin(TAG, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
+		parameter<float64> PrijsFactor      :=  = 'BebouwingsComponenten/'+rjoin(BCname, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
 
 		parameter<Eur_GJ> WarmtePrijs := 
 			=Voorkeuren/IsVasteWarmtePrijs 

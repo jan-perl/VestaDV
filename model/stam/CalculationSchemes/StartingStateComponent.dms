@@ -33,34 +33,31 @@
 
 template StartingStateComponent
 {
+	// begin case parameters
 	unit<uint32>  BebouwingsObject;
 	container EnergieVraagModellen;
-
-	parameter<Classifications/BebouwingsComponent> ComponentID;
-
+	parameter<Classifications/BebouwingsComponent> BebouwingsComponent_rel;
 	// end of case parameters
-	
-//REMOVE	unit<uint32>  BebouwingsObject := Bebouwing/BebouwingsObject;
-	unit<UInt32>  ModelObject      := EnergieVraagModellen/ModelObject;
-	unit<uint32>  WkoCluster       := StartingState/AanbodOpties/WkoCluster;
 
-	attribute<ModelObject> Model_rel (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
+	unit<uint32> ModelObject := EnergieVraagModellen/ModelObject;
+	unit<uint32> WkoCluster  := StartingState/AanbodOpties/WkoCluster;
 
+	attribute<ModelObject>                 Model_rel       (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := const((0 / 0)[Classifications/AanbodOptie], BebouwingsObject);
 	attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 	attribute<Eur_yr>                      Om_Comfort      (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
-	attribute<WkoCluster>                  WkoCluster_rel  (BebouwingsObject) := const( (0/0)[WkoCluster], BebouwingsObject);
+	attribute<WkoCluster>                  WkoCluster_rel  (BebouwingsObject) := const((0 / 0)[WkoCluster], BebouwingsObject);
 
 	container EnergieLabel
 	{
 		attribute<Classifications/EnergieLabel> ModelValue (BebouwingsObject) := EnergieVraagModellen/Efficiency/EnergieLabel[ Model_rel];
 
 		attribute<Classifications/EnergieLabel> CalcValue  (BebouwingsObject) :=
-			=(ComponentID == Classifications/BebouwingsComponent/V/BestaandeWoning)
-			? 'value((Float64(ModelValue) * (max_elem(BebouwingsObject/Gebied/n, Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) -Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + Float64(BebouwingsObject/EnergieLabelData_rel/TotWeight)) 
-			/ max_elem(BebouwingsObject/Gebied/n, Float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + 0.5,Classifications/EnergieLabel)'
-			: 'ModelValue';
-		attribute<uint8>                        code       (BebouwingsObject) := ModelValue * UInt8(#Classifications/EnergieLabel) + CalcValue;
+			=(BebouwingsComponent_rel == Classifications/BebouwingsComponent/V/BestaandeWoning)
+				? 'value((float64(ModelValue) * (max_elem(BebouwingsObject/Gebied/n, float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) -float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + float64(BebouwingsObject/EnergieLabelData_rel/TotWeight)) 
+					/ max_elem(BebouwingsObject/Gebied/n, float64(BebouwingsObject/EnergieLabelData_rel/Totaal)) + 0.5,Classifications/EnergieLabel)'
+				: 'ModelValue';
+		attribute<uint8>                        code       (BebouwingsObject) := ModelValue * uint8(#Classifications/EnergieLabel) + CalcValue;
 
 		attribute<Classifications/EnergieLabel> CurrValue  (BebouwingsObject) := MakeDefined(rjoin(code, Classifications/LabelBasedOnModelAndObservedValue/code, Classifications/LabelBasedOnModelAndObservedValue/CurrLabel), ModelValue);
 		attribute<Classifications/LabelSprong>  CurrSprong (BebouwingsObject) := rjoin(code, Classifications/LabelBasedOnModelAndObservedValue/code, Classifications/LabelBasedOnModelAndObservedValue/CurrSprong);
@@ -69,7 +66,7 @@ template StartingStateComponent
 
 	container OpwekkingsOpties
 	{
-		container capaciteit 
+		container capaciteit
 		{
 			attribute<Ratio> Zon_PV      (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
 			attribute<Ratio> ZonneBoiler (BebouwingsObject) := const(0[Ratio], BebouwingsObject);
@@ -85,6 +82,7 @@ template StartingStateComponent
 		{
 			attribute<units/Ratio> StartWaarde    (BebouwingsObject) := EnergieVraagModellen/Efficiency/Gebouw[ Model_rel];
 			attribute<units/Ratio> VerbeterFactor (BebouwingsObject) :=
+			
 				EnergieLabel/CurrSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency [Model_rel] :
 				EnergieLabel/CurrSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency [Model_rel] :
 				EnergieLabel/CurrSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] :
@@ -101,9 +99,12 @@ template StartingStateComponent
 			attribute<units/Ratio> ResultaatWaarde (BebouwingsObject) := max_elem(StartWaarde, VerbeterFactor);
 		}
 	}
-	container Sprongen {
-		attribute<float64> Ki_gv_w(BebouwingsObject) := const(0[Eur / EnergieVraagModellen/ModelUnit], BebouwingsObject);
+
+	container Sprongen
+	{
+		attribute<float64> Ki_gv_w (BebouwingsObject) := const(0[Eur / EnergieVraagModellen/ModelUnit], BebouwingsObject);
 	}
+
 	container Kosten
 	{
 		attribute<Eur_yr> Kj_gv_incentive (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);

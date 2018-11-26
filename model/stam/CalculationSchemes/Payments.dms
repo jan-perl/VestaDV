@@ -33,7 +33,7 @@
 
 container Payments: FreeData = "False" // DEBUG
 {
-	template subst
+	template substitute
 	{
 		// begin case parameters
 		unit<uint32> src;
@@ -41,10 +41,10 @@ container Payments: FreeData = "False" // DEBUG
 		unit<uint8> valueset;
 		// end case parameters
 
-		attribute<bool>   subst       (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
-		attribute<uint32> firstResult (src) := uint32(int32(id(src)) + makedefined(cumulate(int32(subst))[id(src)-1]*(int32(#valueset)-1i),0i));
+		attribute<bool>   condition   (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<uint32> firstResult (src) := uint32(int32(id(src)) + makedefined(cumulate(int32(condition))[id(src)-1]*(int32(#valueset)-1i),0i));
 
-		unit<uint32> result := range(uint32, 0, uint32(int32(#src) + sum(int32(subst))*(int32(#valueset)-1i)))
+		unit<uint32> result := range(uint32, 0, uint32(int32(#src) + sum(int32(condition))*(int32(#valueset)-1i)))
 		{
 			attribute<src>    src_rel       := classify(id(.), firstResult);
 			attribute<string> valueset_name := MakeDefined(valueset/name[value(id(.)-firstResult[src_rel], valueset)], 'xxx');
@@ -107,13 +107,13 @@ container Payments: FreeData = "False" // DEBUG
 	}
 
 	template MainTempl {
-		// parameters
+		// begin case parameters
 		container          Accounting;
 		unit<float64>      Quantity;
 		parameter<bool>    is_flow; // false: calc stock only
 		parameter<string>  OutputSubFolder;
 		attribute<Float64> fraction(PR);
-		// end parameters
+		// end case parameters
 
 		unit<float64> MQuantity   := 1000000 * Quantity;
 		unit<uint32>  PR          := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -136,10 +136,10 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
 
-			container applyBC  := subst(Accounting/mutatie,'@BC@'   ,BC);
-			container applyWKO := subst(applyBC/result    ,'@WKOC@' ,WKOC);
-			container applyRO  := subst(applyWKO/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
-			container applyCO  := subst(applyRO/result    ,'@CO@'   ,Voorkeuren/ClusterOptie);
+			container applyBC  := substitute(Accounting/mutatie,'@BC@'   ,BC);
+			container applyWKO := substitute(applyBC/result    ,'@WKOC@' ,WKOC);
+			container applyRO  := substitute(applyWKO/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
+			container applyCO  := substitute(applyRO/result    ,'@CO@'   ,Voorkeuren/ClusterOptie);
 
 			unit<uint32> mutatie := applyCO/result
 			{

@@ -224,7 +224,7 @@ container CalculationSchemes: Using = "Units;Geography"
 				container WijkWKK:    = GebiedsOptieTempl(Classifications/AanbodOptie/V/WijkWKK, AllocatieComponent/Aandelen/WijkWKK);
 				container BioWKK:     = GebiedsOptieTempl(Classifications/AanbodOptie/V/BioWKK, AllocatieComponent/Aandelen/BioWKK);
 				container WKO {
-					parameter<bool> Active : =rjoin(BCdata/Tag,  Classifications/BebouwingsComponent/Name, Classifications/BebouwingsComponent/KanWKO);
+					parameter<bool> Active : =rjoin(BCdata/BCname,  Classifications/BebouwingsComponent/Name, Classifications/BebouwingsComponent/KanWKO);
 					
 					attribute<Ratio> Aandeel(BebouwingsObject): = AllocatieComponent/Aandelen/WKO;
 					
@@ -237,7 +237,7 @@ container CalculationSchemes: Using = "Units;Geography"
 					attribute<Eur_yr> Verbruik    (PlanRegio): = =Active ? 'Warmte + Koude' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> VastRecht   (PlanRegio): = =Active ? 'sum(BCdata/Opbrengsten/VastRechtBijdrageD * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					
-					attribute<Eur>    Aansl_i     (PlanRegio): = =Active ? 'EndState/WKO/Oi_Aansl/'+BCdata/Tag : 'const(0[Eur], PlanRegio)';
+					attribute<Eur>    Aansl_i     (PlanRegio): = =Active ? 'EndState/WKO/Oi_Aansl/'+BCdata/BCname : 'const(0[Eur], PlanRegio)';
 					attribute<Eur_yr> Aansl_j     (PlanRegio): = =Active ? 'Aansl_i * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> Aansl_m     (PlanRegio): = =Active ? 'Aansl_i * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
 					

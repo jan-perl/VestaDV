@@ -40,9 +40,9 @@ template TussenResultaten
 	container StartingState := // overridable by called 
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/StartingStateComponent('+
-				'Bebouwing/'+Classifications/BebouwingsComponent/Name+','+
-				'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results, '+
-				string(ID(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
+				'Bebouwing/'+Classifications/BebouwingsComponent/Name+
+				','+ 'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results
+				, '+ string(id(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
 			')'
 		)
 	{
@@ -95,7 +95,8 @@ template TussenResultaten
 	container Bebouwing              := ='RuimtelijkeData/Bebouwing/J'+string(RunJaar);
 
 	unit<uint32> WarmteBronnen       := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
-	attribute<float32> klimaat (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar);
+
+	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar)+'[Units/Ratio]';
 
 	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{
