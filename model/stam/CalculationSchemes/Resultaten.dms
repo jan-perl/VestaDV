@@ -46,7 +46,9 @@ template Resultaten
 	container GebiedsAllocatie      := TussenResultaten/GebiedsAllocatie;
 	container EndState              := TussenResultaten/EndState;
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
-	
+
+	container Allocatie             := TussenResultaten/Allocatie;
+
 	container RestWamte
 	{
 		unit<uint32> CumulatedArcSet := GebiedsAllocatie/RestWarmte/Iterations/I0/NextState/CumulatedArcSet, StorageName = "=FolderInfo/OutputFolder+'/RestWarmte.dbf'" //REMOVE , DialogType = "Map", DialogData = "CumulatedArcs"
@@ -56,7 +58,6 @@ template Resultaten
 			attribute<PlanRegio> PlanRegio_rel := GebiedsAllocatie/RestWarmte/Iterations/I0/NextState/CumulatedArcSet/PlanRegio_rel;
 		}
 	}
-	container Allocatie := TussenResultaten/Allocatie;
 
 	#include <Grid100m.dms>
 	#include <Indicatoren.dms>
@@ -64,11 +65,8 @@ template Resultaten
 
 	container FolderInfo
 	{
-		parameter<string> CurrDir := Expand(., '%currDir%');
-		parameter<string> RunDir  := Expand(., '%configDir%');
-		parameter<string> RunName := Expand(., '%configName%');
-
-		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+string(RunJaar);
+		parameter<string> RunName      := Expand(., '%configName%');
+		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+string(RunJaar);
 	}
 	
 	container RegressieTest

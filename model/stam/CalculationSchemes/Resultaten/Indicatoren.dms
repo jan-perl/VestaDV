@@ -34,6 +34,7 @@
 container indicatoren
 {
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
+
 	container CO2: Source = "FO v7a C5"
 	{
 		parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
@@ -50,6 +51,7 @@ container indicatoren
 			{
 				attribute<KG_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
+
 			attribute<KG_yr> Totaal(PlanRegio) := Elektriciteit/Totaal + AardGas/Totaal;
 		}
 		container impl: IsHidden = "True"
@@ -109,14 +111,16 @@ container indicatoren
 				);
 		}
 
-		container gebouwen {
+		container gebouwen
+		{
 			container ElektriciteitsVraag := // excl WKO vraag
 					for_each_nedv(Classifications/BebouwingsComponent/Name, 
 						replace(
 							'sum(Allocatie/@BC@/Elektriciteit/maatschappelijk, BebouwingsComponenten/@BC@/PlanRegio_rel)'
 						,	'@BC@', Classifications/BebouwingsComponent/Name
 						)
-					, PlanRegio, Eur_yr
+					,PlanRegio
+					,Eur_yr
 					)
 			{
 				attribute<Eur_yr> Km_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
@@ -128,7 +132,8 @@ container indicatoren
 							'sum(Allocatie/@BC@/AardGas/maatschappelijk, BebouwingsComponenten/@BC@/PlanRegio_rel)'
 						,	'@BC@', Classifications/BebouwingsComponent/Name
 						)
-					, PlanRegio, Eur_yr
+					,PlanRegio
+					,Eur_yr
 					)
 			{
 				attribute<Eur_yr> Km_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
@@ -152,7 +157,7 @@ container indicatoren
 			attribute<Eur>    Ki_EWV         (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Ki_EWV'   )+')';
 			attribute<Eur>    Ki_Totaal30    (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Ki_Totaal30')+')';
 			attribute<Eur>    Ki_Totaal15    (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Ki_Totaal15')+')';
-			attribute<Eur>    Ki_Totaal      (PlanRegio) := Ki_Totaal30+Ki_Totaal15;
+			attribute<Eur>    Ki_Totaal      (PlanRegio) := Ki_Totaal30 + Ki_Totaal15;
 			attribute<Eur_yr> Kj_Onderhoud   (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Kj_Onderh_excl')+')';
 			attribute<Eur_yr> Kj_Admin       (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Kj_admin_excl')+')';
 			attribute<Eur_yr> Km_Totaal      (PlanRegio) := Ki_Totaal30 * NCW/mr30/AnnualisationFactor + Ki_Totaal15 * NCW/mr15/AnnualisationFactor + Kj_Onderhoud + Kj_Admin;
@@ -166,7 +171,8 @@ container indicatoren
 			attribute<Eur_yr> WKO        (PlanRegio) := const(0[Eur_yr], PlanRegio);
 			attribute<Eur_yr> Km_Totaal  (PlanRegio) := =#Voorkeuren/WarmteOpties == 0 ? 'const(0, PlanRegio, Eur_yr)' : 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')';
 		}
-		container net {
+		container net
+		{
 			attribute<Eur_yr> Aardgas       (PlanRegio) := netwerk/aardgas/Kj_totaal       - netwerk/aardgas/netbijdrage;
 			attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerk/elektriciteit/Kj_totaal - netwerk/elektriciteit/netbijdrage;
 		}
@@ -196,12 +202,13 @@ container indicatoren
 				)
 			)
 		,	Source = "FO v7a C6";
+
 	container EnergieProducent
 	{
 		// *** Investeringen zijn niet over 30 jaar genomen maar over de voor de betreffende aanbodtechnologie geldende gebruiksperiode en tegen het voor de EP geldende rentevoet
 		container impl: IsHidden = "True"
 		{
-			attribute<String> FlowExpr(Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
+			attribute<String> FlowExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
 				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
 				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
 				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
@@ -212,6 +219,7 @@ container indicatoren
 			attribute<String> StockExpr(Classifications/AanbodOptie) :=
 				'EndState/Stock/Ki_Totaal* float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
 		}
+
 		container CashFlow := for_each_nedv(Voorkeuren/WarmteOpties/Name
 			,	impl/FlowExpr[Voorkeuren/WarmteOpties/AanbodOptie]
 			,	PlanRegio, Eur_yr) // overrule the following defaults
@@ -224,7 +232,7 @@ container indicatoren
 			attribute<Eur_yr> Kj_Totaal  (PlanRegio):= RestWarmte + GeoThermie + WijkWKK + WKO + BioWKK;
 		}
 
-		attribute<Eur_yr> Kj_Totaal(PlanRegio):= CashFlow/Kj_Totaal;
+		attribute<Eur_yr> Kj_Totaal (PlanRegio):= CashFlow/Kj_Totaal;
 
 		container Stock := for_each_nedv(Voorkeuren/WarmteOpties/Name
 			,	impl/StockExpr[Voorkeuren/WarmteOpties/AanbodOptie]
@@ -239,7 +247,8 @@ container indicatoren
 		}
 		attribute<Eur> Ki_Totaal      (PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
 	}
-	container netwerk 
+
+	container netwerk
 	{
 		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/heeft_gas;
 
@@ -249,7 +258,8 @@ container indicatoren
 		attribute<bool >      all_electric    (Planregio) := R_all_electric > 0.999, // tolereer afronding fouten en kleine afwijkingen
 			IntegrityCheck = "!(heeft_gas && all_electric)";
 
-		container aardgas {
+		container aardgas
+		{
 			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/J2010/heeft_gas; // false voor bestaande restwarmte
 			attribute<bool>   verwijderd      (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
 
@@ -270,7 +280,8 @@ container indicatoren
 			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + verwijderkosten + onderhoud;
 			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
 		}
-		container elektriciteit {
+		container elektriciteit
+		{
 			// inkomsten
 			attribute<Eur_yr> netbijdrage     (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/name+'/gebouwen/Elektriciteit/netwerk'  )+')';
 			attribute<Eur_yr> vastrecht       (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Elektriciteit/Vastrecht')+')';
@@ -303,6 +314,7 @@ container indicatoren
 					, units/nrWoningen
 				)'
 			);
+
 		container NieuwbouwWoning :=
 			for_each_ne(
 				 RapportageRegio/Name
@@ -315,6 +327,7 @@ container indicatoren
 					, units/nrWoningen
 				)'
 			);
+
 		container BestaandeUtil:=
 			for_each_ne(
 				 RapportageRegio/Name
@@ -327,6 +340,7 @@ container indicatoren
 					, units/m2
 				)'
 			);
+
 		container NieuwbouwUtil:=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
@@ -339,6 +353,7 @@ container indicatoren
 					, units/m2
 				)'
 			);
+
 		container BestaandeGlTb :=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
@@ -351,6 +366,7 @@ container indicatoren
 					, units/m2
 				)'
 			);
+
 		container NieuwbouwGlTb:=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name

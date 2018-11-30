@@ -106,7 +106,8 @@ container Payments: FreeData = "False" // DEBUG
 		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_'+Actor/name[actor_rel]+'.csv'";
 	}
 
-	template MainTempl {
+	template MainTempl
+	{
 		// begin case parameters
 		container          Accounting;
 		unit<float64>      Quantity;

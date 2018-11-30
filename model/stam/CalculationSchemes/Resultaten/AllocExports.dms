@@ -15,10 +15,10 @@ container AllocExports// : Using = "Units" DEBUG
 			attribute<units/kg_yr> CO2_totaal                               := indicatoren/CO2/totaal;
 			attribute<units/Eur_yr> netverzwaring                           := indicatoren/netwerk/Elektriciteit/netverzwaring;
 
-			attribute<units/kW>      Woning_CapaciteitWarmteD               := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteD;
-			attribute<units/nrAansl> Woning_nrAanslWarmteD                  := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteD;
-			attribute<float64>       Woning_nrModelUnitsWarmteD             := PlanRegioKaarten/BestaandeWoning/nrModelUnitsWarmteD;
-			attribute<units/GJ_yr>   Woning_VerbruikA                       := PlanRegioKaarten/BestaandeWoning/Verbruik/alle;
+			attribute<units/kW>      Woning_CapaciteitWarmteDeelnemers      := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteDeelnemers;
+			attribute<units/nrAansl> Woning_nrAanslWarmteDeelnemers         := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers;
+			attribute<float64>       Woning_nrModelUnitsWarmteDeelnemers    := PlanRegioKaarten/BestaandeWoning/nrModelUnitsWarmteDeelnemers;
+			attribute<units/GJ_yr>   Woning_VerbruikAalle                   := PlanRegioKaarten/BestaandeWoning/Verbruik/alle;
 			attribute<units/Eur_yr>  Woning_WarmteVraagAlle                 := PlanRegioKaarten/BestaandeWoning/WarmteVraag/alle;
 			attribute<units/GJ_yr>   Vj_WarmtePrimairD                      := TussenResultaten/Initieel/KostenBaten/Vj_WarmtePrimairD;
 			attribute<units/GJ_yr>   WarmteVraagDeelnemers                  := TussenResultaten/Initieel/KostenBaten/WarmteVraag/deelnemers;

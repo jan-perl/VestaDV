@@ -31,21 +31,23 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template AllocatieComponentTempl
+template AllocatieComponent
 {
+	// begin case parameters
 	container BCdata;
 	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (Invoer/SpecifiekeInstellingen/PlanRegio);
 
 	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject);
 	attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject);
 	attribute<Eur_yr>                      Om_Comfort      (BebouwingsObject);
+	// end case parameters
 
 	container     RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;
-	container     VraagKentallen              := BCdata/VraagKentallen;
+	container     VraagKentallen            := BCdata/VraagKentallen;
 	unit<uint32>  BebouwingsObject          := BCdata/BebouwingsObject;
 	unit<uint32>  PlanRegio                 := Invoer/SpecifiekeInstellingen/PlanRegio;
 
-	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[ BCdata/PlanRegio_rel ]);
+	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
 
 	container Aandelen
 	{
@@ -99,12 +101,13 @@ template AllocatieComponentTempl
 		,	Descr = "excl elektra voor WKO warmtepomp";
 
 //DEBUG		attribute<GJ_yr> Wko_Koude(BebouwingsObject) := BCdata/DragerOpties/Koude/Elektriciteit * Aandelen/WKO;
-				
-		attribute<GJ_yr> Totaal(BebouwingsObject) := RestWarmte + GeoThermie + WKO + WijkWKK + BioWKK + AardGas + Elektriciteit
+
+		attribute<GJ_yr> Totaal       (BebouwingsObject) := RestWarmte + GeoThermie + WKO + WijkWKK + BioWKK + AardGas + Elektriciteit
 		,	Descr = "Totale Metervraag na verwerking lokale opwekking";
 	}
 
-	container AardGas {
+	container AardGas 
+	{
 		attribute<Eur>    AansluitBijdrage (BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageG   * Aandelen/AardGasInclMicroWKK * float64(Metervraag/Aardgas > 0.0[GJ_yr]);
 		attribute<Eur_yr> VastRecht        (BebouwingsObject) := BCdata/Opbrengsten/VastRechtBijdrageG  * Aandelen/AardGasInclMicroWKK * float64(Metervraag/Aardgas > 0.0[GJ_yr]);
 
@@ -116,7 +119,8 @@ template AllocatieComponentTempl
 		attribute<Eur_yr> EnergieHeffing   (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_EnergieHeffing  [ggk_rel];
 		attribute<Eur_yr> CO2Heffing       (BebouwingsObject) := MeterVraag/AardGas * ggk/KGJ_CO2Heffing      [ggk_rel];
 	}
-	container Elektriciteit {
+	container Elektriciteit
+	{
 		attribute<Eur>    AansluitBijdrage (BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageE;
 		attribute<Eur_yr> VastRecht        (BebouwingsObject) := BCdata/Opbrengsten/VastRechtBijdrageE;
 		attribute<Eur_yr> Heffingskorting  (BebouwingsObject) := BCdata/Opbrengsten/HeffingskortingE;

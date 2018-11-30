@@ -265,7 +265,7 @@ template TussenResultaten
 
 	container Allocatie :=
 		for_each_ne(Classifications/BebouwingsComponent/Name,
-			'AllocatieComponentTempl(
+			'AllocatieComponent(
 				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
 				,EndState/AanbodOpties/PlanRegioWarmteAllocatie
 				,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie

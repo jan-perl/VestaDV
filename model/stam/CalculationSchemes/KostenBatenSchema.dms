@@ -33,17 +33,18 @@
 
 template KostenBatenSchema
 {
+	// begin case parameters
 	container BebouwingsComponenten;
-	
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
+	// end case parameters
 
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container PlanRegioKaarten :=
 		for_each_ne(
-			Classifications/BebouwingsComponent/name
-		,	'CalculationSchemes/AggrComponent(BebouwingsComponenten/'+Classifications/BebouwingsComponent/name+')'
+			 Classifications/BebouwingsComponent/name
+			,'CalculationSchemes/NaarPlanRegio(BebouwingsComponenten/'+Classifications/BebouwingsComponent/name+')'
 		);
 	
 	container WarmteVraag
@@ -53,9 +54,12 @@ template KostenBatenSchema
 
 	container Opbrengsten
 	{
-		container EenmaligD := for_each_nedv(Classifications/BebouwingsComponent/Name, 
-			replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/@BC@/WarmteAllocatie      ))), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
-		,	PlanRegio, Eur)
+		container EenmaligD := for_each_nedv(
+			 Classifications/BebouwingsComponent/Name
+			,replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/@BC@/WarmteAllocatie      ))), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
+			,PlanRegio
+			,Eur
+			)
 		{
 			attribute<Eur> Oi_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 		}
@@ -63,9 +67,9 @@ template KostenBatenSchema
 		{
 			attribute<Eur_yr> WarmteVraag     (PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/WarmteVraag/deelnemers')+')';
 
-			attribute<Eur_yr> BestaandeWoning (PlanRegio) : Source = "F 6",  = sum(BebouwingsComponenten/BestaandeWoning/Opbrengsten/VastRechtBijdrageD          * float64(Not(IsDefined(BebouwingsComponenten/BestaandeWoning/WarmteAllocatie)))          , PlanRegioKaarten/BestaandeWoning/impl/PlanRegio_rel);
+			attribute<Eur_yr> BestaandeWoning (PlanRegio) : Source = "F 6",  = sum(BebouwingsComponenten/BestaandeWoning/Opbrengsten/VastRechtBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/BestaandeWoning/WarmteAllocatie))) , PlanRegioKaarten/BestaandeWoning/impl/PlanRegio_rel);
 			attribute<Eur_yr> NieuwbouwWoning (PlanRegio) : Source = "F 6",  = sum(BebouwingsComponenten/NieuwbouwWoning/Opbrengsten/VastRechtBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/NieuwbouwWoning/WarmteAllocatie))) , PlanRegioKaarten/NieuwbouwWoning/impl/PlanRegio_rel);
-			attribute<Eur_yr> BestaandeUtil   (PlanRegio) : Source = "F 11", = sum(BebouwingsComponenten/BestaandeUtil/Opbrengsten/VastRechtBijdrageD       * float64(Not(IsDefined(BebouwingsComponenten/BestaandeUtil/WarmteAllocatie)))       , PlanRegioKaarten/BestaandeUtil/impl/PlanRegio_rel);
+			attribute<Eur_yr> BestaandeUtil   (PlanRegio) : Source = "F 11", = sum(BebouwingsComponenten/BestaandeUtil/Opbrengsten/VastRechtBijdrageD   * float64(Not(IsDefined(BebouwingsComponenten/BestaandeUtil/WarmteAllocatie)))   , PlanRegioKaarten/BestaandeUtil/impl/PlanRegio_rel);
 			attribute<Eur_yr> NieuwbouwUtil   (PlanRegio) : Source = "F 11", = sum(BebouwingsComponenten/NieuwbouwUtil/Opbrengsten/VastRechtBijdrageD   * float64(Not(IsDefined(BebouwingsComponenten/NieuwbouwUtil/WarmteAllocatie)))   , PlanRegioKaarten/NieuwbouwUtil/impl/PlanRegio_rel);
 			attribute<Eur_yr> BestaandeGlTb   (PlanRegio) := const(0[Eur_yr], PlanRegio);
 			attribute<Eur_yr> NieuwbouwGlTb   (PlanRegio) := const(0[Eur_yr], PlanRegio);
@@ -74,13 +78,14 @@ template KostenBatenSchema
 			attribute<Eur_yr> Oj_Totaal       (PlanRegio) := WarmteVraag      + Oj_VastRecht;
 		}
 	}
+
 	container KostenFactorenD: Source = "F 3"
 	{
-		attribute<float64>       Lw1 (PlanRegio) : Descr = "Aantal woningen",            = (PlanRegioKaarten/BestaandeWoning/NrAanslWarmteD + PlanRegioKaarten/NieuwbouwWoning/NrAanslWarmteD) * 1[NrWoningen / NrAansl];
+		attribute<float64>       Lw1 (PlanRegio) : Descr = "Aantal woningen",            = (PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwWoning/nrAanslWarmteDeelnemers) * 1[NrWoningen / NrAansl];
 		attribute<Units/km2>     Lw2 (PlanRegio) : Descr = "Oppervlakte",                = PlanRegio/AreaInKm2;
-		attribute<Units/nrAansl> Lu  (PlanRegio) : Descr = "Omvang utiliteitsbouw",      = PlanRegioKaarten/BestaandeUtil/NrAanslWarmteD + PlanRegioKaarten/NieuwbouwUtil/NrAanslWarmteD;
+		attribute<Units/nrAansl> Lu  (PlanRegio) : Descr = "Omvang utiliteitsbouw",      = PlanRegioKaarten/BestaandeUtil/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwUtil/nrAanslWarmteDeelnemers;
 		attribute<units/Eur_m2>  Ld  (PlanRegio) : Descr = "Distributieskosten per woning m2 utiliteitsbouw";
-		attribute<units/m2>      Lt  (PlanRegio) : Descr = "Omvang glastuinbouw",        = PlanRegioKaarten/BestaandeGlTb/NrModelUnitsWarmteD + PlanRegioKaarten/NieuwbouwGlTb/NrModelUnitsWarmteD;
+		attribute<units/m2>      Lt  (PlanRegio) : Descr = "Omvang glastuinbouw",        = PlanRegioKaarten/BestaandeGlTb/nrModelUnitsWarmteDeelnemers + PlanRegioKaarten/NieuwbouwGlTb/nrModelUnitsWarmteDeelnemers;
 		attribute<units/GJ_yr>   Lq2 (PlanRegio) : Descr = "Warmtevraag woningen",       = PlanRegioKaarten/BestaandeWoning/Verbruik/deelnemers + PlanRegioKaarten/NieuwbouwWoning/Verbruik/deelnemers;
 		attribute<units/GJ_yr>   Lq4 (PlanRegio) : Descr = "Warmtevraag utiliteitsbouw", = PlanRegioKaarten/BestaandeUtil/Verbruik/deelnemers + PlanRegioKaarten/NieuwbouwUtil/Verbruik/deelnemers;
 		attribute<units/GJ_yr>   Lq6 (PlanRegio) : Descr = "Warmtevraag glastuinbouw",   = PlanRegioKaarten/BestaandeGlTb/Verbruik/deelnemers + PlanRegioKaarten/NieuwbouwGlTb/Verbruik/deelnemers;
@@ -90,6 +95,7 @@ template KostenBatenSchema
 		parameter<Eur_GJ> N2_m := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
 		parameter<Ratio>  N3   := 0.20, Descr = "WarmteVerlies in de wijkdistributie", Source ="FO v7a F 35";
 	}
+
 	container KostenD: using = "KostenFactorenD"
 	{
 		parameter<kW_Woning> Vermogen_woning  := 11[kw_woning], Source = "FO v7a F 21";
@@ -105,7 +111,9 @@ template KostenBatenSchema
 
 		container Wonen
 		{
-			template ComponentTempl {
+			template ComponentTempl
+			{
+				// begin case parameter
 				container       BCdata;
 				unit<uint8>     Type;
 				parameter<bool> IsNieuwbouw;
@@ -142,7 +150,8 @@ template KostenBatenSchema
 				attribute<Eur_yr>  Oj_ge_subsidie(WoonObject) := Oi_ge_subsidie *NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
 				attribute<Eur_yr>  Kj_ge_netto   (WoonObject) := Kj_ge_base - Oe_ge_subsidie;
 
-				container Onderstation {
+				container Onderstation 
+				{
 					attribute<kW> GevraagdeCapaciteit                (PlanRegio) := woning_os_factor * sum(Capaciteit, BCdata/PlanRegio_rel);
 					attribute<kW> GevraagdeCapaciteit_blokverwarming (PlanRegio) := float64(!IsNieuwbouw) * 
 						woning_os_factor * sum(Capaciteit * (IsMeergezins ? Schuiven/VerketelingMin : 0.0), BCdata/PlanRegio_rel);

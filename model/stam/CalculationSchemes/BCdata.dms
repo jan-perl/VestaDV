@@ -109,12 +109,12 @@ template BCdata
 		{
 			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
 
-			attribute<GJ_yr> WarmWater            (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
-			attribute<GJ_yr> Koude                (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
-			attribute<GJ_yr> ElektrischeApparatuur(..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
-			attribute<GJ_yr> RuimteVerwarming     (..) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
-			attribute<GJ_yr> PompEnergie_min      (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
-			attribute<GJ_yr> PompEnergie_max      (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr> WarmWater             (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
+			attribute<GJ_yr> Koude                 (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
+			attribute<GJ_yr> ElektrischeApparatuur (..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
+			attribute<GJ_yr> RuimteVerwarming      (..) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
+			attribute<GJ_yr> PompEnergie_min       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr> PompEnergie_max       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
 		}
 	}
 
@@ -384,13 +384,13 @@ template BCdata
 		}
 	}
 
-	container Warmtewet {
+	container Warmtewet 
+	{
 		parameter<float64> PrijsFactor_impl :=  sum( Aandeel/Gas * DragerOpties/Warmte/Aardgas) / sum( Aandeel/Gas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
 		parameter<float64> PrijsFactor_corr :=  MakeDefined(PrijsFactor_impl, 1.25);
 		parameter<float64> PrijsFactor      :=  = 'BebouwingsComponenten/'+rjoin(BCname, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
 
-		parameter<Eur_GJ> WarmtePrijs := 
-			=Voorkeuren/IsVasteWarmtePrijs 
+		parameter<Eur_GJ> WarmtePrijs := = Voorkeuren/IsVasteWarmtePrijs 
 			? 'Voorkeuren/VasteWarmtePrijs'
 			: 'PrijsFactor * PrijzenAardgas/KGJ_eindgebruik_excl[classify(0[GJ_yr], PrijzenAardgas/ClassBreak)]';
 	}
