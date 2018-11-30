@@ -76,8 +76,8 @@ template WKO
 			
 			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
 			
-			attribute<GJ_yr>   Lq2        (BebouwingsObject) := BCdata/WarmteVraagD/Verbruik; // + Vraag/NieuwbouwWoning/Totaal/Warmte; // WarmteVraag
-			attribute<NrWoningen> Lw1     (BebouwingsObject) := BCdata/WarmteVraagD/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
+			attribute<GJ_yr>   Lq2        (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik; // + Vraag/NieuwbouwWoning/Totaal/Warmte; // WarmteVraag
+			attribute<NrWoningen> Lw1     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
 			attribute<GJ_yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 			attribute<GJ_yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
@@ -145,9 +145,9 @@ template WKO
 			
 			unit<UInt32> BebouwingsObject := BCdata/BebouwingsObject;
 			
-			attribute<GJ_yr> Lq4   (BebouwingsObject):= BCdata/WarmteVraagD/Verbruik, Descr = "Warmtevraag"; // + Vraag/NieuwbouwWoning/Totaal/Warmte";
-			attribute<GJ_yr> Lq4bis(BebouwingsObject):= BCdata/AandeelWarmteVraag * BCdata/Functioneel/Koude, Descr = "KoudeVraag";
-			attribute<m2>    Lu    (BebouwingsObject):= BCdata/WarmteVraagD/NrModelUnits;
+			attribute<GJ_yr> Lq4   (BebouwingsObject):= BCdata/WarmteVraag/deelnemers/Verbruik, Descr = "Warmtevraag"; // + Vraag/NieuwbouwWoning/Totaal/Warmte";
+			attribute<GJ_yr> Lq4bis(BebouwingsObject):= BCdata/Aandeel/WarmteVraag * BCdata/Functioneel/Koude, Descr = "KoudeVraag";
+			attribute<m2>    Lu    (BebouwingsObject):= BCdata/WarmteVraag/deelnemers/NrModelUnits;
 			
 			attribute<GJ_yr>  V_Warmte(BebouwingsObject) := Lq4;
 			attribute<GJ_yr>  V_Koude (BebouwingsObject) := Lq4bis;
@@ -251,7 +251,7 @@ template WKO
 			attribute<Eur   > Ki_ge_pm (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 			attribute<Eur   > Ki_ge_ov (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 // 			attribute<Eur_yr> Kj_ge_hv (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
-			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraagD/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
+			attribute<Eur_yr> Kj_wd_pr (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
 			attribute<Eur   > Oi_Aansl (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
 			attribute<Eur_yr> Oj_Aansl (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
@@ -515,7 +515,7 @@ template WKO
 		attribute<GJ_yr> V_ElekKC (BebouwingsObject):= WkoData/WkoDataComponent/V_ElekK  * Float64(HasWKO), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 		attribute<GJ_yr> V_ElekC  (BebouwingsObject):= V_ElekWC + V_ElekKC;
 		
-		attribute<kW>     P_Warmte (BebouwingsObject):= BCdata/WarmteVraagD/AansluitCapaciteit * Float64(StartWKO);
+		attribute<kW>     P_Warmte (BebouwingsObject):= BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * Float64(StartWKO);
 		
 		container BC {
 			attribute<Eur>    Ki_ow    (BebouwingsObject):= AllObjects/Ki_A_Part[AllObjects_rel] * Float64(StartWKO);

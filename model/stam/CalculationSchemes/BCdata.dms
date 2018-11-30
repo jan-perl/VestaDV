@@ -102,7 +102,7 @@ template BCdata
 			attribute<kW> Warmte(..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
 		}
 
-		attribute<float64> AandeelWarmteVraag := BebouwingsObject/AandeelWarmteVraag;
+		//attribute<float64> AandeelWarmteVraag := BebouwingsObject/AandeelWarmteVraag;
 
 		// impl
 		container Functioneel
@@ -356,30 +356,36 @@ template BCdata
 			attribute<GJ_yr> Elektriciteit (BebouwingsObject) := Functioneel/Apparatuur / Efficiency/Apparatuur/Elektriciteit - Zon_PV;
 		}
 	}
+	container Aandeel
+	{
+		attribute<Ratio>    Electric             (BebouwingsObject) := Opwekking/eWP + Opwekking/EWV;
+		attribute<Ratio>    Electric_mWKK        (BebouwingsObject) := Electric + Opwekking/mWKK;
+		attribute<Ratio>    IndividueleOpwekking (BebouwingsObject) := Electric_mWKK + Opwekking/hWP, IntegrityCheck = "this <= 1.0";
+		attribute<float64>  WarmteVraag          (BebouwingsObject) := min_elem(RuimtelijkeVraagComponent/AandeelWarmteVraag, 1.0 - IndividueleOpwekking);
+		attribute<float64>  NietDeelnemers       (BebouwingsObject) := 1.0 - WarmteVraag;
+		attribute<float64>  Gas                  (BebouwingsObject) := 1.0 - max_elem(float64(IsDefined(WarmteAllocatie)), Electric);
+	}
 	
-	attribute<Ratio>    AandeelElectric             (BebouwingsObject) := Opwekking/eWP + Opwekking/EWV;
-	attribute<Ratio>    AandeelElectric_mWKK        (BebouwingsObject) := AandeelElectric + Opwekking/mWKK;
-	attribute<Ratio>    AandeelIndividueleOpwekking (BebouwingsObject) := AandeelElectric_mWKK + Opwekking/hWP, IntegrityCheck = "this <= 1.0";
-	attribute<float64>  AandeelWarmteVraag          (BebouwingsObject) := min_elem(RuimtelijkeVraagComponent/AandeelWarmteVraag, 1.0 - AandeelIndividueleOpwekking);
-	attribute<float64>  AandeelNietDeelnemers       (BebouwingsObject) := 1.0 - AandeelWarmteVraag;
-	attribute<float64>  AandeelGas                  (BebouwingsObject) := 1.0 - max_elem(float64(IsDefined(WarmteAllocatie)), AandeelElectric);
-
-	container WarmteVraagD: Descr = "Vraag van Gebiedsoptie voor regio optie deelnemers"
+	container WarmteVraag
 	{
-		attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := AandeelWarmteVraag * RuimtelijkeVraagComponent/nrAansluitingen ;
-		attribute<ModelUnit> NrModelUnits       (BebouwingsObject) := AandeelWarmteVraag * RuimtelijkeVraagComponent/NrModelUnits; // @@@ Let op GlasTuinbouw alleen areaal warmte glastuinbouw
-		attribute<kW>        AansluitCapaciteit (BebouwingsObject) := AandeelWarmteVraag * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
-		attribute<GJ_yr>     Verbruik           (BebouwingsObject) := AandeelWarmteVraag * DragerOpties/Warmte/Warmte;
+		container deelnemers
+		{
+			attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/nrAansluitingen ;
+			attribute<ModelUnit> NrModelUnits       (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/NrModelUnits; // @@@ Let op GlasTuinbouw alleen areaal warmte glastuinbouw
+			attribute<kW>        AansluitCapaciteit (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
+			attribute<GJ_yr>     Verbruik           (BebouwingsObject) := Aandeel/WarmteVraag * DragerOpties/Warmte/Warmte;
+		}
+
+		container alle
+		{
+			attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := (1.0 - Aandeel/Electric) * RuimtelijkeVraagComponent/nrAansluitingen;
+			attribute<kW>        AansluitCapaciteit (BebouwingsObject) := (1.0 - Aandeel/Electric) * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
+			attribute<GJ_yr>     Verbruik           (BebouwingsObject) := (1.0 - Aandeel/Electric) * DragerOpties/Warmte/Warmte;
+		}
 	}
 
-	container WarmteVraagA: Descr = "Alle warmtevraag"
-	{
-		attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := (1.0 - AandeelElectric) * RuimtelijkeVraagComponent/nrAansluitingen;
-		attribute<kW>        AansluitCapaciteit (BebouwingsObject) := (1.0 - AandeelElectric) * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
-		attribute<GJ_yr>     Verbruik           (BebouwingsObject) := (1.0 - AandeelElectric) * DragerOpties/Warmte/Warmte;
-	}
 	container Warmtewet {
-		parameter<float64> PrijsFactor_impl :=  sum( AandeelGas * DragerOpties/Warmte/Aardgas) / sum( AandeelGas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
+		parameter<float64> PrijsFactor_impl :=  sum( Aandeel/Gas * DragerOpties/Warmte/Aardgas) / sum( Aandeel/Gas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
 		parameter<float64> PrijsFactor_corr :=  MakeDefined(PrijsFactor_impl, 1.25);
 		parameter<float64> PrijsFactor      :=  = 'BebouwingsComponenten/'+rjoin(BCname, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
 

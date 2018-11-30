@@ -54,17 +54,17 @@ template AllocatieComponentTempl
 		attribute<float64> EWV          (BebouwingsObject) := BCdata/Opwekking/EWV; // @RUUD: meenemen in energiekosten als elektriciteitsvraag
 		attribute<float64> hWP          (BebouwingsObject) := BCdata/Opwekking/hWP;
 
-		attribute<float64> GebiedsOptie (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(IsDefined(WarmteAllocatieComponent));
-		attribute<float64> RestWarmte   (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/RestWarmte);
-		attribute<float64> GeoThermie   (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/GeoThermie);
-		attribute<float64> WKO          (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WKO);
-		attribute<float64> WijkWKK      (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WijkWKK);
-		attribute<float64> BioWKK       (BebouwingsObject) := BCdata/AandeelWarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/BioWKK);
+		attribute<float64> GebiedsOptie (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(IsDefined(WarmteAllocatieComponent));
+		attribute<float64> RestWarmte   (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/RestWarmte);
+		attribute<float64> GeoThermie   (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/GeoThermie);
+		attribute<float64> WKO          (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WKO);
+		attribute<float64> WijkWKK      (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WijkWKK);
+		attribute<float64> BioWKK       (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/BioWKK);
 
-		attribute<float64> AardGasExclMicroWKK (BebouwingsObject) := 
-			BCdata/AandeelWarmteVraag * float64(not(IsDefined(WarmteAllocatieComponent)))
-			+ BCdata/AandeelNietDeelnemers
-			- BCdata/AandeelElectric_mWKK;
+		attribute<float64> AardGasExclMicroWKK (BebouwingsObject) :=
+			  BCdata/Aandeel/WarmteVraag * float64(not(IsDefined(WarmteAllocatieComponent)))
+			+ BCdata/Aandeel/NietDeelnemers
+			- BCdata/Aandeel/Electric_mWKK;
 
 		attribute<float64> AardGasInclMicroWKK (BebouwingsObject) := AardGasExclMicroWKK  + mWKK;
 		attribute<float64> AllElectric         (BebouwingsObject) := eWP + EWV + WKO;

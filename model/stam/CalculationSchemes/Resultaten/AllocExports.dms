@@ -1,43 +1,45 @@
-container AllocExports: Using = "Units", isHidden = "True"
+container AllocExports// : Using = "Units" DEBUG
 {
 	container PlanRegioResults
 	{
+		container PlanRegioKaarten := TussenResultaten/Initieel/KostenBaten/PlanRegioKaarten;
+
 		Unit<UInt32>  table := Invoer/SpecifiekeInstellingen/PlanRegio
 		{
-			attribute<string> BU_CODE                                 := Geography/RegioIndelingen/buurt/BU_CODE;
-			attribute<Classifications/AanbodOptie> AanbodOptie        := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
+			attribute<string> BU_CODE                                       := Geography/RegioIndelingen/buurt/BU_CODE;
+			attribute<Classifications/AanbodOptie> AanbodOptie              := EndState/AanbodOpties/PlanRegioWarmteAllocatie;
 
-			attribute<kg_yr> CO2_gebouwen_AardGas_totaal              := indicatoren/CO2/gebouwen/AardGas/totaal;
-			attribute<kg_yr> CO2_gebouwen_Elektriciteit_totaal        := indicatoren/CO2/gebouwen/Elektriciteit/totaal;
-			attribute<kg_yr> CO2_gebouwen_totaal                      := indicatoren/CO2/gebouwen/totaal;
-			attribute<kg_yr> CO2_totaal                               := indicatoren/CO2/totaal;
-			attribute<Eur_yr> netverzwaring                           := indicatoren/netwerk/Elektriciteit/netverzwaring;
+			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := indicatoren/CO2/gebouwen/AardGas/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := indicatoren/CO2/gebouwen/Elektriciteit/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_totaal                      := indicatoren/CO2/gebouwen/totaal;
+			attribute<units/kg_yr> CO2_totaal                               := indicatoren/CO2/totaal;
+			attribute<units/Eur_yr> netverzwaring                           := indicatoren/netwerk/Elektriciteit/netverzwaring;
 
-			attribute<kW> Woning_CapaciteitWarmteD                    := Initieel/KostenBaten/PlanRegioKaarten/Woning/CapaciteitWarmteD;
-			attribute<nrAansl>Woning_nrAanslWarmteD                   := Initieel/KostenBaten/PlanRegioKaarten/Woning/nrAanslWarmteD;
-			attribute<Float64>Woning_nrModelUnitsWarmteD              := Initieel/KostenBaten/PlanRegioKaarten/Woning/nrModelUnitsWarmteD;
-			attribute<GJ_yr> Woning_VerbruikA                         := Initieel/KostenBaten/PlanRegioKaarten/Woning/VerbruikA;
-			attribute<Eur_yr>Woning_WarmteVraagA                      := Initieel/KostenBaten/PlanRegioKaarten/Woning/WarmteVraagA;
-			attribute<GJ_yr> Vj_WarmtePrimairD                        := Initieel/KostenBaten/Vj_WarmtePrimairD;
-			attribute<GJ_yr> WarmteVraagD                             := Initieel/KostenBaten/WarmteVraagD;
+			attribute<units/kW>      Woning_CapaciteitWarmteD               := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteD;
+			attribute<units/nrAansl> Woning_nrAanslWarmteD                  := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteD;
+			attribute<float64>       Woning_nrModelUnitsWarmteD             := PlanRegioKaarten/BestaandeWoning/nrModelUnitsWarmteD;
+			attribute<units/GJ_yr>   Woning_VerbruikA                       := PlanRegioKaarten/BestaandeWoning/Verbruik/alle;
+			attribute<units/Eur_yr>  Woning_WarmteVraagAlle                 := PlanRegioKaarten/BestaandeWoning/WarmteVraag/alle;
+			attribute<units/GJ_yr>   Vj_WarmtePrimairD                      := TussenResultaten/Initieel/KostenBaten/Vj_WarmtePrimairD;
+			attribute<units/GJ_yr>   WarmteVraagDeelnemers                  := TussenResultaten/Initieel/KostenBaten/WarmteVraag/deelnemers;
 
-			attribute<Percent> Eigendom_Koopwoningen                  := Geography/RegioIndelingen/buurt/Eigendom/p_koopw;
-			attribute<Percent> Eigendom_Huurwoningen_totaal           := Geography/RegioIndelingen/buurt/Eigendom/p_huurw;
-			attribute<Percent> Eigendom_In_bezit_woningcorporatie     := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw;
-			attribute<Percent> Eigendom_In_bezit_overige_verhuurders  := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw;
-			attribute<Percent> Eigendom_Eigendom_onbekend             := Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w;
-			attribute<Percent> Eigendom_p_checksum                    := Geography/RegioIndelingen/buurt/Eigendom/p_checksum;//eigen check
-			attribute<Percent> Inkomen_Huishoudens_met_laag_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li;
-			attribute<Percent> Inkomen_Huishoudens_met_hoog_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi;
-			attribute<Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
-			attribute<Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
+			attribute<units/Percent> Eigendom_Koopwoningen                  := Geography/RegioIndelingen/buurt/Eigendom/p_koopw;
+			attribute<units/Percent> Eigendom_Huurwoningen_totaal           := Geography/RegioIndelingen/buurt/Eigendom/p_huurw;
+			attribute<units/Percent> Eigendom_In_bezit_woningcorporatie     := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw;
+			attribute<units/Percent> Eigendom_In_bezit_overige_verhuurders  := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw;
+			attribute<units/Percent> Eigendom_Eigendom_onbekend             := Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w;
+			attribute<units/Percent> Eigendom_p_checksum                    := Geography/RegioIndelingen/buurt/Eigendom/p_checksum;//eigen check
+			attribute<units/Percent> Inkomen_Huishoudens_met_laag_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li;
+			attribute<units/Percent> Inkomen_Huishoudens_met_hoog_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi;
+			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
+			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<GJ_yr> GebiedsOptie_totaal                      := Resultaten/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
-			attribute<GJ_yr> Aardgas_totaal                           := Resultaten/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
-			attribute<GJ_yr> Elektriciteit_totaal                     := Resultaten/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
+			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
-		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/PR.csv');
+		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
 	}
 
 	template BebouwingsComponentTempl
@@ -105,7 +107,7 @@ container AllocExports: Using = "Units", isHidden = "True"
 			attribute<Eur> Ki_EWV                         := BCdata/Kosten/Ki_EWV;
 			attribute<Eur_yr> Kj_gv_incentive             := BCdata/Kosten/Kj_gv_incentive;
 		}
-		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), OutputFolder+'/'+ComponentName+'.csv');
+		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/'+ComponentName+'.csv');
 	}
 
 	container BebouwingsComponentResults :=

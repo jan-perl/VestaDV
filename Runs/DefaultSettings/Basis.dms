@@ -528,12 +528,12 @@ container Basis: Using = "Units"
 		parameter<Percent_yr> wd  := 6.0[Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
 		parameter<Percent_yr> pt  := 6.0[Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
 		parameter<Percent_yr> id  := 6.0[Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
-		parameter<Percent_yr> ebw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
-		parameter<Percent_yr> enw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
-		parameter<Percent_yr> ebu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
-		parameter<Percent_yr> enu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe utiliteiten";
-		parameter<Percent_yr> ebt := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
-		parameter<Percent_yr> ent := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
+		parameter<Percent_yr> E_bw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
+		parameter<Percent_yr> E_nw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
+		parameter<Percent_yr> E_bu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";
+		parameter<Percent_yr> E_nu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe utiliteiten";
+		parameter<Percent_yr> E_bt := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande gtb";
+		parameter<Percent_yr> E_nt := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe gtb";
 	}
 
 	container NMDA_Prijzen

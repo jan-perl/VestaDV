@@ -57,7 +57,7 @@ container CalculationSchemes: Using = "Units;Geography"
 	#include <Resultaten.dms>
 	#include <AllocatieComponent.dms>
 	
-	Template GridAggrComponent
+	Template Naar100mGrid
 	{
 		container AllocatieComponent;
 		parameter<String> WkoResultsRef; 
@@ -79,11 +79,24 @@ container CalculationSchemes: Using = "Units;Geography"
 			attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WKO          , impl/gridm100_rel);
 			attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/Elektriciteit, impl/gridm100_rel);
 			attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO + Elektriciteit;
+			
+			container Potentiaal
+			{
+				unit<spoint> Kernel := Geography/DistMatrices/impl/pot1000m/potrange;
+
+				attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/AardGas),       Kernel/Cilindrical));
+				attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/RestWarmte),    Kernel/Cilindrical));
+				attribute<Units/GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/GeoThermie),    Kernel/Cilindrical));
+				attribute<Units/GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/WijkWKK),       Kernel/Cilindrical));
+				attribute<Units/GJ_yr> WKO           (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/WKO),           Kernel/Cilindrical));
+				attribute<Units/GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/Elektriciteit), Kernel/Cilindrical));
+				attribute<Units/GJ_yr> Totaal        (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/Totaal),        Kernel/Cilindrical));
+			}
 		}
 		container AansluitCapaciteit
 		{
 			attribute<kW> Totaal  (Geography/rdc_grids/m100) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/gridm100_rel);
-			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraagA/AansluitCapaciteit, impl/gridm100_rel);
+			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraag/alle/AansluitCapaciteit, impl/gridm100_rel);
 			attribute<kW> Overig  (Geography/rdc_grids/m100) := Totaal - AardGas;
 		}
 		container WKO
@@ -96,21 +109,7 @@ container CalculationSchemes: Using = "Units;Geography"
 			attribute<kW>     Capaciteit  (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/gridm100_rel)';
 		}
 	}
-	
-	Template PotentialComponent
-	{
-		container GridAggr;
-		unit<spoint> Kernel := Geography/DistMatrices/impl/pot1000m/potrange;
 
-		attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/AardGas),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/RestWarmte),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/GeoThermie),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WijkWKK),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WKO           (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WKO),           Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Elektriciteit), Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Totaal        (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Totaal),        Kernel/Cilindrical));
-	}
-	
 	Template AggrComponent
 	{
 		container BCdata;
@@ -128,18 +127,22 @@ container CalculationSchemes: Using = "Units;Geography"
 			attribute<float64>   BeschikbaarheidsFactor (BebouwingsObject) := float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
 		}
 
-		attribute<nrAansl>        nrAanslWarmteD      (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/nrAansluitingen,    impl/PlanRegio_rel);
-		attribute<impl/ModelUnit> nrModelUnitsWarmteD (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/nrModelUnits,       impl/PlanRegio_rel);
-		attribute<Units/kW>       CapaciteitWarmteD   (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/AansluitCapaciteit, impl/PlanRegio_rel);
+		attribute<nrAansl>        nrAanslWarmteD      (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/nrAansluitingen,    impl/PlanRegio_rel);
+		attribute<impl/ModelUnit> nrModelUnitsWarmteD (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/nrModelUnits,       impl/PlanRegio_rel);
+		attribute<Units/kW>       CapaciteitWarmteD   (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/AansluitCapaciteit, impl/PlanRegio_rel);
 
-		attribute<Units/GJ_yr>    VerbruikD_obj       (BebouwingsObject) := BCdata/WarmteVraagD/Verbruik;
-		attribute<Units/Eur_yr>   WarmteVraagD_obj    (BebouwingsObject) := WarmtePrijs      * VerbruikD_obj, Source = "FO v7a F 8-10";
-
-		attribute<Units/GJ_yr>    VerbruikD           (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/Verbruik, impl/PlanRegio_rel);
-		attribute<Units/Eur_yr>   WarmteVraagD        (PlanRegio) := WarmtePrijs        * VerbruikD, Source = "FO v7a F 8-10";
-
-		attribute<Units/GJ_yr>    VerbruikA           (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagA/Verbruik, impl/PlanRegio_rel);
-		attribute<Units/Eur_yr>   WarmteVraagA        (PlanRegio) := WarmtePrijs        * VerbruikA, Source = "FO v7a F 8-10";
+		container Verbruik
+		{
+			attribute<Units/GJ_yr>    deelnemers     (PlanRegio)        := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/Verbruik, impl/PlanRegio_rel);
+			attribute<Units/GJ_yr>    deelnemers_obj (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik;
+			attribute<Units/GJ_yr>    alle           (PlanRegio)        := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/alle/Verbruik, impl/PlanRegio_rel);
+		}
+		container WarmteVraag
+		{
+			attribute<Units/Eur_yr>   deelnemers     (PlanRegio)        := WarmtePrijs * Verbruik/deelnemers, Source = "FO v7a F 8-10";
+			attribute<Units/Eur_yr>   deelnemers_obj (BebouwingsObject) := WarmtePrijs * Verbruik/deelnemers_obj, Source = "FO v7a F 8-10";
+			attribute<Units/Eur_yr>   alle           (PlanRegio)        := WarmtePrijs * Verbruik/alle, Source = "FO v7a F 8-10";
+		}
 	}
 
 	#include <EnergiePrijzen.dms>
@@ -209,7 +212,7 @@ container CalculationSchemes: Using = "Units;Geography"
 					parameter<Classifications/AanbodOptie> Optie;
 					attribute<Ratio> Aandeel(BebouwingsObject);
 					
-					attribute<Eur_yr> Verbruik    (PlanRegio): = sum(PlanRegioKaartComponent/WarmteVraagD_obj                   * Aandeel, BCdata/PlanRegio_rel);
+					attribute<Eur_yr> Verbruik    (PlanRegio): = sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj                   * Aandeel, BCdata/PlanRegio_rel);
 					attribute<Eur_yr> VastRecht   (PlanRegio): = sum(BCdata/Opbrengsten/VastRechtBijdrageD * Aandeel, BCdata/PlanRegio_rel);
 					
 					attribute<Eur>    Oi_AanslD   (PlanRegio) := sum(BCdata/Opbrengsten/AansluitBijdrageD  * Aandeel, BCdata/PlanRegio_rel);
@@ -230,7 +233,7 @@ container CalculationSchemes: Using = "Units;Geography"
 					
 					// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
 					
-					attribute<Eur_yr> Warmte      (PlanRegio): = =Active ? 'sum(PlanRegioKaartComponent/WarmteVraagD_obj         * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
+					attribute<Eur_yr> Warmte      (PlanRegio): = =Active ? 'sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj         * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> Koude       (PlanRegio): = =Active ? 'sum(AllocatieComponent/KoudeAllocatie * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					attribute<Eur_yr> Om_Comfort  (PlanRegio): = =Active ? 'sum(AllocatieComponent/Om_Comfort     * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 					
@@ -343,12 +346,13 @@ container CalculationSchemes: Using = "Units;Geography"
 			// end   case parameters
 			
 			parameter<string> result_expr := AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
-			attribute<string> result_att(table) := =result_expr;
+			attribute<string> result_att (table) := =result_expr;
 			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
 				Storagename = "=filename",
 				StorageType = "str";
-		}		
+		}
 	}
+
 	template BuisKosten
 	{
 		unit<uint32>     PlanRegio;

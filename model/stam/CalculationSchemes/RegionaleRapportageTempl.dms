@@ -62,7 +62,7 @@ template RegionaleRapportageTempl
 	attribute<RapportageRegio>     BebouwingscomponentRapportageRegio_rel (BebouwingsObject)    := PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
 	attribute<RapGroep>            BebouwingscomponentRapGroep_rel        (BebouwingsObject)    := =RapGroepNaam ;
 
-	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
+	parameter<String> ReportFolder := FolderInfo/OutputFolder+'/'+ReportRegioNaam;
 	
 	container impl
 	{

@@ -369,11 +369,11 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/WarmteVraagD/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
+					'BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
 					'', 
 					PRR
 			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'BebouwingsComponenten/@BTW@/WarmteVraagD/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * EndState/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
 					'', 
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 

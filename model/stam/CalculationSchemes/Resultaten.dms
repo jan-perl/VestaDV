@@ -31,102 +31,49 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-// Dit is de configuratiefile met het VestaRun Rekenchema                               //
-//                                                                                      //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 template Resultaten
 {
 	// begin case parameters
-	parameter<units/yr_uint16> RunJaar: ParamType = "Numeric";
+	parameter<units/yr_uint16> RunJaar;
 	// optional case parameter
 
 	container TussenResultaten := ='/TussenResultaten/J'+String(RunJaar);
-	unit<uint32> PlanRegio    := Invoer/SpecifiekeInstellingen/PlanRegio;
-	
-	container Prijzen := TussenResultaten/Prijzen;
+	unit<uint32> PlanRegio     := Invoer/SpecifiekeInstellingen/PlanRegio;
+
+	container Prijzen               := TussenResultaten/Prijzen;
 	container BebouwingsComponenten := TussenResultaten/BebouwingsComponenten;
-	container NCW := TussenResultaten/NCW;
-	container GebiedsAllocatie := TussenResultaten/GebiedsAllocatie;
-	container EndState   := TussenResultaten/EndState;
-	container Voorkeuren := TussenResultaten/Voorkeuren;
+	container NCW                   := TussenResultaten/NCW;
+	container GebiedsAllocatie      := TussenResultaten/GebiedsAllocatie;
+	container EndState              := TussenResultaten/EndState;
+	container Voorkeuren            := TussenResultaten/Voorkeuren;
 	
-	container RestWamte := GebiedsAllocatie/RestWarmte/results {
-		unit<uint32> CumulatedArcSet := RestWarmte/AanbodOpties/RestWarmte/CumulatedArcSet, StorageName = "=OutputFolder+'/RestWarmte.dbf'" //REMOVE , DialogType = "Map", DialogData = "CumulatedArcs"
+	container RestWamte
+	{
+		unit<uint32> CumulatedArcSet := GebiedsAllocatie/RestWarmte/Iterations/I0/NextState/CumulatedArcSet, StorageName = "=FolderInfo/OutputFolder+'/RestWarmte.dbf'" //REMOVE , DialogType = "Map", DialogData = "CumulatedArcs"
 		{
 			attribute<float64>   BronPointX    := MakeDefined(PointCol(BronPoint), 280000.0 / 2.0);
 			attribute<float64>   BronPointY    := MakeDefined(PointRow(BronPoint), (300000.0 + 325000.0) / 2.0);
-			attribute<PlanRegio> PlanRegio_rel := CumulatedArcSet/PlanRegio_rel;
+			attribute<PlanRegio> PlanRegio_rel := GebiedsAllocatie/RestWarmte/Iterations/I0/NextState/CumulatedArcSet/PlanRegio_rel;
 		}
 	}
 	container Allocatie := TussenResultaten/Allocatie;
-	
-	container GridKaarten :=
-			for_each_ne(Classifications/BebouwingsComponent/name, 
-				'CalculationSchemes/GridAggrComponent(
-					Allocatie/'+Classifications/BebouwingsComponent/name+
-					', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie))
-						? Quote('GebiedsAllocatie/WKO/ObjectResults/'+Classifications/BebouwingsComponent/name) 
-						: Quote(''))+
-				')'
-			)
-	{
-		container Totaal
-		{
-			container Vraag
-			{
-				attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/AardGas')+')';
-				attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/RestWarmte')+')';
-				attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/GeoThermie')+')';
-				attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WijkWKK')+')';
-				attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/WKO')+')';
-				attribute<GJ_yr> Warmte        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO;
-				attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/Vraag/Elektriciteit')+')';
-				attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := Warmte + Elektriciteit;
-			}
-			container AansluitCapaciteit
-			{
-				attribute<kW> Totaal           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Totaal')+')';
-				attribute<kW> AardGas          (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/AardGas')+')';
-				attribute<kW> Overig           (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/AansluitCapaciteit/Overig')+')';
-			}
-			container WKO
-			{
-				attribute<GJ_yr> V_Warmte      (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Warmte')+')';
-				attribute<GJ_yr> V_Koude       (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Koude')+')';
-				attribute<GJ_yr> V_Elek        (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/V_Elek')+')';
-				attribute<GJ_yr> Onttrekking   (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Onttrekking')+')';
-				attribute<kW>    Capaciteit    (Geography/rdc_grids/m100) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name+'/WKO/Capaciteit')+')';
-			}
-		}
-	}
 
-	container PotentiaalKaarten :=
-			for_each_ne(Classifications/BebouwingsComponent/name,
-				'CalculationSchemes/PotentialComponent(GridKaarten/'+Classifications/BebouwingsComponent/name+'/vraag)'
-			)
-	{
-		container Totaal := CalculationSchemes/PotentialComponent(GridKaarten/Totaal/vraag);
-	}
+	#include <Grid100m.dms>
+	#include <Indicatoren.dms>
+	#include <AllocExports.dms>
 
-	container FolderInfo {
+	container FolderInfo
+	{
 		parameter<string> CurrDir := Expand(., '%currDir%');
 		parameter<string> RunDir  := Expand(., '%configDir%');
 		parameter<string> RunName := Expand(., '%configName%');
+
+		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+string(RunJaar);
 	}
-
-	parameter<string> OutputFolder := '%localDataProjDir%/Results/'+FolderInfo/RunName +'/'+string(RunJaar);
-
-	#include <Indicatoren.dms>
-
-	#include <AllocExports.dms>
-
+	
 	container RegressieTest
 	{
-		parameter<bool>   PotentiaalKaartLeesbaar : = all(PotentiaalKaarten/totaal/totaal >= 0.0) && sum(PotentiaalKaarten/totaal/totaal) > 0.0;
+		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
 		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
 		parameter<string> Generate                := 'Ready'
 		,	IntegrityCheck    = "All"

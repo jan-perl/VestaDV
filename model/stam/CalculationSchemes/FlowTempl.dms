@@ -39,7 +39,7 @@ template FlowTempl: using = "Classifications"
 	parameter<RapportageRegio> RapportageRegio_sel;
 	// end case param
 	
-	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
+	parameter<String> ReportFolder := FolderInfo/OutputFolder+'/'+ReportRegioNaam;
 	
 	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
 	attribute<Float64>         PlanRegioInRapportageFactor  (Invoer/SpecifiekeInstellingen/PlanRegio) := Float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);

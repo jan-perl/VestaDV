@@ -31,7 +31,6 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
 container indicatoren
 {
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
@@ -39,7 +38,7 @@ container indicatoren
 	{
 		parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
 		parameter<KG_GJ> CO2_GJg := Prijzen/AardGas/CO2_GJ;
-		
+
 		container gebouwen
 		{
 			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
@@ -53,7 +52,7 @@ container indicatoren
 			}
 			attribute<KG_yr> Totaal(PlanRegio) := Elektriciteit/Totaal + AardGas/Totaal;
 		}
-		container impl
+		container impl: IsHidden = "True"
 		{
 			attribute<String> BronExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie, 
 				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte ? GebiedsAllocatie/RestWarmte/CO2   : 0.0[KG_yr]',
@@ -67,6 +66,7 @@ container indicatoren
 		{
 			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/WarmteOpties=0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')');
 		}
+
 		attribute<KG_yr> Totaal(PlanRegio) := Gebouwen/Totaal + CentraleWarmteBronnen/Totaal;
 	}
 
@@ -93,7 +93,7 @@ container indicatoren
 
 	// *** Bij vervanging van AardGas door warmte, of eWP, EWV, of WKO,
 	// valt de distributievergoeding weg tbv het dekken van de afschrijving van het bestaande aardgasnet
-	attribute<bool> heeft_gas           (PlanRegio) := TussenResultaten/heeft_gas;
+
 	
 	container Maatschappelijk: Source = "FO v7a C6"
 	{
@@ -239,7 +239,10 @@ container indicatoren
 		}
 		attribute<Eur> Ki_Totaal      (PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
 	}
-	container netwerk {
+	container netwerk 
+	{
+		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/heeft_gas;
+
 		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
 		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i * Allocatie/@BC@/Aandelen/AllElectric, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
 		attribute<float64>    R_all_electric  (Planregio) := makedefined(nrAllElectric / nrWoonUnits, 0.0);
