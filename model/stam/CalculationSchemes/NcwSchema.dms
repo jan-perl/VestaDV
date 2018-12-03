@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template NcwSchema
+template NettoContanteWaarde
 {
 	// begin case parameters
 	parameter<Percent_yr> DiscontoVoet;

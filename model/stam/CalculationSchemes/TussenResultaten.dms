@@ -188,42 +188,42 @@ template TussenResultaten
 		container DV := SpecifiekeInstellingen/DiscontoVoet;
 		container IN := SpecifiekeInstellingen/investering;
 
-		container ow28 := NcwSchema(DV/ow, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container id28 := NcwSchema(DV/id, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container wd28 := NcwSchema(DV/wd, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container pt28 := NcwSchema(DV/pt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container mr28 := NcwSchema(DV/mr, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container ow28 := NettoContanteWaarde(DV/ow, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container id28 := NettoContanteWaarde(DV/id, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container wd28 := NettoContanteWaarde(DV/wd, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container pt28 := NettoContanteWaarde(DV/pt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container mr28 := NettoContanteWaarde(DV/mr, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 
-		container bw28 := NcwSchema(DV/E_bw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container nw28 := NcwSchema(DV/E_nw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container bu28 := NcwSchema(DV/E_bu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container nu28 := NcwSchema(DV/E_nu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container bt28 := NcwSchema(DV/E_bt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
-		container nt28 := NcwSchema(DV/E_nt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bw28 := NettoContanteWaarde(DV/E_bw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nw28 := NettoContanteWaarde(DV/E_nw, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bu28 := NettoContanteWaarde(DV/E_bu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nu28 := NettoContanteWaarde(DV/E_nu, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container bt28 := NettoContanteWaarde(DV/E_bt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
+		container nt28 := NettoContanteWaarde(DV/E_nt, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 
-		container mr50 := NcwSchema(DV/mr , 0[Yr], 50[Yr]);
-		container bw50 := NcwSchema(DV/E_bw, 0[Yr], 50[Yr]);
-		container nw50 := NcwSchema(DV/E_nw, 0[Yr], 50[Yr]);
-		container bu50 := NcwSchema(DV/E_bu, 0[Yr], 50[Yr]);
-		container nu50 := NcwSchema(DV/E_nu, 0[Yr], 50[Yr]);
-		container bt50 := NcwSchema(DV/E_bt, 0[Yr], 50[Yr]);
-		container nt50 := NcwSchema(DV/E_nt, 0[Yr], 50[Yr]);
+		container mr50 := NettoContanteWaarde(DV/mr , 0[Yr], 50[Yr]);
+		container bw50 := NettoContanteWaarde(DV/E_bw, 0[Yr], 50[Yr]);
+		container nw50 := NettoContanteWaarde(DV/E_nw, 0[Yr], 50[Yr]);
+		container bu50 := NettoContanteWaarde(DV/E_bu, 0[Yr], 50[Yr]);
+		container nu50 := NettoContanteWaarde(DV/E_nu, 0[Yr], 50[Yr]);
+		container bt50 := NettoContanteWaarde(DV/E_bt, 0[Yr], 50[Yr]);
+		container nt50 := NettoContanteWaarde(DV/E_nt, 0[Yr], 50[Yr]);
 
-		container mr30 := NcwSchema(DV/mr , 0[Yr], 30[Yr]);
-		container bw30 := NcwSchema(DV/E_bw, 0[Yr], 30[Yr]);
-		container nw30 := NcwSchema(DV/E_nw, 0[Yr], 30[Yr]);
-		container bu30 := NcwSchema(DV/E_bu, 0[Yr], 30[Yr]);
-		container nu30 := NcwSchema(DV/E_nu, 0[Yr], 30[Yr]);
-		container bt30 := NcwSchema(DV/E_bt, 0[Yr], 30[Yr]);
-		container nt30 := NcwSchema(DV/E_nt, 0[Yr], 30[Yr]);
+		container mr30 := NettoContanteWaarde(DV/mr , 0[Yr], 30[Yr]);
+		container bw30 := NettoContanteWaarde(DV/E_bw, 0[Yr], 30[Yr]);
+		container nw30 := NettoContanteWaarde(DV/E_nw, 0[Yr], 30[Yr]);
+		container bu30 := NettoContanteWaarde(DV/E_bu, 0[Yr], 30[Yr]);
+		container nu30 := NettoContanteWaarde(DV/E_nu, 0[Yr], 30[Yr]);
+		container bt30 := NettoContanteWaarde(DV/E_bt, 0[Yr], 30[Yr]);
+		container nt30 := NettoContanteWaarde(DV/E_nt, 0[Yr], 30[Yr]);
 
-		container mr15 := NcwSchema(DV/mr , 0[Yr], 15[Yr]);
-		container bw15 := NcwSchema(DV/E_bw, 0[Yr], 15[Yr]);
-		container nw15 := NcwSchema(DV/E_nw, 0[Yr], 15[Yr]);
-		container bu15 := NcwSchema(DV/E_bu, 0[Yr], 15[Yr]);
-		container nu15 := NcwSchema(DV/E_nu, 0[Yr], 15[Yr]);
-		container bt15 := NcwSchema(DV/E_bt, 0[Yr], 15[Yr]);
-		container nt15 := NcwSchema(DV/E_nt, 0[Yr], 15[Yr]);
+		container mr15 := NettoContanteWaarde(DV/mr , 0[Yr], 15[Yr]);
+		container bw15 := NettoContanteWaarde(DV/E_bw, 0[Yr], 15[Yr]);
+		container nw15 := NettoContanteWaarde(DV/E_nw, 0[Yr], 15[Yr]);
+		container bu15 := NettoContanteWaarde(DV/E_bu, 0[Yr], 15[Yr]);
+		container nu15 := NettoContanteWaarde(DV/E_nu, 0[Yr], 15[Yr]);
+		container bt15 := NettoContanteWaarde(DV/E_bt, 0[Yr], 15[Yr]);
+		container nt15 := NettoContanteWaarde(DV/E_nt, 0[Yr], 15[Yr]);
 	}
 
 	container Initieel := BebouwingsComponenten
@@ -246,13 +246,13 @@ template TussenResultaten
 			attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 		}
 
-		container KostenBaten := KostenBatenSchema(BebouwingsComponenten, invoer/Energieprijzen, RunJaar);
+		container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, invoer/Energieprijzen, RunJaar);
 	}
 
 	container GebiedsAllocatie :=
 		for_each_ne(
 			Voorkeuren/WarmteOpties/Name,
-			'CalculationSchemes/AanbodOptieTemplates/'+Voorkeuren/WarmteOpties/SchemaName+'(
+			'CalculationSchemes/AanbodOpties/'+Voorkeuren/WarmteOpties/SchemaName+'(
 				'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
 				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
 				EnergiePrijzen, RunJaar

@@ -76,18 +76,17 @@ template WKO
 			
 			attribute<Bool> IsAppt     (BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
 			
-			attribute<GJ_yr>   Lq2        (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik; // + Vraag/NieuwbouwWoning/Totaal/Warmte; // WarmteVraag
-			attribute<NrWoningen> Lw1     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
-			attribute<GJ_yr>   V_Warmte   (BebouwingsObject) := Lq2, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_yr>   V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * Lw1, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_yr>   F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-			attribute<GJ_yr>   V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
-			attribute<GJ_yr>   V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
-			attribute<GJ_yr>   V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
-			attribute<GJ_yr>   V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
+			attribute<NrWoningen> nr_won     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
+			attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>      V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * nr_won, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>      F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+			attribute<GJ_yr>      V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
+			attribute<GJ_yr>      V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+			attribute<GJ_yr>      V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
+			attribute<GJ_yr>      V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
 			
-			attribute<kW>     P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * Lw1;
-			attribute<kW>     P_Koude     (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * Lw1;
+			attribute<kW>        P_Warmte    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * nr_won;
+			attribute<kW>        P_Koude     (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * nr_won;
 			attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen/Elektriciteit/Staffel/ClassBreak);
 			
 
@@ -95,7 +94,7 @@ template WKO
 			// excl doublet en distributie, excl kosten LTAS
 			{
 				attribute<Eur_Woning> K_wv(BebouwingsObject):  = IsAppt ? K_wvwa : K_wvwc, Source = "F 54..56";
-				attribute<Eur> Ki_id(BebouwingsObject) := K_wv * Lw1, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
+				attribute<Eur> Ki_id(BebouwingsObject) := K_wv * nr_won, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
 				attribute<Eur> Ki_ge_pm(BebouwingsObject) := KostenBase/Ki_ge_pm_o;
 				attribute<Eur> Ki_ge_ov(BebouwingsObject) := KostenBase/Ki_ge_ov_o;
 				attribute<Eur> Ki_ge(BebouwingsObject) := Ki_ge_ov + Ki_ge_pm;
@@ -104,7 +103,7 @@ template WKO
 
 				attribute<Eur_yr> Kj_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
 				attribute<Eur_yr> Km_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_maatschappelijk [gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
-				attribute<Eur_yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * Lw1;
+				attribute<Eur_yr> Kj_ow_o (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * nr_won;
 				
 				attribute<Eur_yr> KEH_ow_e (BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
 				attribute<Eur_yr> KCO2_ow_e(BebouwingsObject) := V_Elek * Prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
@@ -113,8 +112,8 @@ template WKO
 			
 			container Opbrengsten
 			{
-				attribute<Eur_yr> Warmte     (BebouwingsObject) := Lq2 * WarmtePrijs, Source = "F 66 jo F 8";
-				attribute<Eur_yr> koude      (BebouwingsObject) := 250 [ Eur_yr / NrWoningen] * Lw1, Source = "F 63";
+				attribute<Eur_yr> Warmte     (BebouwingsObject) := V_Warmte * WarmtePrijs, Source = "F 66 jo F 8";
+				attribute<Eur_yr> koude      (BebouwingsObject) := 250 [ Eur_yr / NrWoningen] * nr_won, Source = "F 63";
 				
 				attribute<Eur>    AansluitBijdrage(BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageD;
 				attribute<Eur_yr> Vastrecht       (BebouwingsObject) := BCdata/Opbrengsten/VastrechtBijdrageD, Source = "F 60+64 jo F 6";
@@ -144,12 +143,11 @@ template WKO
 			parameter<Eur_GJ> WarmtePrijs;      // := BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs;
 			
 			unit<UInt32> BebouwingsObject := BCdata/BebouwingsObject;
-			
-			attribute<GJ_yr> Lq4   (BebouwingsObject):= BCdata/WarmteVraag/deelnemers/Verbruik, Descr = "Warmtevraag"; // + Vraag/NieuwbouwWoning/Totaal/Warmte";
+
 			attribute<GJ_yr> Lq4bis(BebouwingsObject):= BCdata/Aandeel/WarmteVraag * BCdata/Functioneel/Koude, Descr = "KoudeVraag";
 			attribute<m2>    Lu    (BebouwingsObject):= BCdata/WarmteVraag/deelnemers/NrModelUnits;
 			
-			attribute<GJ_yr>  V_Warmte(BebouwingsObject) := Lq4;
+			attribute<GJ_yr>  V_Warmte(BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik;
 			attribute<GJ_yr>  V_Koude (BebouwingsObject) := Lq4bis;
 			attribute<GJ_yr>  F_Elek  (BebouwingsObject) := V_Warmte + V_Koude;
 			attribute<GJ_yr>  V_ElekW (BebouwingsObject) := V_Warmte / SPF_coll;
@@ -195,7 +193,7 @@ template WKO
 				attribute<Eur>    AansluitBijdrage(BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageD, Source = "F 65 jo F 10";
 				attribute<Eur_yr> VastRecht       (BebouwingsObject) := BCdata/Opbrengsten/VastRechtBijdrageD, Source = "F 11";
 			
-				attribute<Eur_yr> Warmte    (BebouwingsObject) := Lq4 * WarmtePrijs, Source = "F 70 jo F 8";
+				attribute<Eur_yr> Warmte    (BebouwingsObject) := V_Warmte * WarmtePrijs, Source = "F 70 jo F 8";
 				attribute<Eur_yr> koude     (BebouwingsObject) := KoudePrijs * Lq4bis, Source = "F 71";
 				attribute<Eur_yr> Om_comfort(BebouwingsObject) := const(0[Eur_yr], BebouwingsObject); // Waardeer het maatschappelijk nut van de aan util geleverde koude niet, aangezien util al koude inkocht.
 			}
@@ -289,7 +287,7 @@ template WKO
 			
 			unit<uint32> AllowedObjects := Subset(AllowWKO)
 			{
-				attribute<String> Label := '(' + BCdata/Bebouwing/Label[nr_OrgEntity]+')';
+				attribute<String> Label := '(' + BCdata/BebouwingsObject/Label[nr_OrgEntity]+')';
 			}
 		}
 		container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoDataTempl('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+')');
@@ -459,14 +457,14 @@ template WKO
 	
 	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
-		attribute<.> NrSelectedObjects(impl/Iteration) := ='union_data(impl/Iteration, '+AsItemList('#impl/Iterations/'+impl/Iteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects(impl/Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects)-NrSelectedObjects;
-		
+		attribute<.> NrSelectedObjects          (impl/Iteration) := ='union_data(impl/Iteration, '+AsItemList('#impl/Iterations/'+impl/Iteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects (impl/Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects)-NrSelectedObjects;
+
 		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/point')+')';
-		attribute<String> Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Label')+')';
- 		attribute<Eur> Ki_A := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_A')+')';
- 		attribute<Eur> Ki_B := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_B')+')';
-		attribute<.> Partitioning(impl/UnitedCandidates) := ='value(MakeDefined('+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+String(ID(impl/Iteration))+']')+'),.)';
+		attribute<String>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Label')+')';
+		attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_A')+')';
+		attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B, '+AsItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Ki_B')+')';
+		attribute<.>         Partitioning (impl/UnitedCandidates) := ='value(MakeDefined('+asItemList('impl/Iterations/'+impl/Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+String(ID(impl/Iteration))+']')+'),.)';
 	}
 	
 	attribute<UInt32> NrAllowedObjects(WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#impl/CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
@@ -565,7 +563,7 @@ template WKO
 		);
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
-		attribute<String> Label := ='Union_Data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/Bebouwing/Label') + ')', DialogType = "LabelText";
+		attribute<String> Label := ='Union_Data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 		
 		attribute<Selected> Cluster_rel:= ='union_data(., '+AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
 		attribute<Eur> Ki_C      := ='union_data(., '+AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_C')+')';
@@ -666,6 +664,6 @@ template WKO
 			attribute<GJ_yr>  GJw_Totaal (PlanRegio): = ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/GJw')+')';
 		}
 
-		container KostenBaten := KostenBatenSchema(., Energieprijzen, RunJaar);
+		container KostenBaten := CalculationSchemes/KostenBaten(., Energieprijzen, RunJaar);
 	}
 }
