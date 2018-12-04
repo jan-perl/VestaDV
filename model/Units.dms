@@ -53,6 +53,7 @@ container Units: isHidden = "True"
 	unit<float64> kg            := 1000.0 * g, Descr = "SI base unit for mass";
 	unit<float64> g             := BaseUnit('g', float64);
 	unit<float64> ton           := 1000.0 * kg;
+	unit<float64> ton_ha_yr     := ton / ha / yr;
 
 	// duration
 	unit<float64> s             := baseunit('s', float64),   label = "second", descr = "SI base unit for time";
@@ -111,10 +112,12 @@ container Units: isHidden = "True"
 	unit<float64> Eur_m         := Eur / m;
 	unit<float64> Eur_M2        := Eur / m2, cdf = "Classifications/Eur_M2_15K/ClassBreaks";
 	unit<float64> Eur_Ha        := Eur / ha;
+	unit<float64> Eur_ton       := Eur / ton;
 	unit<float64> Eur_yr        := Eur / yr;
 	unit<float64> mEur_yr       := mEur / yr;
 	unit<float64> Eur_yr_m      := Eur_yr / m;
 	unit<float64> Eur_yr_m2     := Eur / yr / m2;
+	unit<float64> Eur_ha_yr     := Eur / ha / yr;
 	unit<float64> Eur_kW        := Eur / kW;
 	unit<float64> Eur_kW_yr     := Eur_kW / yr; // gebruikt voor aansluitwaarden
 	unit<float64> Eur_MW        := Eur / MW;

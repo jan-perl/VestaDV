@@ -126,7 +126,7 @@ template WKO
 				BebouwingsComponenten/BestaandeWoning, 
 				BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 				BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-				BeginStatus/KostenBaten/KostenD/Wonen/bbw
+				BeginStatus/KostenBaten/KostenD/Wonen/bw
 			);
 
 		container NieuwbouwWoningData := 
@@ -134,7 +134,7 @@ template WKO
 				BebouwingsComponenten/NieuwbouwWoning, 
 				BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 				BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-				BeginStatus/KostenBaten/KostenD/Wonen/nbw
+				BeginStatus/KostenBaten/KostenD/Wonen/nw
 			);
 
 		template UtilDataTempl

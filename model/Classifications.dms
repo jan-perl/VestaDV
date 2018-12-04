@@ -187,6 +187,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 
 		attribute<string> resterendFactorName := name;
 		attribute<string> csv_output          := replace(excel_code, ', ', '_'); // no comma's in output to csv as Excel will treat them as seperate columns
+		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
 // =========  Classificaties voor bouw/zichtjaren
