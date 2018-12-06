@@ -36,34 +36,39 @@ container AanbodOpties
 	#include <RestWarmte.dms>
 	#include <GeoThermie.dms>
 	#include <WKO.dms>
-	
+
 	#include <WijkTempl.dms>
-	
+
 	Template WijkWKK
 	{
+		// begin case parameters
 		container BeginStatus;
 		container AanbodKentallen;
 		container EnergiePrijzen;
 		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+	
+		//parameter<kg_GJ> CO2_GJ :=  Impl/kosten/CO2_GJ + 0[GJ];
 
-		//parameter<kg_GJ>  CO2_GJ     :=  Impl/kosten/CO2_GJ + 0[GJ];
-
-		// emissies per GJ gas voor WijkWKK.
+		// emissies per GJ gas voor WijkWKK
 		parameter<kg_GJ> CO2_GJb := Prijzen/AardGas/CO2_GJ;
 		parameter<g_GJ>  NOx_GJb := 28[g_GJ];
 		parameter<g_GJ>  SO2_GJb := 0 [g_GJ];
 		parameter<g_GJ>  VOS_GJb := 420[g_GJ];
 		parameter<g_GJ>  TS_GJb  := 0  [g_GJ];
 
-		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]);
+		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]);
 		container Results := Impl/Results;
 	}
+	
 	Template BioWKK
 	{
+		// begin case parameters
 		container BeginStatus;
 		container AanbodKentallen;
 		container EnergiePrijzen;
 		parameter<units/yr_uint16> Jaar;
+		// end case parameters
 
 		// emissies per GJ bio-brandstof voor BioWKK.
 		parameter<kg_GJ> CO2_GJb :=  0[kg_GJ]; // obv definitie hernieuwbare bron.
@@ -72,7 +77,7 @@ container AanbodOpties
 		parameter<g_GJ>  VOS_GJb :=  0[g_GJ];
 		parameter<g_GJ>  TS_GJb  :=  2[g_GJ];
 
-		container Impl := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]);
+		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]);
 		container Results := Impl/Results;
 	}
 }

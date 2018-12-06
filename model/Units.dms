@@ -102,6 +102,7 @@ container Units: isHidden = "True"
 	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);
 	unit<float64> kW_Woning     := kW / nrWoningen;
 	unit<float64> kW_m2         := kW / m2;
+	unit<float64> m_Aansl       := m  / nrAansl;
 	unit<float64> m2_Aansl      := m2 / nrAansl;
 	unit<float64> m2_Woning     := m2 / nrWoningen;
 

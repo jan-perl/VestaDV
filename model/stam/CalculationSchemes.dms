@@ -143,9 +143,6 @@ container CalculationSchemes: Using = "Units;Geography"
 
 	#include <EnergiePrijzen.dms>
 	#include <KostenBatenSchema.dms>
-	#include <NcwSchema.dms>
-	#include <AanbodOpties.dms>
-	#include <Rapportage.dms>
 
 	template BuisKosten
 	{
@@ -161,4 +158,9 @@ container CalculationSchemes: Using = "Units;Geography"
 		attribute<Eur_m> K_m  (PlanRegio) := (K_min * Schuiven/KostenMin + K_max * Schuiven/KostenMax) * Leercurves/curve2;
 		attribute<Eur_m> aK_m (PlanRegio) := a * K_m; // K_hoofd_m incl omwegfactor
 	}
+
+	#include <NcwSchema.dms>
+	#include <AanbodOpties.dms>
+	#include <Rapportage.dms>
+
 }

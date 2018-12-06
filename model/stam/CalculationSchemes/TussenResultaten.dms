@@ -226,28 +226,7 @@ template TussenResultaten
 		container nt15 := NettoContanteWaarde(DV/E_nt, 0[Yr], 15[Yr]);
 	}
 
-	container Initieel := BebouwingsComponenten
-	{
-		container AanbodOpties := StartingState/AanbodOpties;
-		container Stock        := StartingState/Stock;
-		container WKO          := StartingState/WKO;
 
-		container Flow
-		{
-			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-
-			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
-			attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
-		}
-
-		container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, invoer/Energieprijzen, RunJaar);
-	}
 
 	container GebiedsAllocatie :=
 		for_each_ne(
@@ -257,9 +236,33 @@ template TussenResultaten
 				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
 				EnergiePrijzen, RunJaar
 			)'
-		);
-
-	container FinalState := =MakeDefined('GebiedsAllocatie/'+last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+		)
+	{
+		container Initieel:= BebouwingsComponenten
+		{
+			container BC_voor_allocatie     := BebouwingsComponenten;
+			container AanbodOpties          := StartingState/AanbodOpties;
+			container Stock                 := StartingState/Stock;
+			container WKO                   := StartingState/WKO;
+	
+			container Flow
+			{
+				attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+	
+				attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
+				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
+			}
+	
+			container KostenBaten := CalculationSchemes/KostenBaten(BC_voor_allocatie, invoer/Energieprijzen, RunJaar);
+		}
+		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+	}
 
 	#include<EndState.dms>
 
