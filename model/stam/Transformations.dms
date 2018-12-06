@@ -419,7 +419,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 
 			,	'E@RON@_@ROC@', 'e10_GNet',  // Gas
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas', 
 					''
 				,	'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb'
 				,	'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb'
@@ -428,7 +428,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb'
 
 			,	'E@RON@_@ROC@', 'e20_eNet',  // Elektriciteit
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit', 
 					''
 				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
@@ -437,7 +437,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 
 			,	'E@RON@_@ROC@', 'f10_Biogas',  //Biogas
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biogas', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -446,7 +446,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 
 			,	'E@RON@_@ROC@', 'f20_Biovast',  //Biovast
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biovast', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -455,7 +455,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 
 			,	'E@RON@_@ROC@', 'h10_OmgevingsWarmteWinst',  //Ondergrond
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -463,7 +463,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'E@RON@_@ROC@', 'h20_Opwekking',  // Opwekking
-					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking_Factor', 
+					'-EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -473,7 +473,7 @@ container Transformations: Using = "Units;Geography", KeepData = "True"
 
 			,	'E@RON@_@ROC@', 'i10_OmgevingVerlies', 
 					'EndState/KostenBaten/Vj_WarmtePrimairD * Float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@ROC@) * '
-					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond_Factor + GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking_Factor + - 1.0)', 
+					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond + GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking + - 1.0)', 
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'

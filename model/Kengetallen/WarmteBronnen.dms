@@ -158,13 +158,16 @@ container WarmteBronnen
 				parameter<float64> WarmteAandeel                    := 0.75;
 				parameter<float64> Rendement                        := 0.90;
 				parameter<float64> ElektriciteitAandeel             := 1.0 - WarmteAandeel;
-				parameter<float64> Aardgas_Factor                   := 1.0 / (Rendement * WarmteAandeel);
-				parameter<float64> Elektriciteit_Factor             := - ElektriciteitAandeel / WarmteAandeel;
-				parameter<float64> Biogas_Factor                    := 0.0;
-				parameter<float64> Biovast_Factor                   := 0.0;
-				parameter<float64> Ondergrond_Factor                := 0.0;
-				parameter<float64> Opwekking_Factor                 := 0.0;
-				attribute<Eur_GJ>  K_GJ (classifications/zichtjaar) := Aardgas_Factor * prijzen/Gas_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
+				container Factoren
+				{
+					parameter<float64> Aardgas       := 1.0 / (Rendement * WarmteAandeel);
+					parameter<float64> Elektriciteit := - ElektriciteitAandeel / WarmteAandeel;
+					parameter<float64> Biogas        := 0.0;
+					parameter<float64> Biovast       := 0.0;
+					parameter<float64> Ondergrond    := 0.0;
+					parameter<float64> Opwekking     := 0.0;
+				}
+				attribute<Eur_GJ>  K_GJ (classifications/zichtjaar) := Factoren/Aardgas * prijzen/Gas_GJ + Factoren/Elektriciteit * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
 				// attribute<Eur_GJ> K_GJ(classifications/zichtjaar) := (prijzen/Gas_GJ/(0.9*0.75))-(prijzen/ElekEnGros_GJ*((0.9*0.25)/(0.9*0.75)))
 			}
 			container Industrie
@@ -197,15 +200,17 @@ container WarmteBronnen
 				parameter<float64> WarmteAandeel                    := 0.75;
 				parameter<float64> Rendement                        := 0.80;
 				parameter<float64> ElektriciteitAandeel             := 1.0 - WarmteAandeel;
-				parameter<float64> Warmte_Factor                    := 1.0 / (Rendement * WarmteAandeel);
-				parameter<float64> Elektriciteit_Factor             := - ElektriciteitAandeel / WarmteAandeel;
-				parameter<float64> Aardgas_Factor                   := 0.0;
-				parameter<float64> Biogas_Factor                    := 0.0;
-				parameter<float64> Biovast_Factor                   := Warmte_Factor;
-				parameter<float64> Ondergrond_Factor                := 0.0;
-				parameter<float64> Opwekking_Factor                 := 0.0;
-
-				attribute<Eur_GJ>  K_GJ (classifications/zichtjaar) := Warmte_Factor *  prijzen/BioMassa_GJ + Elektriciteit_Factor * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
+				container Factoren
+				{
+					parameter<float64> Warmte        := 1.0 / (Rendement * WarmteAandeel);
+					parameter<float64> Elektriciteit := - ElektriciteitAandeel / WarmteAandeel;
+					parameter<float64> Aardgas       := 0.0;
+					parameter<float64> Biogas        := 0.0;
+					parameter<float64> Biovast       := Warmte;
+					parameter<float64> Ondergrond    := 0.0;
+					parameter<float64> Opwekking     := 0.0;
+				}
+				attribute<Eur_GJ>  K_GJ (classifications/zichtjaar) := Factoren/Warmte *  prijzen/BioMassa_GJ + Factoren/Elektriciteit * prijzen/ElekEnGros_GJ; // en gros prijs als opbrengst, dit is excl distributiekosten
 			}
 		}
 	}

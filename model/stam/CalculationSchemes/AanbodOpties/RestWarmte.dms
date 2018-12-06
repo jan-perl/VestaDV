@@ -38,7 +38,7 @@ template RestWarmte
 	container AanbodKentallen;
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
-	// end of case param
+	// end case parameters
 
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 	container KostenBaten  := BeginStatus/KostenBaten;
@@ -166,10 +166,10 @@ template RestWarmte
 
 			unit<uint32> BronConnections := union_unit(PrevState/BronConnections, ConnectedPlanRegio)
 			{
-				attribute<Bronnen>   Bronnen_rel:= union_data(., PrevState/BronConnections/Bronnen_rel, Assignment/Bronnen_rel[ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<m>         CumulDist  := union_data(., PrevState/BronConnections/CumulDist,   Assignment/CumulDist  [ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<MW>        CumulP     := union_data(., PrevState/BronConnections/CumulP+sum(ExtraGebruikRestWarmte ? Assignment/P : 0[MW],  Assignment), Assignment/P[ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<rdc_meter> Point      := union_data(., PrevState/BronConnections/Point,       PlanRegio/Point[ConnectedPlanRegio/nr_OrgEntity]);
+				attribute<Bronnen>   Bronnen_rel := union_data(., PrevState/BronConnections/Bronnen_rel, Assignment/Bronnen_rel[ConnectedPlanRegio/nr_OrgEntity]);
+				attribute<m>         CumulDist   := union_data(., PrevState/BronConnections/CumulDist,   Assignment/CumulDist  [ConnectedPlanRegio/nr_OrgEntity]);
+				attribute<MW>        CumulP      := union_data(., PrevState/BronConnections/CumulP+sum(ExtraGebruikRestWarmte ? Assignment/P : 0[MW],  Assignment), Assignment/P[ConnectedPlanRegio/nr_OrgEntity]);
+				attribute<rdc_meter> Point       := union_data(., PrevState/BronConnections/Point,       PlanRegio/Point[ConnectedPlanRegio/nr_OrgEntity]);
 			}
 
 			attribute<BronConnections> CurrConnection (PlanRegio) := convert(ExtraGebruikRestWarmte ? Assignment : PrevState/CurrConnection, BronConnections);
@@ -208,20 +208,18 @@ template RestWarmte
 
 	attribute<Bool> GebruikBron (Bronnen) := P_Bron >= Bronnen/MWth_min;
 
-	attribute<Bool> RentabiliteitsAfweging(PlanRegio) :=
-		GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
+	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
 	,	IntegrityCheck = "not(any(LastIter/ExtraGebruikRestWarmte))"; // @@@ Increase NrIterations is this fails.
 	
 	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
 	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
 	attribute<Bool> NewGebruik           (PlanRegio) := RentabiliteitsAfweging && not(OldGebruik);
 	attribute<Bool> GebruikOptieAfweging (PlanRegio) := NewGebruik || GebruiktOptie;
-	attribute<Bool> GebruikOptie         (PlanRegio) := 
-		=Voorkeuren/OldRestwarmte
-			?	'GebruiktOptie'
-			:	(Jaar == 2010[units/yr_uint16])
-				?	'bool(PlanRegio/RW)' 
-				:	'GebruikOptieAfweging'
+	attribute<Bool> GebruikOptie         (PlanRegio) := = Voorkeuren/OldRestwarmte
+		?	'GebruiktOptie'
+		:	(Jaar == 2010[units/yr_uint16])
+			?	'bool(PlanRegio/RW)' 
+			:	'GebruikOptieAfweging'
 		;
 
 	attribute<Eur   > Oi_Totaal          (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage;
@@ -240,12 +238,12 @@ template RestWarmte
 	{
 		container Factoren
 		{
-			parameter<float64> Aardgas_factor       := 0.0; // TODO
-			parameter<float64> Biogas_factor        := 0.0; // TODO
-			parameter<float64> Biovast_factor       := 0.0; // TODO
-			parameter<float64> Ondergrond_factor    := 0.0;
-			parameter<float64> Opwekking_Factor     := 1.0;
-			parameter<float64> Elektriciteit_factor := 0.0; // TODO
+			parameter<float64> Aardgas       := 0.0; // TODO
+			parameter<float64> Biogas        := 0.0; // TODO
+			parameter<float64> Biovast       := 0.0; // TODO
+			parameter<float64> Ondergrond    := 0.0;
+			parameter<float64> Opwekking     := 1.0;
+			parameter<float64> Elektriciteit := 0.0; // TODO
 		}
 
 		container Flow := BeginStatus/Flow

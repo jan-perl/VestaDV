@@ -122,7 +122,7 @@ container Transformations: FreeData = "False"
 		unit<uint32>  PR        := Invoer/SpecifiekeInstellingen/PlanRegio;
 		unit<uint8>   BC        := Transformation/BC;
 
-		container impl 
+		container impl
 		{
 			unit<uint8> WKOC := subset(BC/KanWKO)
 			{
@@ -134,10 +134,10 @@ container Transformations: FreeData = "False"
 				parameter<string> EmissionExprE := (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 				attribute<string> EmissionExpr  := =EmissionExprE;
 			}
-			container applyBC  := substitute(Transformation_mutatie,'@BC@', '@BN@'  ,  BC); 
-			container applyWKO := substitute(applyBC/result        , '@WKOC@', '@WKON@',WKOC); 
-			container applyRO  := substitute(applyWKO/result       , '@ROC@' , '@RON@' , Voorkeuren/PlanRegioOptie);
-			container applyCO  := substitute(applyRO/result        ,  '@COC@' , '@CON@' , Voorkeuren/ClusterOptie);
+			container applyBC  := substitute(Transformation_mutatie ,'@BC@'  , '@BN@'   , BC);
+			container applyWKO := substitute(applyBC/result         ,'@WKOC@', '@WKON@' ,WKOC);
+			container applyRO  := substitute(applyWKO/result        ,'@ROC@' , '@RON@'  ,Voorkeuren/PlanRegioOptie);
+			container applyCO  := substitute(applyRO/result         ,'@COC@' , '@CON@'  ,Voorkeuren/ClusterOptie);
 
 			unit<uint32> mutatie := applyCO/result
 			{
@@ -164,6 +164,7 @@ container Transformations: FreeData = "False"
 				attribute<string>     label          := values;
 				attribute<technology> technology_rel := rlookup(name, technology/values);
 			}
+
 			unit<uint32> all_location := unique(applyAllCO/result/actor)
 			{
 				attribute<string>   name         := values;
@@ -235,7 +236,7 @@ container Transformations: FreeData = "False"
 				attribute<MQuantity> Oj_Netto  (RowSetWithTotal) := (1.0 / 1000000.0) * float64(round_64(1000000.0 * union_data(RowSetWithTotal, TableData/Oj_Netto , sum(TableData/Oj_Netto ))));
 			}
 
-			attribute<string> rows(RowSet) := ='add('+AsItemList(quote(';')+'+string(Table/'+ColSet/Name+')')+')';
+			attribute<string> rows (RowSet) := ='add('+AsItemList(quote(';')+'+string(Table/'+ColSet/Name+')')+')';
 
 			parameter<string> csv :=
 				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+

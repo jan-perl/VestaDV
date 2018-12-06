@@ -226,8 +226,6 @@ template TussenResultaten
 		container nt15 := NettoContanteWaarde(DV/E_nt, 0[Yr], 15[Yr]);
 	}
 
-
-
 	container GebiedsAllocatie :=
 		for_each_ne(
 			Voorkeuren/WarmteOpties/Name,
