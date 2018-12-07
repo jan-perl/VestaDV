@@ -39,7 +39,7 @@ container AllocExports: = Units //DEBUG
 			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
-		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
+		container export := Rapportage/WriteTableToCSV(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
 	}
 
 	template BebouwingsComponentTempl
@@ -107,7 +107,7 @@ container AllocExports: = Units //DEBUG
 			attribute<Eur> Ki_EWV                         := BCdata/Kosten/Ki_EWV;
 			attribute<Eur_yr> Kj_gv_incentive             := BCdata/Kosten/Kj_gv_incentive;
 		}
-		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/'+ComponentName+'.csv');
+		container export := Rapportage/WriteTableToCSV(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/'+ComponentName+'.csv');
 	}
 
 	container BebouwingsComponentResults :=

@@ -36,7 +36,6 @@ container AanbodOpties
 	#include <RestWarmte.dms>
 	#include <GeoThermie.dms>
 	#include <WKO.dms>
-
 	#include <WijkTempl.dms>
 
 	Template WijkWKK

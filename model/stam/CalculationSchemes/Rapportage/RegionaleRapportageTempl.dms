@@ -45,11 +45,9 @@ template RegionaleRapportageTempl
 	// end  case parameters
 	
 	parameter<string>          ReportRegioNaam           := RapportageRegio/Name[RapportageRegio_sel];
-
 	container                  BCdata                    := BebouwingscomponentGebiedsData/BCdata;
 	container                  RuimtelijkeVraagComponent := BebouwingscomponentGebiedsData/RuimtelijkeVraagComponent;
 	unit<uint32>               BebouwingsObject          := BebouwingscomponentGebiedsData/BebouwingsObject;
-	// end of ex-case parameters
 
 	attribute<RapportageRegio>                         PlanRegioRapportageRegio_rel           (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
 	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)                        := BCdata/PlanRegio_rel;

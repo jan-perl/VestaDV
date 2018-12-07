@@ -188,15 +188,15 @@ container indicatoren
 			for_each_ne(Classifications/BebouwingsComponent/name,
 				replace(
 					'Rapportage/EindgebruikerComponentTempl(
-						Allocatie/@BC@,
-						NCW/@NC@15,
-						NCW/@NC@30,
-						NCW/@NC@50,
-						sum(Allocatie/@BC@/AardGas/Vastrecht,              BebouwingsComponenten/@BC@/PlanRegio_rel),
-						sum(Allocatie/@BC@/AardGas/AansluitBijdrage,       BebouwingsComponenten/@BC@/PlanRegio_rel), 
-						sum(Allocatie/@BC@/Elektriciteit/Vastrecht,        BebouwingsComponenten/@BC@/PlanRegio_rel),
-						sum(Allocatie/@BC@/Elektriciteit/AansluitBijdrage, BebouwingsComponenten/@BC@/PlanRegio_rel),
-						EndState/KostenBaten/PlanRegioKaarten/@BC@
+						 Allocatie/@BC@
+						,NCW/@NC@15
+						,NCW/@NC@30
+						,NCW/@NC@50
+						,sum(Allocatie/@BC@/AardGas/Vastrecht,              BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/AardGas/AansluitBijdrage,       BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/Elektriciteit/Vastrecht,        BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/Elektriciteit/AansluitBijdrage, BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,EndState/KostenBaten/PlanRegioKaarten/@BC@
 					)'
 				,	'@BC@', Classifications/BebouwingsComponent/name
 				,	'@NC@', Classifications/BebouwingsComponent/NcwRefBase
