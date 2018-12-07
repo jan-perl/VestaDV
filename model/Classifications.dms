@@ -339,7 +339,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<units/yr_uint16> Jaar         : [2010, 2020, 2030, 2040, 2050 ];
 		attribute<bool>            HasMutations := Jaar > 2010[units/yr_uint16];
 		attribute<string>          Label        := string(Jaar);
-		attribute<string>          Name         := 'J' + Label;
+		attribute<string>          Name         := id(.) == 0b ? 'StartJaar' : 'J' + Label; // eerste zichtjaar wordt startjaar genoemd omdat de gebruikte data betrekking heeft op verschillende jaren.
 		attribute<string>          period_name  := 'Y' + Label[id(.)-1[.]] + '_Y' + Label;
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);

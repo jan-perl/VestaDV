@@ -59,15 +59,15 @@ container Blok2km
 		parameter<bool>    HasStartingArcSet := false; // Need to be always false if buurt is not used.
 		unit<uint32>       PlanRegio         := ='Geography/RegioIndelingen/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam;
 
-		container yr2010 := DefaultIinstellingen/Basis
+		container StartJaar := DefaultIinstellingen/Basis
 		{
 			parameter<Units/Percent> VAT := 19[Units/Percent]; 
 		} // tot 2010 geldt nog het lagere BTW-percentage
 
-		container yr2020 := UserInputDefaults/Toekomst;
-		container yr2030 := yr2020;
-		container yr2040 := yr2030;
-		container yr2050 := yr2040;
+		container J2020 := UserInputDefaults/Toekomst;
+		container J2030 := J2020;
+		container J2040 := J2030;
+		container J2050 := J2040;
 	}
 //	End
 

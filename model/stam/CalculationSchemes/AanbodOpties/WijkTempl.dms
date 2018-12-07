@@ -33,55 +33,51 @@
 
 template WijkTempl
 {
+	// begin case parameters
 	container BeginStatus;
 	container AanbodKentallen;
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
-	
 	container TypeInfo;
 	parameter<Classifications/AanbodOptie> Optie;
-	parameter<String>  StartJaarAttr;
-	parameter<PJ_yr>   MaxTotalDemand;
-	
-	// end of case param
+	parameter<string> StartJaarAttr;
+	parameter<PJ_yr> MaxTotalDemand;
+	// end case parameters
 
 	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio
 	{
 		attribute<units/yr_uint16> StartJaar := =StartJaarAttr != '' ? StartJaarAttr : 'const(2000[units/yr_uint16], .)';
 	}
-	
-	
+
 	container KostenBaten := BeginStatus/KostenBaten;
 	
 	container Kosten
 	{
 		attribute<Eur> Ki_Totaal_nu(PlanRegio) := 
 			(TypeInfo/K_kW_min * Schuiven/KostenMin + TypeInfo/K_kW_max * Schuiven/KostenMax) 
-		*	max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
-		*	1000[kW / MW]
-		;
-		attribute<Eur> Ki_Totaal(PlanRegio) := Ki_Totaal_nu * LeerCurves/Curve2;
-		attribute<Eur> Oi_EIA   (PlanRegio) := Ki_Totaal * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfo/TypeInfoList_rel];
-		attribute<Eur> Ki_Netto (PlanRegio) := Ki_Totaal - Oi_EIA;
+		* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
+		* 1000[kW / MW];
 
-		parameter<Eur_GJ> K_GJ := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
+		attribute<Eur> Ki_Totaal (PlanRegio) := Ki_Totaal_nu * LeerCurves/Curve2;
+		attribute<Eur> Oi_EIA    (PlanRegio) := Ki_Totaal * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfo/TypeInfoList_rel];
+		attribute<Eur> Ki_Netto  (PlanRegio) := Ki_Totaal - Oi_EIA;
 
-		parameter<KG_GJ> CO2g_GJ := TypeInfo/RekenType/Factoren/Aardgas       * Prijzen/AardGas/CO2_GJ;
-		parameter<KG_GJ> CO2e_GJ := TypeInfo/RekenType/Factoren/Elektriciteit * Prijzen/Elektriciteit/CO2_GJ;
-		parameter<KG_GJ> CO2_GJ := CO2g_GJ + CO2e_GJ, Source = "FO v7a C.5 WijkWKK";
+		parameter<Eur_GJ> K_GJ    := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
+		parameter<KG_GJ>  CO2g_GJ := TypeInfo/RekenType/Factoren/Aardgas       * Prijzen/AardGas/CO2_GJ;
+		parameter<KG_GJ>  CO2e_GJ := TypeInfo/RekenType/Factoren/Elektriciteit * Prijzen/Elektriciteit/CO2_GJ;
+		parameter<KG_GJ>  CO2_GJ  := CO2g_GJ + CO2e_GJ, Source = "FO v7a C.5 WijkWKK";
 
-		parameter<Eur_GJ> Km_GJ := K_GJ;
+		parameter<Eur_GJ> Km_GJ   := K_GJ;
 
-		attribute<Eur_yr> Kj_Base        (PlanRegio):= Ki_Totaal * TypeInfo/Rj_Onderhoud;
-		attribute<Eur_yr> Kj_Admin       (PlanRegio):= Kj_Base * Kengetallen/Onderhoud/R_Admin;
-		attribute<Eur_yr> Kj_Onderhoud   (PlanRegio):= Kj_Base - Kj_Admin;
-		attribute<Eur_yr> Kj_WarmteWaarde(PlanRegio):= K_GJ  * KostenBaten/Vj_WarmtePrimairD;
-		attribute<Eur_yr> Km_WarmteWaarde(PlanRegio):= Km_GJ * KostenBaten/Vj_WarmtePrimairD;
-		
-		attribute<Eur_yr> Ke_Totaal(PlanRegio) := TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD * last(prijzen/Elektriciteit/Staffel/KGJ_Commodity);
+		attribute<Eur_yr> Kj_Base         (PlanRegio) := Ki_Totaal * TypeInfo/Rj_Onderhoud;
+		attribute<Eur_yr> Kj_Admin        (PlanRegio) := Kj_Base * Kengetallen/Onderhoud/R_Admin;
+		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_Base - Kj_Admin;
+		attribute<Eur_yr> Kj_WarmteWaarde (PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr> Km_WarmteWaarde (PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr> Ke_Totaal       (PlanRegio) := TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD * last(prijzen/Elektriciteit/Staffel/KGJ_Commodity);
 
-		attribute<Eur_yr> Kj_Totaal(PlanRegio) := Kj_Base + Kj_WarmteWaarde;
-		attribute<Eur_yr> Km_Totaal(PlanRegio) := Kj_Base + Km_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.
+		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Base + Kj_WarmteWaarde;
+		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Base + Km_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.
 	}
 
 	attribute<Eur   > Oi_Totaal(PlanRegio) := KostenBaten/Oi_Aansluitbijdrage ;

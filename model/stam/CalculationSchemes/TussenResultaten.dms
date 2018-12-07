@@ -34,7 +34,7 @@
 template TussenResultaten
 {
 	// begin case parameters
-	parameter<units/yr_uint16> RunJaar: ParamType = "Numeric";
+	parameter<String> RunJaarLabel;
 	// optional case parameter
 
 	container StartingState := // overridable by called 
@@ -85,18 +85,18 @@ template TussenResultaten
 		}
 	}
 	// end case parameters
-
+	parameter<units/yr_uint16> RunJaar := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
 	unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
 
-	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/yr'+string(RunJaar);
+	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/' + RunJaarLabel;
 	container VraagKentallen         := SpecifiekeInstellingen/VraagKentallen;
 	container AanbodKentallen        := SpecifiekeInstellingen/AanbodKentallen;
 
-	container Bebouwing              := ='RuimtelijkeData/Bebouwing/J'+string(RunJaar);
+	container Bebouwing              := ='RuimtelijkeData/Bebouwing/' + RunJaarLabel;
 
 	unit<uint32> WarmteBronnen       := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 
-	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/J'+string(RunJaar)+'[Units/Ratio]';
+	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/'+ RunJaarLabel +'[Units/Ratio]';
 
 	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{

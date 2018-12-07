@@ -33,7 +33,8 @@
 
 container indicatoren
 {
-	unit<uint32> PlanRegio := SpecifiekeInstellingen/PlanRegio;
+	unit<uint32>               PlanRegio := SpecifiekeInstellingen/PlanRegio;
+	parameter<units/yr_uint16> RunJaar   := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
 
 	container CO2: Source = "FO v7a C5"
 	{
@@ -260,7 +261,7 @@ container indicatoren
 
 		container aardgas
 		{
-			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/J2010/heeft_gas; // false voor bestaande restwarmte
+			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/heeft_gas; // false voor bestaande restwarmte
 			attribute<bool>   verwijderd      (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
 
 			// inkomsten
@@ -271,7 +272,7 @@ container indicatoren
 
 			// kosten
 			attribute<m>      L_infra_nu      (PlanRegio) := float64(heeft_gas ) * EndState/KostenBaten/KostenD/L_infra_g;
-			attribute<m>      L_infra_org     (PlanRegio) := J2010/indicatoren/netwerk/aardgas/L_infra_nu;
+			attribute<m>      L_infra_org     (PlanRegio) := StartJaar/indicatoren/netwerk/aardgas/L_infra_nu;
 			attribute<m>      L_infra         (PlanRegio) := max_elem(L_infra_nu, L_infra_org);
 
 			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra    * Kengetallen/Infra/Kj_g_m;

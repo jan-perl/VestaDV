@@ -34,10 +34,10 @@
 template Resultaten
 {
 	// begin case parameters
-	parameter<units/yr_uint16> RunJaar;
+	parameter<String> RunJaarLabel;
 	// optional case parameter
 
-	container TussenResultaten := ='/TussenResultaten/J'+String(RunJaar);
+	container TussenResultaten := ='/TussenResultaten/' + RunJaarLabel;
 	unit<uint32> PlanRegio     := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container Prijzen               := TussenResultaten/Prijzen;
@@ -66,7 +66,7 @@ template Resultaten
 	container FolderInfo
 	{
 		parameter<string> RunName      := Expand(., '%configName%');
-		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+string(RunJaar);
+		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RunJaarLabel;
 	}
 	
 	container RegressieTest

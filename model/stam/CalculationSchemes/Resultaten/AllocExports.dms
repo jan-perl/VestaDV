@@ -34,9 +34,9 @@ container AllocExports: = Units //DEBUG
 			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
 			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
-			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
-			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/J2010/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/indicatoren/Metervraag/gebouwen/GebiedsOptie/totaal;
+			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/indicatoren/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/indicatoren/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
 		container export := Rapportage/ExportCsvT(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
