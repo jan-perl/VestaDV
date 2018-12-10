@@ -51,17 +51,16 @@ container Resultaten :=
 		,	Kengetallen/WarmteBronnen/MetaData/TypeInfoList, Units/PJ_yr
 		);
 
-	parameter<String> GenerateAll := 'Ready', 
-		ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')", IsHidden = "True";
 
-	container AllocExports
-	{
-		parameter<string> GenerateAll := 'ready', 
-			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
-	}
-	
+
 	container Exports: isHidden = "True"
 	{
+		parameter<String> GenerateAllIndicatoren := 'Ready', 
+			ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')", IsHidden = "True";
+
+		parameter<string> GenerateAllAlloc := 'ready', 
+			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
+	
 		container t510_indicator_results_test
 		{
 			parameter<string> result := 

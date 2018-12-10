@@ -33,7 +33,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
 //       In deze configuratiefile wordt de brondata voor de Warmtebronnen geconfigureerd//
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -47,16 +46,17 @@ container WarmteBronnen
 		attribute<Eur_GJ>        Gas_GJ            (classifications/zichtjaar) := prijzen/AardGas/results/GrootGebruik/eindgebruik_excl[aardgas_tabel_rel], Descr = "M10";
 
 		unit<uint32> elek_tabel := Elektriciteit/Table;
-		attribute<elek_tabel> elek_tabel_rel (classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, UInt16(elek_tabel/jaar));
-		attribute<Eur_GJ>     ElekEnGros_GJ  (classifications/zichtjaar) := prijzen/Elektriciteit/results/GrootGebruik/CommodityPrice[elek_tabel_rel];
-		attribute<Eur_GJ>     ElekKMG_GJ     (classifications/zichtjaar) := prijzen/Elektriciteit/results/KleinMiddelGebruik/eindgebruik_excl[elek_tabel_rel];
+		attribute<elek_tabel>    elek_tabel_rel    (classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, UInt16(elek_tabel/jaar));
+		attribute<Eur_GJ>        ElekEnGros_GJ     (classifications/zichtjaar) := prijzen/Elektriciteit/results/GrootGebruik/CommodityPrice[elek_tabel_rel];
+		attribute<Eur_GJ>        ElekKMG_GJ        (classifications/zichtjaar) := prijzen/Elektriciteit/results/KleinMiddelGebruik/eindgebruik_excl[elek_tabel_rel];
 
-		unit<uint32> overig_tabel := Overig/Table;
+		unit<uint32> overig_tabel   := Overig/Table;
 		container    overig_results := Overig/Results;
-		attribute<overig_tabel> overig_tabel_rel (classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, overig_results/jaar);
-		attribute<Eur_GJ>       BioMassa_GJ      (classifications/zichtjaar) := overig_results/BioMassa    [overig_tabel_rel];
-		attribute<Eur_GJ>       Kolen_GJ         (classifications/zichtjaar) := overig_results/Kolen_excl  [overig_tabel_rel];
-		attribute<Eur_GJ>       KolenCO2_GJ      (classifications/zichtjaar) := overig_results/Kolen_CO2   [overig_tabel_rel];
+
+		attribute<overig_tabel>  overig_tabel_rel  (classifications/zichtjaar) := rlookup(classifications/zichtjaar/jaar, overig_results/jaar);
+		attribute<Eur_GJ>        BioMassa_GJ       (classifications/zichtjaar) := overig_results/BioMassa  [overig_tabel_rel];
+		attribute<Eur_GJ>        Kolen_GJ          (classifications/zichtjaar) := overig_results/Kolen_excl[overig_tabel_rel];
+		attribute<Eur_GJ>        KolenCO2_GJ       (classifications/zichtjaar) := overig_results/Kolen_CO2 [overig_tabel_rel];
 	}
 	container MetaData: IsHidden = "True"
 	{
@@ -133,7 +133,8 @@ container WarmteBronnen
 			];
 			container V := for_each_nedv(Naam, 'value('+string(ID(.))+', ..)', void, .);
 		}
-		container RekenTypes {
+		container RekenTypes
+		{
 			container STEG
 			{
 				// obv (0.20/0.30) * M10[Eur/GJ];
@@ -197,9 +198,9 @@ container WarmteBronnen
 			container BioWKK
 			{
 				// obv (0.20 / 0.30) * N10[Eur/GJ] obv N10 = 122.4 / 16 CONSTANT ! 
-				parameter<float64> WarmteAandeel                    := 0.75;
-				parameter<float64> Rendement                        := 0.80;
-				parameter<float64> ElektriciteitAandeel             := 1.0 - WarmteAandeel;
+				parameter<float64> WarmteAandeel        := 0.75;
+				parameter<float64> Rendement            := 0.80;
+				parameter<float64> ElektriciteitAandeel := 1.0 - WarmteAandeel;
 				container Factoren
 				{
 					parameter<float64> Warmte        := 1.0 / (Rendement * WarmteAandeel);

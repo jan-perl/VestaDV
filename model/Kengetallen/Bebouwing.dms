@@ -35,18 +35,21 @@ container Bebouwing
 {
 	container BestaandeWoning :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160707_Woningen_BAG.csv', 
-			'WoningType_str', 
-			Classifications/WoningtypeBestaand, Classifications/BouwjaarWoningBestaand, Units/nrWoningen, Units/nrWoningen
+			 '20160707_Woningen_BAG.csv'
+			,'WoningType_str'
+			,Classifications/WoningtypeBestaand
+			,Classifications/BouwjaarWoningBestaand
+			,Units/nrWoningen
+			,Units/nrWoningen
 		)
 	{
 		container results
 		{
 			container Verbeteringen
 			{
-				container S_H_T  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
-				container S_H_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
-				container S_H_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
+				container S_H_T  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
+				container S_H_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'B');
+				container S_H_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'C');
 				container S_T_B  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'D');
 				container S_T_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_T/verbruik, S_H_T/Comfort_verbetering_tov_h, 'E');
 				container S_B_AP := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, S_H_B/verbruik, S_H_B/Comfort_verbetering_tov_h, 'F');
@@ -55,12 +58,16 @@ container Bebouwing
 	}
 	container NieuwbouwWoning :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160525_Woningen_Nieuwbouw_BAG.csv',
-			'WoningType_str',
-			Classifications/WoningtypeNieuwbouw, Classifications/BouwJaar, Units/nrWoningen, Units/nrWoningen
+			 '20160525_Woningen_Nieuwbouw_BAG.csv'
+			,'WoningType_str'
+			,Classifications/WoningtypeNieuwbouw
+			,Classifications/BouwJaar
+			,Units/nrWoningen
+			,Units/nrWoningen
 		)
 	{
-		container results {
+		container results
+		{
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -76,9 +83,12 @@ container Bebouwing
 	}
 	container BestaandeUtil :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160706_Utiliteiten_BAG.csv',
-			'UtiliteitType_str', 
-			Classifications/UtilTypeBestaand,Classifications/BouwjaarUtilBestaand,  Units/m2, Units/m2
+			 '20160706_Utiliteiten_BAG.csv'
+			,'UtiliteitType_str'
+			,Classifications/UtilTypeBestaand
+			,Classifications/BouwjaarUtilBestaand
+			,Units/m2
+			,Units/m2
 		)
 	{
 		container results {
@@ -97,12 +107,16 @@ container Bebouwing
 	}
 	container NieuwbouwUtil :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160525_Utiliteiten_Nieuwbouw_BAG.csv',
-			'UtiliteitType_str', 
-			Classifications/UtilTypeNieuwbouw, Classifications/BouwJaar,  Units/m2, Units/m2
+			'20160525_Utiliteiten_Nieuwbouw_BAG.csv'
+			,'UtiliteitType_str'
+			,Classifications/UtilTypeNieuwbouw
+			,Classifications/BouwJaar
+			,Units/m2
+			,Units/m2
 		)
 	{
-		container results {
+		container results 
+		{
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -118,12 +132,16 @@ container Bebouwing
 	}
 	container BestaandeGlTb :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160706_Glastuinbouw_BAG.csv', 
-			'UtiliteitType_str',
-			Classifications/GlTb, Classifications/bouwjaar, Units/m2, Units/m2
+			'20160706_Glastuinbouw_BAG.csv'
+			,'UtiliteitType_str'
+			,Classifications/GlTb
+			,Classifications/bouwjaar
+			,Units/m2
+			,Units/m2
 		)
 	{
-		container results {
+		container results
+		{
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -139,9 +157,12 @@ container Bebouwing
 	}
 	container NieuwbouwGlTb :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160525_Glastuinbouw_Nieuwbouw_BAG.csv',
-			'UtiliteitType_str',
-			Classifications/GlTb, classifications/bouwjaar, Units/m2, Units/m2
+			 '20160525_Glastuinbouw_Nieuwbouw_BAG.csv'
+			,'UtiliteitType_str'
+			,Classifications/GlTb
+			,Classifications/bouwjaar
+			,Units/m2
+			,Units/m2
 		)
 	{
 		container results {

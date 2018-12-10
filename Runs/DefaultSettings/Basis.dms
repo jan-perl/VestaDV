@@ -78,12 +78,13 @@ container Basis: Using = "Units"
 		{
 			// Investeringssubsidie: bepaald percentage van een investering wordt door de overheid betaald
 			// in te stellen per actor en per technologie voorzover actor = opwekker en per zichtjaar als percentage van de investering 
-			container EigenarenBasis {
-				parameter<float64> R_SplitIncentiveFactor  := 0.8; // 0.6 = eigenaar krijgt 60% van de door gebruiker vermeden kosten; dit speelt een rol igv SpringMeestRendabel
-				parameter<float64> Rs_LokaleOpwekking      := 0.0; // 
-				parameter<float64> Rs_GebouwVerbetering    := 0.0; // 0.1 = 10% subsidie op gebouwverbetering incl eWP en EWV
-				parameter<float64> Rs_OngeriefsVergoeding  := 0.0; // 0.1 = 10% subsidie op ongeriefsvergoeding tbv gebiedsoptie
-				parameter<float64> Rs_ProjectManagement    := 0.0; // 0.1 = 10% subsidie op projectmanagement   tbv gebiedsoptie
+			container EigenarenBasis 
+			{
+				parameter<float64> R_SplitIncentiveFactor := 0.8; // 0.6 = eigenaar krijgt 60% van de door gebruiker vermeden kosten; dit speelt een rol igv SpringMeestRendabel
+				parameter<float64> Rs_LokaleOpwekking     := 0.0; // 
+				parameter<float64> Rs_GebouwVerbetering   := 0.0; // 0.1 = 10% subsidie op gebouwverbetering incl eWP en EWV
+				parameter<float64> Rs_OngeriefsVergoeding := 0.0; // 0.1 = 10% subsidie op ongeriefsvergoeding tbv gebiedsoptie
+				parameter<float64> Rs_ProjectManagement   := 0.0; // 0.1 = 10% subsidie op projectmanagement   tbv gebiedsoptie
 			}
 			container E_bw := EigenarenBasis;
 			container E_nw := EigenarenBasis;
@@ -107,7 +108,7 @@ container Basis: Using = "Units"
 			container Kosten
 			{
 				// percentage op totale kosten (kapitaallasten + O&M) per actor aan actor
-				container Basis 
+				container Basis
 				{
 					parameter<float64> Rs_LokaleOpwekking   := 0.0;
 					parameter<float64> Rs_GebouwVerbetering := 0.0;
@@ -156,7 +157,7 @@ container Basis: Using = "Units"
 			}
 			container EWV
 			{
-				parameter<Ratio>           COP: [ 1.00 ];
+				parameter<Ratio>           COP: [1.00];
 				parameter<units/Eur_Aansl> InvesteringsKosten_Min: [10000];
 				parameter<units/Eur_Aansl> InvesteringsKosten_Max: [20000];
 			}
@@ -202,8 +203,8 @@ container Basis: Using = "Units"
 				// LT-systeem (1506; 8246 = 7635*1,08), eWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
 				// EWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
 				// 061113 Ruud en Bas - PBL: Splitsen van WKO-kosten. LT-systeem kosten niet meer meegenomen
-				parameter<units/Eur_Woning> InvesteringsKosten_min : [ 6500.0 ];
-				parameter<units/Eur_Woning> InvesteringsKosten_max : [ 13300.0 ];
+				parameter<units/Eur_Woning> InvesteringsKosten_min : [ 6500.0];
+				parameter<units/Eur_Woning> InvesteringsKosten_max : [13300.0];
 			}
 
 			container Opbrengsten : Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
@@ -222,7 +223,7 @@ container Basis: Using = "Units"
 
 			container Zon_PV := BestaandeWoning/Zon_PV
 			{
-				attribute<m2_Dak> dakopp    (Classifications/WoningtypeNieuwbouw) : [ 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 0, 0, 30 ]; 
+				attribute<m2_Dak> dakopp    (Classifications/WoningtypeNieuwbouw) : [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 0, 0, 30]; 
 				attribute<m2_MU > Oppervlak (Classifications/WoningtypeNieuwbouw) := dakopp / Classifications/WoningtypeNieuwbouw/StapelFactor; // m2 per ModelUnit
 			}
 
@@ -239,8 +240,8 @@ container Basis: Using = "Units"
 
 			container Opbrengsten := BestaandeWoning/Opbrengsten, Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 			{
-				attribute<Eur_Aansl> AansluitTarief_min (Classifications/WoningtypeNieuwbouw): [ 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500 ];
-				attribute<Eur_Aansl> AansluitTarief_max (Classifications/WoningtypeNieuwbouw): [ 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500 ];
+				attribute<Eur_Aansl> AansluitTarief_min (Classifications/WoningtypeNieuwbouw): [4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500];
+				attribute<Eur_Aansl> AansluitTarief_max (Classifications/WoningtypeNieuwbouw): [5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500, 5500];
 			}
 		}
 
@@ -271,7 +272,7 @@ container Basis: Using = "Units"
 
 			container eWP
 			{
-				parameter<Ratio>        COP: [ 4.00 ];
+				parameter<Ratio>        COP: [4.00];
 				parameter<units/Eur_m2> InvesteringsKosten_min: [42.0];
 				parameter<units/Eur_m2> InvesteringsKosten_max: [42.0];
 			}
@@ -291,7 +292,7 @@ container Basis: Using = "Units"
 			// 302671365 de oppervlakte bij het oproepen van het item /Output/Y2050/BebouwingsComponenten/BestaandeUtil/Hoeveelheden/capaciteit/Zon_PV op basis van de oude Stapelfactor
 			// 182971545 de oppervlakte indien de oppervlaktes van de BAG-panden wordt gesommeerd op basis van selectie mbv LISA-punten zie:
 			// SourceData\vesta\vraag\BestaandeUtil\pand-BAG_sel_LISA_2008_010611.shp
-			attribute<Units/Bouwlaag> StapelFactor (Classifications/UtilTypeNieuwbouw): [  // 4
+			attribute<Units/Bouwlaag> StapelFactor (Classifications/UtilTypeNieuwbouw): [ // 4
 				4.13549775,2.48129865,1.6541991,// oude stapelfactor 2.5, 1.5, 1.0, 
 				1.6541991,4.13549775,4.13549775,// oude stapelfactor 1.0, 2.5, 2.5,
 				2.48129865,3.3083982,3.3083982// oude stapelfactor 1.5, 2.0, 2.0
@@ -308,8 +309,8 @@ container Basis: Using = "Units"
 			}
 			container Opbrengsten := BestaandeUtil/Opbrengsten,  Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 			{
-				attribute<Eur_kW> AansluitTarief_min (Classifications/UtilTypeNieuwbouw):= const( 50[Eur_kW],Classifications/UtilTypeNieuwbouw);
-				attribute<Eur_kW> AansluitTarief_max (Classifications/UtilTypeNieuwbouw):= const(100[Eur_kW],Classifications/UtilTypeNieuwbouw);
+				attribute<Eur_kW> AansluitTarief_min (Classifications/UtilTypeNieuwbouw) := const( 50[Eur_kW],Classifications/UtilTypeNieuwbouw);
+				attribute<Eur_kW> AansluitTarief_max (Classifications/UtilTypeNieuwbouw) := const(100[Eur_kW],Classifications/UtilTypeNieuwbouw);
 			}
 			container mWKK := BestaandeUtil/mWKK
 			{
@@ -375,15 +376,15 @@ container Basis: Using = "Units"
 
 	container AanbodKentallen := VraagKentallen, Descr = "Blok 3, zie FO $4.2"
 	{
-		container RestWarmte  := VraagKentallen;
-		container GeoThermie  := VraagKentallen;
-		container BioWKK      := VraagKentallen;
-		container WijkWKK     := VraagKentallen;
-		container WKO         := VraagKentallen
+		container RestWarmte := VraagKentallen;
+		container GeoThermie := VraagKentallen;
+		container BioWKK     := VraagKentallen;
+		container WijkWKK    := VraagKentallen;
+		container WKO        := VraagKentallen
 		{
 			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
 		}
-		container AardGas     := VraagKentallen;
+		container AardGas    := VraagKentallen;
 	}
 
 	container BAG
@@ -418,7 +419,7 @@ container Basis: Using = "Units"
 					parameter<Ratio> Zon_PV:      [0.0];
 					parameter<Ratio> ZonneBoiler: [0.0];
 
-					parameter<Ratio> mWKK:        [0.0]; // niet hier aanzetten als je het alleen voor woningen aan wilt, dan specifiek voor BebouwingsComponent Woning of NieuwbouwWoning instellen hieronder bij BaseLine
+					parameter<Ratio> mWKK:        [0.0]; // niet hier aanzetten als je het alleen voor woningen aan wilt, dan specifiek voor BebouwingsComponent Woning of NieuwbouwWoning instellen bij Basis
 					attribute<Ratio> hWP (Classifications/energielabel) := const(0.0, Classifications/energielabel); // uit in 2010
 				}
 				container Verbeteringen
@@ -444,17 +445,17 @@ container Basis: Using = "Units"
 					parameter<string> S_B_EWV:  ['Criteria/Never']; // van B naar A+ met EWV.
 					parameter<string> S_AP_EWV: ['Criteria/Never'];  // van A+ zonder eWP naar A+ met EWV
 
-					parameter<bool> SpringMeestRendabel   : [false] ; // maak rentabiliteitsafweging tbv bebouwingobject eigenaren indien true
-					parameter<bool> SpringMaatschappelijk : [false] ; // maak maatschappelijke rentabiliteitsafweging indien true en SpringMeestRendabel = false
+					parameter<bool> SpringMeestRendabel:   [false] ; // maak rentabiliteitsafweging tbv bebouwingobject eigenaren indien true
+					parameter<bool> SpringMaatschappelijk: [false] ; // maak maatschappelijke rentabiliteitsafweging indien true en SpringMeestRendabel = false
 
 					parameter<units/yr_uint16> RuimteVerwarmingsJaar : [2020];
 				}
 				container Kosten
 				{
-					parameter<Ratio> VerbeterMinMaxSchuif        : [0.5]; // 0.0 = minimale kosten; 1.0 = maximale kosten.
-					parameter<Ratio> LeercurveMinMaxSchuif       : [0.5]; // 0.0 = optimistische leercurve; 1.0= pessimistische leercurve
-					parameter<Ratio> LeercurveGebruikSchuif      : [1.0]; // 0.0 = kosten constant; 1.0 = Leercurve geheel in gebruik
-					parameter<Ratio> IndividueleVerwarmingSchuif : [0.0]; // 0.0 = alle meergezinswoningen hebben blokverwarming; 1.0 = alle meergezinswonigen hebben individuele verwarming
+					parameter<Ratio> VerbeterMinMaxSchuif:        [0.5]; // 0.0 = minimale kosten; 1.0 = maximale kosten.
+					parameter<Ratio> LeercurveMinMaxSchuif :      [0.5]; // 0.0 = optimistische leercurve; 1.0= pessimistische leercurve
+					parameter<Ratio> LeercurveGebruikSchuif:      [1.0]; // 0.0 = kosten constant; 1.0 = Leercurve geheel in gebruik
+					parameter<Ratio> IndividueleVerwarmingSchuif: [0.0]; // 0.0 = alle meergezinswoningen hebben blokverwarming; 1.0 = alle meergezinswonigen hebben individuele verwarming
 				}
 				container Opbrengsten
 				{
@@ -492,11 +493,6 @@ container Basis: Using = "Units"
 		parameter<float64> GroenGasFactor        := 0.10; // 90% reguier gas en 10% groen gas (zonder Co2 uitstoot).
 	}
 
-
-
-
-
-
 	// parameter: WloScenarioFolder
 	//
 	// moet verwijzen naar een folder met nieuwbouw en sloop projecties t/m 2050
@@ -523,11 +519,11 @@ container Basis: Using = "Units"
 
 	container Discontovoet
 	{
-		parameter<Percent_yr> mr  := 4.0[Percent_yr], Descr = "Maatschappelijke discontovoet";
-		parameter<Percent_yr> ow  := 6.0[Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
-		parameter<Percent_yr> wd  := 6.0[Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
-		parameter<Percent_yr> pt  := 6.0[Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
-		parameter<Percent_yr> id  := 6.0[Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
+		parameter<Percent_yr>   mr := 4.0[Percent_yr], Descr = "Maatschappelijke discontovoet";
+		parameter<Percent_yr>   ow := 6.0[Percent_yr], Descr = "Discontovoet voor opwekking door energieproducenten; kan per aanbod-technologie worden overruled";
+		parameter<Percent_yr>   wd := 6.0[Percent_yr], Descr = "Discontovoet voor wijkdistributeurs";
+		parameter<Percent_yr>   pt := 6.0[Percent_yr], Descr = "Discontovoet voor primaire transporteurs";
+		parameter<Percent_yr>   id := 6.0[Percent_yr], Descr = "Discontovoet voor inpandige distributeurs";
 		parameter<Percent_yr> E_bw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande woningen";
 		parameter<Percent_yr> E_nw := 5.5[Percent_yr], Descr = "Discontovoet voor eigenaars van nieuwe woningen";
 		parameter<Percent_yr> E_bu := 8.0[Percent_yr], Descr = "Discontovoet voor eigenaars van bestaande utiliteiten";

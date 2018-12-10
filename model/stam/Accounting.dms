@@ -40,34 +40,51 @@
 
 container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> Kostensoort : nrofrows = 27
+	unit<uint32> Kostensoort : nrofrows = 26
 	{
-		attribute<string> name: [ 'Netwerk', 'GasNet', 'ElektriciteitsNet', 'AardGas', 'Elektriciteit', //5
-			'LokaleOpwekking', 'Gebouw', 'Onderhoud', 'Admin', 'Comfort', //5
-			'InpandigeDistributie', 'WijkDistributie', 'PrimairTransport', 'Opwekking', 'WarmteInkoop', //5
-			'InpandigeDistributeur','WijkDistributeur', 'PrimairTransporteur', 'Leverancier', //4
-			'KL_p', 'KL_e',
-			'EmissieRechten', 'BTW', 'Precario', 'EnergieHeffing', 'Subsidie' //5
-		];
-		attribute<bool> IsMaatschappelijkeKosten: [ true, false, false, true, true, //5
-			true, true, true, true, true, //5
-			true, true, true, true, true, //5
-			false, false, false, false, //4
-			false, false,
-			true, false, false, false, false
-		];
-		attribute<bool> IsOverheid : [ false, true, true, false, false, // 5
-			false, false, false, false, false, // 5
-			false, false, false, false, false, // 5
-			false, false, false, false, // 4
-			false, false, 
-			false, true, true, true, true
-		];
+		parameter<uint32> nrAttr := 3;
+		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
+		{
+			attribute<string> values:
+			[
+				//name                   ,IsMaatschappelijkeKosten ,IsOverheid
+				 'Netwerk'               ,'True'                   ,'False'
+				,'GasNet'                ,'False'                  ,'True'
+				,'ElektriciteitsNet'     ,'False'                  ,'True'
+				,'AardGas'               ,'True'                   ,'False'
+				,'Elektriciteit'         ,'True'                   ,'False'
+				,'LokaleOpwekking'       ,'True'                   ,'False'
+				,'Gebouw'                ,'True'                   ,'False'
+				,'Onderhoud'             ,'True'                   ,'False'
+				,'Admin'                 ,'True'                   ,'False'
+				,'Comfort'               ,'True'                   ,'False'
+				,'InpandigeDistributie'  ,'True'                   ,'False'
+				,'WijkDistributie'       ,'True'                   ,'False'
+				,'PrimairTransport'      ,'True'                   ,'False'
+				,'Opwekking'             ,'True'                   ,'False'
+				,'WarmteInkoop'          ,'True'                   ,'False'
+				,'InpandigeDistributeur' ,'False'                  ,'False'
+				,'WijkDistributeur'      ,'False'                  ,'False'
+				,'PrimairTransporteur'   ,'False'                  ,'False'
+				,'Leverancier'           ,'False'                  ,'False'
+				,'KL_p'                  ,'False'                  ,'False'
+				,'KL_e'                  ,'False'                  ,'False'
+				,'EmissieRechten'        ,'True'                   ,'False'
+				,'BTW'                   ,'False'                  ,'True'
+				,'Precario'              ,'False'                  ,'True'
+				,'EnergieHeffing'        ,'False'                  ,'True'
+				,'Subsidie'              ,'False'                  ,'True'
+			];
+		}
+		attribute<.>      id                       := id(.);
+		attribute<string> name                     :=      Elements/values[value(id * nrAttr + 0,Elements)];
+		attribute<bool>   IsMaatschappelijkeKosten := bool(Elements/values[value(id * nrAttr + 1,Elements)]);
+		attribute<bool>   IsOverheid               := bool(Elements/values[value(id * nrAttr + 2,Elements)]);
 	}
 
 	unit<uint8> BC := Classifications/BebouwingsComponent
 	{
-		attribute<string> entity := 'BebouwingsComponenten/'+name+'/BebouwingsObject';
+		attribute<string> entity := 'BebouwingsComponenten/'+ name +'/BebouwingsObject';
 	}
 	
 	unit<uint32> mutatieSchema: nrofrows = 142
@@ -106,6 +123,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'Allocatie/@BC@/AardGas/maatschappelijk',
 					'', 
 					PRR
+
 			,	'AardGas' , 'EnergieHeffing', '@BC@/Gebruiker', 
 					'Allocatie/@BC@/AardGas/EnergieHeffing',
 					'',
@@ -125,10 +143,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'Allocatie/@BC@/AardGas/netwerk',
 					'', 
 					PRR
+
 			,	'Vastrecht', 'GasNet', '@BC@/Gebruiker', 
 					'Allocatie/@BC@/AardGas/Vastrecht',
 					'', 
 					PRR
+
 			,	'VastrechtGasNet', 'BTW', '@BTW@/Gebruiker',
 					'Allocatie/@BTW@/AardGas/VastRecht * '+VAT_F,
 					'', 
@@ -138,10 +158,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
 					'', 
 					''
+
 			,	'Aansluitbijdrage_@BC@', 'GasNet', 'KL_e',
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_m',
 					'', 
 					''
+
 			,	'Aansluitbijdrage_AardGas@BTW@', 'BTW', 'KL_e',
 					'indicatoren/Eindgebruiker/@BTW@/gebouwen/AardGas/Aansl_m * '+VAT_F,
 					'',
@@ -151,6 +173,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'Allocatie/@BC@/Elektriciteit/maatschappelijk',
 					'', 
 					PRR
+
 			,	'Elektriciteit', 'EnergieHeffing', '@BC@/Gebruiker', 
 					'Allocatie/@BC@/Elektriciteit/EnergieHeffing', 
 					'', 
@@ -170,10 +193,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'Allocatie/@BC@/Elektriciteit/netwerk',
 					'', 
 					PRR
+
 			,	'Vastrecht', 'ElektriciteitsNet', '@BC@/Gebruiker', 
 					'Allocatie/@BC@/Elektriciteit/Vastrecht',
 					'', 
 					PRR
+
 			,	'VastrechtElektriciteitsNet', 'BTW', '@BTW@/Gebruiker',
 					'Allocatie/@BTW@/Elektriciteit/VastRecht * '+VAT_F,
 					'', 
@@ -183,10 +208,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
 					'', 
 					''
+
 			,	'Aansluitbijdrage@BC@', 'ElektriciteitsNet', 'KL_e',
 					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_m',
 					'', 
 					''
+
 			,	'ElektriciteitAansluitbijdrage@BTW@', 'BTW', 'KL_e',
 					'indicatoren/Eindgebruiker/@BTW@/gebouwen/Elektriciteit/Aansl_m * '+VAT_F,
 					'',
@@ -196,10 +223,12 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'indicatoren/netwerk/aardgas/kapitaallasten',
 					'', 
 					''
+
 			,	'verwijderkosten', 'Netwerk', 'GasNet',
 					'indicatoren/netwerk/aardgas/verwijderkosten',
 					'', 
 					''
+
 			,	'', 'Onderhoud', 'GasNet',
 					'indicatoren/netwerk/aardgas/onderhoud',
 					'', 
@@ -265,6 +294,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking15',
 					'NCW/mr15/AnnualisationFactor',
 					PRR
+
 			,	'@BTW@15j', 'BTW', 'KL_e', 
 					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking15 * '+VAT_F,
 					'NCW/mr15/AnnualisationFactor',
@@ -316,6 +346,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BC@/sprongen/subsidie/EEA',
 					'',
 					PRR
+
 			,	'EIA30', '@BC@/Eigenaar', 'KL_e',
 					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
 					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
@@ -372,6 +403,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
 					'', 
 					PRR
+
 			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
 					'BebouwingsComponenten/@BTW@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
 					'', 
@@ -602,22 +634,27 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'StateNaAllocatie/Flow/Kj_ge_Netto', 
 					'', 
 					''
+
 			,	'Verrekening', 'InpandigeDistributeur', 'Leverancier',
 					'StateNaAllocatie/Flow/Kj_id_netto',
 					'', 
 					''
+
 			,	'Verrekening', 'WijkDistributeur', 'Leverancier',
 					'StateNaAllocatie/Flow/Kj_wd_netto',
 					'', 
 					''
+
 			,	'Verrekening', 'PrimairTransporteur', 'Leverancier',
 					'StateNaAllocatie/Flow/Kj_pt_netto',
 					'', 
 					''
+
 			,	'Verrekening', '@RO@', 'Leverancier',
 					'StateNaAllocatie/Flow/Kj_ow_netto * '+ROSEL,
 					'', 
 					''
+
 			,	'@RO@', 'Admin', 'Leverancier', 
 					'StateNaAllocatie/Flow/Kj_lv_admin * '+ROSEL,
 					'',  // TODO: Niet voor WKO
@@ -825,7 +862,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					''
 
 		// ===== WKO LEVERANCIER
-		
 			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
 					'StateNaAllocatie/@CO@/Kj_ge_netto', 
 					'',

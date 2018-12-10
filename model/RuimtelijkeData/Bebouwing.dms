@@ -165,7 +165,7 @@ container Bebouwing :=
 				?	'int32(sum( '
 						'BestaandeUtil/NrJoinedUnits * ' +
 						'float64(BestaandeUtil/BebouwingsTypeDomein/UtilTypeNieuwbouw_rel[BestaandeUtil/BebouwingsType] == '+string(RuimtelijkeData/Nieuwbouw/ZU/nr_2)+'[uint8])'
-				 	+	', BestaandeUtil/point[rdc_grids/m100]'
+					+	', BestaandeUtil/point[rdc_grids/m100]'
 					')'
 					'*max_elem(float64(RuimtelijkeData/Nieuwbouw/InbreidingUtilFactor/'+RuimtelijkeData/Nieuwbouw/ZU/Name+') - 1.0 , 0.0)'
 					')'

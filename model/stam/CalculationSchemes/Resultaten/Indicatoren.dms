@@ -38,9 +38,6 @@ container indicatoren
 
 	container CO2: Source = "FO v7a C5"
 	{
-		//parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
-		//parameter<KG_GJ> CO2_GJg := Prijzen/AardGas/CO2_GJ;
-
 		container gebouwen
 		{
 			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
@@ -65,6 +62,7 @@ container indicatoren
 				'StateNaAllocatie/WKO/CO2'
 			);
 		}
+
 		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
 		{
 			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/WarmteOpties=0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')');
@@ -79,17 +77,17 @@ container indicatoren
 		{
 			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
-				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
 			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
-				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
 			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
-				attribute<GJ_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 		}
 	}
@@ -137,7 +135,7 @@ container indicatoren
 					,Eur_yr
 					)
 			{
-				attribute<Eur_yr> Km_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+				attribute<Eur_yr> Km_Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
 			attribute<Eur>    Ki_GebouwVerbetering (PlanRegio) := ='add('+AsItemList('sum(BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/Kosten/Ki_GebouwVerbetering, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)')+')';

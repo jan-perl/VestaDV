@@ -31,11 +31,4 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
-//       In deze configuratiefile wordt de energie gerelateerde brondata geconfigureerd //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 container EnergiePrijzen := model/CalculationSchemes/EnergiePrijzen/All(SpecifiekeInstellingen/prijzenBron, 0.00[units/_yr]), Descr = "zie FO $3.5", FreeData = "False";
