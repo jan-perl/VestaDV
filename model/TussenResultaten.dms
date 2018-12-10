@@ -36,6 +36,6 @@ container TussenResultaten :=
 		Classifications/zichtjaar/Name,
 		'Model/CalculationSchemes/TussenResultaten('
 			 + quote(Classifications/zichtjaar/Name)
-			+MakeDefined(', '+Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b]+'/EndState','')
+			+MakeDefined(', '+Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b]+'/StateNaAllocatie','')
 		+')'
 	);

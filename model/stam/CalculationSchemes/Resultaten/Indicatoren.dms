@@ -38,8 +38,8 @@ container indicatoren
 
 	container CO2: Source = "FO v7a C5"
 	{
-		parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
-		parameter<KG_GJ> CO2_GJg := Prijzen/AardGas/CO2_GJ;
+		//parameter<KG_GJ> CO2_GJe := Prijzen/Elektriciteit/CO2_GJ;
+		//parameter<KG_GJ> CO2_GJg := Prijzen/AardGas/CO2_GJ;
 
 		container gebouwen
 		{
@@ -58,11 +58,11 @@ container indicatoren
 		container impl: IsHidden = "True"
 		{
 			attribute<String> BronExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie, 
-				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte ? GebiedsAllocatie/RestWarmte/CO2   : 0.0[KG_yr]',
-				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie ? GebiedsAllocatie/GeoThermie/CO2   : 0.0[KG_yr]',
-				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK    ? GebiedsAllocatie/WijkWKK/impl/CO2 : 0.0[KG_yr]',
-				'EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK     ? GebiedsAllocatie/BioWKK/impl/CO2  : 0.0[KG_yr]',
-				'EndState/WKO/CO2'
+				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte ? GebiedsAllocatie/RestWarmte/CO2   : 0.0[KG_yr]',
+				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie ? GebiedsAllocatie/GeoThermie/CO2   : 0.0[KG_yr]',
+				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK    ? GebiedsAllocatie/WijkWKK/impl/CO2 : 0.0[KG_yr]',
+				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK     ? GebiedsAllocatie/BioWKK/impl/CO2  : 0.0[KG_yr]',
+				'StateNaAllocatie/WKO/CO2'
 			);
 		}
 		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
@@ -104,11 +104,11 @@ container indicatoren
 		{
 			attribute<String> BronExpr(Classifications/AanbodOptie) :=
 				union_data(Classifications/AanbodOptie,
-					'EndState/Flow/Km_Total * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
-					'EndState/Flow/Km_Total * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
-					'EndState/Flow/Km_Total * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
-					'EndState/Flow/Km_Total * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
-					'(EndState/WKO/Ki_Totaal *NCW/mr28/AnnualisationFactor + EndState/WKO/Km_Totaal)'
+					'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
+					'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
+					'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
+					'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
+					'(StateNaAllocatie/WKO/Ki_Totaal *NCW/mr28/AnnualisationFactor + StateNaAllocatie/WKO/Km_Totaal)'
 				);
 		}
 
@@ -178,7 +178,7 @@ container indicatoren
 			attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerk/elektriciteit/Kj_totaal - netwerk/elektriciteit/netbijdrage;
 		}
 		attribute<Eur_yr> Om_Comfort        (PlanRegio) := =IsDefined(RLookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie)) 
-			? 'add('+AsItemList('EndState/WKO/Om_Comfort/'+Classifications/WkoComponent/name)+')'
+			? 'add('+AsItemList('StateNaAllocatie/WKO/Om_Comfort/'+Classifications/WkoComponent/name)+')'
 			: 'CentraleWarmteBronnen/WKO';
 		attribute<Eur_yr> Km_Totaal         (PlanRegio) := net/Aardgas + net/Elektriciteit + 
 			gebouwen/Km_Totaal + LokaleEnergieProductie/Km_Totaal + CentraleWarmteBronnen/Km_Totaal - Om_Comfort;
@@ -196,7 +196,7 @@ container indicatoren
 						,sum(Allocatie/@BC@/AardGas/AansluitBijdrage,       BebouwingsComponenten/@BC@/PlanRegio_rel)
 						,sum(Allocatie/@BC@/Elektriciteit/Vastrecht,        BebouwingsComponenten/@BC@/PlanRegio_rel)
 						,sum(Allocatie/@BC@/Elektriciteit/AansluitBijdrage, BebouwingsComponenten/@BC@/PlanRegio_rel)
-						,EndState/KostenBaten/PlanRegioKaarten/@BC@
+						,StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@
 					)'
 				,	'@BC@', Classifications/BebouwingsComponent/name
 				,	'@NC@', Classifications/BebouwingsComponent/NcwRefBase
@@ -210,15 +210,15 @@ container indicatoren
 		container impl: IsHidden = "True"
 		{
 			attribute<String> FlowExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
-				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
-				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
-				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
-				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - EndState/Flow/Kj_Netto) * float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
-				'EndState/WKO/Oj_totaal - EndState/WKO/Kj_Netto'
+				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
+				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
+				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
+				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
+				'StateNaAllocatie/WKO/Oj_totaal - StateNaAllocatie/WKO/Kj_Netto'
 			);
 
 			attribute<String> StockExpr(Classifications/AanbodOptie) :=
-				'EndState/Stock/Ki_Totaal* float64(EndState/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
+				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
 		}
 
 		container CashFlow := for_each_nedv(Voorkeuren/WarmteOpties/Name
@@ -251,7 +251,7 @@ container indicatoren
 
 	container netwerk
 	{
-		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/heeft_gas;
+		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/Allocatie/heeft_gas;
 
 		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
 		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i * Allocatie/@BC@/Aandelen/AllElectric, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
@@ -261,7 +261,7 @@ container indicatoren
 
 		container aardgas
 		{
-			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/heeft_gas; // false voor bestaande restwarmte
+			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/Allocatie/heeft_gas; // false voor bestaande restwarmte
 			attribute<bool>   verwijderd      (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
 
 			// inkomsten
@@ -271,7 +271,7 @@ container indicatoren
 			attribute<Eur_yr> Oj_totaal       (Planregio) := netbijdrage + vastrecht;
 
 			// kosten
-			attribute<m>      L_infra_nu      (PlanRegio) := float64(heeft_gas ) * EndState/KostenBaten/KostenD/L_infra_g;
+			attribute<m>      L_infra_nu      (PlanRegio) := float64(heeft_gas ) * StateNaAllocatie/KostenBaten/KostenD/L_infra_g;
 			attribute<m>      L_infra_org     (PlanRegio) := StartJaar/indicatoren/netwerk/aardgas/L_infra_nu;
 			attribute<m>      L_infra         (PlanRegio) := max_elem(L_infra_nu, L_infra_org);
 
@@ -290,7 +290,7 @@ container indicatoren
 			attribute<Eur_yr> Oj_totaal       (Planregio) := netbijdrage + vastrecht;
 
 			// kosten
-			attribute<m>      L_infra         (PlanRegio) := EndState/KostenBaten/KostenD/L_infra_e;
+			attribute<m>      L_infra         (PlanRegio) := StateNaAllocatie/KostenBaten/KostenD/L_infra_e;
 
 			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra * Kengetallen/Infra/Kj_e_m;
 			attribute<Eur_yr> onderhoud       (Planregio) := L_infra * Kengetallen/Infra/Ko_e_m;

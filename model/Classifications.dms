@@ -714,7 +714,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		unit<uint32> ZichtjaarWonen := combine(Zichtjaar, WoningtypeNieuwbouw) // wordt gebruikt om Nieuwbouw maps en ResterdFactorMaps te lezen.
 		{
 			attribute<bool>                HasMutations            := Zichtjaar/HasMutations[nr_1];
-			attribute<string>              zichtjaar_Label         := Zichtjaar/Label[nr_1];
+			attribute<string>              zichtjaar_label         := Zichtjaar/Label[nr_1];
 			attribute<string>              zichtjaar_name          := Zichtjaar/Name[nr_1];
 			attribute<string>              prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
 			attribute<units/yr_uint16>     zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];
@@ -732,7 +732,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		unit<uint32> ZichtjaarUtiliteit := combine(Zichtjaar, UtilTypeNieuwbouw)
 		{
 			attribute<bool>            HasMutations            := Zichtjaar/HasMutations[nr_1];
-			attribute<string>          zichtjaar_Label         := Zichtjaar/Label[nr_1];
+			attribute<string>          zichtjaar_label         := Zichtjaar/Label[nr_1];
 			attribute<string>          zichtjaar_name          := Zichtjaar/Name[nr_1];
 			attribute<string>          prev_zichtjaar_name     := Zichtjaar/Name[nr_1-1b];
 			attribute<units/yr_uint16> zichtjaar_jaar          := Zichtjaar/Jaar[nr_1];

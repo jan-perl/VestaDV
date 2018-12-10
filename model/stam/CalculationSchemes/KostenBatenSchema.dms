@@ -496,7 +496,7 @@ template KostenBaten
 		attribute<m>      L_distr_g       (PlanRegio) := nrAansl_g * L_di_gem;
 		attribute<m>      L_distr_e       (PlanRegio) := nrAansl_e * L_di_gem;
 		attribute<m>      L_infra_d       (PlanRegio) := L_distr_d + SecundairNet/L_transport;
-		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(heeft_gas);
+		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(Allocatie/heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
 		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_pm;

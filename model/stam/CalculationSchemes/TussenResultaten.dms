@@ -37,7 +37,7 @@ template TussenResultaten
 	parameter<String> RunJaarLabel;
 	// optional case parameter
 
-	container StartingState := // overridable by called 
+	container StateVoorAllocatie := // overridable by called 
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/StartingStateComponent('+
 				'Bebouwing/'+Classifications/BebouwingsComponent/Name+
@@ -112,7 +112,7 @@ template TussenResultaten
 		}
 
 		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
-		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StartingState/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
+		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
 
 		unit<uint8> WarmteOpties_Ext: = union_unit_uint8(range(UInt8,0b, 1b), WarmteOpties_Org) // {  RestWarmte, ... } 
 		{
@@ -158,15 +158,15 @@ template TussenResultaten
 
 	container LeerCurves
 	{
-		attribute <Ratio> LeerCurve1DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Min;
-		attribute <Ratio> LeerCurve1DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Max;
-		attribute <Ratio> LeerCurve2DataMin (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
-		attribute <Ratio> LeerCurve2DataMax (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
+		attribute <Ratio> DataMin1 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Min;
+		attribute <Ratio> DataMax1 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Max;
+		attribute <Ratio> DataMin2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
+		attribute <Ratio> DataMax2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
 
-		parameter<Ratio> Curve1Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMin);
-		parameter<Ratio> Curve1Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve1DataMax);
-		parameter<Ratio> Curve2Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve2DataMin);
-		parameter<Ratio> Curve2Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, LeerCurve2DataMax);
+		parameter<Ratio> Curve1Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin1);
+		parameter<Ratio> Curve1Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax1);
+		parameter<Ratio> Curve2Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin2);
+		parameter<Ratio> Curve2Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax2);
 
 		parameter<Ratio> LeerCurve1Base := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
 		parameter<Ratio> LeerCurve2Base := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
@@ -177,9 +177,8 @@ template TussenResultaten
 
 	#include<Prijzen.dms>
 
-	attribute<string> BCname     (Classifications/BebouwingsComponent) := Classifications/BebouwingsComponent/name;
-	attribute<bool>   HasFactors (Classifications/BebouwingsComponent) := 
-		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has'+BCname+'ResterendFactors',',')+')';
+	attribute<bool> HasFactors (Classifications/BebouwingsComponent) :=
+		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has' + Classifications/BebouwingsComponent/name + 'ResterendFactors',',')+')';
 
 	#include<BebouwingsComponenten.dms>
 
@@ -239,9 +238,9 @@ template TussenResultaten
 		container Initieel:= BebouwingsComponenten
 		{
 			container BC_voor_allocatie     := BebouwingsComponenten;
-			container AanbodOpties          := StartingState/AanbodOpties;
-			container Stock                 := StartingState/Stock;
-			container WKO                   := StartingState/WKO;
+			container AanbodOpties          := StateVoorAllocatie/AanbodOpties;
+			container Stock                 := StateVoorAllocatie/Stock;
+			container WKO                   := StateVoorAllocatie/WKO;
 	
 			container Flow
 			{
@@ -262,17 +261,19 @@ template TussenResultaten
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	}
 
-	#include<EndState.dms>
+	#include<StateNaAllocatie.dms>
 
 	container Allocatie :=
 		for_each_ne(Classifications/BebouwingsComponent/Name,
 			'AllocatieComponent(
 				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
-				,EndState/AanbodOpties/PlanRegioWarmteAllocatie
-				,EndState/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
-				,EndState/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
-				,EndState/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
+				,StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie
+				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
+				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
+				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
 			)'
-		);
-	attribute<bool> heeft_gas (PlanRegio) := ='or('+AsItemList(replace('any(Allocatie/@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+		)
+	{
+		attribute<bool> heeft_gas (PlanRegio) := ='or('+AsItemList(replace('any(@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+	}
 }

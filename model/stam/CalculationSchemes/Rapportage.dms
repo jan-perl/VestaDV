@@ -130,7 +130,7 @@ container Rapportage
 				attribute<Eur_yr> Verbruik   (PlanRegio) := =Active ? 'Warmte + Koude' : 'const(0[Eur_yr], PlanRegio)';
 				attribute<Eur_yr> VastRecht  (PlanRegio) := =Active ? 'sum(BCdata/Opbrengsten/VastRechtBijdrageD              * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 
-				attribute<Eur>    Aansl_i    (PlanRegio) := =Active ? 'EndState/WKO/Oi_Aansl/'+ BCdata/BCname : 'const(0[Eur], PlanRegio)';
+				attribute<Eur>    Aansl_i    (PlanRegio) := =Active ? 'StateNaAllocatie/WKO/Oi_Aansl/'+ BCdata/BCname : 'const(0[Eur], PlanRegio)';
 				attribute<Eur_yr> Aansl_j    (PlanRegio) := =Active ? 'Aansl_i * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
 				attribute<Eur_yr> Aansl_m    (PlanRegio) := =Active ? 'Aansl_i * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
 

@@ -44,7 +44,7 @@ template Resultaten
 	container BebouwingsComponenten := TussenResultaten/BebouwingsComponenten;
 	container NCW                   := TussenResultaten/NCW;
 	container GebiedsAllocatie      := TussenResultaten/GebiedsAllocatie;
-	container EndState              := TussenResultaten/EndState;
+	container StateNaAllocatie      := TussenResultaten/StateNaAllocatie;
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
 
 	container Allocatie             := TussenResultaten/Allocatie;
