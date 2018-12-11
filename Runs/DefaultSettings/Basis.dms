@@ -385,6 +385,8 @@ container Basis: Using = "Units"
 			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
 		}
 		container AardGas    := VraagKentallen;
+		container LtWarmtenetMetCollectieveWP := VraagKentallen;
+		container LtWarmtenetMetIndividueleWP := VraagKentallen;
 	}
 
 	container BAG

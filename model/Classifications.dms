@@ -562,7 +562,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig
-	unit<uint8> AanbodOptie : nrofrows = 5 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
+	unit<uint8> AanbodOptie : nrofrows = 7 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -571,10 +571,12 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,'WijkWKK'
 			,'BioWKK'
 			,'WKO'
+			,'LtWarmtenetMetCollectieveWP'
+			,'LtWarmtenetMetIndividueleWP'
 		];
 
 		attribute<string> code             := string(id(.));
-		attribute<bool>   IsPlanRegioOptie : [ true, true, true, true, false]; //, false ];
+		attribute<bool>   IsPlanRegioOptie : [ true, true, true, true, false, false, false]; //, false ];
 		attribute<string> label            := Name, DialogType = "LabelText";
 		attribute<uint32> Color            : DialogType = "BrushColor",
 		[
@@ -583,6 +585,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,rgb(128,128,  0)
 			,rgb(  0,255,128)
 			,rgb(  0,150,  0)
+			,rgb(255,128,  0) // oranje
+			,rgb(255,255,  0) // geel
 		];
 		attribute<uint32> SymbolColor := Color, DialogType = "SymbolColor";
 

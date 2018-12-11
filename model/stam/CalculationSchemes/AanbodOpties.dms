@@ -85,4 +85,45 @@ container AanbodOpties
 		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]);
 		container Results := Impl/Results;
 	}
+	
+	Template LtWarmtenetImpl
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		parameter<bool> CollectieveWP;
+		// end case parameters
+		
+		container Results := BeginStatus; // TODO !
+		
+	}
+	
+	Template LtWarmtenetMetCollectieveWP
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, true);
+		container Results := Impl/Results;				
+	}
+	
+	Template LtWarmtenetMetIndividueleWP
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, false);
+		container Results := Impl/Results;		
+	}
+
 }
