@@ -1,0 +1,110 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template WKOData
+{
+	// begin case parameters
+	container WkoDataComponent;
+	parameter<string> ComponentNaam;
+	// end case parameters
+
+	container BCdata                    := WkoDataComponent/BCdata;
+	container RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;
+	container BeginStatusComponent      := ='BeginStatus/'+ComponentNaam;
+
+	unit<uint32> BebouwingsObject       := BCdata/BebouwingsObject;
+
+	container Gebied
+	{
+		// accumulators
+		attribute<float64> n      (BebouwingsObject) := value(BCdata/BebouwingsObject/Gebied/n, float64);
+
+		attribute<float64> MEAN_x (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/MEAN_x + rnd_uniform(0, BebouwingsObject, Range(float64, -1.0, 1.0));
+		attribute<float64> MEAN_y (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/MEAN_y + rnd_uniform(0, BebouwingsObject, Range(float64, -1.0, 1.0));
+		attribute<float64> SSD_xx (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/SSD_xx;
+		attribute<float64> SSD_xy (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/SSD_xy;
+		attribute<float64> SSD_yy (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/SSD_yy;
+	}
+
+	attribute <bool> InContour            (BebouwingsObject) := IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
+	attribute <bool> GeoGeschikt          (BebouwingsObject) := =AanbodKentallen/BuitenContour ? 'const(true, BebouwingsObject)' : 'InContour';
+	attribute <bool> LtVerwarmingGeschikt (BebouwingsObject) := BCdata/LtVerwarmingGeschikt;
+	attribute <bool> Geschikt             (BebouwingsObject) := GeoGeschikt && LtVerwarmingGeschikt;
+
+	 // kosten excl distributie
+	attribute<Eur   > Ki_A        (BebouwingsObject) := Ki_Doublet * min_elem(WkoDataComponent/P_Warmte, WkoDataComponent/P_Koude);
+	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
+	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
+	attribute<Eur   > Ki_D        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
+	attribute<Eur_yr> Kj_D        (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_netto;
+	attribute<Eur   > Ki_ge_pm    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
+	attribute<Eur   > Ki_ge_ov    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
+//			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
+	attribute<Eur_yr> Kj_wd_pr    (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
+
+	attribute<Eur   > Oi_Aansl    (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
+	attribute<Eur_yr> Oj_Aansl    (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
+	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Vastrecht + WkoDataComponent/Opbrengsten/Warmte + WkoDataComponent/Opbrengsten/Koude;
+
+	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_o;
+	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_e;
+	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_ow_e;
+	attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_ow_e;
+	attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_ow_e;
+
+	attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
+	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
+
+	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek;
+	attribute<GJ_yr > GJw         (BebouwingsObject) := WkoDataComponent/V_WKO;
+	attribute<KG_yr>  CO2         (BebouwingsObject) := Prijzen/Elektriciteit/CO2_GJ * GJe;
+	attribute<Eur_yr >SDE         (BebouwingsObject) := GJw * SpecifiekeInstellingen/Beleid/EEA/SDE_WKO;
+
+	attribute<Eur_yr> AC_Netto    (BebouwingsObject) := 
+		Oj_Aansl + Oj_verbruik + SDE
+		- Kj_D
+		- Kj_ow_totaal
+		- Kj_wd_pr
+		- Ki_C * (NCW/id28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/id ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/id))
+		- Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
+	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
+
+	attribute<bool> MarginaleAfweging      (BebouwingsObject) := geschikt && RentabiliteitsAfweging;
+	attribute<bool> WasAllocated           (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
+	attribute<bool> AllowWKO               (BebouwingsObject) := MarginaleAfweging && !WasAllocated;
+
+	unit<uint32> AllowedObjects := Subset(AllowWKO)
+	{
+		attribute<string> Label := '(' + BCdata/BebouwingsObject/Label[nr_OrgEntity]+')';
+	}
+}

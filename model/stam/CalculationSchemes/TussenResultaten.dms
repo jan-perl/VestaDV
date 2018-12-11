@@ -110,10 +110,6 @@ template TussenResultaten
 			attribute<string> SchemaName := Classifications/AanbodOptie/Name[AanbodOptie];
 			attribute<string> code       := Classifications/AanbodOptie/Code[AanbodOptie];
 		}
-
-		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
-		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
-
 		unit<uint8> WarmteOpties_Ext: = union_unit_uint8(range(UInt8,0b, 1b), WarmteOpties_Org) // {  RestWarmte, ... } 
 		{
 			attribute<string> Name: = SchemaName;
@@ -123,8 +119,10 @@ template TussenResultaten
 			attribute<string>                      code        := union_data(., '0', WarmteOpties_Org/code);
 		}
 
-		unit<uint8> WarmteOptiesBase := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
-		unit<uint8> WarmteOpties     := WarmteOptiesBase;
+		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
+		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
+
+		unit<uint8> WarmteOpties     := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
 		unit<uint8> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))
 		{
 			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
@@ -163,22 +161,28 @@ template TussenResultaten
 		attribute <Ratio> DataMin2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
 		attribute <Ratio> DataMax2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
 
-		parameter<Ratio> Curve1Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin1);
-		parameter<Ratio> Curve1Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax1);
-		parameter<Ratio> Curve2Min      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin2);
-		parameter<Ratio> Curve2Max      := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax2);
+		parameter<Ratio> Curve1Min := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin1);
+		parameter<Ratio> Curve1Max := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax1);
+		parameter<Ratio> Curve2Min := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin2);
+		parameter<Ratio> Curve2Max := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax2);
 
-		parameter<Ratio> LeerCurve1Base := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
-		parameter<Ratio> LeerCurve2Base := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
+		parameter<Ratio> Base1     := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
+		parameter<Ratio> Base2     := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
 
-		parameter<Ratio> Curve1         := LeerCurve1Base * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "overige onderdelen";
-		parameter<Ratio> Curve2         := LeerCurve2Base * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "warmteleidingen en uitkoppeling van warmte";
+		parameter<Ratio> Curve1    := Base1 * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "overige onderdelen";
+		parameter<Ratio> Curve2    := Base2 * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "warmteleidingen en uitkoppeling van warmte";
 	}
 
 	#include<Prijzen.dms>
 
-	attribute<bool> HasFactors (Classifications/BebouwingsComponent) :=
-		='union_data(Classifications/BebouwingsComponent,'+AsList(Classifications/BebouwingsComponent/IsNieuwbouw ? 'false' : 'Bebouwing/Has' + Classifications/BebouwingsComponent/name + 'ResterendFactors',',')+')';
+	attribute<bool> HeeftResterendFactoren (Classifications/BebouwingsComponent) :=
+		='union_data(
+			Classifications/BebouwingsComponent
+			,' + AsList(Classifications/BebouwingsComponent/IsNieuwbouw 
+				? 'false' 
+				: 'Bebouwing/Has' + Classifications/BebouwingsComponent/name + 'ResterendFactors',
+			',')
+		+')';
 
 	#include<BebouwingsComponenten.dms>
 

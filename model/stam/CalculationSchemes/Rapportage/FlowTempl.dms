@@ -31,7 +31,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template FlowTempl: using = "Classifications"
+template Flow: using = "Classifications"
 {
 	// begin case parameters
 	unit<uint32>               RapportageRegio;
@@ -44,30 +44,14 @@ template FlowTempl: using = "Classifications"
 	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
 	attribute<float64>         PlanRegioInRapportageFactor  (Invoer/SpecifiekeInstellingen/PlanRegio) := float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
 
-	template ComponentsT
-	{
-		parameter<string>  name;
-		attribute<float64> Factor (Invoer/SpecifiekeInstellingen/PlanRegio);
-
-		container Flow   := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting            , Eur_yr, true , ReportFolder+ '/' + Name + '_Flow'  , Factor);
-		container Stock  := CalculationSchemes/Payments/MainTempl(Model/ReportingMetaData/Accounting            , Eur   , false, ReportFolder+ '/' + Name + '_Stock' , Factor);
-		container Energy := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, GJ_yr   ,  ReportFolder + '/' + Name + '_Energy', Factor, ''                      , PJ_yr);
-		container CO2    := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, kg_yr   ,  ReportFolder + '/' + Name + '_CO2'   , Factor, 'CO2_' + string(RunJaar), kg_GJ);
-		container NOx    := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr  ,  ReportFolder + '/' + Name + '_NOx'   , Factor, 'NOx_' + string(RunJaar), g_GJ);
-		container SO2    := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr  ,  ReportFolder + '/' + Name + '_SO2'   , Factor, 'SO2_' + string(RunJaar), g_GJ);
-		container VOS    := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr  ,  ReportFolder + '/' + Name + '_VOS'   , Factor, 'VOS_' + string(RunJaar), g_GJ);
-		container TS     := CalculationSchemes/Transformations/MainTempl(Model/ReportingMetaData/Transformations, g / Yr  ,  ReportFolder + '/' + Name + '_TS'    , Factor, 'TS_'  + string(RunJaar), g_GJ);
-
-		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll;CO2/GenerateAll;NOx/GenerateAll;SO2/GenerateAll;VOS/GenerateAll;TS/GenerateAll";
-	}
-	container All := ComponentsT('All', PlanRegioInRapportageFactor);
+	container All := Components('All', PlanRegioInRapportageFactor);
 	
 	container PerInkomensGroep
 	{
 		container Inkomen := RegioIndelingen/buurt/Inkomen;
-		container laag    := ComponentsT('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
-		container midden  := ComponentsT('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
-		container hoog    := ComponentsT('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
+		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
+		container midden  := Components('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
+		container hoog    := Components('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
 
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;midden/GenerateAll;hoog/GenerateAll";
 	}
@@ -75,9 +59,9 @@ template FlowTempl: using = "Classifications"
 	container PerEigendom
 	{
 		container Eigendom := RegioIndelingen/buurt/Eigendom;
-		container koop     := ComponentsT('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw / Eigendom/p_checksum);
-		container wcorpw   := ComponentsT('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
-		container ov_hw    := ComponentsT('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
+		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw / Eigendom/p_checksum);
+		container wcorpw   := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
+		container ov_hw    := Components('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
 
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "koop/GenerateAll;wcorpw/GenerateAll;ov_hw/GenerateAll";
 	}

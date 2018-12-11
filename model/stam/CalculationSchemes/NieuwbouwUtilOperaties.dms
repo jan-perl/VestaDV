@@ -78,7 +78,7 @@ container NieuwbouwUtilOperaties
 		container bron;
 		// einde case parameters
 		
-		unit<uint32> results:= ='Union_Unit(' + asItemList('bron/' + Classifications/UtilTypeNieuwbouw/Name + '/results') + ')'
+		unit<uint32> results := ='Union_Unit(' + asItemList('bron/' + Classifications/UtilTypeNieuwbouw/Name + '/results') + ')'
 		,	DialogType ="Map"
 		,	DialogData ="Point"
 		{

@@ -185,7 +185,7 @@ container indicatoren
 	container Eindgebruiker :=
 			for_each_ne(Classifications/BebouwingsComponent/name,
 				replace(
-					'Rapportage/EindgebruikerComponentTempl(
+					'Rapportage/EindgebruikerComponent(
 						 Allocatie/@BC@
 						,NCW/@NC@15
 						,NCW/@NC@30
@@ -304,7 +304,7 @@ container indicatoren
 		container BestaandeWoning :=
 			for_each_ne(
 				 RapportageRegio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/BestaandeWoning, '+quote('BestaandeWoning')+'
 					, '+Classifications/WoningBestaandRapGroep/ClassRef[SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel]+'
@@ -317,7 +317,7 @@ container indicatoren
 		container NieuwbouwWoning :=
 			for_each_ne(
 				 RapportageRegio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
 					, BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein
@@ -330,7 +330,7 @@ container indicatoren
 		container BestaandeUtil:=
 			for_each_ne(
 				 RapportageRegio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/BestaandeUtil, '+quote('BestaandeUtil')+'
 					, BebouwingsComponenten/BestaandeUtil/BebouwingsTypeDomein
@@ -343,7 +343,7 @@ container indicatoren
 		container NieuwbouwUtil:=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
 					, BebouwingsComponenten/NieuwbouwUtil/BebouwingsTypeDomein
@@ -356,7 +356,7 @@ container indicatoren
 		container BestaandeGlTb :=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/BestaandeGlTb, '+quote('BestaandeGlTb')+'
 					, Classifications/GLTB
@@ -369,7 +369,7 @@ container indicatoren
 		container NieuwbouwGlTb:=
 			for_each_ne(
 				 SpecifiekeInstellingen/Rapportage/Regio/Name
-				, 'Rapportage/RegionaleRapportageTempl(
+				, 'Rapportage/RegionaleRapportage(
 					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
 					, Allocatie/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
 					, Classifications/GlTb
@@ -383,7 +383,7 @@ container indicatoren
 	container InputOutput :=
 		for_each_ne(
 			 SpecifiekeInstellingen/Rapportage/Regio/Name
-		,	'Rapportage/FlowTempl('
+		,	'Rapportage/Flow('
 				'SpecifiekeInstellingen/Rapportage/Regio'
 				','+Quote(SpecifiekeInstellingen/Rapportage/Regio/Name)+
 				', value('+ string(id(SpecifiekeInstellingen/Rapportage/Regio)) + ',SpecifiekeInstellingen/Rapportage/Regio)'
@@ -391,7 +391,7 @@ container indicatoren
 		)
 	{
 		container Totaal := =(SpecifiekeInstellingen/Rapportage/Regio/Name != 'NL')
-			? 'Rapportage/FlowTempl(geography/RegioIndelingen/NL, ''NL'', value(0, geography/RegioIndelingen/NL) )'
+			? 'Rapportage/Flow(geography/RegioIndelingen/NL, ''NL'', value(0, geography/RegioIndelingen/NL) )'
 			: '.';
 	}
 

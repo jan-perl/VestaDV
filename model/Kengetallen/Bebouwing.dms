@@ -179,7 +179,7 @@ container Bebouwing
 			}
 		}
 	}
-	Template GebouwTempl
+	template GebouwTempl
 	{
 		unit<uint32>                 ModelObject;
 		unit<float64>                GJ_yr_per_Eenheid;

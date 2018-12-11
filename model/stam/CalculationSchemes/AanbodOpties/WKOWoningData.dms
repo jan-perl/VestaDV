@@ -1,0 +1,88 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                                  (C) VESTA 2018                                      //
+//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
+//        tot de energievoorziening van de gebouwde omgeving.                           //
+//                                                                                      //
+//                         Planbureau voor de Leefomgeving                              //
+//                                    JUNI 2018                                         //
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
+//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
+//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
+//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
+//                                                                                      //
+//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
+//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
+//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
+//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
+//                                                                                      //
+//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
+//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
+//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
+//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
+//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
+//       bruiken van gegevens.                                                          //
+//                                                                                      //
+//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
+//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
+//       of met die uit andere bronnen.                                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template WKOWoningData
+{
+	// begin case parameters
+	container BCdata;              // := BebouwingsComponenten/Woning;
+	parameter<Eur_GJ> WarmtePrijs; // := BeginStatus/KostenBaten/PlanRegioKaarten/Woning/WarmtePrijs;
+	unit<uint8> Type;
+	container KostenBase;
+	// end case parameters
+
+	unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
+
+	attribute<bool>       IsAppt     (BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
+
+	attribute<NrWoningen> nr_won     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
+	attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * nr_won, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
+	attribute<GJ_yr>      V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+	attribute<GJ_yr>      V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
+	attribute<GJ_yr>      V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
+	
+	attribute<kW>         P_Warmte   (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * nr_won;
+	attribute<kW>         P_Koude    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * nr_won;
+
+	attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen_elec/ClassBreak);
+
+	container Kosten // excl doublet en distributie, excl kosten LTAS
+	{
+		attribute<Eur_Woning> K_wv        (BebouwingsObject) := IsAppt ? K_wvwa : K_wvwc, Source = "F 54..56";
+		attribute<Eur>        Ki_id       (BebouwingsObject) := K_wv * nr_won, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
+		attribute<Eur>        Ki_ge_pm    (BebouwingsObject) := KostenBase/Ki_ge_pm_o;
+		attribute<Eur>        Ki_ge_ov    (BebouwingsObject) := KostenBase/Ki_ge_ov_o;
+		attribute<Eur>        Ki_ge       (BebouwingsObject) := Ki_ge_ov + Ki_ge_pm;
+
+		attribute<Eur_yr>     Kj_ge_netto (BebouwingsObject) := KostenBase/Kj_ge_netto;
+
+		attribute<Eur_yr>     Kj_ow_e     (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel],   Source = "FO v7a p 82 F 57";
+		attribute<Eur_yr>     Km_ow_e     (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_maatschappelijk [gebruiksgrootteklasse_rel],   Source = "FO C6 Tabel 6 WKO";
+		attribute<Eur_yr>     Kj_ow_o     (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * nr_won;
+
+		attribute<Eur_yr>     KEH_ow_e    (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
+		attribute<Eur_yr>     KCO2_ow_e   (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+	}
+
+	container Opbrengsten
+	{
+		attribute<Eur_yr> Warmte           (BebouwingsObject) := V_Warmte * WarmtePrijs, Source = "F 66 jo F 8";
+		attribute<Eur_yr> koude            (BebouwingsObject) := 250 [ Eur_yr / NrWoningen] * nr_won, Source = "F 63";
+
+		attribute<Eur>    AansluitBijdrage (BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageD;
+		attribute<Eur_yr> Vastrecht        (BebouwingsObject) := BCdata/Opbrengsten/VastrechtBijdrageD, Source = "F 60+64 jo F 6";
+		attribute<Eur_yr> Om_comfort       (BebouwingsObject) := Koude;
+	}
+}

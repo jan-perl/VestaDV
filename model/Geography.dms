@@ -64,7 +64,7 @@ container Geography: Using = "Units", IsHidden = "True"
 			attribute<RegioIndelingen/buurt> buurt_rel_org         := point_in_polygon(point, RegioIndelingen/Buurt/Geometry);
 			attribute<bool>                  buurt_rel_org_defined := IsDefined(buurt_rel_org);
 
-			unit<uint32> NearBuurt := Subset(potential(float32(buurt_rel_org_defined), DistMatrices/impl/pot1000m/potrange/Cilindrical) >= 0.000001f && !buurt_rel_org_defined);
+			unit<uint32> NearBuurt := Subset(potential(float32(buurt_rel_org_defined), DistMatrices/pot1000m/KernelDomain/Cilindrical) >= 0.000001f && !buurt_rel_org_defined);
 
 			container connect := connect_info( RegioIndelingen/Buurt/Geometry, point[NearBuurt/nr_OrgEntity]);
 
@@ -188,18 +188,17 @@ container Geography: Using = "Units", IsHidden = "True"
 	{
 		unit<uint32> Dist2Range;
 
-		template potrange
+		template makeKernel
 		{
 			// Begin Case Parameters
 			parameter<m> gridsize;
 			parameter<m> radius_max;
 			// End Case Parameters
 
-			parameter<float64> radius   := radius_max / gridsize;
-			unit<spoint>       tmpRange := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + 1s, int16(radius) + 1s));
-			unit<spoint>       potRange := tmpRange
+			parameter<float64> radius       := radius_max / gridsize;
+			unit<spoint>       KernelDomain := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + 1s, int16(radius) + 1s))
 			{
-				attribute<Dist2Range> distMatr      := dist2(point(0s, 0s, tmpRange), Dist2Range);
+				attribute<Dist2Range> distMatr      := dist2(point(0s, 0s, .), Dist2Range);
 				attribute<float64>    DecayedWeight := iif(distMatr <= uint32(radius * radius), 1.0 / (float64(distMatr) + 0.08), 0.0);
 
 				attribute<float32>    Reciprocal    := float32(scalesum(Sqrt(DecayedWeight), 1.0 ));
@@ -207,11 +206,8 @@ container Geography: Using = "Units", IsHidden = "True"
 			}
 		}
 
-		Container impl
-		{
-			container pot1000m  := potrange(100[m],  1000[m]);
-			container pot5000m  := potrange(100[m],  5000[m]);
-			container pot10000m := potrange(100[m], 10000[m]);
-		}
+		container pot1000m  := makeKernel(100[m],  1000[m]);
+		container pot5000m  := makeKernel(100[m],  5000[m]);
+		container pot10000m := makeKernel(100[m], 10000[m]);
 	}
 }

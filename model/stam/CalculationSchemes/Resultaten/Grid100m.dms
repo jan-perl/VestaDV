@@ -56,7 +56,7 @@ container Grid100m :=
 
 			container Potentiaal
 			{
-				unit<spoint> Kernel := Geography/DistMatrices/impl/pot1000m/potrange;
+				unit<spoint> Kernel := Geography/DistMatrices/pot1000m/KernelDomain;
 
 				attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/AardGas),       Kernel/Cilindrical));
 				attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/RestWarmte),    Kernel/Cilindrical));

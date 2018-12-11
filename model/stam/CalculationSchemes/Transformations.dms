@@ -107,7 +107,7 @@ container Transformations: FreeData = "False"
 		,	StorageType = "str", StorageName = "=OutputSubFolder+'/mut_' + Technology/values[Technology_rel]+'.csv'";
 	}
 
-	template MainTempl
+	template Main
 	{
 		// begin case parameters
 		container          Transformation;
