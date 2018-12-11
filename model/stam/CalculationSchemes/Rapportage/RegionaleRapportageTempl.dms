@@ -31,15 +31,9 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-// Dit is de container met het rekenschema voor de regionale rapportages                //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
-template RegionaleRapportageTempl
+template RegionaleRapportage
 {
-	// begin case param
+	// begin case parameters
 	unit<uint32>               RapportageRegio;
 	parameter<RapportageRegio> RapportageRegio_sel;
 	container                  BebouwingscomponentGebiedsData;
@@ -48,21 +42,19 @@ template RegionaleRapportageTempl
 	parameter<string>          RapGroepNaam;
 	parameter<string>          ExportLabel;
 	unit<Float64>              QuantityUnit;
+	// end  case parameters
 	
-	// end of case param
-	parameter<String>          ReportRegioNaam      :=RapportageRegio/Name[RapportageRegio_sel];
-	
-	container                  BCdata    := BebouwingscomponentGebiedsData/BCdata;
-	container                  RuimtelijkeVraagComponent:= BebouwingscomponentGebiedsData/RuimtelijkeVraagComponent;
-	unit<uint32>               BebouwingsObject         := BebouwingscomponentGebiedsData/BebouwingsObject;
-	// end of ex-case param
-	
-	attribute<RapportageRegio>     PlanRegioRapportageRegio_rel           (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
-	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)    := BCdata/PlanRegio_rel;
-	attribute<RapportageRegio>     BebouwingscomponentRapportageRegio_rel (BebouwingsObject)    := PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
-	attribute<RapGroep>            BebouwingscomponentRapGroep_rel        (BebouwingsObject)    := =RapGroepNaam ;
+	parameter<string>          ReportRegioNaam           := RapportageRegio/Name[RapportageRegio_sel];
+	container                  BCdata                    := BebouwingscomponentGebiedsData/BCdata;
+	container                  RuimtelijkeVraagComponent := BebouwingscomponentGebiedsData/RuimtelijkeVraagComponent;
+	unit<uint32>               BebouwingsObject          := BebouwingscomponentGebiedsData/BebouwingsObject;
 
-	parameter<String> ReportFolder := OutputFolder+'/'+ReportRegioNaam;
+	attribute<RapportageRegio>                         PlanRegioRapportageRegio_rel           (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
+	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> BebouwingscomponentPlanRegio_rel       (BebouwingsObject)                        := BCdata/PlanRegio_rel;
+	attribute<RapportageRegio>                         BebouwingscomponentRapportageRegio_rel (BebouwingsObject)                        := PlanRegioRapportageRegio_rel[ BebouwingscomponentPlanRegio_rel ];
+	attribute<RapGroep>                                BebouwingscomponentRapGroep_rel        (BebouwingsObject)                        := =RapGroepNaam ;
+
+	parameter<string> ReportFolder := FolderInfo/OutputFolder+'/'+ReportRegioNaam;
 	
 	container impl
 	{
@@ -74,9 +66,8 @@ template RegionaleRapportageTempl
 	}
 
 	#include<BebouwingsRapportage.dms>
-	
-	
-	parameter<String> GenerateAll := 'Ready', 
+
+	parameter<string> GenerateAll := 'Ready',
 		ExplicitSuppliers = 
 			"BebouwingsRapportage/Gebouw/Verbeteringen/csv/Result;"
 			"BebouwingsRapportage/Gebouw/Opwekking/csv/Result;"

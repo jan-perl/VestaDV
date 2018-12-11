@@ -41,9 +41,9 @@
 container Bebouwing :=
 	for_each_ne( Classifications/Zichtjaar/Name,
 		'CalculationSchemes/BebouwingsOperaties/Samenstelling('
-			'  impl/BestaandeWoning, impl/Nieuwbouw/woning/'      + Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations) +
-			', '+(Classifications/Zichtjaar/HasMutations ? 'Sloop/WoningResterendFactors/'+Classifications/Zichtjaar/Name : 'RuimtelijkeData') +
-			', impl/BestaandeUtil,  impl/Nieuwbouw/Utiliteit/'   + Classifications/Zichtjaar/Name+'/results, '+string(Classifications/Zichtjaar/HasMutations) +
+			'  impl/BestaandeWoning, impl/Nieuwbouw/woning/'      + Classifications/Zichtjaar/Name + '/results, ' + string(Classifications/Zichtjaar/HasMutations) +
+			', '+(Classifications/Zichtjaar/HasMutations ? 'Sloop/WoningResterendFactors/' + Classifications/Zichtjaar/Name : 'RuimtelijkeData') +
+			', impl/BestaandeUtil,  impl/Nieuwbouw/Utiliteit/'   + Classifications/Zichtjaar/Name + '/results, ' + string(Classifications/Zichtjaar/HasMutations) +
 			', '+(Classifications/Zichtjaar/HasMutations ? 'Sloop/UtilResterendFactors/'+Classifications/Zichtjaar/Name : 'RuimtelijkeData') +
 			', impl/BestaandeGlTb, impl/Nieuwbouw/Glastuinbouw/'+ Classifications/Zichtjaar/Name+'/results, false, RuimtelijkeData'
 			')'
@@ -165,7 +165,7 @@ container Bebouwing :=
 				?	'int32(sum( '
 						'BestaandeUtil/NrJoinedUnits * ' +
 						'float64(BestaandeUtil/BebouwingsTypeDomein/UtilTypeNieuwbouw_rel[BestaandeUtil/BebouwingsType] == '+string(RuimtelijkeData/Nieuwbouw/ZU/nr_2)+'[uint8])'
-				 	+	', BestaandeUtil/point[rdc_grids/m100]'
+					+	', BestaandeUtil/point[rdc_grids/m100]'
 					')'
 					'*max_elem(float64(RuimtelijkeData/Nieuwbouw/InbreidingUtilFactor/'+RuimtelijkeData/Nieuwbouw/ZU/Name+') - 1.0 , 0.0)'
 					')'

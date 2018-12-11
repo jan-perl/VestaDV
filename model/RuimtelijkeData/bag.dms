@@ -66,11 +66,11 @@ container BAG
 			attribute<string> name     := replace(label,' ','_', 'functie','');
 			container impl: IsHidden = "True"
 			{
-				attribute<string> BitValueAttExpr   (gebruiksdoel) := 'const(1w,gebruiksdoel)' + repeat(' * 2w',uint32(id(gebruiksdoel)));
-				attribute<uint16> BitValueArr       (gebruiksdoel) := = BitValueAttExpr;
+				attribute<string> BitValueAttExpr (gebruiksdoel) := 'const(1w,gebruiksdoel)' + repeat(' * 2w',uint32(id(gebruiksdoel)));
+				attribute<uint16> BitValueArr     (gebruiksdoel) := = BitValueAttExpr;
 
 				parameter<string> BitValueParamExpr := =AsList('string(1' + repeat(' * 2', uint32(id(gebruiksdoel))) +')','+ '','' + ');
-				attribute<uint16> BitValue          (gebruiksdoel) :=
+				attribute<uint16> BitValue        (gebruiksdoel) :=
 					ReadArray(
 						 BitValueParamExpr
 						,gebruiksdoel
@@ -79,7 +79,7 @@ container BAG
 					);
 			}
 		}
-		unit<uint8> WoningtypeSnapshot: nrofrows = 6 // zie ook: HouseTypeCombi, dat oook in RSL gebruikt wordt.
+		unit<uint8> WoningtypeSnapshot : nrofrows = 6 // zie ook: HouseTypeCombi, dat oook in RSL gebruikt wordt.
 		{
 			attribute<string> name : ['geen_woonpand','vrijstaand','twee_onder_1_kap','hoekwoning','tussenwoning','meergezinspand'];
 			attribute<string> label := name, DialogType = "LabelText";
@@ -130,7 +130,7 @@ container BAG
 						? (0 / 0)[Units/m2]
 						: Oppervlakte[Units/m2]
 				,	FreeData = "False"
-				,	Descr    = "Grootste kantoorgebouw van Nederland bedraagt 160000m2 Rotterdam Kop van Zuid, aantal bouwlagen in Nederland maximaal 44";
+				,	Descr    = "Grootste kantoorgebouw van Nederland bedraagt 160.000m2 Rotterdam Kop van Zuid, aantal bouwlagen in Nederland maximaal 44";
 			}
 
 			container gebruiksdoelen :=
@@ -142,10 +142,10 @@ container BAG
 			attribute<uint16> gebruiksdoelcombinatie   := =AsList(string(typeringen/gebruiksdoel/impl/BitValue)+ 'w * uint16(gebruiksdoelen/' + typeringen/gebruiksdoel/name + ')',' + '), IsHidden = "True";
 
 			// pand gerelateerde data
-			attribute<string>   pand_id_geom;
-			attribute<string>   pand_id                := pand_id_geom;
-			attribute<pand>     pand_rel               := rlookup(pand_id, pand/identificatie);
-			attribute<float32>  pand_bouwlagen_fictief := pand/bouwlagen_fictief[pand_rel];
+			attribute<string>  pand_id_geom;
+			attribute<string>  pand_id                := pand_id_geom;
+			attribute<pand>    pand_rel               := rlookup(pand_id, pand/identificatie);
+			attribute<float32> pand_bouwlagen_fictief := pand/bouwlagen_fictief[pand_rel];
 		}
 
 		unit<uint32> pand
@@ -191,7 +191,7 @@ container BAG
 					? '_' + toev
 					: ''
 				);
-			attribute<Classifications/energielabel> energielabel_rel := rjoin(adres_key, Energie/Label/data/values, Energie/Label/data/energielabel_rel);
+			attribute<Classifications/energielabel> energielabel_rel := rjoin(adres_key, Energielabel/data/Values, Energielabel/data/energielabel_rel);
 		}
 	}
 

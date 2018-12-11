@@ -33,7 +33,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
 //       In deze configuratiefile wordt de Geography gedefinieerd:                      //
 //       - geografische basis eenheden en grid domeinen voor brondata                   //
 //       - regioindelingen (polygonen)                                                  //
@@ -61,42 +60,44 @@ container Geography: Using = "Units", IsHidden = "True"
 			)
 			,	Descr = "rdCoords/100m van NW naar SE (2700 cols)"
 		{
-			attribute<rdc_meter>             point                 := id(.)[rdc_meter] + Point(-50.0, 50.0, rdc_meter);
+			attribute<rdc_meter>             point                 := id(.)[rdc_meter] + point(-50.0, 50.0, rdc_meter);
 			attribute<RegioIndelingen/buurt> buurt_rel_org         := point_in_polygon(point, RegioIndelingen/Buurt/Geometry);
 			attribute<bool>                  buurt_rel_org_defined := IsDefined(buurt_rel_org);
-			unit<uint32> NearBuurt := Subset(potential(float32(buurt_rel_org_defined), DistMatrices/impl/pot1000m/potrange/Cilindrical) >= 0.000001f && !buurt_rel_org_defined);
 
-			container Connect := connect_info( RegioIndelingen/Buurt/Geometry, Point[NearBuurt/nr_OrgEntity]);
+			unit<uint32> NearBuurt := Subset(potential(float32(buurt_rel_org_defined), DistMatrices/pot1000m/KernelDomain/Cilindrical) >= 0.000001f && !buurt_rel_org_defined);
+
+			container connect := connect_info( RegioIndelingen/Buurt/Geometry, point[NearBuurt/nr_OrgEntity]);
 
 			attribute<RegioIndelingen/blok500m> blok500m_rel := RegioIndelingen/blok500m/BaseGrid[ ID(.)[m500] ];
 			attribute<RegioIndelingen/blok1km>  blok1km_rel  := RegioIndelingen/blok1km/BaseGrid[ ID(.)[km1] ];
 			attribute<RegioIndelingen/blok2km>  blok2km_rel  := RegioIndelingen/blok2km/BaseGrid[ ID(.)[km2 ] ];
 
-			attribute<RegioIndelingen/Buurt> Buurt_rel       := MakeDefined(buurt_rel_org, Connect/ArcID[invert(NearBuurt/nr_OrgEntity)]), FreeData = "False";
-			attribute<Invoer/SpecifiekeInstellingen/PlanRegio>   PlanRegio_rel   := Buurt_rel;
+			attribute<RegioIndelingen/Buurt> Buurt_rel       := MakeDefined(buurt_rel_org, connect/ArcID[invert(NearBuurt/nr_OrgEntity)]), FreeData = "False";
+			attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel := Buurt_rel;
 		}
 
 		unit<wpoint> m500 := gridset(rdc_grids/m100, point( 5w, 5w, m100), point(0w,0w, m100), wpoint)
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
-			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-250.0, 250.0, rdc_meter);
+			attribute<rdc_meter>             point     := id(.)[rdc_meter] + point(-250.0, 250.0, rdc_meter);
 			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 
 		unit<wpoint> km1 := gridset(rdc_grids/m100, point(10w, 10w, m100), point(0w,0w, m100), wpoint)
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
-			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-500.0, 500.0, rdc_meter);
+			attribute<rdc_meter>             point     := id(.)[rdc_meter] + point(-500.0, 500.0, rdc_meter);
 			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 
 		unit<wpoint> km2 := gridset(rdc_grids/m100, point(20w, 20w, m100), point(0w, 0w, m100), wpoint)
 		{
 			attribute<RegioIndelingen/buurt> buurt_rel := poly2grid(RegioIndelingen/buurt/geometry,   .);
-			attribute<rdc_meter>             Point     := id(.)[rdc_meter] + Point(-1000.0, 1000.0, rdc_meter);
+			attribute<rdc_meter>             point     := id(.)[rdc_meter] + point(-1000.0, 1000.0, rdc_meter);
 			attribute<bool>                  IsNL      := IsDefined(buurt_rel);
 		}
 	}
+
 	container RegioIndelingen // Let op, voor planregio's moeten dit uint32 domeinen zijn.
 	{
 		unit<uint32> NL: nrofrows = 1
@@ -140,7 +141,7 @@ container Geography: Using = "Units", IsHidden = "True"
 		{
 			attribute<.>         BaseGrid (rdc_grids/km2) := invert(nr_OrgEntity);
 
-			attribute<rdc_meter> Point         := rdc_grids/km2/point[nr_OrgEntity];
+			attribute<rdc_meter> point         := rdc_grids/km2/point[nr_OrgEntity];
 			attribute<km2>       AreaInKm2     := const(4.0[km2], .);
 
 			// Report Regio relations
@@ -155,7 +156,7 @@ container Geography: Using = "Units", IsHidden = "True"
 		{
 			attribute<.>         BaseGrid (rdc_grids/km1) := invert(nr_OrgEntity);
 
-			attribute<rdc_meter> Point         := rdc_grids/km1/point[nr_OrgEntity];
+			attribute<rdc_meter> point         := rdc_grids/km1/point[nr_OrgEntity];
 			attribute<km2>       AreaInKm2     := const(1.0[km2], .);
 
 			// Report Regio relations
@@ -170,7 +171,7 @@ container Geography: Using = "Units", IsHidden = "True"
 		{
 			attribute<.>         BaseGrid (rdc_grids/m500) := invert(nr_OrgEntity);
 
-			attribute<rdc_meter> Point         := rdc_grids/m500/point[nr_OrgEntity];
+			attribute<rdc_meter> point         := rdc_grids/m500/point[nr_OrgEntity];
 			attribute<km2>       AreaInKm2     := const(0.25[km2], .);
 
 			// Report Regio relations
@@ -182,23 +183,22 @@ container Geography: Using = "Units", IsHidden = "True"
 		}
 	}
 
-	// Distmatrices are used for potential analyses
+	// for potential calculations
 	container DistMatrices : IsHidden = "True"
 	{
 		unit<uint32> Dist2Range;
 
-		template potrange
+		template makeKernel
 		{
-			// ===================== Begin Case Parameters
+			// Begin Case Parameters
 			parameter<m> gridsize;
 			parameter<m> radius_max;
-			// ===================== End Case Parameters
+			// End Case Parameters
 
-			parameter<float64> radius   := radius_max / gridsize;
-			unit<spoint>       tmpRange := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + 1s, int16(radius) + 1s));
-			unit<spoint>       potRange := tmpRange
+			parameter<float64> radius       := radius_max / gridsize;
+			unit<spoint>       KernelDomain := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + 1s, int16(radius) + 1s))
 			{
-				attribute<Dist2Range> distMatr      := dist2(point(0s, 0s, tmpRange), Dist2Range);
+				attribute<Dist2Range> distMatr      := dist2(point(0s, 0s, .), Dist2Range);
 				attribute<float64>    DecayedWeight := iif(distMatr <= uint32(radius * radius), 1.0 / (float64(distMatr) + 0.08), 0.0);
 
 				attribute<float32>    Reciprocal    := float32(scalesum(Sqrt(DecayedWeight), 1.0 ));
@@ -206,11 +206,8 @@ container Geography: Using = "Units", IsHidden = "True"
 			}
 		}
 
-		Container impl
-		{
-			container pot1000m  := potrange(100[m],  1000[m]);
-			container pot5000m  := potrange(100[m],  5000[m]);
-			container pot10000m := potrange(100[m], 10000[m]);
-		}
+		container pot1000m  := makeKernel(100[m],  1000[m]);
+		container pot5000m  := makeKernel(100[m],  5000[m]);
+		container pot10000m := makeKernel(100[m], 10000[m]);
 	}
 }

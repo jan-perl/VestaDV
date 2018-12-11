@@ -48,29 +48,33 @@ container Nieuwbouw
 
 	container woning :=
 		for_each_ndva(ZW/HasMutations ? ZW/Name : ''
-			, Geography/rdc_grids/m100, nrWoningen_32
+			, Geography/rdc_grids/m100
+			, nrWoningen_32
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZW/period_name+'/Wonen/Nieuwbouw/'
 			+ ZW/wonen_wlo_filename+ '.tif'
 		);
 
 	container UtilOppervlak :=
-		for_each_ndva(  ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
-			, Geography/rdc_grids/m100, Float32
+		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
+			, Geography/rdc_grids/m100
+			, Float32
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZU/period_name+'/Util/Nieuwbouw_Uitleg/'
 			+ ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
 	container InbreidingUtilFactor :=
-		for_each_ndva(  ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
-			, Geography/rdc_grids/m100, Float32
+		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
+			, Geography/rdc_grids/m100
+			, Float32
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZU/period_name+'/Util/Nieuwbouw_inbreiding/'
 			+ ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
 
-	container Totalen {
-		attribute<nrWoningen_32> nrWoningen(ZW) := ='union_data(ZW,'+AsItemList(ZW/HasMutations ? 'sum(Woning/' +ZW/Name+')' : '0[nrWoningen_32] / 0f')+')';
-		attribute<string>     YearTypeW(ZW) := ZW/Name;
-		attribute<float32>    UtilOppervlak(ZU) := ='union_data(ZU,'+AsItemList(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0 ? 'sum(Nieuwbouw/UtilOppervlak/'+ZU/Name+')' : '0f / 0f')+')';
-		attribute<string>     YearTypeU(ZU) := ZU/Name;
+	container Totalen
+	{
+		attribute<nrWoningen_32> nrWoningen    (ZW) := ='union_data(ZW,'+AsItemList(ZW/HasMutations ? 'sum(Woning/' +ZW/Name+')' : '0[nrWoningen_32] / 0f')+')';
+		attribute<string>        YearTypeW     (ZW) := ZW/Name;
+		attribute<float32>       UtilOppervlak (ZU) := ='union_data(ZU,'+AsItemList(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0 ? 'sum(Nieuwbouw/UtilOppervlak/'+ZU/Name+')' : '0f / 0f')+')';
+		attribute<string>        YearTypeU     (ZU) := ZU/Name;
 	}
 }

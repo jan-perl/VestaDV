@@ -35,7 +35,7 @@ container TussenResultaten :=
 	for_each_ne(
 		Classifications/zichtjaar/Name,
 		'Model/CalculationSchemes/TussenResultaten('
-			'Classifications/zichtjaar/jaar[Classifications/zichtjaar/V/'+Classifications/zichtjaar/Name+']'
-			+MakeDefined(', '+Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b]+'/EndState','')
+			 + quote(Classifications/zichtjaar/Name)
+			 + MakeDefined(', ' + Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b] + '/StateNaAllocatie','')
 		+')'
 	);

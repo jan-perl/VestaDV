@@ -76,7 +76,7 @@ Container Nieuwbouw
 			+')'
 		)
 	{
-		container J2010 := CalculationSchemes/LegeBebouwingsComponent(Units/m2, classifications/GLTB);
+		container StartJaar := CalculationSchemes/LegeBebouwingsComponent(Units/m2, classifications/GLTB);
 	}
 	
 }

@@ -31,27 +31,27 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container EndState := FinalState
+container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName
 {
 	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
-	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StartingState/AanbodOpties/PlanRegioWarmteAllocatie));
-	container Stock := FinalState/Stock
+	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/AanbodOpties/PlanRegioWarmteAllocatie));
+	container Stock := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Stock'
 	{
 		// gebiedsmaatregelen
-		attribute<Eur> Ki_ge_ov               (PlanRegio) := StartingState/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * float64(NewGebruik);
-		attribute<Eur> Ki_ge_pm               (PlanRegio) := StartingState/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * float64(NewGebruik);
+		attribute<Eur> Ki_ge_ov               (PlanRegio) := StateVoorAllocatie/Stock/Ki_ge_ov       + KostenBaten/Ki_ge_ov    * float64(NewGebruik);
+		attribute<Eur> Ki_ge_pm               (PlanRegio) := StateVoorAllocatie/Stock/Ki_ge_pm       + KostenBaten/Ki_ge_pm    * float64(NewGebruik);
 		attribute<Eur> Ki_ge                  (PlanRegio) := Ki_ge_ov + Ki_ge_pm;
 
-		attribute<Eur> Ki_id                  (PlanRegio) := StartingState/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * float64(NewGebruik);
-		attribute<Eur> Ki_wd                  (PlanRegio) := StartingState/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * float64(NewGebruik);
-		attribute<Eur> Oi_ge_subsidie         (PlanRegio) := StartingState/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * float64(NewGebruik);
-		attribute<Eur> Oi_id_subsidie         (PlanRegio) := StartingState/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * float64(NewGebruik);
-		attribute<Eur> Oi_wd_subsidie         (PlanRegio) := StartingState/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * float64(NewGebruik);
+		attribute<Eur> Ki_id                  (PlanRegio) := StateVoorAllocatie/Stock/Ki_id          + KostenBaten/Ki_id_Bruto    * float64(NewGebruik);
+		attribute<Eur> Ki_wd                  (PlanRegio) := StateVoorAllocatie/Stock/Ki_wd          + KostenBaten/Ki_wd_Bruto    * float64(NewGebruik);
+		attribute<Eur> Oi_ge_subsidie         (PlanRegio) := StateVoorAllocatie/Stock/Oi_ge_Subsidie + KostenBaten/Oi_ge_Subsidie * float64(NewGebruik);
+		attribute<Eur> Oi_id_subsidie         (PlanRegio) := StateVoorAllocatie/Stock/Oi_id_Subsidie + KostenBaten/Oi_id_Subsidie * float64(NewGebruik);
+		attribute<Eur> Oi_wd_subsidie         (PlanRegio) := StateVoorAllocatie/Stock/Oi_wd_Subsidie + KostenBaten/Oi_wd_Subsidie * float64(NewGebruik);
 		attribute<Eur> Oi_wd_Aansluitbijdrage (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage * float64(GebiedsOptie);
 
 		attribute<Eur> Ki_Totaal              (PlanRegio) := Ki_ge + Ki_id + Ki_wd + Ki_pt + Ki_ow;
 	}
-	container Flow := FinalState/Flow 
+	container Flow := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Flow'
 	{
 		attribute<Eur_yr> Kj_ge_KL        (PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
 		attribute<Eur_yr> Kj_id_KL        (PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;

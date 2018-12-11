@@ -31,13 +31,6 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
-//       In deze configuratiefile worden de brondata geconfigureerd.                    //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 container Kengetallen: Using = "Units;Geography", FreeData = "False"
 {
 	#include <Bebouwing.dms>
@@ -55,14 +48,14 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 		parameter<_yr> Rj_Installatie:       [0.00]; // @@@ Moet dit echt nul zijn?
 		parameter<_yr> Rj_GebouwVerbetering: [0.00];
 		parameter<_yr> Rj_LokaleOpwekking:   [0.05]; // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, eWP, hWP en EWV
-		// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden. 
+		// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden.
 		// TODO: onderzoeken bij WKO: onderhoudskosten, min-max kosten en leercurvetoepassing, toepassing NMDA tariefswijziging
 
-		parameter<Eur_yr_m> Rj_Precario_pm    := 4.3[Eur_yr_m], Source = "email Gijs de Man dd 22-02-2016", Descr = "Precario als prijs per meter pijp per jaar",
+		parameter<Eur_yr_m> Rj_Precario_pm   := 4.3[Eur_yr_m], Source = "email Gijs de Man dd 22-02-2016", Descr = "Precario als prijs per meter pijp per jaar",
 			url = "http://decentrale.regelgeving.overheid.nl/cvdr/xhtmloutput/Historie/Leiden/386935/386935_1.html";
 
 		parameter<Ratio> R_lv_Admin:         [0.1]; // Fractie van vastrecht dat de leveancier aan administratiekosten besteedt.
-		parameter<Ratio> R_Admin:            [0.5]; // Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking. 
+		parameter<Ratio> R_Admin:            [0.5]; // Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking.
 		parameter<Ratio> R_Onderhoud         := 1.0 - R_Admin;
 	}
 }

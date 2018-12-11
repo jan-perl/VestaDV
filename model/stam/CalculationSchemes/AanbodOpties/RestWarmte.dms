@@ -33,27 +33,27 @@
 
 template RestWarmte
 {
+	// begin case parameters
 	container BeginStatus;
 	container AanbodKentallen;
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
-
-	// end of case param
+	// end case parameters
 
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 	container KostenBaten  := BeginStatus/KostenBaten;
 
-	unit<uint32> Bronnen := ='/Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/J'+String(Jaar)+'/Bronnen'
+	unit<uint32> Bronnen := ='/Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/' + RunJaarLabel + '/Bronnen'
 	{
-		attribute<Eur_kW   > Ki_kW_Org:= (Ki_kW_min * Schuiven/KostenMin + Ki_kW_max * Schuiven/KostenMax);
-		attribute<Eur_kW   > Ki_kW    := Ki_kW_org  * LeerCurves/Curve2;
-		attribute<Eur_kW_yr> Kj_kW    := Ki_kW * Rj_Onderhoud;
+		attribute<Eur_kW   > Ki_kW_Org := (Ki_kW_min * Schuiven/KostenMin + Ki_kW_max * Schuiven/KostenMax);
+		attribute<Eur_kW   > Ki_kW     := Ki_kW_org  * LeerCurves/Curve2;
+		attribute<Eur_kW_yr> Kj_kW     := Ki_kW * Rj_Onderhoud;
 	}
 
 	container RestWarmteStartingState := BeginStatus/AanbodOpties/RestWarmte
 	{
 		unit<uint32> BronConnections := ../Bronnen;
-		
+
 		attribute<BronConnections>  CurrBron        (PlanRegio)       := rlookup(CumulatedArcSet/BronPoint, BronConnections/Point)[invert(CumulatedArcSet/PlanRegio_rel)];
 		attribute<BronConnections>  CurrConnection  (PlanRegio)       := CurrBron;
 
@@ -61,161 +61,37 @@ template RestWarmte
 		attribute<MW>               MWth_capaciteit (BronConnections) := Bronnen/MWth_max  - MWth_used;
 	}
 	attribute<Bool> HasWarmteVraag (PlanRegio) := not(IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie));
-	
-	template IteratieTempl
-	{
-		container PrevState := RestWarmteStartingState;
 
-		unit<uint32> BronConnections := PrevState/BronConnections;
-
-		attribute<MW> MWth_capaciteit(Bronnen) := PrevState/MWth_capaciteit;
-
-		attribute<BronConnections> NewAssignment (PlanRegio) :=
-			capacitated_connect(BronConnections/Point, MWth_capaciteit[BronConnections/Bronnen_rel], PlanRegio/Point, KostenBaten/CapaciteitsVraagD);
-
-		attribute<BronConnections> Assignment (PlanRegio) := MakeDefined(PrevState/CurrConnection, NewAssignment)
-		{
-			attribute<Bronnen> Bronnen_rel(PlanRegio):= BronConnections/Bronnen_rel[Assignment];
-			attribute<Kengetallen/WarmteBronnen/MetaData/TypeInfoList> TypeInfoList_rel (PlanRegio) :=  Bronnen/TypeInfoList_rel[Bronnen_rel];
-
-			attribute<m>   dist      (PlanRegio):= value(dist(PlanRegio/Point, BronConnections/Point[Assignment]), m);
-			attribute<m>   cumulDist (PlanRegio):= dist + BronConnections/cumulDist[Assignment];
-			attribute<MW>  P         (PlanRegio):= KostenBaten/CapaciteitsVraagD;
-
-			attribute<MW>  orgP      (PlanRegio):= BronConnections/CumulP[Assignment]; // re-assess
-			attribute<MW>  cumulP    (PlanRegio):= P + orgP;
-
-			container OrgLeidingKosten := BuisKosten(PlanRegio, orgP);
-			container NewLeidingKosten := BuisKosten(PlanRegio, cumulP);
-
-			attribute<Eur> aK_buis   (PlanRegio) := dist * KostenBaten/KostenD/PrimairNet/LeidingKosten/aK_m + cumulDist * (NewLeidingKosten/aK_m - OrgLeidingKosten/aK_m);
-			attribute<Eur> Ki_pt     (PlanRegio) := aK_Buis;
-			attribute<Eur> Ki_ow     (PlanRegio) := Bronnen/Ki_kW[Assignment/Bronnen_rel] * LeerCurves/Curve2 * Assignment/P * value(1000, kW / MW);
-
-			// TODO: ordenen, controleer of alle Kj zijn opgenomen, precario op pt, admin op pt en ow.
-
-			attribute<Eur_yr> Kj_KL_ptow(PlanRegio) :=
-				Ki_pt * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/Beleid/EIA/pt)*(1.0 - SpecifiekeInstellingen/Beleid/EEA/pt))+
-				Ki_ow * NCW/ow28/AnnualisationFactor * MakeDefined(((1.0 - SpecifiekeInstellingen/Beleid/EIA/ow)*(1.0 - SpecifiekeInstellingen/Beleid/EEA/ow))[TypeInfoList_rel], 1.0);
-
-			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud;
-			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := aK_Buis * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/a * dist * Kengetallen/Onderhoud/Rj_Precario_pm;
-
-			attribute<Eur_yr> Kj_pt           (PlanRegio) := Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario;
-
-			attribute<Eur_GJ> Kj_GJ           (PlanRegio) := Bronnen/K_GJ [Assignment/Bronnen_rel];
-			attribute<Eur_GJ> Km_GJ           (PlanRegio) := Kj_GJ;
-
-			attribute<Eur_yr> Kj_WarmteWaarde (PlanRegio) := Kj_GJ * KostenBaten/Vj_WarmtePrimairD;
-			attribute<Eur_yr> Km_WarmteWaarde (PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
-			attribute<Eur_yr> Kj_ow_base      (PlanRegio) := Bronnen/Kj_kW[Assignment/Bronnen_rel] * Assignment/P * value(1000, kW / MW);
-			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := Kj_ow_base * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := Kj_ow_base - Kj_ow_admin;
-
-			attribute<Eur_yr> Kj_ow           (PlanRegio) := Kj_WarmteWaarde + Kj_ow_onderhoud + Kj_ow_admin;
-			attribute<Eur_yr> Km_ow           (PlanRegio) := Km_WarmteWaarde + Kj_ow_onderhoud + Kj_ow_admin;
-
-			attribute<Eur_yr> Kj_owpt         (PlanRegio) := Kj_ow + Kj_pt;
-			attribute<Eur_yr> Oj_Netto        (PlanRegio) := KostenBaten/Oj_NettoD- Kj_owpt;
-
-			attribute<Eur_yr> Oj_SDE          (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfoList_rel], 0[Eur_GJ]);
-			attribute<Eur_MW_yr> Mr           (PlanRegio) := (Oj_Netto + Oj_SDE - Kj_KL_ptow) / KostenBaten/CapaciteitsVraagD; // contribution  margin per consumed MW capacity
-		}
-		attribute<Eur_MW_yr>  Ranking         (PlanRegio) := Assignment/Mr// ranking niet op prijs per GJ maar op opbrengsten per MW capaciteit, itt FO v7a $7.
-			* float64(KostenBaten/CapaciteitsVraagD <= MWth_capaciteit[Assignment/Bronnen_rel]) // itt FO v7a $7.: te grote gebieden worden overgeslagen zodat kleinere gebieden toch aan de bEurt kunnen komen.
-			* float64(Not(PrevState/GebruikRestwarmte))  // Only select once
-			* float64(HasWarmteVraag); // don't selecte already allocated planregio
-
-		attribute<Eur_MW_yr>  Threshold_RAW(Bronnen):= -nth_element_weighted(-Ranking, MWth_capaciteit, KostenBaten/CapaciteitsVraagD, Assignment/Bronnen_rel);
-		attribute<Eur_MW_yr>  Threshold    (Bronnen):= MakeDefined(threshold_RAW, 0[Eur_MW_yr]);
-		attribute<MW>         MWth_above   (Bronnen):= sum(float64(Ranking > Threshold[Assignment/Bronnen_rel])*KostenBaten/CapaciteitsVraagD, Assignment/Bronnen_rel);
-		attribute<MW>         MWth_at      (Bronnen):= sum(float64(Ranking = Threshold[Assignment/Bronnen_rel])*KostenBaten/CapaciteitsVraagD, Assignment/Bronnen_rel);
-		attribute<MW>         MWth_below   (Bronnen):= sum(float64(Ranking < Threshold[Assignment/Bronnen_rel])*KostenBaten/CapaciteitsVraagD, Assignment/Bronnen_rel);
-
-		attribute<Bool> AanlegAfweging         (PlanRegio) := Ranking > max_elem(Threshold[Assignment/Bronnen_rel], 0.0[Eur_MW_yr]);
-		attribute<Bool> ExtraGebruikRestWarmte (PlanRegio) := =Voorkeuren/NewRestWarmte ? 'AanlegAfweging' : 'const(false, PlanRegio)';
-
-		attribute<MW >  MWth_ExtraGebruik  (Bronnen) := sum(KostenBaten/CapaciteitsVraagD * float64(ExtraGebruikRestWarmte) , Assignment/Bronnen_rel);
-
-		container NextState
-		{
-			attribute<MW> MWth_capaciteit(Bronnen) := PrevState/MWth_capaciteit - MWth_ExtraGebruik;
-
-			attribute<Bool> GebruikRestWarmte(PlanRegio) := ExtraGebruikRestWarmte || PrevState/GebruikRestWarmte,
-				IntegrityCheck = "not(any(ExtraGebruikRestWarmte && PrevState/GebruikRestWarmte))"
-			{
-				attribute<uint32> BrushColor(Bool) :  DialogType = "BrushColor", [ rgb(255,255,255), rgb(255,0,0) ];
-				parameter<uint32> PenColor         := rgb(167,167,167), DialogType = "PenColor";
-				parameter<int16>  PenWidth         := 1s              , DialogType = "PenWidth";
-			}
-			attribute<Bronnen> CurrBron(PlanRegio) := ExtraGebruikRestWarmte ? Assignment/Bronnen_rel : PrevState/CurrBron;
-			unit<uint32> ConnectedPlanRegio := Subset(ExtraGebruikRestWarmte)
-			{
-				// the following is merely for display only
-				unit<uint32> ExtraPoints := union_unit(ConnectedPlanRegio, ConnectedPlanRegio)
-				{
-					attribute<rdc_meter>          Point      := union_data(., PrevState/BronConnections/point[Assignment[ConnectedPlanRegio/nr_OrgEntity]],PlanRegio/Point[ConnectedPlanRegio/nr_OrgEntity]);
-					attribute<ConnectedPlanRegio> SequenceNr := union_data(., id(ConnectedPlanRegio), id(ConnectedPlanRegio));
-					attribute<uint32>             Ordinal    := union_data(., const(0, ConnectedPlanRegio), const(1, ConnectedPlanRegio));
-				}
-				attribute<rdc_meter> ExtraArcs (arc) := points2sequence(ExtraPoints/Point, ExtraPoints/SequenceNr, ExtraPoints/Ordinal);
-			}
-			unit<uint32> BronConnections := union_unit(PrevState/BronConnections, ConnectedPlanRegio)
-			{
-				attribute<Bronnen>   Bronnen_rel:= union_data(., PrevState/BronConnections/Bronnen_rel, Assignment/Bronnen_rel[ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<m>         CumulDist  := union_data(., PrevState/BronConnections/CumulDist,   Assignment/CumulDist  [ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<MW>        CumulP     := union_data(., PrevState/BronConnections/CumulP+sum(ExtraGebruikRestWarmte ? Assignment/P : 0[MW],  Assignment), Assignment/P[ConnectedPlanRegio/nr_OrgEntity]);
-				attribute<rdc_meter> Point      := union_data(., PrevState/BronConnections/Point,       PlanRegio/Point[ConnectedPlanRegio/nr_OrgEntity]);
-			}
-			attribute<BronConnections> CurrConnection (PlanRegio) := convert(ExtraGebruikRestWarmte ? Assignment : PrevState/CurrConnection, BronConnections);
-
-			unit<uint32> CumulatedArcSet := union_unit(PrevState/CumulatedArcSet, ConnectedPlanRegio), DialogType = "Map", DialogData = "CumulatedArcs"
-			{
-				attribute<rdc_meter> BronPoint     := union_data(., PrevState/CumulatedArcSet/BronPoint, Bronnen/Point[Assignment/Bronnen_rel[ConnectedPlanRegio/nr_OrgEntity]]);
-				attribute<float64>   BronPointX    := PointCol(BronPoint);
-				attribute<float64>   BronPointY    := PointRow(BronPoint);
-				attribute<PlanRegio> PlanRegio_rel := union_data(., PrevState/CumulatedArcSet/PlanRegio_rel, ConnectedPlanRegio/nr_OrgEntity);
-			}
-
-			attribute<rdc_meter> CumulatedArcs (CumulatedArcSet, arc) := union_data(CumulatedArcSet, PrevState/CumulatedArcs, ConnectedPlanRegio/ExtraArcs)
-			{
-				parameter<uint32> PenColor := rgb(0,0,0), DialogType = "PenColor";
-				parameter<int16>  PenWidth := 2s  , DialogType = "PenWidth";
-			}
-		}
-	}
 	parameter<uint32> NrIterations := Voorkeuren/NewRestWarmte ? 25 : 1;
+
 	unit<uint32> Iteration := Range(uint32, 0, NrIterations)
 	{
 		attribute<String> Name          := 'I'+String(id(.));
 		attribute<String> PrevStateName := MakeDefined(Iteration/Name[id(Iteration)-1]+'/NextState', 'RestWarmteStartingState');
 	}
 	
-	container Iterations := for_each_ne(Iteration/Name, 'IteratieTempl('+Iteration/PrevStateName+')');
+	container Iterations := for_each_ne(Iteration/Name, 'CalculationSchemes/AanbodOpties/RestWarmteIteratie('+Iteration/PrevStateName+', Bronnen, PlanRegio, KostenBaten)');
 
 	container LastIter  := ='Iterations/'+last(Iteration/Name);
 	container LastState := LastIter/NextState;
 
-	attribute<MW>       P_Bron (Bronnen) := sum(KostenBaten/CapaciteitsVraagD * float64(LastState/GebruikRestWarmte) , LastState/CurrBron);
-	attribute<float64>  R_Bron (Bronnen) := P_Bron / Bronnen/MWTh_Max;
+	attribute<MW>       P_Bron  (Bronnen) := sum(KostenBaten/CapaciteitsVraagD * float64(LastState/GebruikRestWarmte) , LastState/CurrBron);
+	attribute<float64>  R_Bron  (Bronnen) := P_Bron / Bronnen/MWTh_Max;
 
-	attribute<Bool> GebruikBron(Bronnen) := P_Bron >= Bronnen/MWth_min;
+	attribute<Bool> GebruikBron (Bronnen) := P_Bron >= Bronnen/MWth_min;
 
-	attribute<Bool> RentabiliteitsAfweging(PlanRegio) :=
-		GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
+	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
 	,	IntegrityCheck = "not(any(LastIter/ExtraGebruikRestWarmte))"; // @@@ Increase NrIterations is this fails.
 	
 	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
 	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
 	attribute<Bool> NewGebruik           (PlanRegio) := RentabiliteitsAfweging && not(OldGebruik);
 	attribute<Bool> GebruikOptieAfweging (PlanRegio) := NewGebruik || GebruiktOptie;
-	attribute<Bool> GebruikOptie         (PlanRegio) := 
-		=Voorkeuren/OldRestwarmte
-			?	'GebruiktOptie'
-			:	(Jaar == 2010[units/yr_uint16])
-				?	'bool(PlanRegio/RW)' 
-				:	'GebruikOptieAfweging'
+	attribute<Bool> GebruikOptie         (PlanRegio) := = Voorkeuren/OldRestwarmte
+		?	'GebruiktOptie'
+		:	(Jaar == 2010[units/yr_uint16])
+			?	'bool(PlanRegio/RW)' 
+			:	'GebruikOptieAfweging'
 		;
 
 	attribute<Eur   > Oi_Totaal          (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage;
@@ -232,36 +108,38 @@ template RestWarmte
 
 	container Results := BeginStatus, IntegrityCheck = "P_Bron <= Bronnen/MWTh_Max * float64(3.00)"
 	{
-		container Factoren {
-			parameter<float64> Aardgas_factor       := 0.0; // TODO
-			parameter<float64> Biogas_factor        := 0.0; // TODO
-			parameter<float64> Biovast_factor       := 0.0; // TODO
-			parameter<float64> Ondergrond_factor    := 0.0;
-			parameter<float64> Opwekking_Factor     := 1.0;
-			parameter<float64> Elektriciteit_factor := 0.0; // TODO
+		container Factoren
+		{
+			parameter<float64> Aardgas       := 0.0; // TODO
+			parameter<float64> Biogas        := 0.0; // TODO
+			parameter<float64> Biovast       := 0.0; // TODO
+			parameter<float64> Ondergrond    := 0.0;
+			parameter<float64> Opwekking     := 1.0;
+			parameter<float64> Elektriciteit := 0.0; // TODO
 		}
 
-		container Flow := BeginStatus/Flow {
-			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + iif(GebruikOptie, lastiter/Assignment/Kj_warmtewaarde, 0[Eur_yr]);
-			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + iif(GebruikOptie, lastiter/Assignment/Km_warmtewaarde, 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_ow_onderhoud + iif(GebruikOptie, lastiter/Assignment/Kj_ow_onderhoud, 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := BeginStatus/Flow/Kj_ow_admin     + iif(GebruikOptie, lastiter/Assignment/Kj_ow_admin    , 0[Eur_yr]);
+		container Flow := BeginStatus/Flow
+		{
+			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Kj_warmtewaarde : 0[Eur_yr]);
+			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Km_warmtewaarde : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_ow_onderhoud + (GebruikOptie ? lastiter/Assignment/Kj_ow_onderhoud : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := BeginStatus/Flow/Kj_ow_admin     + (GebruikOptie ? lastiter/Assignment/Kj_ow_admin     : 0[Eur_yr]);
 
-			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_pt_onderhoud + iif(GebruikOptie, lastiter/Assignment/Kj_pt_onderhoud, 0[Eur_yr]);
-			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := BeginStatus/Flow/Kj_pt_admin     + iif(GebruikOptie, lastiter/Assignment/Kj_pt_admin    , 0[Eur_yr]);
-			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := BeginStatus/Flow/Kj_pt_precario  + iif(GebruikOptie, lastiter/Assignment/Kj_pt_precario , 0[Eur_yr]);
-			attribute<Eur_yr> Oj_SDE          (PlanRegio) := BeginStatus/Flow/Oj_SDE          + iif(GebruikOptie, lastiter/Assignment/Oj_SDE         , 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_pt_onderhoud + (GebruikOptie ? lastiter/Assignment/Kj_pt_onderhoud : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := BeginStatus/Flow/Kj_pt_admin     + (GebruikOptie ? lastiter/Assignment/Kj_pt_admin     : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := BeginStatus/Flow/Kj_pt_precario  + (GebruikOptie ? lastiter/Assignment/Kj_pt_precario  : 0[Eur_yr]);
+			attribute<Eur_yr> Oj_SDE          (PlanRegio) := BeginStatus/Flow/Oj_SDE          + (GebruikOptie ? lastiter/Assignment/Oj_SDE          : 0[Eur_yr]);
 		}
 
 		container Stock := BeginStatus/Stock
 		{
-			attribute<Eur> Ki_ow          (PlanRegio) := BeginStatus/Stock/Ki_ow          + iif(NewGebruik, lastiter/Assignment/ki_ow, 0[Eur]);
-			attribute<Eur> Oi_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + iif(NewGebruik, MakeDefined(lastiter/Assignment/ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0[Eur]), 0[Eur]);
-			attribute<Eur> Oe_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + iif(NewGebruik, 
-				(Ki_ow - Oi_ow_subsidie) * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0.0), 0[Eur]);
+			attribute<Eur> Ki_ow          (PlanRegio) := BeginStatus/Stock/Ki_ow          + (NewGebruik ? lastiter/Assignment/ki_ow : 0[Eur]);
+			attribute<Eur> Oi_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + (NewGebruik ? MakeDefined(lastiter/Assignment/ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0[Eur]) : 0[Eur]);
+			attribute<Eur> Oe_ow_subsidie (PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + (NewGebruik ? 
+				(Ki_ow - Oi_ow_subsidie) * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0.0) : 0[Eur]);
 
-			attribute<Eur> Ki_pt          (PlanRegio) := BeginStatus/Stock/Ki_pt          + iif(NewGebruik, lastiter/Assignment/ki_pt, 0[Eur]);
-			attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + iif(NewGebruik, lastiter/Assignment/ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt, 0[Eur]);
+			attribute<Eur> Ki_pt          (PlanRegio) := BeginStatus/Stock/Ki_pt          + (NewGebruik ? lastiter/Assignment/ki_pt : 0[Eur]);
+			attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + (NewGebruik ? lastiter/Assignment/ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt : 0[Eur]);
 		}
 
 		container AanbodOpties := BeginStatus/AanbodOpties
@@ -275,11 +153,13 @@ template RestWarmte
 
 				unit<uint32> StartArcSet         := RestWarmteStartingState/CumulatedArcSet;
 				unit<uint32> LastCumulatedArcSet := LastState/CumulatedArcSet;
+
 				unit<uint32> ExtraArcSet := SubSet(ExtraGebruikRestWarmte)
 				{
 					attribute<PlanRegio>           PlanRegio_rel           := nr_OrgEntity;
 					attribute<LastCumulatedArcSet> LastCumulatedArcSet_rel := rlookup(PlanRegio_rel, LastCumulatedArcSet/PlanRegio_rel);
 				}
+
 				unit<uint32> CumulatedArcSet := union_unit(StartArcSet, ExtraArcSet), DialogType = "Map", DialogData = "CumulatedArcs"
 				{
 					attribute<rdc_meter> BronPoint     := union_data(., StartArcSet/BronPoint, LastCumulatedArcSet/BronPoint[ExtraArcSet/LastCumulatedArcSet_rel]), DisableStorage = "True";
@@ -298,8 +178,8 @@ template RestWarmte
 			attribute<bool>                        Alloc_OK                 (PlanRegio) := GebruikRestWarmteMetBron || !WasAllocated; // it never stops.
 			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := 
 				GebruikRestWarmteMetBron
-				?	Classifications/AanbodOptie/V/RestWarmte
-				:	BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie
+					? Classifications/AanbodOptie/V/RestWarmte
+					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie
 			,	IntegrityCheck = "Alloc_OK";
 		}
 	}

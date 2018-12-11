@@ -31,12 +31,6 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-// Dit is de container met rekenschema's van de configuratie voor het project Vesta     //
-//                                                                                      //
-//////////////////////////////////////////////////////////////////////////////////////////
-
 container CalculationSchemes: Using = "Units;Geography"
 {
 	#include <EnergieKengetallenImport.dms>
@@ -57,7 +51,7 @@ container CalculationSchemes: Using = "Units;Geography"
 	#include <Resultaten.dms>
 	#include <AllocatieComponent.dms>
 	
-	Template GridAggrComponent
+	Template Naar100mGrid
 	{
 		container AllocatieComponent;
 		parameter<String> WkoResultsRef; 
@@ -68,53 +62,54 @@ container CalculationSchemes: Using = "Units;Geography"
 			container RuimtelijkeVraagComponent := AllocatieComponent/RuimtelijkeVraagComponent;
 			unit<UInt32> BebouwingsObject       := AllocatieComponent/BebouwingsObject;
 			
-			attribute<Geography/rdc_grids/m100> GridCellID (BebouwingsObject) := RuimtelijkeVraagComponent/GridCellID;
+			attribute<Geography/rdc_grids/m100> gridm100_rel (BebouwingsObject) := RuimtelijkeVraagComponent/gridm100_rel;
 		}
 		container Vraag
 		{
-			attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/AardGas      , impl/GridCellID);
-			attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/RestWarmte   , impl/GridCellID);
-			attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/GeoThermie   , impl/GridCellID);
-			attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WijkWKK      , impl/GridCellID);
-			attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WKO          , impl/GridCellID);
-			attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/Elektriciteit, impl/GridCellID);
+			attribute<GJ_yr> AardGas       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/AardGas      , impl/gridm100_rel);
+			attribute<GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/RestWarmte   , impl/gridm100_rel);
+			attribute<GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/GeoThermie   , impl/gridm100_rel);
+			attribute<GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WijkWKK      , impl/gridm100_rel);
+			attribute<GJ_yr> WKO           (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/WKO          , impl/gridm100_rel);
+			attribute<GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := sum(AllocatieComponent/MeterVraag/Elektriciteit, impl/gridm100_rel);
 			attribute<GJ_yr> Totaal        (Geography/rdc_grids/m100) := AardGas + RestWarmte + GeoThermie + WijkWKK + WKO + Elektriciteit;
+			
+			container Potentiaal
+			{
+				unit<spoint> Kernel := Geography/DistMatrices/pot1000m/KernelDomain;
+
+				attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/AardGas),       Kernel/Cilindrical));
+				attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/RestWarmte),    Kernel/Cilindrical));
+				attribute<Units/GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/GeoThermie),    Kernel/Cilindrical));
+				attribute<Units/GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/WijkWKK),       Kernel/Cilindrical));
+				attribute<Units/GJ_yr> WKO           (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/WKO),           Kernel/Cilindrical));
+				attribute<Units/GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/Elektriciteit), Kernel/Cilindrical));
+				attribute<Units/GJ_yr> Totaal        (Geography/rdc_grids/m100) := float64(potential(Float32(Vraag/Totaal),        Kernel/Cilindrical));
+			}
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW> Totaal  (Geography/rdc_grids/m100) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/GridCellID);
-			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraagA/AansluitCapaciteit, impl/GridCellID);
+			attribute<kW> Totaal  (Geography/rdc_grids/m100) := sum(impl/RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte,   impl/gridm100_rel);
+			attribute<kW> AardGas (Geography/rdc_grids/m100) := sum(impl/BCdata/WarmteVraag/alle/AansluitCapaciteit, impl/gridm100_rel);
 			attribute<kW> Overig  (Geography/rdc_grids/m100) := Totaal - AardGas;
 		}
 		container WKO
 		{
-			attribute<GJ_yr>  V_Warmte    (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Warmte, impl/GridCellID)';
-			attribute<GJ_yr>  V_Koude     (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Koude , impl/GridCellID)';
-			attribute<GJ_yr>  V_Elek      (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Elek  , impl/GridCellID)';
+			attribute<GJ_yr>  V_Warmte    (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Warmte, impl/gridm100_rel)';
+			attribute<GJ_yr>  V_Koude     (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Koude , impl/gridm100_rel)';
+			attribute<GJ_yr>  V_Elek      (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[GJ_yr], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/V_Elek  , impl/gridm100_rel)';
 			attribute<GJ_yr>  Onttrekking (Geography/rdc_grids/m100) := V_Warmte - (V_Koude + V_Elek);
 
-			attribute<kW>     Capaciteit  (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/GridCellID)';
+			attribute<kW>     Capaciteit  (Geography/rdc_grids/m100) := =WkoResultsRef == '' ? 'const(0[kW], Geography/rdc_grids/m100)' : 'sum('+WkoResultsRef+'/P_Warmte,     impl/gridm100_rel)';
 		}
 	}
-	
-	Template PotentialComponent
-	{
-		container GridAggr;
-		unit<spoint> Kernel := Geography/DistMatrices/impl/pot1000m/potrange;
 
-		attribute<Units/GJ_yr> AardGas       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/AardGas),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> RestWarmte    (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/RestWarmte),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> GeoThermie    (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/GeoThermie),    Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WijkWKK       (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WijkWKK),       Kernel/Cilindrical));
-		attribute<Units/GJ_yr> WKO           (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/WKO),           Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Elektriciteit (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Elektriciteit), Kernel/Cilindrical));
-		attribute<Units/GJ_yr> Totaal        (Geography/rdc_grids/m100) := float64(potential(Float32(GridAggr/Totaal),        Kernel/Cilindrical));
-	}
-	
-	Template AggrComponent
+	Template NaarPlanRegio
 	{
+		// begin case parameters
 		container BCdata;
-		
+		// end case parameters
+
 		unit<uint32>                           BebouwingsObject                            := BCdata/BebouwingsObject;
 		attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := BCdata/WarmteAllocatie;
 		unit<uint32>                           PlanRegio                                   := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -128,236 +123,45 @@ container CalculationSchemes: Using = "Units;Geography"
 			attribute<float64>   BeschikbaarheidsFactor (BebouwingsObject) := float64(!IsDefined(WarmteAllocatieComponent)); // per PlanRegio moet toch per keuze worden gecheckt  * float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
 		}
 
-		attribute<nrAansl>        nrAanslWarmteD      (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/nrAansluitingen,    impl/PlanRegio_rel);
-		attribute<impl/ModelUnit> nrModelUnitsWarmteD (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/nrModelUnits,       impl/PlanRegio_rel);
-		attribute<Units/kW>       CapaciteitWarmteD   (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/AansluitCapaciteit, impl/PlanRegio_rel);
+		attribute<nrAansl>        nrAanslWarmteDeelnemers      (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/nrAansluitingen,    impl/PlanRegio_rel);
+		attribute<impl/ModelUnit> nrModelUnitsWarmteDeelnemers (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/nrModelUnits,       impl/PlanRegio_rel);
+		attribute<Units/kW>       CapaciteitWarmteDeelnemers   (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/AansluitCapaciteit, impl/PlanRegio_rel);
 
-		attribute<Units/GJ_yr>    VerbruikD_obj       (BebouwingsObject) := BCdata/WarmteVraagD/Verbruik;
-		attribute<Units/Eur_yr>   WarmteVraagD_obj    (BebouwingsObject) := WarmtePrijs      * VerbruikD_obj, Source = "FO v7a F 8-10";
-
-		attribute<Units/GJ_yr>    VerbruikD           (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagD/Verbruik, impl/PlanRegio_rel);
-		attribute<Units/Eur_yr>   WarmteVraagD        (PlanRegio) := WarmtePrijs        * VerbruikD, Source = "FO v7a F 8-10";
-
-		attribute<Units/GJ_yr>    VerbruikA           (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraagA/Verbruik, impl/PlanRegio_rel);
-		attribute<Units/Eur_yr>   WarmteVraagA        (PlanRegio) := WarmtePrijs        * VerbruikA, Source = "FO v7a F 8-10";
+		container Verbruik
+		{
+			attribute<Units/GJ_yr> deelnemers     (PlanRegio)        := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/Verbruik, impl/PlanRegio_rel);
+			attribute<Units/GJ_yr> deelnemers_obj (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik;
+			attribute<Units/GJ_yr> alle           (PlanRegio)        := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/alle/Verbruik, impl/PlanRegio_rel);
+		}
+		container WarmteVraag
+		{
+			attribute<Units/Eur_yr> deelnemers     (PlanRegio)        := WarmtePrijs * Verbruik/deelnemers, Source = "FO v7a F 8-10";
+			attribute<Units/Eur_yr> deelnemers_obj (BebouwingsObject) := WarmtePrijs * Verbruik/deelnemers_obj, Source = "FO v7a F 8-10";
+			attribute<Units/Eur_yr> alle           (PlanRegio)        := WarmtePrijs * Verbruik/alle, Source = "FO v7a F 8-10";
+		}
 	}
 
 	#include <EnergiePrijzen.dms>
-
 	#include <KostenBatenSchema.dms>
-	#include <NcwSchema.dms>
-	#include <AanbodOpties.dms>
-	
-	container Rapportage {
-		#include <RegionaleRapportageTempl.dms>
-		#include <FlowTempl.dms>
+	#include <KostenWoningen.dms>
 
-		template EindgebruikerComponentTempl
-		{
-			container AllocatieComponent;
-			container NCW15;
-			container NCW30;
-			container NCW50;
-			
-			attribute<Eur_yr> Oj_VastRechtG (Invoer/SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur   > Oi_AansluitG  (Invoer/SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur_yr> Oj_VastRechtE (Invoer/SpecifiekeInstellingen/PlanRegio);
-			attribute<Eur   > Oi_AansluitE  (Invoer/SpecifiekeInstellingen/PlanRegio);
-
-			container PlanRegioKaartComponent;
-
-			container BCdata    := AllocatieComponent/BCdata;
-			container RuimtelijkeVraagComponent:= AllocatieComponent/RuimtelijkeVraagComponent;
-			unit<uint32> BebouwingsObject      := BCdata/BebouwingsObject;
-
-			parameter<Ratio> BTW_Factor    := BCdata/BTW_Factor;
-			parameter<Ratio> BTW_Factor_gv := BCdata/BTW_Factor_gv;
-
-			unit<uint32> PlanRegio         := SpecifiekeInstellingen/PlanRegio;
-
-			container gebouwen {
-				container Elektriciteit {
-					attribute<Eur_yr> Verbruik      (PlanRegio) := sum(AllocatieComponent/Elektriciteit/eindgebruik_excl, BCdata/PlanRegio_rel);
-					attribute<Eur_yr> netwerk       (PlanRegio) := sum(AllocatieComponent/Elektriciteit/netwerk,          BCdata/PlanRegio_rel);
-					attribute<Eur_yr> EnergieHeffing(PlanRegio) := sum(AllocatieComponent/Elektriciteit/EnergieHeffing,   BCdata/PlanRegio_rel);
-					attribute<Eur_yr> CO2Heffing    (PlanRegio) := sum(AllocatieComponent/Elektriciteit/CO2Heffing,       BCdata/PlanRegio_rel);
-					
-					attribute<Eur_yr> VastRecht     (PlanRegio):= Oj_VastRechtE;
-					attribute<Eur_yr> Aansl_j       (PlanRegio):= Oi_AansluitE * Ncw50/AnnualisationFactor;
-					attribute<Eur_yr> Aansl_m       (PlanRegio):= Oi_AansluitE * Ncw/mr50/AnnualisationFactor;
-					
-					attribute<Eur_yr> Vraag_excl    (PlanRegio) := Verbruik + VastRecht + Aansl_j;
-					attribute<Eur_yr> Vraag_m       (PlanRegio) := Verbruik + Vastrecht + Aansl_m - EnergieHeffing;
-				}
-				container AardGas {
-					attribute<Eur_yr> Verbruik      (PlanRegio) := sum(AllocatieComponent/AardGas/eindgebruik_excl, BCdata/PlanRegio_rel);
-					attribute<Eur_yr> netwerk       (PlanRegio) := sum(AllocatieComponent/AardGas/netwerk,          BCdata/PlanRegio_rel);
-					attribute<Eur_yr> EnergieHeffing(PlanRegio) := sum(AllocatieComponent/AardGas/EnergieHeffing,   BCdata/PlanRegio_rel);
-					attribute<Eur_yr> CO2Heffing    (PlanRegio) := sum(AllocatieComponent/AardGas/CO2Heffing,       BCdata/PlanRegio_rel);
-
-					attribute<Eur_yr> VastRecht     (PlanRegio):= Oj_VastRechtG;
-					attribute<Eur_yr> Aansl_j       (PlanRegio):= Oi_AansluitG  * Ncw50/AnnualisationFactor;
-					attribute<Eur_yr> Aansl_m       (PlanRegio):= Oi_AansluitG  * Ncw/mr50/AnnualisationFactor;
-
-					attribute<Eur_yr> Vraag_excl    (PlanRegio):= Verbruik + VastRecht + Aansl_j;
-					attribute<Eur_yr> Vraag_m       (PlanRegio):= Verbruik + VastRecht + Aansl_m - EnergieHeffing;
-				}
-				
-				template GebiedsOptieTempl
-				{
-					// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
-					parameter<Classifications/AanbodOptie> Optie;
-					attribute<Ratio> Aandeel(BebouwingsObject);
-					
-					attribute<Eur_yr> Verbruik    (PlanRegio): = sum(PlanRegioKaartComponent/WarmteVraagD_obj                   * Aandeel, BCdata/PlanRegio_rel);
-					attribute<Eur_yr> VastRecht   (PlanRegio): = sum(BCdata/Opbrengsten/VastRechtBijdrageD * Aandeel, BCdata/PlanRegio_rel);
-					
-					attribute<Eur>    Oi_AanslD   (PlanRegio) := sum(BCdata/Opbrengsten/AansluitBijdrageD  * Aandeel, BCdata/PlanRegio_rel);
-					attribute<Eur_yr> Aansl_j     (PlanRegio) := Oi_AanslD * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor;
-					attribute<Eur_yr> Aansl_m     (PlanRegio) := Oi_AanslD * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor;
-					
-					attribute<Eur_yr> Vraag_excl  (PlanRegio): = Verbruik + VastRecht + Aansl_j;
-					attribute<Eur_yr> Vraag_m     (PlanRegio): = Verbruik + VastRecht + Aansl_m;
-				}
-				container RestWarmte: = GebiedsOptieTempl(Classifications/AanbodOptie/V/RestWarmte, AllocatieComponent/Aandelen/RestWarmte);
-				container GeoThermie: = GebiedsOptieTempl(Classifications/AanbodOptie/V/GeoThermie, AllocatieComponent/Aandelen/GeoThermie);
-				container WijkWKK:    = GebiedsOptieTempl(Classifications/AanbodOptie/V/WijkWKK, AllocatieComponent/Aandelen/WijkWKK);
-				container BioWKK:     = GebiedsOptieTempl(Classifications/AanbodOptie/V/BioWKK, AllocatieComponent/Aandelen/BioWKK);
-				container WKO {
-					parameter<bool> Active : =rjoin(BCdata/Tag,  Classifications/BebouwingsComponent/Name, Classifications/BebouwingsComponent/KanWKO);
-					
-					attribute<Ratio> Aandeel(BebouwingsObject): = AllocatieComponent/Aandelen/WKO;
-					
-					// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
-					
-					attribute<Eur_yr> Warmte      (PlanRegio): = =Active ? 'sum(PlanRegioKaartComponent/WarmteVraagD_obj         * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-					attribute<Eur_yr> Koude       (PlanRegio): = =Active ? 'sum(AllocatieComponent/KoudeAllocatie * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-					attribute<Eur_yr> Om_Comfort  (PlanRegio): = =Active ? 'sum(AllocatieComponent/Om_Comfort     * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-					
-					attribute<Eur_yr> Verbruik    (PlanRegio): = =Active ? 'Warmte + Koude' : 'const(0[Eur_yr], PlanRegio)';
-					attribute<Eur_yr> VastRecht   (PlanRegio): = =Active ? 'sum(BCdata/Opbrengsten/VastRechtBijdrageD * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-					
-					attribute<Eur>    Aansl_i     (PlanRegio): = =Active ? 'EndState/WKO/Oi_Aansl/'+BCdata/Tag : 'const(0[Eur], PlanRegio)';
-					attribute<Eur_yr> Aansl_j     (PlanRegio): = =Active ? 'Aansl_i * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
-					attribute<Eur_yr> Aansl_m     (PlanRegio): = =Active ? 'Aansl_i * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor' : 'const(0[Eur_yr], PlanRegio)';
-					
-					attribute<Eur_yr> Vraag_excl  (PlanRegio): = =Active ? 'Verbruik + VastRecht + Aansl_j' : 'const(0[Eur_yr], PlanRegio)';
-					attribute<Eur_yr> Vraag_m     (PlanRegio): = =Active ? 'Verbruik + VastRecht + Aansl_m' : 'const(0[Eur_yr], PlanRegio)';
-				}
-				
-				attribute<Eur>    Ki_GebouwVerbetering_excl (PlanRegio): = sum(BCdata/Kosten/Ki_GebouwVerbetering, BCdata/PlanRegio_rel);
-				attribute<Eur_yr> Kw_GebouwVerbetering_excl (PlanRegio) := Ki_GebouwVerbetering_excl * NCW30/AnnualisationFactor;
-				
-				attribute<Eur_yr> Kw_Totaal_excl(PlanRegio): = Elektriciteit/Vraag_excl + AardGas/Vraag_excl + RestWarmte/Vraag_excl + GeoThermie/Vraag_excl + WKO/Vraag_excl + WijkWKK/Vraag_excl + BioWKK/Vraag_excl + Kw_GebouwVerbetering_excl;
-				attribute<Eur_yr> Kj_OenM_base  (PlanRegio): = Ki_GebouwVerbetering_excl * Kengetallen/Onderhoud/Rj_GebouwVerbetering;
-				attribute<Eur_yr> Kj_Onderh_excl(PlanRegio): = Kj_OenM_base * Kengetallen/Onderhoud/R_Onderhoud;
-				attribute<Eur_yr> Kj_Admin_excl (PlanRegio): = Kj_OenM_base * Kengetallen/Onderhoud/R_Admin;
-			}
-			container LokaleEnergieProductie
-			{
-				attribute<Eur>    Ki_ZonneBoiler(PlanRegio): = sum(BCdata/kosten/Ki_ZonneBoiler,BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_Zon_PV     (PlanRegio): = sum(BCdata/kosten/Ki_Zon_PV,     BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_mWKK       (PlanRegio): = sum(BCdata/Kosten/Ki_mWKK,       BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_eWP        (PlanRegio): = sum(BCdata/Kosten/Ki_eWP,        BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_hWP        (PlanRegio): = sum(BCdata/Kosten/Ki_hWP,        BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_EWV        (PlanRegio): = sum(BCdata/Kosten/Ki_EWV,        BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_Totaal30   (PlanRegio): = sum(BCdata/Kosten/Ki_LokaleOpwekking30, BCdata/PlanRegio_rel);
-				attribute<Eur>    Ki_Totaal15   (PlanRegio): = sum(BCdata/Kosten/Ki_LokaleOpwekking15, BCdata/PlanRegio_rel);
-				
-				attribute<Eur_yr> Kw_Totaal_excl(PlanRegio): = Ki_Totaal30 * Ncw30/AnnualisationFactor + Ki_Totaal15 * Ncw15/AnnualisationFactor;
-				attribute<Eur_yr> Kj_OenM_base  (PlanRegio): = (Ki_Totaal30 + Ki_Totaal15) * Kengetallen/Onderhoud/Rj_LokaleOpwekking;
-				attribute<Eur_yr> Kj_Onderh_excl(PlanRegio): = Kj_OenM_base * Kengetallen/Onderhoud/R_Onderhoud;
-				attribute<Eur_yr> Kj_Admin_excl (PlanRegio): = Kj_OenM_base * Kengetallen/Onderhoud/R_Admin;
-			}
-			attribute<Eur_yr> Om_Comfort    (PlanRegio): = gebouwen/WKO/Om_Comfort;
-			attribute<Eur_yr> Kw_Totaal_excl(PlanRegio): = gebouwen/Kw_Totaal_excl + LokaleEnergieProductie/Kw_Totaal_excl;
-			attribute<Eur_yr> Kj_Onderh_excl(PlanRegio): = gebouwen/Kj_Onderh_excl + LokaleEnergieProductie/Kj_onderh_excl;
-			attribute<Eur_yr> Kj_Admin_excl (PlanRegio): = gebouwen/Kj_Admin_excl  + LokaleEnergieProductie/Kj_Admin_excl;
-			
-			attribute<Eur_yr> Oj_Subsidie(PlanRegio) := 
-				sum(
-			  		  BCdata/sprongen/subsidie/EIA30 * NCW30/AnnualisationFactor
-					+ BCdata/sprongen/subsidie/EIA15 * NCW15/AnnualisationFactor
-					+ BCdata/sprongen/subsidie/EEA
-				,	BCdata/PlanRegio_rel
-				);
-				
-			attribute<Eur_yr> Om_Subsidie(PlanRegio) := 
-				sum(
-					  BCdata/sprongen/subsidie/EIA30 * NCW/mr30/AnnualisationFactor
-					+ BCdata/sprongen/subsidie/EIA15 * NCW/mr15/AnnualisationFactor
-					+ BCdata/sprongen/subsidie/EEA
-				,	BCdata/PlanRegio_rel
-				);
-				
-			attribute<Eur_yr> Kw_Totaal_incl(PlanRegio): = 
-				BTW_Factor * (Kw_Totaal_excl + Kj_Onderh_excl + Kj_Admin_excl) +
-				(BTW_Factor_gv -BTW_Factor) * gebouwen/Kw_GebouwVerbetering_excl
-				- Oj_Subsidie;
-		}
-		template WriteToCSV
-		{
-			// begin case parameters
-			container context;
-			unit<uint8> RapGroep;
-			parameter<String> fieldlist;
-			parameter<String> filename;
-			// end   case parameters
-	
-			container impl
-			{
-				unit<uint32> Field := range(uint32,0,strcount(fieldlist,';')+1)
-				{
-					attribute<string> FieldDescr  := ReadArray(fieldlist,.,string,0);
-					attribute<UInt32> SepPos      := strpos(FieldDescr, ':');
-					attribute<string> Name        := IsDefined(SepPos) ? substr(FieldDescr, 0, SepPos): FieldDescr;
-					attribute<string> NameInTable := IsDefined(SepPos) ? substr(FieldDescr, SepPos+1, strlen(FieldDescr)) : FieldDescr;
-				}
-				parameter<string> NewLine := '\n';
-			}
-			parameter<String> Header := AsList(impl/Field/Name, ';');
-
-			parameter<String> Metric := 
-				=asList(
-					Quote('[')+'+PropValue(ValuesUnit(context/' + impl/Field/NameInTable +'),' + quote('metric') + ')+'+Quote(']')
-					, '+'+Quote(';')+'+'
-				);
-
-			attribute<String> Body (RapGroep) := 
-				='union_data(RapGroep, '
-					+AsList('String(context/'+impl/Field/NameInTable+')'
-						,'+' + quote(';') + '+'
-					)
-				+')';
-
-			parameter<String> Result := Header + impl/NewLine + Metric + impl/NewLine + AsList(Body+impl/NewLine,'')
-			,	StorageName = "=filename"
-			,	StorageType = "str";
-		}
-		template ExportCsvT
-		{
-			// begin case parameters
-			unit<uint32> table;
-			unit<uint32> variabele;
-			parameter<string> filename;
-			// end   case parameters
-			
-			parameter<string> result_expr := AsList('MakeDefined(string(table/' + variabele/name + '),'''')',' +'';''+ ');
-			attribute<string> result_att(table) := =result_expr;
-			parameter<string> result := AsList(variabele/name, ';')+'\n'+AsList(result_att, '\n'),
-				Storagename = "=filename",
-				StorageType = "str";
-		}		
-	}
 	template BuisKosten
 	{
-		unit<uint32>     PlanRegio;
-		attribute<MW>    Capaciteit(PlanRegio);
-		
-		attribute<Eur_m>  K_min(PlanRegio) := Capaciteit > 0[MW] ? 215.5[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-		attribute<Eur_m>  K_max(PlanRegio) := Capaciteit > 0[MW] ? 379.3[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
-		attribute<Eur_m>  K_m  (PlanRegio) := (K_min * Schuiven/KostenMin + K_max * Schuiven/KostenMax) * Leercurves/curve2;
-		parameter<Ratio> a := 1.25; // omwegfactor
+		// begin case parameters
+		unit<uint32>  PlanRegio;
+		attribute<MW> Capaciteit (PlanRegio);
+		// begin case parameters
+
+		parameter<Ratio> a                 := 1.25; // omwegfactor
+
+		attribute<Eur_m> K_min (PlanRegio) := Capaciteit > 0[MW] ? 215.5[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
+		attribute<Eur_m> K_max (PlanRegio) := Capaciteit > 0[MW] ? 379.3[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+		attribute<Eur_m> K_m   (PlanRegio) := (K_min * Schuiven/KostenMin + K_max * Schuiven/KostenMax) * Leercurves/curve2;
 		attribute<Eur_m> aK_m  (PlanRegio) := a * K_m; // K_hoofd_m incl omwegfactor
 	}
+
+	#include <NcwSchema.dms>
+	#include <AanbodOpties.dms>
+	#include <Rapportage.dms>
+	#include <AllocExportsBebouwingsComponent.dms>
 }

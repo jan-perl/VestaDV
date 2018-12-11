@@ -31,20 +31,40 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template NettoContanteWaarde
+template Flow: using = "Classifications"
 {
 	// begin case parameters
-	parameter<Percent_yr> DiscontoVoet;
-	parameter<yr> StartJaar;
-	parameter<yr> StopJaar;
+	unit<uint32>               RapportageRegio;
+	parameter<string>          ReportRegioNaam; //: Expr = "'NL'";
+	parameter<RapportageRegio> RapportageRegio_sel;
 	// end case parameters
 
-	parameter<_yr>     CapitalGrowthFactor := DiscontoVoet / 100[percent];
+	parameter<string> ReportFolder := FolderInfo/OutputFolder+'/'+ReportRegioNaam;
 
-	parameter<float64> DiscontoFactor      := 1.0 + CapitalGrowthFactor * 1[yr];
-	parameter<float64> StartDiscountFactor := DiscontoFactor ^ -StartJaar;
-	parameter<float64> StopDiscountFactor  := DiscontoFactor ^ -StopJaar;
-	parameter<yr>      DurationFactor      := (CapitalGrowthFactor <> 0[_yr]) ? (StartDiscountFactor - StopDiscountFactor) / CapitalGrowthFactor : StopJaar - StartJaar;
-	parameter<_yr>     AnnualisationFactor := 1.0 / DurationFactor;
+	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
+	attribute<float64>         PlanRegioInRapportageFactor  (Invoer/SpecifiekeInstellingen/PlanRegio) := float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
+
+	container All := Components('All', PlanRegioInRapportageFactor);
+	
+	container PerInkomensGroep
+	{
+		container Inkomen := RegioIndelingen/buurt/Inkomen;
+		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
+		container midden  := Components('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
+		container hoog    := Components('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
+
+		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;midden/GenerateAll;hoog/GenerateAll";
+	}
+
+	container PerEigendom
+	{
+		container Eigendom := RegioIndelingen/buurt/Eigendom;
+		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw / Eigendom/p_checksum);
+		container wcorpw   := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
+		container ov_hw    := Components('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
+
+		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "koop/GenerateAll;wcorpw/GenerateAll;ov_hw/GenerateAll";
+	}
+
+	parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "All/GenerateAll;PerInkomensGroep/GenerateAll;PerEigendom/GenerateAll";
 }
-

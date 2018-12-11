@@ -47,13 +47,13 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	#include <Bebouwing.dms>
 	container EnergieLabel
 	{
+		parameter<string> SQoute := '\''', IsHidden = "True";
+
 		unit<uint32> src
 		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		{
-			parameter<string> SQoute := '\''', IsHidden = "True";
-
 			attribute<string> HLT_unquoted := trim(replace(HLT,SQoute,''));
 			attribute<string> adres_key    :=
 				replace(Postcode,SQoute,'') + '_' + replace(HNR,SQoute,'') + 
@@ -89,12 +89,16 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	#include <WarmteBronnen.dms>
 
 	container Klimaat :=
-			for_each_ndva(  Classifications/zichtjaar/name
-			, Geography/rdc_grids/m100, float32
-			, '%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
-			), descr = "Klimaat_scenario_knmi";
+			for_each_ndva(
+			 Classifications/zichtjaar/name
+			,Geography/rdc_grids/m100
+			,float32
+			,'%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
+			)
+			, descr = "Klimaat_scenario_knmi";
 
-	container CBSWijkEnBuurt {
+	container CBSWijkEnBuurt
+	{
 		unit<uint32> j2013:
 			StorageName     = "%SourceDataProjDir%/CBS/kwb-2013.csv",
 			StorageType     = "gdal.vect",
