@@ -56,7 +56,7 @@ container Resultaten :=
 	container Exports: isHidden = "True"
 	{
 		parameter<String> GenerateAllIndicatoren := 'Ready', 
-			ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/indicatoren/GenerateAll', ';')", IsHidden = "True";
+			ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/Generate/All', ';')", IsHidden = "True";
 
 		parameter<string> GenerateAllAlloc := 'ready', 
 			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
@@ -67,15 +67,15 @@ container Resultaten :=
 				'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br>'
 				'<I>version</i>: </description>' + 
 				'<result><br><br>' + 
-				' Flow, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2020 : ' + replace(string(J2020/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2030 : ' + replace(string(J2030/indicatoren/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
-				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(StartJaar/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2020 : ' + replace(string(sum(J2020/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2030 : ' + replace(string(sum(J2030/indicatoren/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
-				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2020 : ' + replace(string(sum(J2020/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2030 : ' + replace(string(sum(J2030/indicatoren/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
+				' Flow, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2020 : ' + replace(string(J2020/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2030 : ' + replace(string(J2030/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
+				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
+				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
+				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
+				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
 			,	StorageType = "str"
 			,	storagename = "= '%LocalDataDir%/vesta_indicator_results_test.html'";
 		}
