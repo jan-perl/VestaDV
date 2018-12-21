@@ -47,7 +47,7 @@ template WKO
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
-	container impl
+	container impl: isHidden = "True"
 	{
 		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
 		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";

@@ -186,7 +186,7 @@ template TussenResultaten
 
 	#include<BebouwingsComponenten.dms>
 
-	container NCW
+	container NCW: isHidden = "True"
 	{
 		container DV := SpecifiekeInstellingen/DiscontoVoet;
 		container IN := SpecifiekeInstellingen/investering;

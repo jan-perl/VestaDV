@@ -107,8 +107,8 @@ container Maatschappelijk: Source = "FO v7a C6"
 	}
 	container net
 	{
-		attribute<Eur_yr> Aardgas       (PlanRegio) := netwerk/aardgas/Kj_totaal       - netwerk/aardgas/netbijdrage;
-		attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerk/elektriciteit/Kj_totaal - netwerk/elektriciteit/netbijdrage;
+		attribute<Eur_yr> Aardgas       (PlanRegio) := netwerken/aardgas/Kj_totaal       - netwerken/aardgas/netbijdrage;
+		attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerken/elektriciteit/Kj_totaal - netwerken/elektriciteit/netbijdrage;
 	}
 	attribute<Eur_yr> Om_Comfort        (PlanRegio) := =IsDefined(RLookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie)) 
 		? 'add('+AsItemList('StateNaAllocatie/WKO/Om_Comfort/'+Classifications/WkoComponent/name)+')'

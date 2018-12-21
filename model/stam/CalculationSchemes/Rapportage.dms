@@ -205,7 +205,7 @@ container Rapportage
 		parameter<string> filename;
 		// end case parameters
 
-		container impl
+		container impl: isHidden = "True"
 		{
 			unit<uint32> Field := range(uint32,0,strcount(fieldlist,';')+1)
 			{

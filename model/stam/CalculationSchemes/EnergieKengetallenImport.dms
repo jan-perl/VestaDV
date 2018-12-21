@@ -65,7 +65,7 @@ template EnergieKengetallenImport
 		parameter<string> LabelList := lowercase(AsItemList(Label));
 	}
 
-	unit<uint32> TableColumns := SubItem_PropValues(table, 'name');
+	unit<uint32> TableColumns := SubItem_PropValues(table, 'name'), isHidden = "True";
 
 	container Results : FreeData = "False"
 	{

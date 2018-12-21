@@ -48,6 +48,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	container EnergieLabel
 	{
 		parameter<string> SQoute := '\''', IsHidden = "True";
+		// Voor koppeling aan de BAG
+		unit<uint32> nummeraanduiding := RuimtelijkeData/BAG/import/nummeraanduiding;
+		unit<uint32> vbo              := RuimtelijkeData/BAG/import/vbo;
 
 		unit<uint32> src
 		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
@@ -67,15 +70,6 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<voorkomend>                   voorkomend_rel   := rlookup(label, voorkomend/Values);
 		}
 
-		unit<uint32> voorkomend := unique(src/label)
-		{
-			attribute<uint32> aantal := pcount(src/voorkomend_rel);
-		}
-
-		// Voor koppeling aan de BAG
-		unit<uint32> nummeraanduiding := RuimtelijkeData/BAG/import/nummeraanduiding;
-		unit<uint32> vbo              := RuimtelijkeData/BAG/import/vbo;
-
 		unit<uint32> data := unique(src/adres_key)
 		{
 			attribute<string>                       nummeraanduiding_id := nummeraanduiding/identificatie[rlookup(values, nummeraanduiding/adres_key)];
@@ -84,6 +78,12 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<uint32>                       datum_laatste       := max(src/datum_numeriek, rlookup(src/adres_key, values));
 			attribute<Classifications/energielabel> energielabel_rel    := rjoin(values + '_' + string(datum_laatste), src/adres_key + '_' + string(src/datum_numeriek), src/energielabel_rel), FreeData = "False";
 		}
+
+		unit<uint32> voorkomend := unique(src/label), isHidden = "True"
+		{
+			attribute<uint32> aantal := pcount(src/voorkomend_rel);
+		}
+
 	}
 	
 	#include <WarmteBronnen.dms>
