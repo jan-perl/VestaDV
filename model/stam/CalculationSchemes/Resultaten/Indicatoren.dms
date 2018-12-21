@@ -54,13 +54,21 @@ container indicatoren
 		}
 		container impl: IsHidden = "True"
 		{
-			attribute<String> BronExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie, 
+			attribute<String> BronExpr (Classifications/AanbodOptie) := 			 
+				replace(Classifications/AanbodOptie/IsPlanRegioOptie 
+					? 'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
+					: 'StateNaAllocatie/@AO@/CO2', 
+				'@AO@', Classifications/AanbodOptie/name
+				);
+/*			
+			union_data(Classifications/AanbodOptie, 
 				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte ? GebiedsAllocatie/RestWarmte/CO2   : 0.0[KG_yr]',
 				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie ? GebiedsAllocatie/GeoThermie/CO2   : 0.0[KG_yr]',
 				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK    ? GebiedsAllocatie/WijkWKK/impl/CO2 : 0.0[KG_yr]',
 				'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK     ? GebiedsAllocatie/BioWKK/impl/CO2  : 0.0[KG_yr]',
 				'StateNaAllocatie/WKO/CO2'
 			);
+*/
 		}
 
 		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
