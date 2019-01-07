@@ -31,15 +31,16 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template WKO
+Template LtWarmtenetImpl
 {
 	// begin case parameters
 	container BeginStatus;
 	container AanbodKentallen;
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> RunJaar;
+	parameter<bool> CollectieveWP;
 	// end case parameters
-
+		
 	container KostenBaten           := BeginStatus/KostenBaten;
 	container BebouwingsComponenten := KostenBaten/BebouwingsComponenten;
 
@@ -93,7 +94,7 @@ template WKO
 		);
 	
 
-	container CandidateSets := for_each_ne(WkoComponent/Name, 'WKOData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+')');
+	container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false)');
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
 	,	DialogType = "Map"
@@ -125,9 +126,7 @@ template WKO
 
 	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
 	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
-	
-	// decouple the cluster to the individual object level to support reporting of the allocation result
-	
+			
 	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
 		attribute<.> NrSelectedObjects          (Iteration) := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
@@ -180,7 +179,7 @@ template WKO
 		container Stock := BeginStatus/Stock;
 		container Flow  := BeginStatus/Flow;
 
-		container Wko
+		container LtWarmtenet
 		{
 			// accumulated capital
 			container Oi_Aansl := for_each_nedv(WkoComponent/Name, replace('BeginStatus/Wko/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);

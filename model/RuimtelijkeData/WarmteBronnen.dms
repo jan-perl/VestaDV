@@ -222,7 +222,33 @@ container WarmteBronnen
 			attribute<ContourSet> Grid (Geography/rdc_grids/m100) := poly2grid(impl/geometry, Geography/rdc_grids/m100), FreeData = "False";
 		}
 	}
-	container LtWarmte {
+	container LtWarmte: Source = "SN82_Functioneel ontwerp LT-warmtenetten_CPT_2018-10-3.docx"
+	{
+		unit<uint32> Categorie: nrofrows = 12
+		{
+			attribute<string> Label : [
+				'Middelgrote industrie (bedrijveniterreinen)'
+			,	'Rioolwater-zuiveringen'
+			,	'Koel- en vrieshuizen'
+			,	'Industriële bakkerijen'
+			,	'Industriële wasserijen'
+			,	'Diervoeder-bedrijven'
+			,	'Levensmiddelen-industrie'
+			,	'Slachthuizen'
+			,	'Datacenters'
+			,	'Kunstijsbanen'
+			,	'Supermarkten'
+			,	'Glastuinbouw'
+			];
+			attribute<bool> levert_koude : [
+				true, false, false, false, false, false, false, false, false, false, false, false
+			];
+			attribute<bool> vraagt_koude_koude : [
+				false, false, true, false, false, false, true, true, true, true, true, false
+			];
+			attribute<TJ_yr> V_Bron : [0, 334, 40, 0, 30, 78, 0, 0, 0];
+		}
+		
 		// tijdelijk gezondheidszorg als bron gekozen om als 
 		unit<uint32> bron := subset(BAG/vbo_utiliteit/gebruiksdoelen/gezondheidszorg)
 		,	DialogType = "Map", DialogData = "point"
@@ -230,18 +256,24 @@ container WarmteBronnen
 			attribute<rdc_meter>  point := BAG/vbo_utiliteit/locatie[nr_OrgEntity];
 			attribute<string>     Label := BAG/vbo_utiliteit/label[nr_OrgEntity], DialogType = "LabelText";
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
-
-			attribute<Eur_kW> Ki_kW_min    := const(0.01[Eur_kw],.);
-			attribute<Eur_kW> Ki_kW_max    := const(0.04[Eur_kw],.);
-			attribute<MW>     MWth_max     := const(1[MW],.);
-			attribute<MW>     MWth_min     := const(3[MW],.);
+			
+			attribute<Categorie>  Categorie_rel := const(2[Categorie], .);
+			
+			attribute<Celsius> Bron_Temperatuur := 35[Celsius];
+			
+			attribute<Eur_kW> Ki_kW_min    := const(250[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
+			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
+			attribute<GJ_Yr>  V_Bron       := Categorie/V_Bron[Categorie_rel];
+			
+			attribute<MW>     MWth_max     := const(10[MW],.); // bron specifiek of per categorie ?
+			attribute<MW>     MWth_min     := const( 5[MW],.); 
 			attribute<_yr>    Rj_Onderhoud := const(0.05[_yr], .);
 			attribute<Eur_GJ> K_GJ         := const(10[Eur_GJ], .);
-			attribute<KG_GJ > CO2_GJ       := const(0[KG_GJ], .);
-			attribute<G_GJ >  NOx_GJ       := const(0[G_GJ], .);
-			attribute<G_GJ >  SO2_GJ       := const(0[G_GJ], .);
-			attribute<G_GJ >  VOS_GJ       := const(0[G_GJ], .);
-			attribute<G_GJ >  TS_GJ        := const(0[G_GJ], .);
+			attribute<KG_GJ > CO2_GJ       := const(0[KG_GJ], .); // bron specifiek of per categorie ?
+			attribute<G_GJ >  NOx_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
+			attribute<G_GJ >  SO2_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
+			attribute<G_GJ >  VOS_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
+			attribute<G_GJ >  TS_GJ        := const(0[G_GJ], .);  // bron specifiek of per categorie ?
 		}
 	}
 	container Gas: Descr = "Gasleidingennet beheersgebied Stedin"

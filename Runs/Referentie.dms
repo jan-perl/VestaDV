@@ -54,10 +54,7 @@ container Referentie
 		// Run specific overruling
 		container SpecifiekeInstellingen := DefaultInstellingen/Basis
 		{
-			container StartJaar := DefaultInstellingen/Basis
-			{
-				parameter<Units/Percent> VAT := 19[Units/Percent];
-			} // tot 2010 geldt nog het lagere BTW-percentage
+			container StartJaar := DefaultInstellingen/Basis;
 
 			container J2020 := DefaultInstellingen/Toekomst;
 			container J2030 := J2020;
