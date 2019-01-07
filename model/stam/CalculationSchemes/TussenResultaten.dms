@@ -37,15 +37,17 @@ template TussenResultaten
 	parameter<String> RunJaarLabel;
 	// optional case parameter
 
-	container StateVoorAllocatie := // overridable by called 
-		for_each_ne(Classifications/BebouwingsComponent/name, 
-			'CalculationSchemes/StartingStateComponent('+
-				'Bebouwing/'+Classifications/BebouwingsComponent/Name+
-				','+ 'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results
-				, '+ string(id(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
-			')'
-		)
+	container StateVoorAllocatie // overridable by called 
 	{
+		container Bebouwing := 
+			for_each_ne(Classifications/BebouwingsComponent/name, 
+				'CalculationSchemes/StartingStateComponent('+
+					'.../Bebouwing/'+Classifications/BebouwingsComponent/Name+
+					','+ 'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results
+					, '+ string(id(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
+				')'
+			);
+			
 		#include<Aanbodopties.dms>
 
 		container Stock
@@ -239,9 +241,9 @@ template TussenResultaten
 			)'
 		)
 	{
-		container Initieel:= BebouwingsComponenten
+		container Initieel
 		{
-			container BC_voor_allocatie     := BebouwingsComponenten;
+			container Bebouwing             := BebouwingsComponenten;
 			container AanbodOpties          := StateVoorAllocatie/AanbodOpties;
 			container Stock                 := StateVoorAllocatie/Stock;
 			container WKO                   := StateVoorAllocatie/WKO;
@@ -260,7 +262,7 @@ template TussenResultaten
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 			}
 	
-			container KostenBaten := CalculationSchemes/KostenBaten(BC_voor_allocatie, invoer/Energieprijzen, RunJaar);
+			container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, invoer/Energieprijzen, RunJaar);
 		}
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	}
@@ -272,9 +274,9 @@ template TussenResultaten
 			'AllocatieComponent(
 				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
 				,StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie
-				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
-				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
-				,StateNaAllocatie/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
+				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
+				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
+				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
 			)'
 		)
 	{

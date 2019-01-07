@@ -70,7 +70,7 @@ template GeoThermie
 	container Kosten
 	{
 		attribute<Eur> Installatie (PlanRegio) := 
-			(TypeInfo/K_kW_min * Schuiven/KostenMin + TypeInfo/K_kW_max * Schuiven/KostenMax)
+			(TypeInfo/Ki_kW_min * Schuiven/KostenMin + TypeInfo/Ki_kW_max * Schuiven/KostenMax)
 			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) * 1000[kW / MW]
 			* LeerCurves/Curve2
 		;

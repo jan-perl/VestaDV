@@ -166,13 +166,15 @@ template WKO
 		attribute<Eur>      Ki_B_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Selected/Ki_B);
 	}
 
-	container Results :=
-		for_each_ne(Classifications/BebouwingsComponent/Name
-			, Classifications/BebouwingsComponent/KanWKO 
-				? 'ObjectResults/'+Classifications/BebouwingsComponent/Name+'/Result' 
-				: 'BeginStatus/'+Classifications/BebouwingsComponent/Name
-		)
+	container Results := BeginStatus
 	{
+		container Bebouwing :=
+			for_each_ne(Classifications/BebouwingsComponent/Name
+				, Classifications/BebouwingsComponent/KanWKO 
+					? 'ObjectResults/'+Classifications/BebouwingsComponent/Name+'/Result' 
+					: 'BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name
+			);
+			
 		container AanbodOpties : = BeginStatus/AanbodOpties
 		{
 			unit<uint32> WkoCluster := Selected;
@@ -258,6 +260,6 @@ template WKO
 			attribute<GJ_yr>  GJe_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJe')+')';
 			attribute<GJ_yr>  GJw_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJw')+')';
 		}
-		container KostenBaten := CalculationSchemes/KostenBaten(., Energieprijzen, RunJaar);
+		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen, RunJaar);
 	}
 }

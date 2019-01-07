@@ -44,7 +44,7 @@ template WKOResults
 	container WkoDataComponent          := WkoData/WkoDataComponent;
 	parameter<string> ComponentNaam     := WkoData/ComponentNaam;
 
-	container BeginStatusComponent      := ='BeginStatus/'+ComponentNaam;
+	container BeginStatusComponent      := ='BeginStatus/bebouwing/'+ComponentNaam;
 
 	container BCdata                    := WkoDataComponent/BCdata;
 	container RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;

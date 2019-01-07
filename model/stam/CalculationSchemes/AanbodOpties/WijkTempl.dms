@@ -54,9 +54,9 @@ template WijkTempl
 	container Kosten
 	{
 		attribute<Eur> Ki_Totaal_nu (PlanRegio) := 
-			(TypeInfo/K_kW_min * Schuiven/KostenMin + TypeInfo/K_kW_max * Schuiven/KostenMax) 
-		* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
-		* 1000[kW / MW];
+			(TypeInfo/Ki_kW_min * Schuiven/KostenMin + TypeInfo/Ki_kW_max * Schuiven/KostenMax) 
+			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
+			* 1000[kW / MW];
 
 		attribute<Eur> Ki_Totaal (PlanRegio) := Ki_Totaal_nu * LeerCurves/Curve2;
 		attribute<Eur> Oi_EIA    (PlanRegio) := Ki_Totaal * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfo/TypeInfoList_rel];

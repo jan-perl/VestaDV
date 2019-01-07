@@ -67,8 +67,8 @@ container WarmteBronnen
 
 			attribute<MW>      MWth_max;
 			attribute<MW>      MWth_min  := value(MetaData/TypeInfo/MWth_min[TypeInfo_rel],MW);
-			attribute<Eur_kW>  K_kW_min  := value(MetaData/TypeInfo/K_kW_min[TypeInfo_rel], Eur / kW);
-			attribute<Eur_kW>  K_kW_max  := value(MetaData/TypeInfo/K_kW_max[TypeInfo_rel], Eur / kW);
+			attribute<Eur_kW>  Ki_kW_min := value(MetaData/TypeInfo/Ki_kW_min[TypeInfo_rel], Eur / kW);
+			attribute<Eur_kW>  Ki_kW_max := value(MetaData/TypeInfo/Ki_kW_max[TypeInfo_rel], Eur / kW);
 			
 			attribute<_yr>  Rj_Onderhoud := value(MetaData/TypeInfo/JaarKosten[ TypeInfo_rel ], _yr);
 			attribute<Eur_GJ>  K_GJ10    :=       MetaData/TypeInfo/K_GJ10[TypeInfo_rel];
@@ -125,8 +125,8 @@ container WarmteBronnen
 				attribute<rdc_meter>             point            := WarmteBronnen/P[nr_OrgEntity];
 
 				attribute<MW>                    MWTh_min         := WarmteBronnen/MWth_min[nr_OrgEntity];
-				attribute<Eur_kW>                K_kW_min         := WarmteBronnen/K_kW_min[nr_OrgEntity];
-				attribute<Eur_kW>                K_kW_max         := WarmteBronnen/K_kW_max[nr_OrgEntity];
+				attribute<Eur_kW>                Ki_kW_min        := WarmteBronnen/Ki_kW_min[nr_OrgEntity];
+				attribute<Eur_kW>                Ki_kW_max        := WarmteBronnen/Ki_kW_max[nr_OrgEntity];
 				attribute<_yr>                   Rj_Onderhoud     := WarmteBronnen/Rj_Onderhoud[nr_OrgEntity];
 				attribute<MW>                    MWth_max         := WarmteBronnen/MWth_max[nr_OrgEntity];
 				attribute<Eur_GJ>                K_GJ             :=
@@ -153,8 +153,8 @@ container WarmteBronnen
 				attribute<MetaData/TypeInfoList> TypeInfoList_rel                  := modus_weighted(BronElementen/TypeInfoList_rel, BronElementen/MWth_max, per_BronElementen);
 
 				attribute<rdc_meter>             point        := Values;
-				attribute<Eur_kW>                K_kW_min     := sum(BronElementen/K_kW_min     * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
-				attribute<Eur_kW>                K_kW_max     := sum(BronElementen/K_kW_max     * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+				attribute<Eur_kW>                Ki_kW_min    := sum(BronElementen/Ki_kW_min    * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
+				attribute<Eur_kW>                Ki_kW_max    := sum(BronElementen/Ki_kW_max    * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
 				attribute<MW>                    MWth_max     := sum(BronElementen/MWth_max, per_BronElementen);
 				attribute<MW>                    MWth_min     := sum(BronElementen/MWth_min, per_BronElementen);
 				attribute<_yr>                   Rj_Onderhoud := sum(BronElementen/Rj_Onderhoud * BronElementen/MWth_max, per_BronElementen) / sum(BronElementen/MWth_max, per_BronElementen);
@@ -167,9 +167,6 @@ container WarmteBronnen
 				attribute<m>                     cumulDist    := const(0[m], .);
 				attribute<MW>                    cumulP       := const(0[MW], .);
 				attribute<Bronnen>               Bronnen_rel  := id(.);
-
-				attribute<Eur_kW>                Ki_kW_min    := K_kW_min;
-				attribute<Eur_kW>                Ki_kW_max    := K_kW_max;
 			}
 		}
 		container BronSelecties := for_each_ne(Classifications/zichtjaar/name, 'BronSelectie('+string(Classifications/zichtjaar/Jaar)+'[units/yr_uint16])');
@@ -223,6 +220,28 @@ container WarmteBronnen
 				attribute<rdc_meter> geometry  (poly, GeschikteContour) := ContourSet/geometry[nr_OrgEntity];
 			}
 			attribute<ContourSet> Grid (Geography/rdc_grids/m100) := poly2grid(impl/geometry, Geography/rdc_grids/m100), FreeData = "False";
+		}
+	}
+	container LtWarmte {
+		// tijdelijk gezondheidszorg als bron gekozen om als 
+		unit<uint32> bron := subset(BAG/vbo_utiliteit/gebruiksdoelen/gezondheidszorg)
+		,	DialogType = "Map", DialogData = "point"
+		{
+			attribute<rdc_meter>  point := BAG/vbo_utiliteit/locatie[nr_OrgEntity];
+			attribute<string>     Label := BAG/vbo_utiliteit/label[nr_OrgEntity], DialogType = "LabelText";
+			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
+
+			attribute<Eur_kW> Ki_kW_min    := const(0.01[Eur_kw],.);
+			attribute<Eur_kW> Ki_kW_max    := const(0.04[Eur_kw],.);
+			attribute<MW>     MWth_max     := const(1[MW],.);
+			attribute<MW>     MWth_min     := const(3[MW],.);
+			attribute<_yr>    Rj_Onderhoud := const(0.05[_yr], .);
+			attribute<Eur_GJ> K_GJ         := const(10[Eur_GJ], .);
+			attribute<KG_GJ > CO2_GJ       := const(0[KG_GJ], .);
+			attribute<G_GJ >  NOx_GJ       := const(0[G_GJ], .);
+			attribute<G_GJ >  SO2_GJ       := const(0[G_GJ], .);
+			attribute<G_GJ >  VOS_GJ       := const(0[G_GJ], .);
+			attribute<G_GJ >  TS_GJ        := const(0[G_GJ], .);
 		}
 	}
 	container Gas: Descr = "Gasleidingennet beheersgebied Stedin"

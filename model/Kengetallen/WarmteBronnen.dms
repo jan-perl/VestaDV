@@ -81,6 +81,9 @@ container WarmteBronnen
 
 			attribute<TypeInfoList> TypeInfoList_rel := rlookup(Type, TypeInfoList/Naam);
 			attribute<RekenType>    RekenType_rel    := TypeInfoList/RekenType_rel[TypeInfoList_rel];
+			
+			attribute<Eur_kW> Ki_kW_min := K_kW_min[Eur_kW];
+			attribute<Eur_kW> Ki_kW_max := K_kW_max[Eur_kW];
 
 			attribute<Eur_GJ> K_GJ10 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/StartJaar]')+')[RekenType_rel]';
 			attribute<Eur_GJ> K_GJ20 := ='union_data(RekenType, '+AsItemList('RekenTypes/'+RekenType/Naam+'/K_GJ[classifications/zichtjaar/V/J2020]')+')[RekenType_rel]';
@@ -224,8 +227,8 @@ container WarmteBronnen
 		parameter<MetaData/TypeInfoList> TypeInfoList_rel :=       MetaData/TypeInfo/TypeInfoList_rel[TypeInfo_rel];
 		parameter<MetaData/RekenType>    RekenType_rel    :=       MetaData/TypeInfo/RekenType_rel[TypeInfo_rel];
 		parameter<MW>                    MWth_min         := value(MetaData/TypeInfo/MWth_min[TypeInfo_rel], MW);
-		parameter<Eur_kW >               K_kW_min         := value(MetaData/TypeInfo/K_kW_min[TypeInfo_rel], Eur_kW);
-		parameter<Eur_kW >               K_kW_max         := value(MetaData/TypeInfo/K_kW_max[TypeInfo_rel], Eur_kW);
+		parameter<Eur_kW >               Ki_kW_min        :=       MetaData/TypeInfo/Ki_kW_min[TypeInfo_rel];
+		parameter<Eur_kW >               Ki_kW_max        :=       MetaData/TypeInfo/Ki_kW_max[TypeInfo_rel];
 		parameter<_yr>                   Rj_Onderhoud     := value(MetaData/TypeInfo/JaarKosten[TypeInfo_rel], _yr);
 		parameter<Eur_GJ >               K_GJ10           := value(MetaData/TypeInfo/K_GJ10[TypeInfo_rel], Eur_GJ);
 		parameter<Eur_GJ >               K_GJ20           := value(MetaData/TypeInfo/K_GJ20[TypeInfo_rel], Eur_GJ);

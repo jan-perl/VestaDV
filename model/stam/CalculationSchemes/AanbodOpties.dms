@@ -43,6 +43,7 @@ container AanbodOpties
 	#include <WKOIter.dms>
 	#include <WKOResults.dms>
 	#include <WijkTempl.dms>
+	#include <LtWarmtenet.dms>
 
 	Template WijkWKK
 	{
@@ -64,6 +65,7 @@ container AanbodOpties
 
 		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]);
 		container Results := Impl/Results;
+		unit<uint32> PlanRegio := ../PlanRegio;
 		attribute<float32> CO2(PlanRegio) := impl/CO2;
 	}
 	
@@ -85,23 +87,9 @@ container AanbodOpties
 
 		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]);
 		container Results := Impl/Results;
+		unit<uint32> PlanRegio := ../PlanRegio;
 		attribute<float32> CO2(PlanRegio) := impl/CO2;
 	}
-	
-	Template LtWarmtenetImpl
-	{
-		// begin case parameters
-		container BeginStatus;
-		container AanbodKentallen;
-		container EnergiePrijzen;
-		parameter<units/yr_uint16> Jaar;
-		parameter<bool> CollectieveWP;
-		// end case parameters
-		
-		container Results := BeginStatus; // TODO !
-		
-	}
-	
 	Template LtWarmtenetMetCollectieveWP
 	{
 		// begin case parameters
@@ -112,7 +100,9 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, true);
-		container Results := Impl/Results;				
+		container Results := Impl/Results {
+			container LtWarmtenetMetCollectieveWP := LtWarmtenet;
+		}
 	}
 	
 	Template LtWarmtenetMetIndividueleWP
@@ -125,7 +115,9 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, false);
-		container Results := Impl/Results;		
+		container Results := Impl/Results {
+			container LtWarmtenetMetIndividueleWP := LtWarmtenet;
+		}
 	}
 
 }

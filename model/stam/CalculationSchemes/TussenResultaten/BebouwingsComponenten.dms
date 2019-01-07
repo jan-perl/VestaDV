@@ -42,7 +42,7 @@ container BebouwingsComponenten :=
 			'invoer/Kengetallen/Bebouwing/'+ Classifications/BebouwingsComponent/name +'/results,'
 			'SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/'+ Classifications/BebouwingsComponent/name +','
 			'VraagKentallen/'+ Classifications/BebouwingsComponent/name +','
-			'StateVoorAllocatie/'+ Classifications/BebouwingsComponent/name +','
+			'StateVoorAllocatie/Bebouwing/'+ Classifications/BebouwingsComponent/name +','
 			'Prijzen/AardGas/'+(Classifications/BebouwingsComponent/IsGlastuinbouw ? 'Glastuinbouw' : 'Staffel')+','
 			+ quote(Classifications/BebouwingsComponent/NcwRefBase)+','
 			+'1.0 '+(Classifications/BebouwingsComponent/DraagtBTW ? '+ SpecifiekeInstellingen/VAT    / 100[Percent]' : '')+','

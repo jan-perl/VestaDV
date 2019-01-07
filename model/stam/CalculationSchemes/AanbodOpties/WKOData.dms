@@ -36,11 +36,12 @@ template WKOData
 	// begin case parameters
 	container WkoDataComponent;
 	parameter<string> ComponentNaam;
+	parameter<bool> IsWKO := true;
 	// end case parameters
 
 	container BCdata                    := WkoDataComponent/BCdata;
 	container RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;
-	container BeginStatusComponent      := ='BeginStatus/'+ComponentNaam;
+	container BeginStatusComponent      := ='BeginStatus/Bebouwing/'+ComponentNaam;
 
 	unit<uint32> BebouwingsObject       := BCdata/BebouwingsObject;
 
@@ -56,10 +57,12 @@ template WKOData
 		attribute<float64> SSD_yy (BebouwingsObject) := BCdata/BebouwingsObject/Gebied/SSD_yy;
 	}
 
-	attribute <bool> InContour            (BebouwingsObject) := IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] ), FreeData = "False";
-	attribute <bool> GeoGeschikt          (BebouwingsObject) := =AanbodKentallen/BuitenContour ? 'const(true, BebouwingsObject)' : 'InContour';
+	parameter<bool> UseContour :=  =IsWKO ? '!AanbodKentallen/BuitenContour' : 'false';
+	attribute <bool> InContour            (BebouwingsObject) := =UseContour
+		? 'IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] )'
+		: 'const(true, BebouwingsObject)';
 	attribute <bool> LtVerwarmingGeschikt (BebouwingsObject) := BCdata/LtVerwarmingGeschikt;
-	attribute <bool> Geschikt             (BebouwingsObject) := GeoGeschikt && LtVerwarmingGeschikt;
+	attribute <bool> Geschikt             (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'LtVerwarmingGeschikt';
 
 	 // kosten excl distributie
 	attribute<Eur   > Ki_A        (BebouwingsObject) := Ki_Doublet * min_elem(WkoDataComponent/P_Warmte, WkoDataComponent/P_Koude);
