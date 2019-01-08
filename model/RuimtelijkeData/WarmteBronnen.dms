@@ -224,7 +224,7 @@ container WarmteBronnen
 	}
 	container LtWarmte: Source = "SN82_Functioneel ontwerp LT-warmtenetten_CPT_2018-10-3.docx"
 	{
-		unit<uint32> Categorie: nrofrows = 12
+		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
 			attribute<string> Label : [
 				'Middelgrote industrie (bedrijveniterreinen)'

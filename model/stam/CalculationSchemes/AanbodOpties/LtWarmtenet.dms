@@ -95,6 +95,16 @@ Template LtWarmtenetImpl
 	
 
 	container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false)');
+	
+	container BronData {
+		container BCdata {
+			unit<uint32> BebouwingsComponent := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {
+				attribute<.> Partitioning := id(.);
+			}
+		}
+	}
+	
+	container CandidateBron := WkoData(BronData, 'bron', false);
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
 	,	DialogType = "Map"
@@ -121,24 +131,36 @@ Template LtWarmtenetImpl
 	unit<uint32> Iteration := Range(uint32, 0, NrIterations) 
 	{
 		attribute<string> Name := 'I'+string(id(.));
-		attribute<string> Prev := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
+		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'CandidateBron');
+		attribute<string> PrevBest := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
 	}
 
-	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
-	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
-			
-	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
-	{
-		attribute<.> NrSelectedObjects          (Iteration) := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects (Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
+	container BronIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBron + ', bron)');
+	container BestIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBest + ', UnitedCandidates)');
+	
+	container BronIterationTest := WKOIter(bron,bron);
+	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
 
-		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
-		attribute<string>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
-		attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
-		attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
-		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
+	template SelectieT {
+		container Iterations;
+		
+		unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
+		{
+			attribute<.> NrSelectedObjects          (Iteration) := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
+			attribute<.> CumulNrPrevSelectedObjects (Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
+
+			attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
+			attribute<string>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
+			attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
+			attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
+			attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
+		}
 	}
-
+	
+	container BronSelectie := SelectieT(BronIterations);
+	container BestSelectie := SelectieT(BestIterations);
+	unit<uint32> Selected  := BestSelectie/Selected;
+	
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
 	attribute<uint32> NrAllObjects              (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
 	attribute<uint32> CumulNrPrevAllowedObjects (WkoComponent) := cumulate(NrAllowedObjects)-NrAllowedObjects;
