@@ -271,6 +271,10 @@ REMOVE */
 
 			attribute<string>    plannaam;
 			attribute<string>    label := plannaam;
+			
+			attribute<GJ_Yr>     bron_vol;
+			attribute<MW>        bron_cap;
+			attribute<MW>        cap_MW;
 		}
 		
 		unit<uint32> Glastuinbouw
@@ -286,6 +290,10 @@ REMOVE */
 
 			attribute<string>    FID;
 			attribute<string>    label := FID;
+			
+			attribute<GJ_Yr>     bron_vol;
+			attribute<MW>        bron_cap;
+			attribute<MW>        cap_MW;
 		}
 		
 		unit<uint32> LTbronnen_capaciteit
@@ -305,6 +313,10 @@ REMOVE */
 
 			attribute<string>    naam;
 			attribute<string>    label := naam;
+			
+			attribute<GJ_Yr>     bron_vol;
+			attribute<MW>        bron_cap;
+			attribute<MW>        cap_MW;
 		}
 		
 		unit<uint32> Bekende_LTbronnen := subset(IsDefined(LTbronnen_capaciteit/categorie_rel)) {
@@ -327,9 +339,13 @@ REMOVE */
 			
 			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), Bekende_LTbronnen/Categorie_rel);
 			
+			attribute<GJ_Yr>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol[Bekende_LTbronnen/nr_OrgEntity]);
+			attribute<MW>      Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap[Bekende_LTbronnen/nr_OrgEntity]);
+			attribute<MW>      cap_MW   := union_data(., bedrijventerrein/cap_MW  , glastuinbouw/cap_MW  , LTbronnen_capaciteit/cap_MW  [Bekende_LTbronnen/nr_OrgEntity]);
+
 			attribute<Celsius> Bron_Temperatuur := const(35[Celsius], .);
 			
-			attribute<Eur_kW> Ki_kW_min    := const(250[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
+			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
 			attribute<GJ_Yr>  V_Bron       := Categorie/V_Bron[Categorie_rel];
 			
