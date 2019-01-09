@@ -224,6 +224,16 @@ container WarmteBronnen
 	}
 	container LtWarmte: Source = "SN82_Functioneel ontwerp LT-warmtenetten_CPT_2018-10-3.docx"
 	{
+/* REMOVE		
+		unit<uint32> LTA_potentieel
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTA_potentieel.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft";
+REMOVE */
+
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
 			attribute<string> Label : [
@@ -254,23 +264,30 @@ container WarmteBronnen
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft";
+		,	Source          = "CE-Delft"
+		{
+			attribute<rdc_meter> Geometry(poly);	
+			attribute<rdc_meter> Point := centroid(Geometry);
+
+			attribute<string>    plannaam;
+			attribute<string>    label := plannaam;
+		}
+		
 		unit<uint32> Glastuinbouw
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/glastuinbouw.shp"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft";
-/* REMOVE		
-		unit<uint32> LTA_potentieel
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTA_potentieel.shp"
-		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		,	DialogType      = "Map"
-		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft";
-REMOVE */
+		,	Source          = "CE-Delft"
+		{
+			attribute<rdc_meter> Geometry(poly);
+			attribute<rdc_meter> Point := centroid(Geometry); 
+
+			attribute<string>    FID;
+			attribute<string>    label := FID;
+		}
+		
 		unit<uint32> LTbronnen_capaciteit
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTbronnen_capaciteit.shp"
 		,	StorageType     = "gdal.vect"
@@ -279,10 +296,21 @@ REMOVE */
 		,	DialogData      = "Geometry"
 		,	Source          = "CE-Delft"
 		{
-			attribute<string> categorie;
+			attribute<rdc_meter> Geometry(poly);
+			attribute<rdc_meter> Point := centroid(Geometry); 
 			
+			attribute<string> categorie;			
 			attribute<unique_categorie> unique_categorie_rel := rlookup(categorie, unique_categorie/values);
 			attribute<../categorie> categorie_rel := unique_categorie/categorie_rel[unique_categorie_rel];
+
+			attribute<string>    naam;
+			attribute<string>    label := naam;
+		}
+		
+		unit<uint32> Bekende_LTbronnen := subset(IsDefined(LTbronnen_capaciteit/categorie_rel)) {
+			attribute<categorie> categorie_rel := LTbronnen_capaciteit/categorie_rel[nr_OrgEntity];
+			attribute<rdc_meter> point := LTbronnen_capaciteit/point[nr_OrgEntity];
+			attribute<string>    label := LTbronnen_capaciteit/label[nr_OrgEntity];   
 		}
 		
 		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/categorie)
@@ -290,17 +318,16 @@ REMOVE */
 			attribute<categorie> categorie_rel := rlookup(values, categorie/Label);
 		}
 		
-		// tijdelijk gezondheidszorg als bron gekozen om als 
-		unit<uint32> bron := subset(BAG/vbo_utiliteit/gebruiksdoelen/gezondheidszorg)
+		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, Bekende_LTbronnen) 
 		,	DialogType = "Map", DialogData = "point"
 		{
-			attribute<rdc_meter>  point := BAG/vbo_utiliteit/locatie[nr_OrgEntity];
-			attribute<string>     Label := BAG/vbo_utiliteit/label[nr_OrgEntity], DialogType = "LabelText";
+			attribute<rdc_meter>  point := union_data(., bedrijventerrein/point, glastuinbouw/point, Bekende_LTbronnen/point);
+			attribute<string>     Label := union_data(., bedrijventerrein/Label, glastuinbouw/Label, Bekende_LTbronnen/Label);
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
 			
-			attribute<..>  Categorie_rel := const(2[Categorie], .);
+			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), Bekende_LTbronnen/Categorie_rel);
 			
-			attribute<Celsius> Bron_Temperatuur := 35[Celsius];
+			attribute<Celsius> Bron_Temperatuur := const(35[Celsius], .);
 			
 			attribute<Eur_kW> Ki_kW_min    := const(250[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
