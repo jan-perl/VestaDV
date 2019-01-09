@@ -248,6 +248,47 @@ container WarmteBronnen
 			];
 			attribute<TJ_yr> V_Bron : [0, 334, 40, 0, 30, 78, 0, 0, 0];
 		}
+		unit<uint32> Bedrijventerrein
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft";
+		unit<uint32> Glastuinbouw
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/glastuinbouw.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft";
+/* REMOVE		
+		unit<uint32> LTA_potentieel
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTA_potentieel.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft";
+REMOVE */
+		unit<uint32> LTbronnen_capaciteit
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTbronnen_capaciteit.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft"
+		{
+			attribute<string> categorie;
+			
+			attribute<unique_categorie> unique_categorie_rel := rlookup(categorie, unique_categorie/values);
+			attribute<../categorie> categorie_rel := unique_categorie/categorie_rel[unique_categorie_rel];
+		}
+		
+		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/categorie)
+		{
+			attribute<categorie> categorie_rel := rlookup(values, categorie/Label);
+		}
 		
 		// tijdelijk gezondheidszorg als bron gekozen om als 
 		unit<uint32> bron := subset(BAG/vbo_utiliteit/gebruiksdoelen/gezondheidszorg)
@@ -257,7 +298,7 @@ container WarmteBronnen
 			attribute<string>     Label := BAG/vbo_utiliteit/label[nr_OrgEntity], DialogType = "LabelText";
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
 			
-			attribute<Categorie>  Categorie_rel := const(2[Categorie], .);
+			attribute<..>  Categorie_rel := const(2[Categorie], .);
 			
 			attribute<Celsius> Bron_Temperatuur := 35[Celsius];
 			
