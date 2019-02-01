@@ -84,15 +84,22 @@ container Toekomst := Basis, using = "Units"
 	{
 		container AanbodOpties
 		{
+			parameter<UInt32> Aantal: [ 3 ]; // @USERINPUT
+			
+			parameter<Classifications/AanbodOptie> Optie1 := Classifications/AanbodOptie/V/WKO;
+			parameter<Classifications/AanbodOptie> Optie2 := Classifications/AanbodOptie/V/LtWarmtenetMetCollectieveWP;
+			parameter<Classifications/AanbodOptie> Optie3 := Classifications/AanbodOptie/V/LtWarmtenetMetIndividueleWP;
+/*	
 			parameter<UInt32> Aantal: [ 7 ]; // @USERINPUT
 			
 			parameter<Classifications/AanbodOptie> Optie1 := Classifications/AanbodOptie/V/GeoThermie;
 			parameter<Classifications/AanbodOptie> Optie2 := Classifications/AanbodOptie/V/RestWarmte;
 			parameter<Classifications/AanbodOptie> Optie3 := Classifications/AanbodOptie/V/BioWKK;
 			parameter<Classifications/AanbodOptie> Optie4 := Classifications/AanbodOptie/V/WijkWKK;
-			parameter<Classifications/AanbodOptie> Optie5 := Classifications/AanbodOptie/V/LtWarmtenetMetCollectieveWP;
-			parameter<Classifications/AanbodOptie> Optie6 := Classifications/AanbodOptie/V/LtWarmtenetMetIndividueleWP;
-			parameter<Classifications/AanbodOptie> Optie7 := Classifications/AanbodOptie/V/WKO;
+			parameter<Classifications/AanbodOptie> Optie5 := Classifications/AanbodOptie/V/WKO;
+			parameter<Classifications/AanbodOptie> Optie6:= Classifications/AanbodOptie/V/LtWarmtenetMetCollectieveWP;
+			parameter<Classifications/AanbodOptie> Optie7:= Classifications/AanbodOptie/V/LtWarmtenetMetIndividueleWP;
+*/	
 		}
 	}
 }

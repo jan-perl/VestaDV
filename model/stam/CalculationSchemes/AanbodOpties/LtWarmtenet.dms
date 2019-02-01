@@ -96,15 +96,35 @@ Template LtWarmtenetImpl
 
 	container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false)');
 	
+	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
+			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
+		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
+	
+	unit<uint32> Bronnen := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {
+		attribute<.> Partitioning := id(.);
+		attribute<bool> SelectAfweging := const(true, .);
+		attribute<EUR_Yr> AC_Netto := 250[EUR / KW] * cap_KW_warmte * NCW/ow28/AnnualisationFactor;
+		attribute<KW>     P_Warmte := cap_KW_warmte;
+		attribute<KW>     P_Koude  := cap_KW_koude;
+		attribute<EUR_Yr>  Oj_Verbruik := bron_vol * BronWarmtePrijs;
+		
+		attribute<float64>   n           := const(1.0, .);
+		attribute<float64>   MEAN_x      := PointCol(Point);
+		attribute<float64>   MEAN_y      := PointRow(Point);
+		attribute<float64>   SSD_xx      := const(0.0, .);
+		attribute<float64>   SSD_xy      := const(0.0, .);
+		attribute<float64>   SSD_yy      := const(0.0, .);
+	}
+/* REMOVE	
 	container BronData {
 		container BCdata {
-			unit<uint32> BebouwingsComponent := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {
-				attribute<.> Partitioning := id(.);
-			}
+			unit<uint32> BebouwingsComponent := Bronnen;
 		}
 	}
+//*/	
+//	container CandidateBron := LtBronData(Bronnen);
 	
-	container CandidateBron := WkoData(BronData, 'bron', false);
+//*/
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
 	,	DialogType = "Map"
@@ -131,15 +151,15 @@ Template LtWarmtenetImpl
 	unit<uint32> Iteration := Range(uint32, 0, NrIterations) 
 	{
 		attribute<string> Name := 'I'+string(id(.));
-		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'CandidateBron');
+		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'Bronnen');
 		attribute<string> PrevBest := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
 	}
 
-	container BronIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBron + ', bron)');
+	container BronIterations := for_each_ne(Iteration/Name, 'LtBronIter(' + Iteration/PrevBron + ', Bronnen)');
 	container BestIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBest + ', UnitedCandidates)');
 	
-	container BronIterationTest := WKOIter(bron,bron);
-	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
+	container BronIterationTest := LtBronIter(Bronnen,Bronnen); // DEBUG
+	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates); // DEBUG
 
 	template SelectieT {
 		container Iterations;
