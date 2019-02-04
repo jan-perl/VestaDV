@@ -161,7 +161,8 @@ Template LtWarmtenetImpl
 		attribute<Eur>       Ki_B  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_B')+')';
 		attribute<kW>        P_Warmte  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte')+')';
 		attribute<kW>        P_Koude   := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Koude')+')';
-		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(BronIteration))+']')+'),.)';
+		attribute<.>         Partitioning (UnitedCandidates) := BronSelectie_rel;
+		//='value(MakeDefined('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(BronIteration))+']')+'),.)';
 	}
 	
 	
@@ -172,7 +173,7 @@ Template LtWarmtenetImpl
 		attribute<string> PrevBest := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
 	}
 	
-	container BestIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBest + ', UnitedCandidates)');
+//	container BestIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBest + ', UnitedCandidates)');
 
 //	container BronIterationTest := LtBronIter(Bronnen,Bronnen); // DEBUG
 //	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates); // DEBUG
@@ -182,7 +183,9 @@ Template LtWarmtenetImpl
 	
 	
 	
-	unit<uint32> Selected := Subset(BronSelectie_sqrdist <= distance_threshold[BronSelectie_rel]);
+	unit<uint32> Selected := Subset(BronSelectie_sqrdist <= distance_threshold[BronSelectie_rel]) {
+//		attribute<BronSelectie> Partitioning := BronSelectie_rel[nr_OrgEntity];
+	}
 	
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
 	attribute<uint32> NrAllObjects              (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
@@ -192,7 +195,7 @@ Template LtWarmtenetImpl
 	container ObjectResults :=
 		for_each_ne(WkoComponent/Name, 
 			'WkoResults('
-				'UnitedCandidates, Selected, CandidateSets/'+WkoComponent/Name+','
+				'UnitedCandidates, BronSelectie, CandidateSets/'+WkoComponent/Name+','
 				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
 			')'
