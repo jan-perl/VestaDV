@@ -31,14 +31,14 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template WKOIter
+template LtBronIter
 {
 	// begin case parameters
-	unit <uint32> Candidates;
-	unit <uint32> UnitedCandidates;
+	unit <uint32> Candidates;       // the set of bronnen for the current iteration
+	unit <uint32> UnitedCandidates; // the set of all original candidate bronnen
 	// end case parameters
 
-	unit <uint32> UniqueUnitedCandidates := Unique(Candidates/Point) // dit moet omdat connect_points anders weigert.
+	unit <uint32> UniqueCandidates := Unique(Candidates/Point) // dit moet omdat connect_points anders weigert.
 	,	DialogType = "Map"
 	,	DialogData = "Point"
 	{
@@ -63,7 +63,9 @@ template WKOIter
 		attribute<float64>   SqrtDetSSD  := MakeDefined(Sqrt(SSD_xx*SSD_yy-SSD_xy*SSD_xy), 0.0);
 		attribute<m2>        AreaProxy   := (PI() * SqrtDetSSD / n)[m2];
 
-		attribute<Eur>       Ki_A        := constanten/Ki_Doublet * max_elem(P_Warmte, P_Koude);
+		attribute<Eur>       Ki_WOS      := const(1000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW];  // @@@
+		attribute<Eur>       Ki_Buffer   := const(10000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW]; // @@@
+		attribute<Eur>       Ki_A        := Ki_WOS + Ki_Buffer;
 		attribute<Eur>       Ki_B        := AreaProxy * constanten/Ki_distr;
 
 		//attribute<Eur_yr> Oj_ABC:= Oj_totaal;
@@ -73,24 +75,30 @@ template WKOIter
 		// samenvoegen verhoogt rhs additief, lhs minder dan additief als Ki_ABC onder de 400.000 ligt en Ki_Distr niet te veel stijgt, anders ligt het aan de ontwikkeling van Ki_Distr
 		// het door samenvoegen behalen van een positieve afweging wordt verondersteld alleen mogelijk te zijn als  de onderdelen nog onder de 400000 opleveren, maar meer dan de ongerestricteerde Ki_ABC.
 
-		attribute<bool> MarginaleAfweging := Ki_B * (NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd )) < AC_Netto;
+		attribute<bool> MarginaleAfweging := Ki_B * NCW/wd28/AnnualisationFactor < AC_Netto;
 		attribute<bool> ClusterAfweging   := Oj_verbruik < 400000[Eur] * NCW/ow28/AnnualisationFactor;
 		attribute<bool> SelectAfweging    := MarginaleAfweging && !ClusterAfweging; // cluster is klaar
 		attribute<bool> CombiAfweging     := MarginaleAfweging &&  ClusterAfweging; // er moet verder geclusterd worden om aan het minimum te gaan voldoen.
 	}
 
-	unit<uint32> Selected := Subset(UniqueUnitedCandidates/SelectAfweging), DialogType = "Map", DialogData = "Point"
+	unit<uint32> Selected := Subset(UniqueCandidates/SelectAfweging), DialogType = "Map", DialogData = "Point"
 	{
-		attribute<rdc_meter> Point                                := UniqueUnitedCandidates/Point[nr_OrgEntity];
-		attribute<string>    Label                                := UniqueUnitedCandidates/Label[nr_OrgEntity], DialogType = "LabelText";
-		attribute<.>         Partitioning (UnitedCandidates) := invert(nr_OrgEntity)[UniqueUnitedCandidates/Partitioning];
-		attribute<Eur>       Ki_A                                 := UniqueUnitedCandidates/Ki_A[nr_OrgEntity];
-		attribute<Eur>       Ki_B                                 := UniqueUnitedCandidates/Ki_B[nr_OrgEntity];
+		attribute<rdc_meter> Point                                := UniqueCandidates/Point[nr_OrgEntity];
+		attribute<string>    Label                                := UniqueCandidates/Label[nr_OrgEntity], DialogType = "LabelText";
+		
+		attribute<Eur_yr>    Oj_verbruik := UniqueCandidates/Oj_verbruik[nr_OrgEntity];
+		attribute<Eur_yr>    AC_Netto    := UniqueCandidates/AC_Netto   [nr_OrgEntity];
+		attribute<kW>        P_Warmte    := UniqueCandidates/P_Warmte   [nr_OrgEntity];
+		attribute<kW>        P_Koude     := UniqueCandidates/P_Koude    [nr_OrgEntity];
+		
+		attribute<.>         Partitioning (UnitedCandidates) := invert(nr_OrgEntity)[UniqueCandidates/Partitioning];
+		attribute<Eur>       Ki_A                                 := UniqueCandidates/Ki_A[nr_OrgEntity];
+		attribute<Eur>       Ki_B                                 := UniqueCandidates/Ki_B[nr_OrgEntity];
 	}
 
-	unit<uint32> ClusterSet := Subset(UniqueUnitedCandidates/CombiAfweging), DialogType = "Map", DialogData = "Point"
+	unit<uint32> ClusterSet := Subset(UniqueCandidates/CombiAfweging), DialogType = "Map", DialogData = "Point"
 	{
-		attribute<rdc_meter>  Point        := UniqueUnitedCandidates/Point[nr_OrgEntity];
+		attribute<rdc_meter>  Point        := UniqueCandidates/Point[nr_OrgEntity];
 		attribute<ClusterSet> Neighbour    := connect_neighbour(Point);
 		attribute<bool>       InCluster    := ClusterSet/Neighbour[ClusterSet/Neighbour] == id(ClusterSet);
 		attribute<bool>       CanCluster   := ClusterSet/Neighbour > id(ClusterSet) && InCluster;
@@ -99,7 +107,7 @@ template WKOIter
 
 	unit <uint32> JoinedClusters := Subset(ClusterSet/CanCluster), DialogType = "Map", DialogData = "Point"
 	{
-		unit<uint32> Candidates := UniqueUnitedCandidates;
+		unit<uint32> Candidates := UniqueCandidates;
 
 		attribute<Candidates> src1    := ClusterSet/nr_OrgEntity[nr_OrgEntity];
 		attribute<Candidates> src2    := ClusterSet/nr_OrgEntity[ClusterSet/Neighbour[nr_OrgEntity]];
@@ -128,7 +136,7 @@ template WKOIter
 
 	unit <uint32> InheritedClusters := Subset(ClusterSet/NotInCluster), DialogType = "Map", DialogData = "Point"
 	{
-		unit<uint32>          Candidates                           := UniqueUnitedCandidates;
+		unit<uint32>          Candidates                           := UniqueCandidates;
 		attribute<Candidates> src1                                 := ClusterSet/nr_OrgEntity[nr_OrgEntity];
 		attribute<.>          Partitioning (UnitedCandidates) := invert(src1)[Candidates/Partitioning];
 		

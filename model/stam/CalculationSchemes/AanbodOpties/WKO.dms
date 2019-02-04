@@ -47,23 +47,25 @@ template WKO
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
-	parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
-	parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
+	container constanten {
+		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
+		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 
-	//Seasonal Performance Factor
-	parameter<Ratio> SPF_coll: [3.5];
+		//Seasonal Performance Factor
+		parameter<Ratio> SPF_coll: [3.5];
 
-	//ASW AanSluitWaarde
-	parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
-	parameter<float64> ASW_kc := 2[kW_Woning];
-	parameter<float64> ASW_wa := 5[kW_Woning]; // appartement
-	parameter<float64> ASW_ka := 2[kW_Woning];
-	parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
-	parameter<float64> ASW_ku := 0.06[kW_m2];
+		//ASW AanSluitWaarde
+		parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
+		parameter<float64> ASW_kc := 2[kW_Woning];
+		parameter<float64> ASW_wa := 5[kW_Woning]; // appartement
+		parameter<float64> ASW_ka := 2[kW_Woning];
+		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
+		parameter<float64> ASW_ku := 0.06[kW_m2];
 
-	parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
-	parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
-
+		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
+		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
+	}
+	
 	container BestaandeWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/BestaandeWoning, 

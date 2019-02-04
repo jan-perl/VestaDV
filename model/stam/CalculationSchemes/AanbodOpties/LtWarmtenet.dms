@@ -48,23 +48,27 @@ Template LtWarmtenetImpl
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
-	parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
-	parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
+	container constanten {
+		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
+		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 
-	//Seasonal Performance Factor
-	parameter<Ratio> SPF_coll: [3.5];
+		parameter<Float64> BijstookFactor := 2.0; // afgenomen warmte / geleverde warmte
+		
+		//Seasonal Performance Factor
+		parameter<Ratio> SPF_coll: [3.5];
 
-	//ASW AanSluitWaarde
-	parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
-	parameter<float64> ASW_kc := 2[kW_Woning];
-	parameter<float64> ASW_wa := 5[kW_Woning]; // appartement
-	parameter<float64> ASW_ka := 2[kW_Woning];
-	parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
-	parameter<float64> ASW_ku := 0.06[kW_m2];
+		//ASW AanSluitWaarde
+		parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
+		parameter<float64> ASW_kc := 2[kW_Woning];
+		parameter<float64> ASW_wa := 5[kW_Woning]; // appartement
+		parameter<float64> ASW_ka := 2[kW_Woning];
+		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
+		parameter<float64> ASW_ku := 0.06[kW_m2];
 
-	parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
-	parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
-
+		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
+		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
+	}
+	
 	container BestaandeWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/BestaandeWoning, 
@@ -115,16 +119,6 @@ Template LtWarmtenetImpl
 		attribute<float64>   SSD_xy      := const(0.0, .);
 		attribute<float64>   SSD_yy      := const(0.0, .);
 	}
-/* REMOVE	
-	container BronData {
-		container BCdata {
-			unit<uint32> BebouwingsComponent := Bronnen;
-		}
-	}
-//*/	
-//	container CandidateBron := LtBronData(Bronnen);
-	
-//*/
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
 	,	DialogType = "Map"
@@ -147,39 +141,48 @@ Template LtWarmtenetImpl
 		attribute<float64>   SSD_yy       := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/SSD_yy[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 	}
 
+	parameter<uint32> NrBronIterations: [ 25 ];
+	unit<uint32> BronIteration := Range(uint32, 0, NrBronIterations) 
+	{
+		attribute<string> Name := 'I'+string(id(.));
+		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'Bronnen');
+	}
+
+	container BronIterations := for_each_ne(BronIteration/Name, 'LtBronIter(' + BronIteration/PrevBron + ', Bronnen)');
+	
+	unit<uint32> BronSelectie := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
+	{
+		attribute<.> NrSelectedObjects          (BronIteration) := ='union_data(BronIteration, '+AsItemList('#BronIterations/'+BronIteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects (BronIteration) := cumulate(NrSelectedObjects) - NrSelectedObjects;
+
+		attribute<rdc_meter> point := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/point')+')';
+		attribute<string>    Label := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+')';
+		attribute<Eur>       Ki_A  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_A')+')';
+		attribute<Eur>       Ki_B  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_B')+')';
+		attribute<kW>        P_Warmte  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte')+')';
+		attribute<kW>        P_Koude   := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Koude')+')';
+		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(BronIteration))+']')+'),.)';
+	}
+	
+	
 	parameter<uint32> NrIterations: [ 25 ];
 	unit<uint32> Iteration := Range(uint32, 0, NrIterations) 
 	{
 		attribute<string> Name := 'I'+string(id(.));
-		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'Bronnen');
 		attribute<string> PrevBest := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
 	}
-
-	container BronIterations := for_each_ne(Iteration/Name, 'LtBronIter(' + Iteration/PrevBron + ', Bronnen)');
+	
 	container BestIterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/PrevBest + ', UnitedCandidates)');
-	
-	container BronIterationTest := LtBronIter(Bronnen,Bronnen); // DEBUG
-	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates); // DEBUG
 
-	template SelectieT {
-		container Iterations;
-		
-		unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
-		{
-			attribute<.> NrSelectedObjects          (Iteration) := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
-			attribute<.> CumulNrPrevSelectedObjects (Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
-
-			attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
-			attribute<string>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
-			attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
-			attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
-			attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
-		}
-	}
+//	container BronIterationTest := LtBronIter(Bronnen,Bronnen); // DEBUG
+//	container BestIterationTest := WKOIter(UnitedCandidates,UnitedCandidates); // DEBUG
+	attribute<BronSelectie> BronSelectie_rel(UnitedCandidates)  :=  connect(BronSelectie/point, UnitedCandidates/point);
+	attribute<Float64>      BronSelectie_sqrdist(UnitedCandidates) :=  sqrdist(UnitedCandidates/point, BronSelectie/point[BronSelectie_rel]);
+	attribute<Float64>      distance_threshold(BronSelectie) := nth_element_weighted(BronSelectie_sqrdist, BronSelectie/P_Warmte * constanten/bijstookfactor, UnitedCandidates/P_Warmte,  BronSelectie_rel);
 	
-	container BronSelectie := SelectieT(BronIterations);
-	container BestSelectie := SelectieT(BestIterations);
-	unit<uint32> Selected  := BestSelectie/Selected;
+	
+	
+	unit<uint32> Selected := Subset(BronSelectie_sqrdist <= distance_threshold[BronSelectie_rel]);
 	
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
 	attribute<uint32> NrAllObjects              (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';

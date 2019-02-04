@@ -48,19 +48,19 @@ template WKOWoningData
 	attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>      V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * nr_won, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>      F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>      V_ElekW    (BebouwingsObject) := V_Warmte / SPF_coll;
-	attribute<GJ_yr>      V_ElekK    (BebouwingsObject) := V_Koude / (SPF_coll - 1.0);
+	attribute<GJ_yr>      V_ElekW    (BebouwingsObject) := V_Warmte / constanten/SPF_coll;
+	attribute<GJ_yr>      V_ElekK    (BebouwingsObject) := V_Koude / (constanten/SPF_coll - 1.0);
 	attribute<GJ_yr>      V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
 	attribute<GJ_yr>      V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
 	
-	attribute<kW>         P_Warmte   (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_wc) * nr_won;
-	attribute<kW>         P_Koude    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? ASW_wa : ASW_kc) * nr_won;
+	attribute<kW>         P_Warmte   (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won;
+	attribute<kW>         P_Koude    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? constanten/ASW_wa : constanten/ASW_kc) * nr_won;
 
 	attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen_elec/ClassBreak);
 
 	container Kosten // excl doublet en distributie, excl kosten LTAS
 	{
-		attribute<Eur_Woning> K_wv        (BebouwingsObject) := IsAppt ? K_wvwa : K_wvwc, Source = "F 54..56";
+		attribute<Eur_Woning> K_wv        (BebouwingsObject) := IsAppt ? constanten/K_wvwa : constanten/K_wvwc, Source = "F 54..56";
 		attribute<Eur>        Ki_id       (BebouwingsObject) := K_wv * nr_won, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
 		attribute<Eur>        Ki_ge_pm    (BebouwingsObject) := KostenBase/Ki_ge_pm_o;
 		attribute<Eur>        Ki_ge_ov    (BebouwingsObject) := KostenBase/Ki_ge_ov_o;
