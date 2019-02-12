@@ -37,6 +37,7 @@ template WKOData
 	container WkoDataComponent;
 	parameter<string> ComponentNaam;
 	parameter<bool> IsWKO := true;
+	parameter<string> LabelConditie := '';
 	// end case parameters
 
 	container BCdata                    := WkoDataComponent/BCdata;
@@ -61,8 +62,7 @@ template WKOData
 	attribute <bool> InContour            (BebouwingsObject) := =UseContour
 		? 'IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] )'
 		: 'const(true, BebouwingsObject)';
-	attribute <bool> LtVerwarmingGeschikt (BebouwingsObject) := BCdata/LtVerwarmingGeschikt;
-	attribute <bool> Geschikt             (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'LtVerwarmingGeschikt';
+	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ (IsWKO ? 'BCdata/LtVerwarmingGeschikt' : LabelConditie);
 
 	 // kosten excl distributie
 	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte, WkoDataComponent/P_Koude);

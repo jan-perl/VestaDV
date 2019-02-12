@@ -67,6 +67,7 @@ Template LtWarmtenetImpl
 
 		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
 		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
+		parameter<Float64> SPF := CollectieveWP ? 3.8 : 3.8;
 	}
 	
 	container BestaandeWoningData :=
@@ -98,7 +99,9 @@ Template LtWarmtenetImpl
 		);
 	
 
-	container CandidateSets := for_each_ne(WkoComponent/Name, 'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false)');
+	parameter<string> geschiktExpr := 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/'+(CollectieveWP ? 'LabelE' : 'LabelD');
+	container CandidateSets := for_each_ne(WkoComponent/Name, 
+		'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false, '+Quote(geschiktExpr)+')');
 	
 	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
 			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
@@ -162,6 +165,11 @@ Template LtWarmtenetImpl
 		attribute<kW>        P_Warmte  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte')+')';
 		attribute<kW>        P_Koude   := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Koude')+')';
 		attribute<.>         Partitioning (UnitedCandidates) := Selected/BronSelectie_rel[invert(Selected/nr_OrgEntity)];
+		
+		attribute<float64>   n      := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/n')+')';
+		attribute<float64>   SSD_xx := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/SSD_xx')+')';
+		attribute<float64>   SSD_xy := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/SSD_xy')+')';
+		attribute<float64>   SSD_yy := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/SSD_yy')+')';
 	}
 	
 	
@@ -176,8 +184,31 @@ Template LtWarmtenetImpl
 	attribute<Float64>      BronSelectie_sqrdist(UnitedCandidates) :=  sqrdist(UnitedCandidates/point, BronSelectie/point[BronSelectie_rel]);
 	attribute<Float64>      distance_threshold(BronSelectie) := nth_element_weighted(BronSelectie_sqrdist, BronSelectie/P_Warmte * constanten/bijstookfactor, UnitedCandidates/P_Warmte,  BronSelectie_rel);
 	
+	// afnemers nabij centrum van een geselecteerd bron-cluster
 	unit<uint32> Selected := Subset(BronSelectie_sqrdist <= distance_threshold[BronSelectie_rel]) {
 		attribute<BronSelectie> BronSelectie_rel := ../BronSelectie_rel[nr_OrgEntity];
+		attribute<float64> n      := UnitedCandidates/n     [nr_OrgEntity] + UnitedCandidates/n[nr_OrgEntity];
+		attribute<float64> SSD_xx := UnitedCandidates/SSD_xx[nr_OrgEntity] + abs(PointCol(BronSelectie/point[BronSelectie_rel]) - PointCol(UnitedCandidates/point[nr_OrgEntity]));
+		attribute<float64> SSD_yy := UnitedCandidates/SSD_yy[nr_OrgEntity] + abs(PointRow(BronSelectie/point[BronSelectie_rel]) - PointRow(UnitedCandidates/point[nr_OrgEntity]));
+		attribute<float64> SSD_xy := UnitedCandidates/SSD_yy[nr_OrgEntity] 
+			+ sqrt(
+				 (PointRow(BronSelectie/point[BronSelectie_rel]) - PointRow(UnitedCandidates/point[nr_OrgEntity])) 
+				*(PointCol(BronSelectie/point[BronSelectie_rel]) - PointCol(UnitedCandidates/point[nr_OrgEntity])));
+	} // TODO: check that sign of covar matches the sign of the initial cluster covar, or should interference with source network be a good thing?
+	
+	container Gebied {
+		attribute<float64>   n     (BronSelectie) := BronSelectie/n      + sum(Selected/n,      Selected/BronSelectie_rel);
+		attribute<float64>   SSD_xx(BronSelectie) := BronSelectie/SSD_xx + sum(Selected/SSD_xx, Selected/BronSelectie_rel);
+		attribute<float64>   SSD_yy(BronSelectie) := BronSelectie/SSD_yy + sum(Selected/SSD_yy, Selected/BronSelectie_rel);
+		attribute<float64>   SSD_xy(BronSelectie) := BronSelectie/SSD_xy + sum(Selected/SSD_xy, Selected/BronSelectie_rel);
+		
+		attribute<float64>   SqrtDetSSD(BronSelectie)  := MakeDefined(Sqrt(SSD_xx*SSD_yy-SSD_xy*SSD_xy), 0.0);
+		attribute<m2>        AreaProxy (BronSelectie)  := (PI() * SqrtDetSSD / n)[m2];
+
+//		attribute<Eur>       Ki_WOS      := const(1000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW];  // @@@
+//		attribute<Eur>       Ki_Buffer   := const(10000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW]; // @@@
+//		attribute<Eur>       Ki_A        := Ki_WOS + Ki_Buffer;
+		attribute<Eur>       Ki_B     (BronSelectie)   := AreaProxy * constanten/Ki_distr;
 	}
 	
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
