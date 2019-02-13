@@ -162,6 +162,7 @@ Template LtWarmtenetImpl
 		attribute<string>    Label := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+')';
 		attribute<Eur>       Ki_A  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_A')+')';
 		attribute<Eur>       Ki_B  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_B')+')';
+		attribute<Eur_yr>    AC_Netto  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/AC_Netto')+')';
 		attribute<kW>        P_Warmte  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte')+')';
 		attribute<kW>        P_Koude   := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Koude')+')';
 		attribute<.>         Partitioning (UnitedCandidates) := Selected/BronSelectie_rel[invert(Selected/nr_OrgEntity)];
@@ -187,6 +188,8 @@ Template LtWarmtenetImpl
 	// afnemers nabij centrum van een geselecteerd bron-cluster
 	unit<uint32> Selected := Subset(BronSelectie_sqrdist <= distance_threshold[BronSelectie_rel]) {
 		attribute<BronSelectie> BronSelectie_rel := ../BronSelectie_rel[nr_OrgEntity];
+		attribute<EUR_Yr> Oj_Verbruik := UnitedCandidates/Oj_Verbruik[nr_OrgEntity];
+		attribute<EUR_Yr> AC_Netto    := UnitedCandidates/AC_Netto[nr_OrgEntity];
 		attribute<float64> n      := UnitedCandidates/n     [nr_OrgEntity] + UnitedCandidates/n[nr_OrgEntity];
 		attribute<float64> SSD_xx := UnitedCandidates/SSD_xx[nr_OrgEntity] + abs(PointCol(BronSelectie/point[BronSelectie_rel]) - PointCol(UnitedCandidates/point[nr_OrgEntity]));
 		attribute<float64> SSD_yy := UnitedCandidates/SSD_yy[nr_OrgEntity] + abs(PointRow(BronSelectie/point[BronSelectie_rel]) - PointRow(UnitedCandidates/point[nr_OrgEntity]));
@@ -208,7 +211,13 @@ Template LtWarmtenetImpl
 //		attribute<Eur>       Ki_WOS      := const(1000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW];  // @@@
 //		attribute<Eur>       Ki_Buffer   := const(10000[EUR], .); // max_elem(P_Warmte, P_Koude) * 680[EUR / kW]; // @@@
 //		attribute<Eur>       Ki_A        := Ki_WOS + Ki_Buffer;
-		attribute<Eur>       Ki_B     (BronSelectie)   := AreaProxy * constanten/Ki_distr;
+		attribute<Eur_yr>    AC_Netto   (BronSelectie) := BronSelectie/AC_Netto + sum(Selected/AC_Netto, Selected/BronSelectie_rel);
+		attribute<Eur_yr>    Oj_Verbruik(BronSelectie) := sum(Selected/Oj_Verbruik, Selected/BronSelectie_rel);
+		attribute<Eur>       Ki_B     (BronSelectie)   := AreaProxy * constanten/Ki_distr; // omvat area voor broncluster, TODO: broncluster en  afname cluster splitsen.
+		attribute<bool>      Afweging(BronSelectie)    := AC_Netto + Ki_B * NCW/ow28/AnnualisationFactor < Oj_Verbruik; 
+	}
+	unit<uint32> RendabelCluster := subset(gebied/Afweging) {
+		attribute<Eur_yr> Oj_Verbruik := Gebied/Oj_Verbruik[nr_OrgEntity];
 	}
 	
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
