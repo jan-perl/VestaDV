@@ -49,6 +49,15 @@ container GlasTuinBouw
 		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
 		FreeData        = "False"
 	{
+		attribute<rdc_meter> point:
+			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_pc04_010316.shp",
+			StorageReadOnly = "True"
+		{
+			parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";
+			parameter<m>       SymbolWorldSize: DialogType = "SymbolWorldSize", expr = "value(100, m)";
+			parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
+		}
+
 		attribute<uint32>               postcode4;
 		attribute<Classifications/GLTB> GLTB_Code;
 		attribute<m2>                   Opp_M2;
