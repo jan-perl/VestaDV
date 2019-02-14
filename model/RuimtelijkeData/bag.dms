@@ -66,17 +66,7 @@ container BAG
 			attribute<string> name     := replace(label,' ','_', 'functie','');
 			container impl: IsHidden = "True"
 			{
-				attribute<string> BitValueAttExpr (gebruiksdoel) := 'const(1w,gebruiksdoel)' + repeat(' * 2w',uint32(id(gebruiksdoel)));
-				attribute<uint16> BitValueArr     (gebruiksdoel) := = BitValueAttExpr;
-
-				parameter<string> BitValueParamExpr := =AsList('string(1' + repeat(' * 2', uint32(id(gebruiksdoel))) +')','+ '','' + ');
-				attribute<uint16> BitValue        (gebruiksdoel) :=
-					ReadArray(
-						 BitValueParamExpr
-						,gebruiksdoel
-						,uint16
-						,0
-					);
+				attribute<uint16> BitValue (gebruiksdoel) := ='union_data(..,'+AsItemList('1w'+repeat(' * 2w',uint32(id(gebruiksdoel))))+')';
 			}
 		}
 		unit<uint8> WoningtypeSnapshot : nrofrows = 6 // zie ook: HouseTypeCombi, dat oook in RSL gebruikt wordt.
