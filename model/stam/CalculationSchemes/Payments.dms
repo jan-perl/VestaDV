@@ -130,7 +130,7 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
 		}
 
-		container impl
+		container impl: IsHidden = "True"
 		{
 			unit<uint8> WKOC := subset(BC/KanWKO)
 			{

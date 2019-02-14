@@ -155,17 +155,17 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'AardGas', 'KL_e', '@BC@/Eigenaar',
-					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
+					'Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
 					'', 
 					''
 
 			,	'Aansluitbijdrage_@BC@', 'GasNet', 'KL_e',
-					'indicatoren/Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_m',
+					'Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_m',
 					'', 
 					''
 
 			,	'Aansluitbijdrage_AardGas@BTW@', 'BTW', 'KL_e',
-					'indicatoren/Eindgebruiker/@BTW@/gebouwen/AardGas/Aansl_m * '+VAT_F,
+					'Eindgebruiker/@BTW@/gebouwen/AardGas/Aansl_m * '+VAT_F,
 					'',
 					''
 
@@ -205,47 +205,47 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'Elektriciteit', 'KL_e', '@BC@/Eigenaar',
-					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
+					'Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
 					'', 
 					''
 
 			,	'Aansluitbijdrage@BC@', 'ElektriciteitsNet', 'KL_e',
-					'indicatoren/Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_m',
+					'Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_m',
 					'', 
 					''
 
 			,	'ElektriciteitAansluitbijdrage@BTW@', 'BTW', 'KL_e',
-					'indicatoren/Eindgebruiker/@BTW@/gebouwen/Elektriciteit/Aansl_m * '+VAT_F,
+					'Eindgebruiker/@BTW@/gebouwen/Elektriciteit/Aansl_m * '+VAT_F,
 					'',
 					''
 
 			,	'kapitaallasten', 'Netwerk', 'GasNet',
-					'indicatoren/netwerk/aardgas/kapitaallasten',
+					'netwerken/aardgas/kapitaallasten',
 					'', 
 					''
 
 			,	'verwijderkosten', 'Netwerk', 'GasNet',
-					'indicatoren/netwerk/aardgas/verwijderkosten',
+					'netwerken/aardgas/verwijderkosten',
 					'', 
 					''
 
 			,	'', 'Onderhoud', 'GasNet',
-					'indicatoren/netwerk/aardgas/onderhoud',
+					'netwerken/aardgas/onderhoud',
 					'', 
 					''
 
 			,	'kapitaallasten', 'Netwerk', 'ElektriciteitsNet',
-					'indicatoren/netwerk/elektriciteit/kapitaallasten',
+					'netwerken/elektriciteit/kapitaallasten',
 					'', 
 					''
 
 			,	'netverzwaring', 'Netwerk', 'ElektriciteitsNet',
-					'indicatoren/netwerk/elektriciteit/netverzwaring',
+					'netwerken/elektriciteit/netverzwaring',
 					'', 
 					''
 
 			,	'', 'Onderhoud', 'ElektriciteitsNet',
-					'indicatoren/netwerk/elektriciteit/onderhoud',
+					'netwerken/elektriciteit/onderhoud',
 					'', 
 					''
 

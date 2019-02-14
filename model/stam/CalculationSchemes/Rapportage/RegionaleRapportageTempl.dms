@@ -56,7 +56,7 @@ template RegionaleRapportage
 
 	parameter<string> ReportFolder := FolderInfo/OutputFolder+'/'+ReportRegioNaam;
 	
-	container impl
+	container impl: isHidden = "True"
 	{
 		unit<uint32> RegioSelectie := Subset(BebouwingscomponentRapportageRegio_rel == RapportageRegio_sel)
 		{

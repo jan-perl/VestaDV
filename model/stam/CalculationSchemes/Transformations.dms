@@ -122,7 +122,7 @@ container Transformations: FreeData = "False"
 		unit<uint32>  PR        := Invoer/SpecifiekeInstellingen/PlanRegio;
 		unit<uint8>   BC        := Transformation/BC;
 
-		container impl
+		container impl: isHidden = "True"
 		{
 			unit<uint8> WKOC := subset(BC/KanWKO)
 			{

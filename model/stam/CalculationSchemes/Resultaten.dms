@@ -48,6 +48,7 @@ template Resultaten
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
 
 	container Allocatie             := TussenResultaten/Allocatie;
+	parameter<units/yr_uint16> RunJaar   := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
 
 	container RestWamte
 	{
@@ -60,21 +61,306 @@ template Resultaten
 	}
 
 	#include <Grid100m.dms>
-	#include <Indicatoren.dms>
+
+	container CO2: Source = "FO v7a C5"
+	{
+		container gebouwen
+		{
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
+			{
+				attribute<KG_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
+			{
+				attribute<KG_yr> Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			attribute<KG_yr> Totaal(PlanRegio) := Elektriciteit/Totaal + AardGas/Totaal;
+		}
+		container impl: IsHidden = "True"
+		{
+			attribute<String> BronExpr (Classifications/AanbodOptie) := 		 
+				replace(Classifications/AanbodOptie/IsPlanRegioOptie 
+					? 'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
+					: 'StateNaAllocatie/@AO@/CO2', 
+				'@AO@', Classifications/AanbodOptie/name
+				);
+		}
+
+		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
+		{
+			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/WarmteOpties=0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')');
+		}
+
+		attribute<KG_yr> Totaal(PlanRegio) := Gebouwen/Totaal + CentraleWarmteBronnen/Totaal;
+	}
+
+	container Metervraag: Source = "Rapportagebehoefte cijfers per buurt --> Geodan 15 maart 2018"
+	{
+		container gebouwen
+		{
+			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			{
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			{
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+
+			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			{
+				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			}
+		}
+	}
+
+	#include<Maatschappelijk.dms>
+
+	container Eindgebruiker :=
+			for_each_ne(Classifications/BebouwingsComponent/name,
+				replace(
+					'Rapportage/EindgebruikerComponent(
+						 Allocatie/@BC@
+						,NCW/@NC@15
+						,NCW/@NC@30
+						,NCW/@NC@50
+						,sum(Allocatie/@BC@/AardGas/Vastrecht,              BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/AardGas/AansluitBijdrage,       BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/Elektriciteit/Vastrecht,        BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,sum(Allocatie/@BC@/Elektriciteit/AansluitBijdrage, BebouwingsComponenten/@BC@/PlanRegio_rel)
+						,StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@
+					)'
+				,	'@BC@', Classifications/BebouwingsComponent/name
+				,	'@NC@', Classifications/BebouwingsComponent/NcwRefBase
+				)
+			)
+		,	Source = "FO v7a C6";
+
+	container EnergieProducent
+	{
+		// *** Investeringen zijn niet over 30 jaar genomen maar over de voor de betreffende aanbodtechnologie geldende gebruiksperiode en tegen het voor de EP geldende rentevoet
+		container impl: IsHidden = "True"
+		{
+			attribute<String> FlowExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
+				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
+				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
+				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
+				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
+				'StateNaAllocatie/WKO/Oj_totaal - StateNaAllocatie/WKO/Kj_Netto'
+			);
+
+			attribute<String> StockExpr(Classifications/AanbodOptie) :=
+				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
+		}
+
+		container CashFlow := for_each_nedv(Voorkeuren/WarmteOpties/Name
+			,	impl/FlowExpr[Voorkeuren/WarmteOpties/AanbodOptie]
+			,	PlanRegio, Eur_yr) // overrule the following defaults
+		{
+			attribute<Eur_yr> RestWarmte (PlanRegio):= const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> GeoThermie (PlanRegio):= const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> WijkWKK    (PlanRegio):= const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> WKO        (PlanRegio):= const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> BioWKK     (PlanRegio):= const(0[Eur_yr], PlanRegio);
+			attribute<Eur_yr> Kj_Totaal  (PlanRegio):= RestWarmte + GeoThermie + WijkWKK + WKO + BioWKK;
+		}
+
+		attribute<Eur_yr> Kj_Totaal (PlanRegio):= CashFlow/Kj_Totaal;
+
+		container Stock := for_each_nedv(Voorkeuren/WarmteOpties/Name
+			,	impl/StockExpr[Voorkeuren/WarmteOpties/AanbodOptie]
+			,	PlanRegio, Eur) // overrule the following defaults
+		{
+			attribute<Eur> RestWarmte (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> GeoThermie (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> WijkWKK    (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> WKO        (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> BioWKK     (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_Totaal  (PlanRegio) := RestWarmte + GeoThermie + WijkWKK + WKO + BioWKK;
+		}
+		attribute<Eur> Ki_Totaal      (PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
+	}
+
+	container netwerken
+	{
+		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/Allocatie/heeft_gas;
+
+		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
+		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i * Allocatie/@BC@/Aandelen/AllElectric, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
+		attribute<float64>    R_all_electric  (Planregio) := makedefined(nrAllElectric / nrWoonUnits, 0.0);
+		attribute<bool >      all_electric    (Planregio) := R_all_electric > 0.999, // tolereer afronding fouten en kleine afwijkingen
+			IntegrityCheck = "!(heeft_gas && all_electric)";
+
+		container aardgas
+		{
+			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/Allocatie/heeft_gas; // false voor bestaande restwarmte
+			attribute<bool>   verwijderd      (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
+
+			// inkomsten
+			attribute<Eur_yr> netbijdrage     (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/name+'/gebouwen/Aardgas/netwerk'  )+')';
+			attribute<Eur_yr> vastrecht       (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/AardGas/Vastrecht')+')';
+			attribute<Eur_yr> Aansl_m         (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/AardGas/Aansl_m'  )+')';
+			attribute<Eur_yr> Oj_totaal       (Planregio) := netbijdrage + vastrecht;
+
+			// kosten
+			attribute<m>      L_infra_nu      (PlanRegio) := float64(heeft_gas ) * StateNaAllocatie/KostenBaten/KostenD/L_infra_g;
+			attribute<m>      L_infra_org     (PlanRegio) := StartJaar/netwerken/aardgas/L_infra_nu;
+			attribute<m>      L_infra         (PlanRegio) := max_elem(L_infra_nu, L_infra_org);
+
+			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra    * Kengetallen/Infra/Kj_g_m;
+			attribute<Eur_yr> onderhoud       (Planregio) := L_infra_nu * Kengetallen/Infra/Ko_g_m;
+			attribute<Eur_yr> verwijderkosten (Planregio) := float64(verwijderd) * L_infra_org * Kengetallen/Infra/Kj_g_m * (Kengetallen/Infra/VB_g + 1.0);
+			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + verwijderkosten + onderhoud;
+			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
+		}
+		container elektriciteit
+		{
+			// inkomsten
+			attribute<Eur_yr> netbijdrage     (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/name+'/gebouwen/Elektriciteit/netwerk'  )+')';
+			attribute<Eur_yr> vastrecht       (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Elektriciteit/Vastrecht')+')';
+			attribute<Eur_yr> Aansl_m         (Planregio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Elektriciteit/Aansl_m'  )+')';
+			attribute<Eur_yr> Oj_totaal       (Planregio) := netbijdrage + vastrecht;
+
+			// kosten
+			attribute<m>      L_infra         (PlanRegio) := StateNaAllocatie/KostenBaten/KostenD/L_infra_e;
+
+			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra * Kengetallen/Infra/Kj_e_m;
+			attribute<Eur_yr> onderhoud       (Planregio) := L_infra * Kengetallen/Infra/Ko_e_m;
+			attribute<Eur_yr> netverzwaring   (Planregio) := kapitaallasten * R_all_electric;
+			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + netverzwaring + onderhoud;
+			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
+		}
+	}
+
+	container MaatregelenRapportage
+	{
+		unit<uint32> RapportageRegio := SpecifiekeInstellingen/Rapportage/Regio;
+		container BestaandeWoning :=
+			for_each_ne(
+				 RapportageRegio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/BestaandeWoning, '+quote('BestaandeWoning')+'
+					, '+Classifications/WoningBestaandRapGroep/ClassRef[SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel]+'
+					, '+quote('BebouwingsObject/'+Classifications/WoningBestaandRapGroep/AttrRef [ SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel ])+'
+					, Classifications/WoningBestaandRapGroep/ExportLabel [ SpecifiekeInstellingen/Rapportage/WoningBestaandRapGroep_rel ]
+					, units/nrWoningen
+				)'
+			);
+
+		container NieuwbouwWoning :=
+			for_each_ne(
+				 RapportageRegio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/NieuwbouwWoning, '+quote('NieuwbouwWoning')+'
+					, BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
+					, '+quote('WoningType')+'
+					, units/nrWoningen
+				)'
+			);
+
+		container BestaandeUtil:=
+			for_each_ne(
+				 RapportageRegio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/BestaandeUtil, '+quote('BestaandeUtil')+'
+					, BebouwingsComponenten/BestaandeUtil/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
+					, '+quote('UtiliteitsType')+'
+					, units/m2
+				)'
+			);
+
+		container NieuwbouwUtil:=
+			for_each_ne(
+				 SpecifiekeInstellingen/Rapportage/Regio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/NieuwbouwUtil, '+quote('NieuwbouwUtil')+'
+					, BebouwingsComponenten/NieuwbouwUtil/BebouwingsTypeDomein
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
+					, '+quote('UtiliteitsType')+'
+					, units/m2
+				)'
+			);
+
+		container BestaandeGlTb :=
+			for_each_ne(
+				 SpecifiekeInstellingen/Rapportage/Regio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/BestaandeGlTb, '+quote('BestaandeGlTb')+'
+					, Classifications/GLTB
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
+					, '+quote('GlasTuinBouwType')+'
+					, units/m2
+				)'
+			);
+
+		container NieuwbouwGlTb:=
+			for_each_ne(
+				 SpecifiekeInstellingen/Rapportage/Regio/Name
+				, 'Rapportage/RegionaleRapportage(
+					  RapportageRegio, '+string(id(RapportageRegio))+'[RapportageRegio]
+					, Allocatie/NieuwbouwGlTb, '+quote('NieuwbouwGlTb')+'
+					, Classifications/GlTb
+					, '+quote('RuimtelijkeVraagComponent/BebouwingsType')+'
+					, '+quote('NieuwbouwGlTb')+'
+					, units/m2
+				)'
+			);
+	}
+
+	container InputOutput :=
+		for_each_ne(
+			 SpecifiekeInstellingen/Rapportage/Regio/Name
+		,	'Rapportage/Flow('
+				'SpecifiekeInstellingen/Rapportage/Regio'
+				','+Quote(SpecifiekeInstellingen/Rapportage/Regio/Name)+
+				', value('+ string(id(SpecifiekeInstellingen/Rapportage/Regio)) + ',SpecifiekeInstellingen/Rapportage/Regio)'
+			')'
+		)
+	{
+		container Totaal := =(SpecifiekeInstellingen/Rapportage/Regio/Name != 'NL')
+			? 'Rapportage/Flow(geography/RegioIndelingen/NL, ''NL'', value(0, geography/RegioIndelingen/NL) )'
+			: '.';
+	}
+	
+	container Generate: isHidden = "True"
+	{
+		parameter<String> All := 'Ready',
+			ExplicitSuppliers =
+				"= ';' + AsList('InputOutput/'+SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ (SpecifiekeInstellingen/Rapportage/Regio/Name != 'NL' ? ';InputOutput/Totaal/GenerateAll': '')"
+				"+ ';' + AsList('MaatregelenRapportage/BestaandeWoning/'+SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ ';' + AsList('MaatregelenRapportage/NieuwbouwWoning/'+SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ ';' + AsList('MaatregelenRapportage/BestaandeUtil/'  +SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ ';' + AsList('MaatregelenRapportage/NieuwbouwUtil/'  +SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ ';' + AsList('MaatregelenRapportage/BestaandeGlTb/'  +SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+				"+ ';' + AsList('MaatregelenRapportage/NieuwbouwGlTb/'  +SpecifiekeInstellingen/Rapportage/Regio/Name+'/GenerateAll',';')"
+	//			"+ ';' + 'AllocExports/GenerateThisToo'" // comment-out if you want to skip all exports
+			;
+	}
 	#include <AllocExports.dms>
 
-	container FolderInfo
+	container FolderInfo: isHidden = "True"
 	{
 		parameter<string> RunName      := Expand(., '%configName%');
 		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RunJaarLabel;
 	}
 	
-	container RegressieTest
+	container RegressieTest: isHidden = "True"
 	{
 		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
 		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
 		parameter<string> Generate                := 'Ready'
 		,	IntegrityCheck    = "All"
-		,	ExplicitSuppliers = "Indicatoren/GenerateAll"; // Generates All reports.
+		,	ExplicitSuppliers = "Generate/All"; // Generates All reports.
 	}
 }

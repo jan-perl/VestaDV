@@ -102,9 +102,6 @@ template BCdata
 			attribute<kW> Warmte(..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
 		}
 
-		//attribute<float64> AandeelWarmteVraag := BebouwingsObject/AandeelWarmteVraag;
-
-		// impl
 		container Functioneel
 		{
 			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
