@@ -190,12 +190,11 @@ container Bebouwing :=
 				,	Geography/rdc_grids/m100, int32
 			);
 
-		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/pc04_010316, FreeData = "True"
+		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/gltb_130219, FreeData = "True"
 		{
 			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
 
 			attribute<string>                   code              := string(id(.));
-			attribute<string>                   Label             := string(postcode4), DialogType = "LabelText";
 
 			attribute<string>                   buurtcode         := substr(BU_CODE,2,10), isHidden = "True";
 			attribute<uint32>                   Buurt_nr          := value(buurtcode,  uint32), isHidden = "True";
@@ -209,16 +208,6 @@ container Bebouwing :=
 			attribute<nrWoningen>               nrWoonUnits_i     := const(0[nrWoningen], .), isHidden = "True";
 			attribute<m2>                       NrJoinedUnits     := Opp_M2;
 
-			// location
-			attribute<rdc_meter> point:
-				StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_pc04_010316.shp",
-				StorageReadOnly = "True",
-				isHidden        = "True"
-			{
-				parameter<float64> SymbolSize      := 16.0  , DialogType = "SymbolSize";
-				parameter<m>       SymbolWorldSize := 100[m], DialogType = "SymbolWorldSize";
-				parameter<int16>   SymbolIndex     := 81s   , DialogType = "SymbolIndex";
-			}
 			// foreign key to model data
 			attribute<Classifications/BouwJaar> BouwJaar           := const(Classifications/Bouwjaar/V/Onbekend, .), isHidden = "True";
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := GLTB_Code, isHidden = "True";

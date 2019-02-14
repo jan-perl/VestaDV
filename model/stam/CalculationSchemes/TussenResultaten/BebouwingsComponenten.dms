@@ -57,8 +57,9 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief (BebouwingsObject) := 
 				float64(StartJaar/Allocatie/heeft_gas[Planregio_rel]) * 
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax);
 
+				
 			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
 			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
 			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraag/deelnemers/nrAansluitingen;

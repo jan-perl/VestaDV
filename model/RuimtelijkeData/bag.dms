@@ -43,7 +43,7 @@
 
 container BAG
 {
-	parameter<string>   SnapShotDate := '20180101';
+	parameter<string>   SnapShotDate := '20190101';
 	parameter<units/Yr> SnapShotYear := left(SnapShotDate,4)[units/Yr];
 	parameter<string>   SourceDir    := '%SourceDataProjDir%/BAG/' + SnapShotDate;
 
@@ -157,7 +157,11 @@ container BAG
 			attribute<geography/rdc_mm>    geometry_mm (poly);
 			attribute<geography/rdc_meter> geometry    (poly) := geometry_mm[geography/rdc_meter];
 			attribute<string>              identificatie;
-
+			
+			attribute<uint16>             AHN_hoogte;
+			parameter<uint16>             verdiepinghoogte_cm := 280w;
+			attribute<float32>            verdiepingen_float : = float32(AHN_hoogte) / float32(verdiepinghoogte_cm);
+			
 			attribute<uint16>              bouwjaar;
 			attribute<units/Yr>            bouwjaar_gecorrigeerd :=
 				(bouwjaar <= 1000w || bouwjaar[units/Yr] > SnapShotYear)
@@ -166,7 +170,7 @@ container BAG
 			,	Descr = "Correctie van bouwjaren op basis van document"
 			,	url   = "http://www.cbs.nl/nl-NL/menu/themas/bouwen-wonen/methoden/dataverzameling/korte-onderzoeksbeschrijvingen/2015-kenmerken-woningen-kob.htm";
 
-			attribute<uint8>                         nr_verdiepingen;
+			attribute<uint8>                         nr_verdiepingen   := uint8(round(verdiepingen_float));
 			attribute<typeringen/WoningtypeSnapshot> woonpand_type;
 			attribute<units/m2>                      footprint         := area(geometry, m2);
 			attribute<units/m2>                      vbo_oppervlak     := sum(vbo/Oppervlakte, vbo/pand_rel)[units/m2];

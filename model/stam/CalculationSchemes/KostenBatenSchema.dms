@@ -88,7 +88,7 @@ template KostenBaten
 		parameter<Eur_GJ> AardGasPrijs_m          := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
 
 		attribute<NrWoningen>    nr_won        (PlanRegio) := (PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwWoning/nrAanslWarmteDeelnemers) * 1[NrWoningen / NrAansl], Source = "Lw1, FO v7a F 76", Descr = "Aantal woningen";
-		attribute<Units/km2>     opp_bebouwd   (PlanRegio) := PlanRegio/AreaInKm2 , Source = "Lw2, FO v7a C1.3", Descr = "Oppervlakte";
+		attribute<Units/km2>     opp_land   (PlanRegio) := (PlanRegio/AreaInKm2 * (PlanRegio/Overigen/p_land_com / 100d)) , Source = "Lw2, FO v7a C1.3", Descr = "Landoppervlakte";
 		attribute<Units/nrAansl> Lu            (PlanRegio) := PlanRegioKaarten/BestaandeUtil/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwUtil/nrAanslWarmteDeelnemers, Descr = "Omvang utiliteitsbouw"; // ?????
 		//attribute<units/Eur_m2>  Ld          (PlanRegio) : Descr = "Distributieskosten per woning m2 utiliteitsbouw";
 		attribute<units/m2>      opp_gltb      (PlanRegio) := PlanRegioKaarten/BestaandeGlTb/nrModelUnitsWarmteDeelnemers + PlanRegioKaarten/NieuwbouwGlTb/nrModelUnitsWarmteDeelnemers, Source = "Lt, FO v7a C1.3", Descr = "Omvang glastuinbouw";
@@ -114,12 +114,13 @@ template KostenBaten
 		parameter<Ratio>      afschrijving_resterend       := 1.0 / 3.0; // resterende afschijving.
 		parameter<Eur>        KetelVergoeding              := 130[Eur_kW] * afschrijving_resterend * Vermogen_OS; // vergoeding bestaande blokverwarmingsketels obv nieuwwaarde
 
-		parameter<Eur_Aansl>  Ki_HR_ketel                  := 1900[Eur_Aansl], Source = "IKHR: FO F84";
+		parameter<Eur_Aansl>  Ki_HR_ketel_W                := 1900[Eur_Aansl], Source = "IKHR: FO F84";
+		parameter<Eur_Aansl>  Ki_HR_ketel_U                :=  780[Eur_Aansl], Source = "Kengetallen Arcadis 2018";
 		parameter<m_Aansl>    L_di_gem                     :=   15[m_Aansl]  , Source = "FO, nummer voetnoot 31 onder F80";
 
 		container Wonen
 		{
-			parameter<Eur_Aansl> Kaansluiten_wd_gestappeld       := 2700[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 6/7";
+			parameter<Eur_Aansl> Kaansluiten_wd_gestappeld       :=  656[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 6/7"; //correctie utigaande van €5000/pand met gemiddeld aantal aansluitingen per pand bij gestapelde bouw
 			parameter<Eur_Aansl> Kaansluiten_wd_grondgebonden    := 5000[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 8";
 			parameter<Eur_Aansl> Ongeriefsvergoeding             :=  125[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 7/8";
 			parameter<Eur_Aansl> Projectmanagementvergoeding_min :=   50[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 6";
@@ -211,7 +212,7 @@ template KostenBaten
 
 			attribute<Eur> Ki_WarmteMeter_sec (PlanRegio) := (Schuiven/KostenMin * Ki_WarmteMeter_min +Schuiven/KostenMax * Ki_WarmteMeter_max) * LeerCurves/Curve1;
 
-			parameter<Eur_kw> Oi_vermeden_gasketel := (Ki_HR_ketel *1 [nrAansl]) / 11[kw], Source = "FO F84 jo kentallenbestand woningen";
+			parameter<Eur_kw> Oi_vermeden_gasketel        := (Ki_HR_ketel_U *1 [nrAansl]) / 11[kw], Source = "FO F84 jo kentallenbestand woningen";
 			attribute<Eur> Ki_WarmteMeter     (PlanRegio) := Ki_WarmteMeter_sec - Oi_vermeden_gasketel * CapaciteitsVraag/Totaal;
 
 			attribute<Eur> Ki_Distributie_min (PlanRegio) := 100[Eur_kW] * CapaciteitsVraag/Klein,  Source = "FO v7a F 40, email Ruud van den Wijngaart Mon 9/2/2013 1:06 PM, Tabel 36";
@@ -359,7 +360,7 @@ template KostenBaten
 
 		container SecundairNet
 		{
-			attribute<km2>     opp_bebouwd       (PlanRegio) := KostenFactorenD/opp_bebouwd;
+			attribute<km2>     opp_land       (PlanRegio) := KostenFactorenD/opp_land;
 			attribute<float64> n                 (PlanRegio) := Wonen/bw/OnderStation/n0 + Wonen/nw/OnderStation/n0 + Utiliteit/n_OS; // Zonder glastuinbouw
 			attribute<Ratio>   VerkortingsFactor (PlanRegio) := 48.0 / (Max_Elem(n, 8.0) + 40.0), Descr = "Fo v7a F 43";
 			
@@ -370,11 +371,11 @@ template KostenBaten
 
 			container HoofdLeidingKosten := BuisKosten(PlanRegio, P);
 
-			attribute<m>      L_hoofdleiding     (PlanRegio) := HoofdLeidingKosten/a * sqrt(2.0)* 1000[ m / km] * sqrt(opp_bebouwd);
+			attribute<m>      L_hoofdleiding     (PlanRegio) := HoofdLeidingKosten/a * sqrt(2.0)* 1000[ m / km] * sqrt(opp_land);
 			attribute<Eur>    K_hoofdleiding     (PlanRegio) := L_hoofdleiding * HoofdLeidingKosten/K_m, Source = "F 32";
 
 			parameter<Eur_m>  K_zij_m                        := 586.3461241875[Eur / m] * LeerCurves/Curve2, Source = "F 31", Descr = "3309[Eur_m] - 0.1917[Eur_m / MW*MW]* Sqr(120.0[MW] - 0.825[MW]))";
-			attribute<m>      L_zijleiding       (PlanRegio) := HoofdLeidingKosten/a * n * 0.25 * 0.5 *sqrt(2.0) * 1000[m / km]*sqrt(opp_bebouwd)* VerkortingsFactor, Descr = "F 33, K_buis with omwegfactor included";
+			attribute<m>      L_zijleiding       (PlanRegio) := HoofdLeidingKosten/a * n * 0.25 * 0.5 *sqrt(2.0) * 1000[m / km]*sqrt(opp_land)* VerkortingsFactor, Descr = "F 33, K_buis with omwegfactor included";
 			attribute<Eur>    K_zijleiding       (PlanRegio) := L_zijleiding * K_zij_m, Descr = "F 33";
 
 			parameter<Eur_MW> K_WOS_p_min                    := 100000[Eur / MW], Descr = "Kosten Warmteoverdrachtstation, Tabel 36";

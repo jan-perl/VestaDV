@@ -44,7 +44,7 @@ template KostenWoningen
 	attribute<bool>      IsMeergezins (WoonObject) := BCdata/BebouwingsTypeDomein/IsMeergezins[BCdata/BebouwingsType];
 	attribute<Eur_Aansl> Ki_wd_w      (WoonObject) := IsMeergezins ? Kaansluiten_wd_gestappeld : Kaansluiten_wd_grondgebonden;
 
-	parameter<Eur_Aansl> Oi_vermeden_gasketel := Ki_HR_ketel * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
+	parameter<Eur_Aansl> Oi_vermeden_gasketel := Ki_HR_ketel_W * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
 
 	// eenmalige kosten, zie FO tabellen 5..7
 	attribute<Eur_Aansl> Ki_id_fa (WoonObject) := IsMeergezins ? Schuiven/VerketelingMin * 1800[Eur_Aansl] + Schuiven/VerketelingMax * 5300[Eur_Aansl] :  0[Eur_Aansl]; // fysieke aansluitmaatregelen  // ?????

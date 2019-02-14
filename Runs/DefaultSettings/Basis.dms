@@ -52,7 +52,7 @@ container Basis: Using = "Units"
 
 	container Rapportage
 	{
-		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente',  Moet NL zijn voor alle blok PlanRegioNaam configuraties
+		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
 		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep_rel: [ 3 ];
 	}
 
@@ -455,7 +455,7 @@ container Basis: Using = "Units"
 					parameter<Ratio> VerbeterMinMaxSchuif:        [0.5]; // 0.0 = minimale kosten; 1.0 = maximale kosten.
 					parameter<Ratio> LeercurveMinMaxSchuif :      [0.5]; // 0.0 = optimistische leercurve; 1.0= pessimistische leercurve
 					parameter<Ratio> LeercurveGebruikSchuif:      [1.0]; // 0.0 = kosten constant; 1.0 = Leercurve geheel in gebruik
-					parameter<Ratio> IndividueleVerwarmingSchuif: [0.0]; // 0.0 = alle meergezinswoningen hebben blokverwarming; 1.0 = alle meergezinswonigen hebben individuele verwarming
+					parameter<Ratio> IndividueleVerwarmingSchuif: [0.846]; // 0.0 = alle meergezinswoningen hebben blokverwarming; 1.0 = alle meergezinswonigen hebben individuele verwarming
 				}
 				container Opbrengsten
 				{
@@ -498,10 +498,10 @@ container Basis: Using = "Units"
 	// moet verwijzen naar een folder met nieuwbouw en sloop projecties t/m 2050
 	//
 	// vooalsnog beschikbaar: van 2 WLO scenario's afgeleide resultaten, te weten
-	// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115
-	// - %SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/laag_spreiding_231115
+	// - %SourceDataProjDir%/RO/20151123_RO_WLO_hoog_concentratie
+	// - %SourceDataProjDir%/RO/20151123_RO_WLO_laag_spreiding
 
-	parameter<string> WloScenarioFolder := '%SourceDataProjDir%/WLO2Energy/Run1/_NotBBGa_loc_/hoog_concentratie_231115';
+	parameter<string> WloScenarioFolder := '%SourceDataProjDir%/RO/20151123_RO_WLO_hoog_concentratie';
 
 	container Bijstook
 	{
@@ -534,20 +534,13 @@ container Basis: Using = "Units"
 
 	container NMDA_Prijzen
 	{
-		parameter<Percent> CPI_2013_08_31 := 115.39[Percent];
-		parameter<Percent> CPI_2010       := 106.72[Percent];
-		
 		container Aansluitbijdrage
 		{
-			parameter<Eur_Aansl> Maximum2014 := 753.53[Eur_Aansl]; // excl BTW in Euro's van 31-08-2013
-			parameter<Eur_Aansl> Maximum2016 := 795.83[Eur_Aansl]; // excl BTW in Euro's van 31-08-2015.
-			parameter<Eur_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+			parameter<Eur_Aansl> Maximum2010 := 717.31[Eur_Aansl];// excl BTW in Euro's van 2010 (ACM Warmtebesluit 2019)
 		}
 		container Vastrecht
 		{
-			parameter<Eur_yr_Aansl> Maximum2014 := 209.92[Eur_yr_Aansl]; // excl BTW in Euro's van 31-08-2013.
-			parameter<Eur_yr_Aansl> Maximum2016 := 228.21[Eur_yr_Aansl]; // excl BTW in Euro's van 31-08-2015.
-			parameter<Eur_yr_Aansl> Maximum2010 := Maximum2014 * CPI_2010 / CPI_2013_08_31;
+			parameter<Eur_yr_Aansl> Maximum2010 := 238.10[Eur_yr_Aansl];// excl BTW in Euro's van 2010 (ACM Warmtebesluit 2019)
 		}
 	}
 
