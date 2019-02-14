@@ -93,7 +93,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			 Classifications/zichtjaar/name
 			,Geography/rdc_grids/m100
 			,float32
-			,'%sourceDataProjDir%/hulpbestanden/klimaat/scenario_knmi_g_plus/g_pl_' + Classifications/zichtjaar/label + '.tif'
+			,'%sourceDataProjDir%/hulpbestanden/klimaat/GH/GH_' + Classifications/zichtjaar/label + '.tif'
 			)
 			, descr = "Klimaat_scenario_knmi";
 
