@@ -13,8 +13,8 @@
 
 container GlasTuinBouw
 {
-	unit<uint32> gltb_130219:
-		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_130219.dbf",
+	unit<uint32> gltb_180219:
+		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.dbf",
 		DialogData      = "point",
 		DialogType      = "Map",
 		StorageReadOnly = "True",
@@ -23,7 +23,7 @@ container GlasTuinBouw
 		FreeData        = "False"
 	{
 		attribute<rdc_meter> point:
-			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_130219.shp",
+			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.shp",
 			StorageReadOnly = "True"
 		{
 			parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";
@@ -49,7 +49,7 @@ container GlasTuinBouw
 	{
 		container NL
 		{
-			attribute<units/m2>    Oppervlakte  (Classifications/GLTB) := sum(GlasTuinBouw/gltb_130219/Opp_M2 , GlasTuinBouw/gltb_130219/GLTB_Code);
+			attribute<units/m2>    Oppervlakte  (Classifications/GLTB) := sum(GlasTuinBouw/gltb_180219/Opp_M2 , GlasTuinBouw/gltb_180219/GLTB_Code);
 			parameter<units/m2>    OppervlakteNL                       := sum(Oppervlakte);
 			attribute<units/ratio> GLTB         (Classifications/GLTB) := Oppervlakte / OppervlakteNL,
 				IntegrityCheck = "sum(this) = 1[units/ratio]";
