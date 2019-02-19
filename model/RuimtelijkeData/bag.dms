@@ -14,7 +14,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container BAG
+container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 {
 	parameter<string>   SnapShotDate := '20190101';
 	parameter<units/Yr> SnapShotYear := left(SnapShotDate,4)[units/Yr];

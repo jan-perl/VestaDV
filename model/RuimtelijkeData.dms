@@ -28,6 +28,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/20190101_inputlabels_rvo.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
+		,	url             = "%SourceDataProjDir%/vraag/wonen/20190101_inputlabels_rvo_FvdM.txt"
 		{
 			attribute<string> HLT_unquoted := trim(replace(HLT,SQoute,''));
 			attribute<string> adres_key    :=
@@ -77,7 +78,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			, url   = "%sourceDataProjDir%/hulpbestanden/klimaat/Werkwijze_aanmaak_correctiekaarten_klimaat_obv_KNMI2014_scenarios_tbv_Vesta33.pdf";
 
 	// inlezen kerncijfers wijken en buurten - meerdere jaren om missende waarden te ondervangen
-	container CBSWijkEnBuurt
+	container CBSWijkEnBuurt: url="%sourceDataProjDir%/CBS/20190212_update_kerncijfers_wijken_buurten_FvdM.txt"
 	{
 		unit<uint32> j2013:
 			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2013.csv",

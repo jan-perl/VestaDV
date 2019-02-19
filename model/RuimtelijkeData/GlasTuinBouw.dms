@@ -19,7 +19,7 @@ container GlasTuinBouw
 		DialogType      = "Map",
 		StorageReadOnly = "True",
 		SyncMode        = "All",
-		url             = "%sourceDataProjDir%/vraag/glastuinbouw/metadata/Hoofdformulier_GDI09.pdf",
+		url             = "%sourceDataProjDir%/vraag/glastuinbouw/Werkwijze_aanmaak_huidige_glastuinbouw_tbv_Vesta33.pdf",
 		FreeData        = "False"
 	{
 		attribute<rdc_meter> point:

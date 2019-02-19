@@ -23,7 +23,7 @@ container WarmteBronnen
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "P"
-		,	Source          = "%sourceDataProjDir%/aanbod/puntbronnen/20190212_metadata_puntbronnen.txt"
+		,	Source          = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_metadata_puntbronnen.txt"
 		{
 			attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_puntbronnen.shp", StorageReadOnly = "True";
 			attribute<string>    Naam;
@@ -177,7 +177,7 @@ container WarmteBronnen
 		unit<uint32> ContourSet:
 			StorageName     = "%sourceDataProjDir%/Aanbod/WKO/20180802_WKO_potentiecontour.dbf",
 			StorageReadOnly = "True",
-			url             = "%sourceDataProjDir%/Aanbod/WKO/20190212_metadata_wko_contour.txt",
+			url             = "%sourceDataProjDir%/Aanbod/WKO/20180802_metadata_wko_contour.txt",
 			DialogType      = "Map",
 			DialogData      = "geometry"
 		{
@@ -198,14 +198,14 @@ container WarmteBronnen
 	container Gas: Descr = "Gasleidingennet beheersgebied Stedin"
 	{
 		unit<uint32> Leiding:
-			StorageName      = "%sourceDataProjDir%/Aanbod/Gas/Leidingen.dbf",
+			StorageName      = "%sourceDataProjDir%/Aanbod/Gas/20161001_Stedin_Leidingen.dbf",
 			StorageReadOnly = "True",
 			DialogType      = "Map",
 			DialogData      = "Leidingen",
-			url             = "%sourceDataProjDir%/Aanbod/Gas/20190212_metadata_gasleidingen.txt",
+			url             = "%sourceDataProjDir%/Aanbod/Gas/20161001_metadata_Stedin_Leidingen.html",
 			SyncMode        = "All"
 			{
-				attribute<rdc_meter>                Leidingen (arc): StorageName = "%sourceDataProjDir%/Aanbod/Gas/Leidingen.shp";
+				attribute<rdc_meter>                Leidingen (arc): StorageName = "%sourceDataProjDir%/Aanbod/Gas/20161001_Stedin_Leidingen.shp";
 				attribute<string>                   Status;
 				attribute<Classifications/StatusKl> Status_rel := rlookup(Status, Classifications/StatusKl/label);
 			}

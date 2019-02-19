@@ -163,7 +163,7 @@ container Bebouwing :=
 				,	Geography/rdc_grids/m100, int32
 			);
 
-		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/gltb_180219, FreeData = "True"
+		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/gltb_180219, url = "%sourceDataProjDir%/vraag/glastuinbouw/Werkwijze_aanmaak_huidige_glastuinbouw_tbv_Vesta33.pdf",FreeData = "True"
 		{
 			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
 
