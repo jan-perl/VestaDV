@@ -13,7 +13,6 @@
 
 container Nieuwbouw
 {
-	//indien laag_spreiding-scenario activeer onderstaande regel en comment bovenstaande regel
 	unit<uInt32> ZW := Classifications/combines/ZichtjaarWonen;
 	unit<uInt32> ZU := Classifications/combines/ZichtjaarUtiliteit;
 
@@ -27,13 +26,22 @@ container Nieuwbouw
 			+ ZW/wonen_wlo_filename+ '.tif'
 		);
 
-	container UtilOppervlak :=
+	container UtilOppervlak_org :=
 		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
 			, Geography/rdc_grids/m100
 			, Float32
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZU/period_name+'/Util/Nieuwbouw_Uitleg/'
 			+ ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
+
+	// missing values float32 -9999 --> null
+	container UtilOppervlak :=
+		for_each_nedv(Classifications/combines/ZichtjaarUtiliteit/name
+			, 'UtilOppervlak_org/' + /Classifications/combines/ZichtjaarUtiliteit/name + ' < -9998f ? 0f/0f : UtilOppervlak_org/' + /Classifications/combines/ZichtjaarUtiliteit/name
+			, Geography/rdc_grids/m100
+			, Float32
+		);
+
 
 	container InbreidingUtilFactor :=
 		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
@@ -42,6 +50,33 @@ container Nieuwbouw
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZU/period_name+'/Util/Nieuwbouw_inbreiding/'
 			+ ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
+
+
+//begin of: activeer lege ruimtelijke ontwikkeling voor nieuwbouw, alternatief voor lege ruimtelijke ontwikkeling met bestanden
+// comment out: woning,UtilOppervlak_org,UtilOppervlak,InbreidingUtilFactor
+
+// 	container woning :=
+// 		for_each_nedv(ZW/HasMutations ? ZW/Name : ''
+// 			,'const(0f[nrWoningen_32],Geography/rdc_grids/m100)'
+// 			, Geography/rdc_grids/m100
+// 			, nrWoningen_32
+// 		);
+//
+// 	container UtilOppervlak:=
+// 		for_each_nedv(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
+// 			,'const(0f,Geography/rdc_grids/m100)'
+// 			, Geography/rdc_grids/m100
+// 			, Float32
+// 		);
+//		
+// 	container InbreidingUtilFactor :=
+// 		for_each_nedv(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
+// 			,'const(1f,Geography/rdc_grids/m100)'
+// 			, Geography/rdc_grids/m100
+// 			, Float32
+// 		);
+
+// end of activate
 
 	container Totalen
 	{
