@@ -26,22 +26,13 @@ container Nieuwbouw
 			+ ZW/wonen_wlo_filename+ '.tif'
 		);
 
-	container UtilOppervlak_org :=
+	container UtilOppervlak :=
 		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
 			, Geography/rdc_grids/m100
 			, Float32
 			, SpecifiekeInstellingen/WloScenarioFolder+'/'+ZU/period_name+'/Util/Nieuwbouw_Uitleg/'
 			+ ZU/wlo_filename_Nieuwbouw + '.tif'
 		);
-
-	// missing values float32 -9999 --> null
-	container UtilOppervlak :=
-		for_each_nedv(Classifications/combines/ZichtjaarUtiliteit/name
-			, 'UtilOppervlak_org/' + /Classifications/combines/ZichtjaarUtiliteit/name + ' < -9998f ? 0f/0f : UtilOppervlak_org/' + /Classifications/combines/ZichtjaarUtiliteit/name
-			, Geography/rdc_grids/m100
-			, Float32
-		);
-
 
 	container InbreidingUtilFactor :=
 		for_each_ndva(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
