@@ -1,0 +1,14 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container TussenResultaten :=
+	for_each_ne(
+		Classifications/zichtjaar/Name,
+		'Model/CalculationSchemes/TussenResultaten('
+			 + quote(Classifications/zichtjaar/Name)
+			 + MakeDefined(', ' + Classifications/zichtjaar/Name[ID(Classifications/zichtjaar)-1b] + '/StateNaAllocatie','')
+		+')'
+	);

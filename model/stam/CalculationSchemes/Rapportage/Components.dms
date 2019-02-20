@@ -1,0 +1,25 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template Components
+{
+	// begin case parameters
+	parameter<string>  name;
+	attribute<float64> factor (Invoer/SpecifiekeInstellingen/PlanRegio);
+	// end case parameters
+
+	container Flow   := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Accounting             , Eur_yr , true , ReportFolder+ '/' + Name + '_Flow'  , factor);
+	container Stock  := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Accounting             , Eur    , false, ReportFolder+ '/' + Name + '_Stock' , factor);
+
+	container Energy := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , GJ_yr   ,  ReportFolder + '/' + Name + '_Energy', factor, ''                      , PJ_yr);
+	container CO2    := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , kg_yr   ,  ReportFolder + '/' + Name + '_CO2'   , factor, 'CO2_' + string(RunJaar), kg_GJ);
+	container NOx    := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , g / Yr  ,  ReportFolder + '/' + Name + '_NOx'   , factor, 'NOx_' + string(RunJaar), g_GJ);
+	container SO2    := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , g / Yr  ,  ReportFolder + '/' + Name + '_SO2'   , factor, 'SO2_' + string(RunJaar), g_GJ);
+	container VOS    := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , g / Yr  ,  ReportFolder + '/' + Name + '_VOS'   , factor, 'VOS_' + string(RunJaar), g_GJ);
+	container TS     := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Transformations , g / Yr  ,  ReportFolder + '/' + Name + '_TS'    , factor, 'TS_'  + string(RunJaar), g_GJ);
+
+	parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "Flow/GenerateAll;Stock/GenerateAll;Energy/GenerateAll;CO2/GenerateAll;NOx/GenerateAll;SO2/GenerateAll;VOS/GenerateAll;TS/GenerateAll";
+}

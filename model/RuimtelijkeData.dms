@@ -1,0 +1,113 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       In deze configuratiefile worden de brondata geconfigureerd.                    //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
+{
+	#include <BAG.dms>
+	#include <Nieuwbouw.dms>
+	#include <Sloop.dms>
+	#include <GlasTuinBouw.dms>
+	#include <Bebouwing.dms>
+	container EnergieLabel
+	{
+		parameter<string> SQoute := '\''', IsHidden = "True";
+		// Voor koppeling aan de BAG
+		unit<uint32> nummeraanduiding := RuimtelijkeData/BAG/import/nummeraanduiding;
+		unit<uint32> vbo              := RuimtelijkeData/BAG/import/vbo;
+
+		unit<uint32> src
+		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/20190101_inputlabels_rvo.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	url             = "%SourceDataProjDir%/vraag/wonen/20190101_inputlabels_rvo_FvdM.txt"
+		{
+			attribute<string> HLT_unquoted := trim(replace(HLT,SQoute,''));
+			attribute<string> adres_key    :=
+				replace(Postcode,SQoute,'') + '_' + replace(HNR,SQoute,'') + 
+				(strlen(HLT_unquoted) > 0 
+					? '_' + HLT_unquoted
+					: ''
+				);
+			//order of replace matters!
+			attribute<Classifications/energielabel> energielabel_rel := rlookup(replace(replace(replace(replace(replace(label,SQoute,''),'A++++','eWP'),'A+++','eWP'),'A++','eWP'),'A','A+'), Classifications/energielabel/Label);
+			attribute<uint32>                       datum_numeriek   := uint32(replace(DATUM,SQoute,''));
+			attribute<voorkomend>                   voorkomend_rel   := rlookup(label, voorkomend/Values);
+		}
+
+		unit<uint32> data := unique(src/adres_key)
+		{
+			attribute<string>                       nummeraanduiding_id := nummeraanduiding/identificatie[rlookup(values, nummeraanduiding/adres_key)];
+			attribute<string>                       vbo_id              := rjoin(nummeraanduiding_id, vbo/nummeraanduiding_id, vbo/identificatie), FreeData = "False";
+			attribute<uint32>                       datum_laatste       := max(src/datum_numeriek, rlookup(src/adres_key, values));
+			attribute<Classifications/energielabel> energielabel_rel    := rjoin(values + '_' + string(datum_laatste), src/adres_key + '_' + string(src/datum_numeriek), src/energielabel_rel), FreeData = "False";
+		}
+
+		unit<uint32> voorkomend := unique(src/label), isHidden = "True"
+		{
+			attribute<uint32> aantal := pcount(src/voorkomend_rel);
+		}
+	}
+	
+	#include <WarmteBronnen.dms>
+
+	
+	// KNMI klimaatscenario voor daling functionele warmtevraag in de toekomst door hogere gemiddelde buitentemperatuur
+	// Beschikbare varianten:
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/GL/GL_' + Classifications/zichtjaar/label + '.tif"     ( + 1,0 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/GH/GH_' + Classifications/zichtjaar/label + '.tif"     ( + 1,4 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/WL/WL_' + Classifications/zichtjaar/label + '.tif"     ( + 2,0 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/WH/WH_' + Classifications/zichtjaar/label + '.tif"     ( + 2,3 graden celcius wereldwijd in 2050 )
+	
+	container Klimaat :=
+			for_each_ndva(
+			 Classifications/zichtjaar/name
+			,Geography/rdc_grids/m100
+			,float32
+			,'%sourceDataProjDir%/hulpbestanden/klimaat/GH/GH_' + Classifications/zichtjaar/label + '.tif'
+			)
+			, descr = "Klimaat_scenario_knmi"
+			, url   = "%sourceDataProjDir%/hulpbestanden/klimaat/Werkwijze_aanmaak_correctiekaarten_klimaat_obv_KNMI2014_scenarios_tbv_Vesta33.pdf";
+
+	// inlezen kerncijfers wijken en buurten - meerdere jaren om missende waarden te ondervangen
+	container CBSWijkEnBuurt: url="%sourceDataProjDir%/CBS/20190212_update_kerncijfers_wijken_buurten_FvdM.txt"
+	{
+		unit<uint32> j2013:
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2013.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2014:
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2014.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2015:
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2015.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+			
+		unit<uint32> j2016:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2016.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2017:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2017.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2018:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2018.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+	}
+}

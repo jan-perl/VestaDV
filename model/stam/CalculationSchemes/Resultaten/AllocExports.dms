@@ -1,0 +1,52 @@
+container AllocExports: = Units, isHidden = "True" //DEBUG
+{
+	container PlanRegioResults
+	{
+		container PlanRegioKaarten := TussenResultaten/GebiedsAllocatie/Initieel/KostenBaten/PlanRegioKaarten;
+
+		Unit<UInt32>  table := Invoer/SpecifiekeInstellingen/PlanRegio
+		{
+			attribute<string> BU_CODE                                       := Geography/RegioIndelingen/buurt/BU_CODE;
+			attribute<Classifications/AanbodOptie> AanbodOptie              := StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie;
+
+			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := CO2/gebouwen/AardGas/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := CO2/gebouwen/Elektriciteit/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_totaal                      := CO2/gebouwen/totaal;
+			attribute<units/kg_yr> CO2_totaal                               := CO2/totaal;
+			attribute<units/Eur_yr> netverzwaring                           := netwerken/Elektriciteit/netverzwaring;
+
+			attribute<units/kW>      Woning_CapaciteitWarmteDeelnemers      := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteDeelnemers;
+			attribute<units/nrAansl> Woning_nrAanslWarmteDeelnemers         := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers;
+			attribute<float64>       Woning_nrModelUnitsWarmteDeelnemers    := PlanRegioKaarten/BestaandeWoning/nrModelUnitsWarmteDeelnemers;
+			attribute<units/GJ_yr>   Woning_VerbruikAalle                   := PlanRegioKaarten/BestaandeWoning/Verbruik/alle;
+			attribute<units/Eur_yr>  Woning_WarmteVraagAlle                 := PlanRegioKaarten/BestaandeWoning/WarmteVraag/alle;
+			attribute<units/GJ_yr>   Vj_WarmtePrimairD                      := TussenResultaten/GebiedsAllocatie/Initieel/KostenBaten/Vj_WarmtePrimairD;
+			attribute<units/GJ_yr>   WarmteVraagDeelnemers                  := TussenResultaten/GebiedsAllocatie/Initieel/KostenBaten/WarmteVraag/deelnemers;
+
+			attribute<units/Percent> Eigendom_Koopwoningen                  := Geography/RegioIndelingen/buurt/Eigendom/p_koopw;
+			attribute<units/Percent> Eigendom_Huurwoningen_totaal           := Geography/RegioIndelingen/buurt/Eigendom/p_huurw;
+			attribute<units/Percent> Eigendom_In_bezit_woningcorporatie     := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw;
+			attribute<units/Percent> Eigendom_In_bezit_overige_verhuurders  := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw;
+			attribute<units/Percent> Eigendom_Eigendom_onbekend             := Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w;
+			attribute<units/Percent> Eigendom_p_checksum                    := Geography/RegioIndelingen/buurt/Eigendom/p_checksum;//eigen check
+			attribute<units/Percent> Inkomen_Huishoudens_met_laag_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li;
+			attribute<units/Percent> Inkomen_Huishoudens_met_hoog_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi;
+			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
+			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
+
+			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/Metervraag/gebouwen/GebiedsOptie/totaal;
+			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/Metervraag/gebouwen/Elektriciteit/totaal;
+		}
+
+		container export := Rapportage/WriteTableToCSV(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
+	}
+
+	container BCResults :=
+		for_each_ne(Classifications/BebouwingsComponent/name,
+			'AllocExportsBebouwingsComponent('+Quote(Classifications/BebouwingsComponent/name)+',Allocatie/'+Classifications/BebouwingsComponent/name+')');
+
+	parameter<String> GenerateAll := 'Ready', ExplicitSuppliers = 
+		"='PlanRegioResults/export/result;'"
+		"+AsList('BCResults/'+Classifications/BebouwingsComponent/name+'/export/result',';')";
+}

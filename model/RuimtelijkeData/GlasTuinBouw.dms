@@ -1,0 +1,58 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile wordt de brondata voor de GlasTuinBouw geconfigureerd //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container GlasTuinBouw
+{
+	unit<uint32> gltb_180219:
+		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.dbf",
+		DialogData      = "point",
+		DialogType      = "Map",
+		StorageReadOnly = "True",
+		SyncMode        = "All",
+		url             = "%sourceDataProjDir%/vraag/glastuinbouw/Werkwijze_aanmaak_huidige_glastuinbouw_tbv_Vesta33.pdf",
+		FreeData        = "False"
+	{
+		attribute<rdc_meter> point:
+			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.shp",
+			StorageReadOnly = "True"
+		{
+			parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";
+			parameter<m>       SymbolWorldSize: DialogType = "SymbolWorldSize", expr = "value(100, m)";
+			parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
+		}
+		attribute<Classifications/GLTB> GLTB_Code;
+		attribute<m2>                   Opp_M2;
+	}
+	container Af :=
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
+			Geography/rdc_grids/m100, bool,
+			SpecifiekeInstellingen/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Af.tif'
+		);
+
+	container Bij :=
+		for_each_ndva(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : '',
+			Geography/rdc_grids/m100, bool,
+			SpecifiekeInstellingen/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
+		);
+
+	container verdeling
+	{
+		container NL
+		{
+			attribute<units/m2>    Oppervlakte  (Classifications/GLTB) := sum(GlasTuinBouw/gltb_180219/Opp_M2 , GlasTuinBouw/gltb_180219/GLTB_Code);
+			parameter<units/m2>    OppervlakteNL                       := sum(Oppervlakte);
+			attribute<units/ratio> GLTB         (Classifications/GLTB) := Oppervlakte / OppervlakteNL,
+				IntegrityCheck = "sum(this) = 1[units/ratio]";
+		}
+	}
+}

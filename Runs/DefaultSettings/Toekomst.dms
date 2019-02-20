@@ -1,0 +1,70 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+// Deze file bevat een basis voor de Vesta instellingen die vanuit iedere run4          //
+// geincludeerd wordt en per run per Zichtjaar kan worden overreden                     //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container Toekomst := Basis, using = "Units"
+{
+	container RuimtelijkeVraag := Basis/RuimtelijkeVraag
+	{
+		container Lokaal := Basis/RuimtelijkeVraag/Lokaal
+		{
+			container Generiek := Basis/RuimtelijkeVraag/Lokaal/Generiek
+			{
+				container Verbeteringen := Basis/RuimtelijkeVraag/Lokaal/Generiek/Verbeteringen
+				{
+					// Letters verwijzen naar kolomheaders in het "Dataset_woningen2013_200313.xls"-bestand
+					parameter<String> S_H_T:   ['Criteria/Always']; // was: Sprong A (een initiele sprong)
+					parameter<String> S_H_B:   ['Criteria/Always']; // was: Sprong B (een initiele sprong)
+					parameter<String> S_H_AP:  ['Criteria/Always']; // was: Sprong C (een initiele sprong)
+					parameter<String> S_T_B:   ['Criteria/Always']; // was: Sprong D (een vervolgsprong)
+					parameter<String> S_T_AP:  ['Criteria/Always']; // was: Sprong E (een vervolgsprong)
+					parameter<String> S_B_AP:  ['Criteria/Always']; // was: Sprong F (een vervolgsprong)
+
+					// labelsprongen naar A+ inclusief eWP aan (incl lt-afgiftesysteem)
+					parameter<String> S_H_eWP: ['Criteria/Always']; // naar A+ met eWP
+					parameter<String> S_T_eWP: ['Criteria/Always']; // van tussenlabel naar A+ met eWP
+					parameter<String> S_B_eWP: ['Criteria/Always']; // van B naar A+ met eWP.
+					parameter<String> S_AP_eWP:['Criteria/Always'];  // van A+ zonder eWP naar A+ met eWP
+
+					// labelsprongen naar A+ inclusief EWV (staat nog uit zolang EWV rentabiliteitsafweging nog niet goed is geimplementeerd
+					parameter<String> S_H_EWV: ['Criteria/Always']; // naar A+ met EWV
+					parameter<String> S_T_EWV: ['Criteria/Always']; // van tussenlabel naar A+ met EWV
+					parameter<String> S_B_EWV: ['Criteria/Always']; // van B naar A+ met EWV.
+					parameter<String> S_AP_EWV:['Criteria/Always'];  // van A+ zonder eWP naar A+ met EWV
+
+					parameter<bool> SpringMeestRendabel : [ true ] ; // maak rentabiliteitsafweging tbv bebouwingobject eigenaren indien true
+				}
+			}
+			container BestaandeWoning := Generiek;
+			container BestaandeUtil   := Generiek;
+			container BestaandeGlTb   := Generiek;
+			container NieuwbouwWoning := BestaandeWoning;
+			container NieuwbouwUtil   := BestaandeUtil;
+			container NieuwbouwGlTb   := BestaandeGlTb;
+		}
+	}
+
+	container Voorkeuren := Basis/Voorkeuren
+	{
+		container AanbodOpties
+		{
+			parameter<UInt32> Aantal: [ 5 ]; // @USERINPUT
+			
+			parameter<Classifications/AanbodOptie> Optie1 := Classifications/AanbodOptie/V/GeoThermie;
+			parameter<Classifications/AanbodOptie> Optie2 := Classifications/AanbodOptie/V/RestWarmte;
+			parameter<Classifications/AanbodOptie> Optie3 := Classifications/AanbodOptie/V/WKO;
+			parameter<Classifications/AanbodOptie> Optie4 := Classifications/AanbodOptie/V/BioWKK;
+			parameter<Classifications/AanbodOptie> Optie5 := Classifications/AanbodOptie/V/WijkWKK;
+		}
+	}
+}
+

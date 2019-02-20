@@ -1,0 +1,367 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template BCdata
+{
+	// begin case parameters
+	unit<uint32>      BebouwingsObjectZonderNieuwbouw;
+	parameter<string> BCname;
+	parameter<bool>   IsNieuwbouw;
+	parameter<bool>   HasResterendFactors;
+
+	container ResterendFactorMaps;
+	container EnergieVraagModellen;
+	container LocatieSpecifiekeOpties;
+	container VraagKentallen;
+	container StartingStateComponent;
+
+	unit<uint8> PrijzenAardgas;
+
+	parameter<string> NcwRefBase;
+	parameter<Ratio>  BTW_Factor;
+	parameter<Ratio>  BTW_Factor_gv;
+	// end of case parameters
+
+	container NcwRefs 
+	{
+		container _15 := ='NCW/'+NcwRefBase+'15';
+		container _30 := ='NCW/'+NcwRefBase+'30';
+		container _50 := ='NCW/'+NcwRefBase+'50';
+		container _28 := ='NCW/'+NcwRefBase+'28';
+	}
+
+	unit<uint8> PrijzenElektriciteit := Prijzen/Elektriciteit/Staffel;
+
+	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BebouwingsObjectZonderNieuwbouw)' : '..';
+
+	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BebouwingsObjectZonderNieuwbouw'
+	{
+		attribute<Geography/RegioIndelingen/buurt> buurt_rel (BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
+	}
+
+	unit<uint32>  PrevObject           := StartingStateComponent/BebouwingsObject;
+	unit<uint8>   BebouwingsTypeDomein := BebouwingsObject/BebouwingsTypeDomein;
+	unit<uint32>  ModelObject          := EnergieVraagModellen/ModelObject;
+	unit<float64> ModelUnit            := EnergieVraagModellen/ModelUnit;
+	unit<uint32>  WkoCluster           := StateVoorAllocatie/AanbodOpties/WkoCluster;
+
+	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
+
+	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
+	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
+	attribute<Classifications/AanbodOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
+	attribute<Eur_yr>                      KoudeAllocatie    (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
+	attribute<Eur_yr>                      Om_Comfort        (BebouwingsObject) := MakeDefined(StartingStateComponent/Om_Comfort[StartingState_rel], 0[Eur_yr]);
+	attribute<WkoCluster>                  WkoCluster_rel    (BebouwingsObject) := StartingStateComponent/WkoCluster_rel[StartingState_rel];
+
+	unit<uint32> RuimtelijkeVraagComponent := BebouwingsObject
+	{
+		attribute<Geography/rdc_grids/m100> gridm100_rel (BebouwingsObject) := point[Geography/rdc_grids/m100];
+
+		attribute<Ratio> ResterendFactorBase := = HasResterendFactors
+			? 'MakeDefined(merge(BebouwingsType, Ratio, '+AsItemList('ResterendFactorMaps/'+BebouwingsTypeDomein/ResterendFactorName+'[gridm100_rel]')+'), 1.0)'
+			: 'const(1.0, BebouwingsObject)';
+
+		attribute<Ratio>      ResterendFactor := ResterendFactorBase * float64(IsDefined(PlanRegio_rel));
+		attribute<nrAansl>    nrAansluitingen := ResterendFactor * nrAansluitingen_i;
+		attribute<nrWoningen> nrWoonunits     := ResterendFactor * nrWoonUnits_i;
+		attribute<ModelUnit>  nrModelUnits    := ResterendFactor * NrJoinedUnits * EnergieVraagModellen/nrMUperJU[Model_rel];
+
+		container AansluitCapaciteit
+		{
+			attribute<kW> Warmte(..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
+		}
+
+		container Functioneel
+		{
+			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
+
+			attribute<GJ_yr> WarmWater             (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
+			attribute<GJ_yr> Koude                 (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
+			attribute<GJ_yr> ElektrischeApparatuur (..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
+			attribute<GJ_yr> RuimteVerwarming      (..) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
+			attribute<GJ_yr> PompEnergie_min       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr> PompEnergie_max       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+		}
+	}
+
+	container EnergieLabel
+	{
+		attribute<Classifications/EnergieLabel> LastValue    (BebouwingsObject) := MakeDefined(StartingStateComponent/EnergieLabel/CurrValue[StartingState_rel], EnergieVraagModellen/Efficiency/EnergieLabel[Model_rel]);
+		attribute<Classifications/EnergieLabel> CurrValue    (BebouwingsObject) := Sprongen/NaarEnergieLabel;
+		attribute<bool>                         WasChanged   (BebouwingsObject) := StartingStateComponent/EnergieLabel/IsChanged[StartingState_rel];
+		attribute<bool>                         IsChangedNow (BebouwingsObject) := LastValue != CurrValue;
+		attribute<bool>                         IsChanged    (BebouwingsObject) := WasChanged || IsChangedNow;
+	}
+
+	container Criteria := BebouwingsObject/Criteria // inherit, TODO: opruimen na aanpassing runs
+	{
+		attribute<bool> Always (BebouwingsObject) := const(true,  BebouwingsObject);
+		attribute<bool> Never  (BebouwingsObject) := const(false, BebouwingsObject);
+	}
+
+	unit<float64> Eur_ModelUnit := Eur / ModelUnit;
+	
+	attribute<BebouwingsTypeDomein> BebouwingsType (BebouwingsObject) := RuimtelijkeVraagComponent/BebouwingsType;
+
+	container EIA_Opties := ='SpecifiekeInstellingen/Beleid/EIA/E_'+NcwRefBase;
+	container EEA_Opties := SpecifiekeInstellingen/Beleid/EEA/Kosten/Basis;
+
+	container OpwekkingsOpties
+	{
+		container bereidheid
+		{
+			attribute<Ratio> Zon_PV     (BebouwingsObject) := const(LocatieSpecifiekeOpties/OpwekkingF/Zon_PV,      BebouwingsObject);
+			attribute<Ratio> ZonneBoiler(BebouwingsObject) := const(LocatieSpecifiekeOpties/OpwekkingF/ZonneBoiler, BebouwingsObject);
+			attribute<Ratio> mWKK       (BebouwingsObject) := const(LocatieSpecifiekeOpties/OpwekkingF/mWKK,        BebouwingsObject);
+			attribute<Ratio> hWP        (BebouwingsObject) := MakeDefined(LocatieSpecifiekeOpties/OpwekkingF/hWP[energielabel/LastValue], 0.0);
+		}
+		container org_capaciteit
+		{
+			attribute<Ratio> Zon_PV     (BebouwingsObject) := MakeDefined(StartingStateComponent/OpwekkingsOpties/capaciteit/Zon_PV     [StartingState_rel], 0[Ratio]);
+			attribute<Ratio> ZonneBoiler(BebouwingsObject) := MakeDefined(StartingStateComponent/OpwekkingsOpties/capaciteit/ZonneBoiler[StartingState_rel], 0[Ratio]);
+			attribute<Ratio> mWKK       (BebouwingsObject) := MakeDefined(StartingStateComponent/OpwekkingsOpties/capaciteit/mWKK       [StartingState_rel], 0[Ratio]);
+			attribute<Ratio> hWP        (BebouwingsObject) := MakeDefined(StartingStateComponent/OpwekkingsOpties/capaciteit/hWP        [StartingState_rel], 0[Ratio]);
+		}
+		container investering
+		{
+			attribute<Ratio> Zon_PV     (BebouwingsObject) := median(0.0, bereidheid/Zon_PV      - org_capaciteit/Zon_PV,      1.0[Ratio] - org_capaciteit/Zon_PV);
+			attribute<Ratio> ZonneBoiler(BebouwingsObject) := median(0.0, bereidheid/ZonneBoiler - org_capaciteit/ZonneBoiler, 1.0[Ratio] - org_capaciteit/ZonneBoiler);
+			attribute<Ratio> mWKK       (BebouwingsObject) := median(0.0, bereidheid/mWKK        - org_capaciteit/mWKK,        1.0[Ratio] - org_capaciteit/mWKK);
+			attribute<Ratio> hWP        (BebouwingsObject) := median(0.0, bereidheid/hWP         - org_capaciteit/hWP,         1.0[Ratio] - org_capaciteit/hWP);
+		}
+		container capaciteit
+		{
+			attribute<Ratio> Zon_PV     (BebouwingsObject) := org_capaciteit/Zon_PV      + investering/Zon_PV;
+			attribute<Ratio> ZonneBoiler(BebouwingsObject) := org_capaciteit/ZonneBoiler + investering/ZonneBoiler;
+			attribute<Ratio> mWKK       (BebouwingsObject) := org_capaciteit/mWKK        + investering/mWKK;
+			attribute<Ratio> hWP        (BebouwingsObject) := org_capaciteit/hWP         + investering/hWP;
+		}
+	}
+
+	container Hoeveelheden
+	{
+		attribute<m2>      ZonneBoiler (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/ZonneBoiler * VraagKentallen/ZonneBoiler/Oppervlak[ BebouwingsType ];
+		attribute<m2>      Zon_PV      (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * OpwekkingsOpties/capaciteit/Zon_PV      * VraagKentallen/Zon_PV/Oppervlak     [ BebouwingsType ];
+		attribute<nrAansl> mWKK        (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/mWKK;
+		attribute<nrAansl> hWP         (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Opwekking/hWP;
+	}
+
+	container Functioneel
+	{
+		attribute<GJ_yr> RuimteVerwarming (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/RuimteVerwarming;
+		attribute<GJ_yr> Koude            (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/Koude;
+		attribute<GJ_yr> WarmWater        (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/WarmWater;
+		attribute<GJ_yr> Apparatuur       (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/ElektrischeApparatuur;
+		attribute<GJ_yr> PompEnergie      (BebouwingsObject) := Schuiven/OpbrMin * RuimtelijkeVraagComponent/Functioneel/PompEnergie_min + Schuiven/OpbrMax * RuimtelijkeVraagComponent/Functioneel/PompEnergie_max;  // niet afhankelijk van gebouwisolatie ?
+	}
+
+	#include<Sprongen.dms>
+
+	container Efficiency
+	{
+		container Gebouw
+		{
+			attribute<units/Ratio> LaatsteWaarde  (BebouwingsObject) :=
+				MakeDefined(StartingStateComponent/Efficiency/Gebouw/ResultaatWaarde[StartingState_rel], EnergieVraagModellen/Efficiency/Gebouw[Model_rel]);
+
+			attribute<units/Ratio> VerbeterFactor (BebouwingsObject) :=
+					Sprongen/LabelSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency [Model_rel] :
+					Sprongen/LabelSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency [Model_rel] :
+					Sprongen/LabelSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] :
+					Sprongen/LabelSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency [Model_rel] :
+					Sprongen/LabelSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] :
+					Sprongen/LabelSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] :
+					Sprongen/LabelSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
+					Sprongen/LabelSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
+					1.0[Ratio];
+
+			attribute<units/Ratio> ResultaatWaarde (BebouwingsObject) := max_elem(VerbeterFactor, LaatsteWaarde);
+		}
+		container RuimteVerwarming
+		{
+			attribute<units/Ratio> AardGas (BebouwingsObject):= // neem een opgegeven fractie van de Verbetering
+				Sprongen/RuimteVerwarming/KanVerbeteren
+					? Sprongen/RuimteVerwarming/efficiency
+					: EnergieVraagModellen/Efficiency/RuimteVerwarming/AardGas[Model_rel];
+			attribute<units/Ratio> Warmte (BebouwingsObject) := const(1.0, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> eWP    (BebouwingsObject) := const(VraagKentallen/eWP/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> EWV    (BebouwingsObject) := const(VraagKentallen/EWV/COP, BebouwingsObject, units/Ratio);
+		}
+
+		container Koude
+		{
+			attribute<units/Ratio> Elektriciteit (BebouwingsObject):= EnergieVraagModellen/Efficiency/Koude/Elektriciteit[Model_rel];
+		}
+
+		container WarmWater
+		{
+			attribute<units/Ratio> AardGas (BebouwingsObject) := EnergieVraagModellen/Efficiency/WarmWater/AardGas[Model_rel];
+			attribute<units/Ratio> Warmte  (BebouwingsObject) := const(1.0, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> eWP     (BebouwingsObject) := const(VraagKentallen/eWP/COP, BebouwingsObject, units/Ratio);
+			attribute<units/Ratio> EWV     (BebouwingsObject) := const(VraagKentallen/EWV/COP, BebouwingsObject, units/Ratio);
+		}
+
+		container Apparatuur
+		{
+			attribute<units/Ratio> Elektriciteit (BebouwingsObject) := EnergieVraagModellen/Efficiency/Apparatuur/Elektriciteit[Model_rel];
+		}
+	}
+
+	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus);
+
+	container Opwekking
+	{
+		attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Hoeveelheden/ZonneBoiler * VraagKentallen/ZonneBoiler/Opbrengst;
+		attribute<GJ_yr> Zon_PV      (BebouwingsObject) := Hoeveelheden/Zon_PV      * VraagKentallen/Zon_PV/Opbrengst;
+
+		container LeerCurves
+		{
+			container Optimistisch
+			{
+				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonB);
+				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonPV);
+				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPlw);
+				parameter<Percent> eWPww := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPww);
+				parameter<Percent> EWV   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/EWV);
+				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/mWKK);
+				parameter<Percent> hWP   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/hWP);
+			}
+			container Pessimistisch
+			{
+				parameter<Percent> ZonB  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonB);
+				parameter<Percent> ZonPV := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonPV);
+				parameter<Percent> eWPlw := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPlw);
+				parameter<Percent> eWPww := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPww);
+				parameter<Percent> EWV   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/EWV);
+				parameter<Percent> mWKK  := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/mWKK);
+				parameter<Percent> hWP   := interpolate_linear(RunJaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/hWP);
+			}
+
+			parameter<Percent> ZonB  := Optimistisch/ZonB  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonB  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> ZonPV := Optimistisch/ZonPV * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonPV * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> eWPlw := Optimistisch/eWPlw * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPlw * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> eWPww := Optimistisch/eWPww * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPww * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> eWP   := eWPlw;
+			parameter<Percent> hWP   := Optimistisch/hWP   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/hWP   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> EWV   := Optimistisch/EWV   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/EWV   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+			parameter<Percent> mWKK  := Optimistisch/mWKK  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/mWKK  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+		}
+
+		attribute<Ratio> eWP  (BebouwingsObject) := value(Sprongen/eWP, Ratio);
+		attribute<Ratio> EWV  (BebouwingsObject) := value(Sprongen/EWV, Ratio);
+		attribute<Ratio> mWKK (BebouwingsObject) := min_elem(OpwekkingsOpties/Capaciteit/mWKK, 1.0[Ratio] - EWV - eWP);
+		attribute<Ratio> hWP  (BebouwingsObject) := min_elem(OpwekkingsOpties/Capaciteit/hWP,  1.0[Ratio] - EWV - eWP -mWKK);
+	}
+	
+	container Kosten
+	{
+		container Inv {
+			parameter<Eur_m2> ZonneBoiler  := VraagKentallen/ZonneBoiler/InvesteringsKosten_Min * Schuiven/KostenMin +VraagKentallen/ZonneBoiler/InvesteringsKosten_Max * Schuiven/KostenMax;
+			parameter<Eur_m2> Zon_PV       := VraagKentallen/Zon_PV/InvesteringsKosten_Min      * Schuiven/KostenMin +VraagKentallen/Zon_PV/InvesteringsKosten_Max      * Schuiven/KostenMax;
+			
+			parameter<Eur_Aansl> mWKK := VraagKentallen/mWKK/InvesteringsKosten_Min * Schuiven/KostenMin + VraagKentallen/mWKK/InvesteringsKosten_Max * Schuiven/KostenMax;
+			parameter<Eur_Aansl> hWP  := VraagKentallen/hWP/InvesteringsKosten_Min  * Schuiven/KostenMin + VraagKentallen/hWP/InvesteringsKosten_Max  * Schuiven/KostenMax;
+		}
+	
+		attribute<Eur> Ki_ZonneBoiler       (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Inv/ZonneBoiler * Opwekking/LeerCurves/ZonB  / 100[Percent];
+		attribute<Eur> Ki_Zon_PV            (BebouwingsObject) := Hoeveelheden/Zon_PV      * Inv/Zon_PV      * Opwekking/LeerCurves/ZonPV / 100[Percent];
+		attribute<Eur> Ki_mWKK              (BebouwingsObject) := Hoeveelheden/mWKK        * Inv/mWkk        * Opwekking/Leercurves/mWKK  / 100[Percent];
+		attribute<Eur> Ki_hWP               (BebouwingsObject) := Hoeveelheden/hWP         * Inv/hWP         * Opwekking/Leercurves/hWP   / 100[Percent];
+		attribute<Eur> Ki_eWP               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_eWP_w;
+		attribute<Eur> Ki_EWV               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_EWV_w;
+
+		attribute<Eur> Ki_LokaleOpwekking30 (BebouwingsObject) := Ki_ZonneBoiler + Ki_Zon_PV + Ki_EWV;
+		attribute<Eur> Ki_LokaleOpwekking15 (BebouwingsObject) := Ki_mWKK + Ki_hWP + Ki_eWP;
+		
+		attribute<Eur> Ki_GebouwVerbetering (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_gv_w; // cumulatief
+		attribute<Eur_yr> Kj_gv_incentive   (BebouwingsObject) := Sprongen/Incentive_eigenaar_excl + StartingStateComponent/Kosten/Kj_gv_incentive[StartingState_rel];
+
+		attribute<Eur> Ki_LokaleOpwekking   (BebouwingsObject) := Ki_LokaleOpwekking30 + Ki_LokaleOpwekking15;
+		attribute<Eur> Ki_Totaal            (BebouwingsObject) := Ki_LokaleOpwekking + Ki_GebouwVerbetering;
+	}
+	
+	container DragerOpties
+	{
+		container RuimteVerwarming
+		{
+			parameter<float64> Aardgas_leidingverliesfactor := 1.05;
+
+			attribute<GJ_yr> AardGas (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/AardGas) * Aardgas_leidingverliesfactor;
+			attribute<GJ_yr> Warmte  (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/Warmte );
+			attribute<GJ_yr> eWP     (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/eWP);
+			attribute<GJ_yr> EWV     (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/EWV);
+		}
+		container Koude
+		{
+			attribute<GJ_yr> Elektriciteit (BebouwingsObject) := Functioneel/Koude / Efficiency/Koude/Elektriciteit;
+		}
+		container WarmWater
+		{
+			parameter<float64> Aardgas_leidingverliesfactor := 1.10;
+			
+			attribute<GJ_yr> AardGas     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/AardGas) * Aardgas_leidingverliesfactor;
+			attribute<GJ_yr> Warmte      (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Warmte );
+			attribute<GJ_yr> eWP         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP    );
+			attribute<GJ_yr> EWV         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/EWV    );
+			attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Opwekking/Zonneboiler;
+		}
+		container Warmte
+		{
+			attribute<GJ_yr> AardGas (BebouwingsObject) := RuimteVerwarming/AardGas + WarmWater/AardGas;
+			attribute<GJ_yr> Warmte  (BebouwingsObject) := RuimteVerwarming/Warmte  + WarmWater/Warmte;
+			attribute<GJ_yr> eWP     (BebouwingsObject) := RuimteVerwarming/eWP     + WarmWater/eWP;
+			attribute<GJ_yr> EWV     (BebouwingsObject) := RuimteVerwarming/EWV     + WarmWater/EWV;
+		}
+		container Apparatuur
+		{
+			attribute<GJ_yr> Zon_PV        (BebouwingsObject) := Opwekking/Zon_PV;
+			attribute<GJ_yr> Elektriciteit (BebouwingsObject) := Functioneel/Apparatuur / Efficiency/Apparatuur/Elektriciteit - Zon_PV;
+		}
+	}
+	container Aandeel
+	{
+		attribute<Ratio>    Electric             (BebouwingsObject) := Opwekking/eWP + Opwekking/EWV;
+		attribute<Ratio>    Electric_mWKK        (BebouwingsObject) := Electric + Opwekking/mWKK;
+		attribute<Ratio>    IndividueleOpwekking (BebouwingsObject) := Electric_mWKK + Opwekking/hWP, IntegrityCheck = "this <= 1.0";
+		attribute<float64>  WarmteVraag          (BebouwingsObject) := min_elem(RuimtelijkeVraagComponent/AandeelWarmteVraag, 1.0 - IndividueleOpwekking);
+		attribute<float64>  NietDeelnemers       (BebouwingsObject) := 1.0 - WarmteVraag;
+		attribute<float64>  Gas                  (BebouwingsObject) := 1.0 - max_elem(float64(IsDefined(WarmteAllocatie)), Electric);
+	}
+	
+	container WarmteVraag
+	{
+		container deelnemers
+		{
+			attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/nrAansluitingen ;
+			attribute<ModelUnit> NrModelUnits       (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/NrModelUnits; // @@@ Let op GlasTuinbouw alleen areaal warmte glastuinbouw
+			attribute<kW>        AansluitCapaciteit (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
+			attribute<GJ_yr>     Verbruik           (BebouwingsObject) := Aandeel/WarmteVraag * DragerOpties/Warmte/Warmte;
+		}
+
+		container alle
+		{
+			attribute<nrAansl>   NrAansluitingen    (BebouwingsObject) := (1.0 - Aandeel/Electric) * RuimtelijkeVraagComponent/nrAansluitingen;
+			attribute<kW>        AansluitCapaciteit (BebouwingsObject) := (1.0 - Aandeel/Electric) * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
+			attribute<GJ_yr>     Verbruik           (BebouwingsObject) := (1.0 - Aandeel/Electric) * DragerOpties/Warmte/Warmte;
+		}
+	}
+
+	container Warmtewet 
+	{
+		parameter<float64> PrijsFactor_impl :=  sum( Aandeel/Gas * DragerOpties/Warmte/Aardgas) / sum( Aandeel/Gas * DragerOpties/Warmte/Warmte ) * Voorkeuren/MinderDanAndersFactor;
+		parameter<float64> PrijsFactor_corr :=  MakeDefined(PrijsFactor_impl, 1.25);
+		parameter<float64> PrijsFactor      :=  = 'BebouwingsComponenten/'+rjoin(BCname, Classifications/BebouwingsComponent/name, Classifications/BebouwingsComponent/name[Classifications/BebouwingsComponent/Warmtewet_BC_rel])+'/Warmtewet/PrijsFactor_corr';
+
+		parameter<Eur_GJ> WarmtePrijs := = Voorkeuren/IsVasteWarmtePrijs 
+			? 'Voorkeuren/VasteWarmtePrijs'
+			: 'PrijsFactor * PrijzenAardgas/KGJ_eindgebruik_excl[classify(0[GJ_yr], PrijzenAardgas/ClassBreak)]';
+	}
+}
