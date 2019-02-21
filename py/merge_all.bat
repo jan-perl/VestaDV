@@ -1,23 +1,21 @@
+@echo off
+REM Set the environment parameters to your personal choice (no blanks are allowed in the next statement!)
+set vesta_root=C:\LD\VestaDV
+
+if not exist %vesta_root% goto error
+
 set tmpcsv=tmpcsv
 md %tmpcsv%
 
 REM Geef pad naar Results-folder in de LD-map
-set "padtoresults=Schijfletter:\LD\%confignaam%\Results\"
+set "padtoresults=%vesta_root%\Results\"
 
-set "Run1=Run4Combi_2016_Referentie"
+set "Run1=Referentie"
 set "Run1_pad=%padtoresults%%Run1%" 
 
-REM set "Run2=Run4Combi_2016_Referentie_Verhoging25cent"
-REM Set "Run2_pad=%padtoresults%%Run2%" 
+set "Run2=Verhoging50cent"
+Set "Run2_pad=%padtoresults%%Run2%" 
 
-set "Run3=Run4Combi_2016_Referentie_Verhoging50cent"
-Set "Run3_pad=%padtoresults%%Run3%" 
-
-REM set "Run4=Run4Combi_2016_Referentie_Verhoging100cent"
-REM Set "Run4_pad=%padtoresults%%Run4%" 
-
-REM set "Run5=Run4Combi_2016_Referentie_Verhoging150cent"
-REM Set "Run5_pad=%padtoresults%%Run5%" 
 
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_allflow_%Run1%.csv mut_lijst
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_allstock_%Run1%.csv mut_allstock_lijst
@@ -31,53 +29,19 @@ call python linenumbers.py %Run1_pad% %tmpcsv%/Verbetering_%Run1%.csv verbeterin
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_bebouwing_allflow_%Run1%.csv mut_bebouwing_allflow
 call python linenumbers.py %Run1_pad% %tmpcsv%/mut_bebouwing_allstock_%Run1%.csv mut_bebouwing_allstock
 
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/mut_allflow_%Run2%.csv mut_lijst
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/mut_allstock_%Run2%.csv mut_allstock_lijst
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/matrix_allflow_%Run2%.csv matrix_allflow
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/matrix_allstock_%Run2%.csv matrix_allstock
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/flow_%Run2%.csv NL
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/NL_emission_%Run2%.csv NL_emission
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/Gebiedsmaatregelen_%Run2%.csv gebiedsmaatregelen
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/Opwekking_%Run2%.csv opwekking
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/Verbetering_%Run2%.csv verbetering
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/mut_bebouwing_allflow_%Run2%.csv mut_bebouwing_allflow
-REM call python linenumbers.py %Run2_pad% %tmpcsv%/mut_bebouwing_allstock_%Run2%.csv mut_bebouwing_allstock
+call python linenumbers.py %Run2_pad% %tmpcsv%/mut_allflow_%Run2%.csv mut_lijst
+call python linenumbers.py %Run2_pad% %tmpcsv%/mut_allstock_%Run2%.csv mut_allstock_lijst
+call python linenumbers.py %Run2_pad% %tmpcsv%/matrix_allflow_%Run2%.csv matrix_allflow
+call python linenumbers.py %Run2_pad% %tmpcsv%/matrix_allstock_%Run2%.csv matrix_allstock
+call python linenumbers.py %Run2_pad% %tmpcsv%/flow_%Run2%.csv NL
+call python linenumbers.py %Run2_pad% %tmpcsv%/NL_emission_%Run2%.csv NL_emission
+call python linenumbers.py %Run2_pad% %tmpcsv%/Gebiedsmaatregelen_%Run2%.csv gebiedsmaatregelen
+call python linenumbers.py %Run2_pad% %tmpcsv%/Opwekking_%Run2%.csv opwekking
+call python linenumbers.py %Run2_pad% %tmpcsv%/Verbetering_%Run2%.csv verbetering
+call python linenumbers.py %Run2_pad% %tmpcsv%/mut_bebouwing_allflow_%Run2%.csv mut_bebouwing_allflow
+call python linenumbers.py %Run2_pad% %tmpcsv%/mut_bebouwing_allstock_%Run2%.csv mut_bebouwing_allstock
 
-call python linenumbers.py %Run3_pad% %tmpcsv%/mut_allflow_%Run3%.csv mut_lijst
-call python linenumbers.py %Run3_pad% %tmpcsv%/mut_allstock_%Run3%.csv mut_allstock_lijst
-call python linenumbers.py %Run3_pad% %tmpcsv%/matrix_allflow_%Run3%.csv matrix_allflow
-call python linenumbers.py %Run3_pad% %tmpcsv%/matrix_allstock_%Run3%.csv matrix_allstock
-call python linenumbers.py %Run3_pad% %tmpcsv%/flow_%Run3%.csv NL
-call python linenumbers.py %Run3_pad% %tmpcsv%/NL_emission_%Run3%.csv NL_emission
-call python linenumbers.py %Run3_pad% %tmpcsv%/Gebiedsmaatregelen_%Run3%.csv gebiedsmaatregelen
-call python linenumbers.py %Run3_pad% %tmpcsv%/Opwekking_%Run3%.csv opwekking
-call python linenumbers.py %Run3_pad% %tmpcsv%/Verbetering_%Run3%.csv verbetering
-call python linenumbers.py %Run3_pad% %tmpcsv%/mut_bebouwing_allflow_%Run3%.csv mut_bebouwing_allflow
-call python linenumbers.py %Run3_pad% %tmpcsv%/mut_bebouwing_allstock_%Run3%.csv mut_bebouwing_allstock
 
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/mut_allflow_%Run4%.csv mut_lijst
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/mut_allstock_%Run4%.csv mut_allstock_lijst
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/matrix_allflow_%Run4%.csv matrix_allflow
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/matrix_allstock_%Run4%.csv matrix_allstock
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/flow_%Run4%.csv NL
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/NL_emission_%Run4%.csv NL_emission
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/Gebiedsmaatregelen_%Run4%.csv gebiedsmaatregelen
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/Opwekking_%Run4%.csv opwekking
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/Verbetering_%Run4%.csv verbetering
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/mut_bebouwing_allflow_%Run4%.csv mut_bebouwing_allflow
-REM call python linenumbers.py %Run4_pad% %tmpcsv%/mut_bebouwing_allstock_%Run4%.csv mut_bebouwing_allstock
-
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/mut_allflow_%Run5%.csv mut_lijst
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/mut_allstock_%Run5%.csv mut_allstock_lijst
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/matrix_allflow_%Run5%.csv matrix_allflow
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/matrix_allstock_%Run5%.csv matrix_allstock
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/flow_%Run5%.csv NL
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/NL_emission_%Run5%.csv NL_emission
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/Gebiedsmaatregelen_%Run5%.csv gebiedsmaatregelen
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/Opwekking_%Run5%.csv opwekking
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/Verbetering_%Run5%.csv verbetering
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/mut_bebouwing_allflow_%Run5%.csv mut_bebouwing_allflow
-REM call python linenumbers.py %Run5_pad% %tmpcsv%/mut_bebouwing_allstock_%Run5%.csv mut_bebouwing_allstock
 
 
 cd tmpcsv
@@ -94,5 +58,18 @@ copy *Opwekking*.csv ..\Opwekking.csv
 copy *Verbetering*.csv ..\Verbetering.csv
 
 del *.csv
+goto end
+
+:error
+echo "****** ERROR ************************************"
+echo "Please check vesta_root on line 3 of this script."
+echo "****** ERROR ************************************"
+
+:end
+@echo off
+REM clean environment parameters
+set vesta_root=
+set tmpcsv=
+
 PAUSE
 
