@@ -1,39 +1,11 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2018                                      //
-//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
-//        tot de energievoorziening van de gebouwde omgeving.                           //
-//                                                                                      //
-//                         Planbureau voor de Leefomgeving                              //
-//                                    JUNI 2018                                         //
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
-//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
-//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
-//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
-//                                                                                      //
-//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
-//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
-//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
-//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
-//                                                                                      //
-//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
-//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
-//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
-//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
-//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
-//       bruiken van gegevens.                                                          //
-//                                                                                      //
-//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
-//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
-//       of met die uit andere bronnen.                                                 //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
 //       In deze configuratiefile worden de brondata geconfigureerd.                    //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +25,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		unit<uint32> vbo              := RuimtelijkeData/BAG/import/vbo;
 
 		unit<uint32> src
-		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/inputlabels_rvo_20180501.csv"
+		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/20190101_inputlabels_rvo.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		{
@@ -74,7 +46,6 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		{
 			attribute<string>                       nummeraanduiding_id := nummeraanduiding/identificatie[rlookup(values, nummeraanduiding/adres_key)];
 			attribute<string>                       vbo_id              := rjoin(nummeraanduiding_id, vbo/nummeraanduiding_id, vbo/identificatie), FreeData = "False";
-
 			attribute<uint32>                       datum_laatste       := max(src/datum_numeriek, rlookup(src/adres_key, values));
 			attribute<Classifications/energielabel> energielabel_rel    := rjoin(values + '_' + string(datum_laatste), src/adres_key + '_' + string(src/datum_numeriek), src/energielabel_rel), FreeData = "False";
 		}
@@ -83,11 +54,18 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		{
 			attribute<uint32> aantal := pcount(src/voorkomend_rel);
 		}
-
 	}
 	
 	#include <WarmteBronnen.dms>
 
+	
+	// KNMI klimaatscenario voor daling functionele warmtevraag in de toekomst door hogere gemiddelde buitentemperatuur
+	// Beschikbare varianten:
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/GL/GL_' + Classifications/zichtjaar/label + '.tif"     ( + 1,0 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/GH/GH_' + Classifications/zichtjaar/label + '.tif"     ( + 1,4 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/WL/WL_' + Classifications/zichtjaar/label + '.tif"     ( + 2,0 graden celcius wereldwijd in 2050 )
+	// "%sourceDataProjDir%/hulpbestanden/klimaat/WH/WH_' + Classifications/zichtjaar/label + '.tif"     ( + 2,3 graden celcius wereldwijd in 2050 )
+	
 	container Klimaat :=
 			for_each_ndva(
 			 Classifications/zichtjaar/name
@@ -95,22 +73,39 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			,float32
 			,'%sourceDataProjDir%/hulpbestanden/klimaat/GH/GH_' + Classifications/zichtjaar/label + '.tif'
 			)
-			, descr = "Klimaat_scenario_knmi";
+			, descr = "Klimaat_scenario_knmi"
+			, url   = "%sourceDataProjDir%/hulpbestanden/klimaat/Werkwijze_aanmaak_correctiekaarten_klimaat_obv_KNMI2014_scenarios_tbv_Vesta33.pdf";
 
+	// inlezen kerncijfers wijken en buurten - meerdere jaren om missende waarden te ondervangen
 	container CBSWijkEnBuurt
 	{
 		unit<uint32> j2013:
-			StorageName     = "%SourceDataProjDir%/CBS/kwb-2013.csv",
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2013.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
 
 		unit<uint32> j2014:
-			StorageName     = "%SourceDataProjDir%/CBS/kwb-2014.csv",
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2014.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
 
 		unit<uint32> j2015:
-			StorageName     = "%SourceDataProjDir%/CBS/kwb-2015.csv",
+			StorageName     = "%SourceDataProjDir%/CBS/20180802_kwb-2015.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+			
+		unit<uint32> j2016:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2016.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2017:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2017.csv",
+			StorageType     = "gdal.vect",
+			StorageReadOnly = "True";
+
+		unit<uint32> j2018:
+			StorageName     = "%SourceDataProjDir%/CBS/20190118_kwb-2018.csv",
 			StorageType     = "gdal.vect",
 			StorageReadOnly = "True";
 	}

@@ -1,33 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2018                                      //
-//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
-//        tot de energievoorziening van de gebouwde omgeving.                           //
-//                                                                                      //
-//                         Planbureau voor de Leefomgeving                              //
-//                                    JUNI 2018                                         //
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
-//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
-//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
-//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
-//                                                                                      //
-//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
-//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
-//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
-//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
-//                                                                                      //
-//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
-//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
-//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
-//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
-//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
-//       bruiken van gegevens.                                                          //
-//                                                                                      //
-//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
-//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
-//       of met die uit andere bronnen.                                                 //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,36 +79,28 @@ container Geography: Using = "Units", IsHidden = "True"
 			parameter<string> RegioNaam := 'NL';
 		}
 
-		unit<uint32> Provincie := unique(buurt/PROVNR)
+		unit<uint32> Provincie := unique(buurt/PROV_CODE)
 		{
-			attribute<string> label     := rjoin(values, buurt/PROVNR, buurt/PROVNM);
+			attribute<string> label     := rjoin(values, buurt/PROV_CODE, buurt/PROV_NAAM);
 			attribute<string> Name      := replace_value(Replace(Label, '-', ''), '', 'Elders');
 			parameter<string> RegioNaam := 'Provincie';
 		}
 
-		unit<uint32> Gemeente := unique(buurt/GEMNR2017)
+		unit<uint32> Gemeente := unique(buurt/GM_CODE)
 		{
 			attribute<string> name      := 'G'+string(Values);
-			attribute<string> label     := rjoin(values, buurt/GEMNR2017, buurt/GEMNM2017);
+			attribute<string> label     := rjoin(values, buurt/GM_CODE, buurt/GM_NAAM);
 			parameter<string> RegioNaam := 'Gemeente';
 		}
 
-		#include<buurt.dms>
-
-		unit<uint32> PC6:
-			StorageName     = "%SourceDataProjDir%/hulpbestanden/pc06_vlakken_simplify/PC6gebieden_2006_KAD_simplify.dbf",
-			DialogData      = "geometry",
-			DialogType      = "Map",
-			StorageReadOnly = "True"
+		unit<uint32> Wijk := unique(buurt/WK_CODE)
 		{
-			attribute<rdc_meter> geometry (poly):
-				label           = "Postcode 6 gebieden Nederland 2006 obv percelen",
-				StorageName     = "%SourceDataProjDir%/hulpbestanden/pc06_vlakken_simplify/PC6gebieden_2006_KAD_simplify.shp",
-				StorageReadOnly = "True";
-
-			attribute<string> postcode;
-			attribute<string> code := postcode;
+			attribute<string> name      := string(Values);
+			attribute<string> label     := rjoin(values, buurt/WK_CODE, buurt/WK_NAAM);
+			parameter<string> RegioNaam := 'Wijk';
 		}
+
+		#include<buurt.dms>
 
 		unit<uint32> blok2km := Subset(const(true,rdc_grids/km2)), DialogType = "Map", DialogData = "BaseGrid" // guarantee that all objects are in a plan-region
 		{
