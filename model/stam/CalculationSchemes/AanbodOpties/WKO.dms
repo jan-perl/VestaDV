@@ -96,6 +96,9 @@ template WKO
 	{
 		attribute<string> Name := 'I'+string(id(.));
 		attribute<string> Prev := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
+		
+		attribute<.> NrSelectedObjects          := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
 	}
 
 	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
@@ -105,14 +108,12 @@ template WKO
 	
 	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
-		attribute<.> NrSelectedObjects          (Iteration) := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects (Iteration) := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
 
 		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
 		attribute<string>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
 		attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
 		attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
-		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
+		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+Iteration/CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
 	}
 
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';

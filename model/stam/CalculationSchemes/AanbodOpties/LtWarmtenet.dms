@@ -149,17 +149,18 @@ Template LtWarmtenetImpl
 	{
 		attribute<string> Name := 'I'+string(id(.));
 		attribute<string> PrevBron := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'Bronnen');
+		attribute<.> NrSelectedObjects          := ='union_data(BronIteration, '+AsItemList('#BronIterations/'+BronIteration/Name+'/Selected')+')';
+		attribute<.> CumulNrPrevSelectedObjects := cumulate(NrSelectedObjects) - NrSelectedObjects;
 	}
 
 	container BronIterations := for_each_ne(BronIteration/Name, 'LtBronIter(' + BronIteration/PrevBron + ', Bronnen)');
 	
 	unit<uint32> BronSelectie := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
-		attribute<.> NrSelectedObjects          (BronIteration) := ='union_data(BronIteration, '+AsItemList('#BronIterations/'+BronIteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects (BronIteration) := cumulate(NrSelectedObjects) - NrSelectedObjects;
-
 		attribute<rdc_meter> point := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/point')+')';
 		attribute<string>    Label := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+')';
+		
+
 		attribute<Eur>       Ki_A  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_A')+')';
 		attribute<Eur>       Ki_B  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/Ki_B')+')';
 		attribute<Eur_yr>    AC_Netto  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/AC_Netto')+')';
