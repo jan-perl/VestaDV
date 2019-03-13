@@ -260,6 +260,7 @@ Template LtWarmtenetImpl
 		container Stock := BeginStatus/Stock;
 		container Flow  := BeginStatus/Flow;
 
+		container PrevLtWarmtenet := =(CollectieveWP ? "BeginStatus/LtWarmtenetMetCollectieveWP" : "BeginStatus/LtWarmtenetMetIndividueleWP");
 		container LtWarmtenet
 		{
 			// accumulated capital
@@ -285,7 +286,7 @@ Template LtWarmtenetImpl
 
 			// accumulated stock
 //			attribute<Eur>    Ki_ow       (PlanRegio) := ='BeginStatus/Wko/Ki_ow + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_ow')+')';
-//			attribute<Eur>    Ki_wd       (PlanRegio) := ='BeginStatus/Wko/Ki_wd + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_wd')+')';
+			attribute<Eur>    Ki_wd       (PlanRegio) := ='PrevLtWarmtenet/Ki_wd + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_wd')+')';
 //			attribute<Eur_yr> Kj_ge_hv    (PlanRegio) := BeginStatus/Wko/Kj_ge_hv + ObjectResults/Woning/PR/Kj_ge_hv;
 //			attribute<Eur>    Oi_Aansl    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Oi_Aansl')+')';
 

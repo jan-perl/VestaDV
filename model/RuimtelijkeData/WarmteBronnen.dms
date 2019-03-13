@@ -194,16 +194,6 @@ container WarmteBronnen
 	}
 	container LtWarmte: Source = "SN82_Functioneel ontwerp LT-warmtenetten_CPT_2018-10-3.docx"
 	{
-/* REMOVE		
-		unit<uint32> LTA_potentieel
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTA_potentieel.shp"
-		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		,	DialogType      = "Map"
-		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft";
-REMOVE */
-
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
 			attribute<string> Label : [
@@ -237,6 +227,11 @@ REMOVE */
 		,	Source          = "CE-Delft"
 		{
 			attribute<rdc_meter> Geometry(poly);	
+			attribute<string> GeometryStr := String(Geometry);	
+			attribute<dpoint>    Geometry2(poly) :=  dpolygon(GeometryStr);
+			attribute<rdc_meter> Geometry3(poly) :=  value(Geometry2, rdc_meter);
+			
+			
 			attribute<rdc_meter> Point := centroid(Geometry);
 
 			attribute<string>    plannaam;
@@ -256,7 +251,7 @@ REMOVE */
 		,	Source          = "CE-Delft"
 		{
 			attribute<rdc_meter> Geometry(poly);
-			attribute<rdc_meter> Point := centroid(Geometry); 
+			attribute<rdc_meter> Point := centroid_or_mid(Geometry); 
 
 			attribute<string>    FID;
 			attribute<string>    label := FID;
@@ -274,8 +269,10 @@ REMOVE */
 		,	DialogData      = "Geometry"
 		,	Source          = "CE-Delft"
 		{
-			attribute<rdc_meter> Geometry(poly);
-			attribute<rdc_meter> Point := centroid(Geometry); 
+			attribute<dpoint> LatLong := point(float64(Lat), float64(Long), dpoint);
+			attribute<rdc_meter> PointFromLL := LatLongWGS842RD(LatLong, rdc_meter);
+			attribute<rdc_meter> Geometry;
+			attribute<rdc_meter> Point := MakeDefined(Geometry, PointFromLL);
 			
 			attribute<string> categorie;			
 			attribute<unique_categorie> unique_categorie_rel := rlookup(categorie, unique_categorie/values);
@@ -288,30 +285,30 @@ REMOVE */
 			attribute<MW>        bron_cap;
 			attribute<MW>        cap_MW;
 		}
-		
+/* REMOVE		
 		unit<uint32> Bekende_LTbronnen := subset(IsDefined(LTbronnen_capaciteit/categorie_rel)) {
 			attribute<categorie> categorie_rel := LTbronnen_capaciteit/categorie_rel[nr_OrgEntity];
 			attribute<rdc_meter> point := LTbronnen_capaciteit/point[nr_OrgEntity];
 			attribute<string>    label := LTbronnen_capaciteit/label[nr_OrgEntity];   
 		}
-		
+*/		
 		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/categorie)
 		{
 			attribute<categorie> categorie_rel := rlookup(values, categorie/Label);
 		}
 		
-		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, Bekende_LTbronnen) 
+		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, LTbronnen_capaciteit) 
 		,	DialogType = "Map", DialogData = "point"
 		{
-			attribute<rdc_meter>  point := union_data(., bedrijventerrein/point, glastuinbouw/point, Bekende_LTbronnen/point);
-			attribute<string>     Label := union_data(., bedrijventerrein/Label, glastuinbouw/Label, Bekende_LTbronnen/Label);
+			attribute<rdc_meter>  point := union_data(., bedrijventerrein/point, glastuinbouw/point, LTbronnen_capaciteit/point);
+			attribute<string>     Label := union_data(., bedrijventerrein/Label, glastuinbouw/Label, LTbronnen_capaciteit/Label);
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
 			
-			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), Bekende_LTbronnen/Categorie_rel);
+			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), LTbronnen_capaciteit/Categorie_rel);
 			
-			attribute<GJ_Yr>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol[Bekende_LTbronnen/nr_OrgEntity]);
-			attribute<MW>      Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap[Bekende_LTbronnen/nr_OrgEntity]);
-			attribute<MW>      cap_MW   := union_data(., bedrijventerrein/cap_MW  , glastuinbouw/cap_MW  , LTbronnen_capaciteit/cap_MW  [Bekende_LTbronnen/nr_OrgEntity]);
+			attribute<GJ_Yr>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
+			attribute<MW>      Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
+			attribute<MW>      cap_MW   := union_data(., bedrijventerrein/cap_MW  , glastuinbouw/cap_MW  , LTbronnen_capaciteit/cap_MW  );
 			attribute<KW>      cap_KW_warmte := cap_MW * 1000[KW / MW];
 			attribute<KW>      cap_KW_koude  := Categorie/levert_koude[categorie_rel] ? cap_KW_warmte * 0.5 : 0[KW]; // ??? CHECK MTA 10-01-2019
 
@@ -319,7 +316,7 @@ REMOVE */
 			
 			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
-			attribute<GJ_Yr>  V_Bron       := Categorie/V_Bron[Categorie_rel];
+			attribute<TJ_Yr>  V_Bron       := Categorie/V_Bron[Categorie_rel];
 			
 			attribute<MW>     MWth_max     := const(10[MW],.); // bron specifiek of per categorie ?
 			attribute<MW>     MWth_min     := const( 5[MW],.); 
@@ -331,6 +328,20 @@ REMOVE */
 			attribute<G_GJ >  VOS_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
 			attribute<G_GJ >  TS_GJ        := const(0[G_GJ], .);  // bron specifiek of per categorie ?
 		}
+	}
+	container OndiepeGeoThermie {
+		unit<uint32> LTA_potentieel
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTA_potentieel.shp"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		,	DialogType      = "Map"
+		,	DialogData      = "Geometry"
+		,	Source          = "CE-Delft"
+		{
+			attribute<rdc_meter> Geometry(poly);
+			attribute<rdc_meter> Point := centroid(Geometry); 
+			attribute<string> Label := BU_Naam;
+		}		
 	}
 	container Gas: Descr = "Gasleidingennet beheersgebied Stedin"
 	{

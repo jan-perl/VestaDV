@@ -58,6 +58,9 @@ template TussenResultaten
 			attribute<GJ_yr> GJe_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
 			attribute<KG_yr> CO2        (PlanRegio) := const(0[KG_yr], PlanRegio);
 		}
+		container LtWarmtenetMetCollectieveWP := Stock;
+		container LtWarmtenetMetIndividueleWP := Stock;
+		
 	}
 	// end case parameters
 	parameter<units/yr_uint16> RunJaar := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
@@ -220,6 +223,8 @@ template TussenResultaten
 			container AanbodOpties          := StateVoorAllocatie/AanbodOpties;
 			container Stock                 := StateVoorAllocatie/Stock;
 			container WKO                   := StateVoorAllocatie/WKO;
+			container LtWarmtenetMetCollectieveWP := StateVoorAllocatie/LtWarmtenetMetCollectieveWP;
+			container LtWarmtenetMetIndividueleWP := StateVoorAllocatie/LtWarmtenetMetIndividueleWP;
 	
 			container Flow
 			{
