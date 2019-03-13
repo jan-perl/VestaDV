@@ -476,7 +476,8 @@ container Basis: Using = "Units"
 	// - %SourceDataProjDir%/RO/20151123_RO_WLO_hoog_concentratie
 	// - %SourceDataProjDir%/RO/20151123_RO_WLO_laag_spreiding
 
-	parameter<string> WloScenarioFolder := '%SourceDataProjDir%/RO/20151123_RO_WLO_hoog_concentratie';
+	parameter<string> WloScenarioFolder := '%SourceDataProjDir%/RO/20151123_RO_WLO_hoog_concentratie',
+	url="%sourceDataProjDir%/RO/20180802_MutatieRecept.htm";
 
 	container Bijstook
 	{

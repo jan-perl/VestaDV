@@ -15,7 +15,8 @@ unit<uint32> buurt:
 	StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/20190118_CBS_buurt_2019.dbf",
 	DialogData      = "geometry",
 	DialogType      = "Map",
-	StorageReadOnly = "True"
+	StorageReadOnly = "True",
+	url             = "%sourceDataProjDir%/hulpbestanden/buurt/20190118_update_buurtkaart_FvdM.txt"
 {
 	attribute<rdc_meter> geometry (poly):
 		label           = "De CBS buurtkaart 2019",

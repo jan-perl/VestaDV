@@ -14,7 +14,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container BAG
+container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 {
 	parameter<string>   SnapShotDate := '20190101';
 	parameter<units/Yr> SnapShotYear := left(SnapShotDate,4)[units/Yr];
@@ -124,6 +124,7 @@ container BAG
 			attribute<uint16>             AHN_hoogte;
 			parameter<uint16>             verdiepinghoogte_cm := 280w;
 			attribute<float32>            verdiepingen_float : = float32(AHN_hoogte) / float32(verdiepinghoogte_cm);
+			attribute<uint32> vbo_count             := pcount(vbo/pand_rel);
 			
 			attribute<uint16>              bouwjaar;
 			attribute<units/Yr>            bouwjaar_gecorrigeerd :=
@@ -196,6 +197,20 @@ container BAG
 
 		attribute<uint8>                                  nr_verdiepingen             := rjoin(pand_id, import/pand/identificatie, import/pand/nr_verdiepingen);
 	}
+	
+	unit<uint32> vbo_woonfunctie_export := Subset(
+			import/vbo/gebruiksdoelen/woon
+		&&	IsDefined(import/vbo/pand_rel)
+		&&	import/vbo/oppervlak_filters/wonen >= 10[Units/m2]
+		&&	import/vbo/oppervlak_filters/wonen < 1000[Units/m2]
+		)
+	,	DialogType = "Map"
+	,	DialogData = "locatie"
+	,	FreeData = "False", KeepData = "True"
+	{
+		attribute<string>                                identificatie           := import/vbo/identificatie[nr_OrgEntity];
+		attribute<rdc_meter>                             locatie                 := value(import/vbo/geometry[nr_OrgEntity],rdc_meter);
+	}
 
 	parameter<string> vbo_utiliteit_industrie_sub_expr := SpecifiekeInstellingen/BAG/IndustrieDoetMee == 0b ? '!import/vbo/gebruiksdoelen/Industrie' : SpecifiekeInstellingen/BAG/IndustrieDoetMee == 1b ? 'import/vbo/gebruiksdoelcombinatie <> 8w' : ''
 	,	isHidden = "True";
@@ -250,6 +265,22 @@ container BAG
 		}
 
 		attribute<Classifications/UtilTypeBestaand> gebruiksdoel (vbo_utiliteit) := ='gebruiksdoel_impl/gebruiksdoel_index[argmax('+ AsItemList('gebruiksdoelen/' + gebruiksdoel_impl/name) + ')[Classifications/UtilTypeBestaand]]';
+	}
+	
+	unit<uint32> vbo_utiliteit_export:= Subset
+		(
+			!import/vbo/gebruiksdoelen/woon 
+		&&	IsDefined(import/vbo/pand_rel)
+		&&	isDefined(import/vbo/oppervlak_filters/utiliteit)
+	//	&&	!import/vbo/gebruiksdoelen/Industrie    // Deze regel aanzetten als in Utiliteit alle industrie niet meedoet (dus ook alle vbo die industrie in combinatie met een andere gebruikdoel hebben)
+		&&	import/vbo/gebruiksdoelcombinatie <> 8w // Deze regel aanzetten als in Utiliteit vbo's niet meedoen die alleen een industriefunctie hebben.
+		)
+	,	DialogType = "Map"
+	,	DialogData = "locatie"
+	{
+		attribute<string>                                identificatie           := import/vbo/identificatie[nr_OrgEntity];
+		attribute<string>                                id                      := import/vbo/identificatie[nr_OrgEntity];
+		attribute<rdc_meter>                             locatie                 := value(import/vbo/geometry[nr_OrgEntity],rdc_meter);
 	}
 
 	unit<uint32> gebruiksdoelcombinatie := unique(import/vbo/gebruiksdoelcombinatie), IsHidden = "True"
