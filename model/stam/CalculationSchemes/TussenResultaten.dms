@@ -69,7 +69,9 @@ template TussenResultaten
 
 	unit<uint32> WarmteBronnen       := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 
-	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/'+ RunJaarLabel +'[Units/Ratio]';
+	attribute<Units/Ratio> KlimaatFactorMapPartial 		(Geography/rdc_grids/m100) 		:= = 'Invoer/RuimtelijkeData/klimaat/'+ RunJaarLabel +'[Units/Ratio]';
+	parameter<Units/Ratio> MeanKlimaatFactor											:= mean(KlimaatFactorMapPartial)[Units/Ratio];
+	attribute<Units/Ratio> KlimaatFactorMap 			(Geography/rdc_grids/m100) 		:= MakeDefined(KlimaatFactorMapPartial, MeanKlimaatFactor);
 
 	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{
