@@ -197,7 +197,7 @@ container WarmteBronnen
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
 			attribute<string> Label : [
-				'Middelgrote industrie (bedrijveniterreinen)'
+				'Middelgrote industrie (bedrijventerreinen)'
 			,	'Rioolwater-zuiveringen'
 			,	'Koel- en vrieshuizen'
 			,	'Industriële bakkerijen'
@@ -210,11 +210,8 @@ container WarmteBronnen
 			,	'Supermarkten'
 			,	'Glastuinbouw'
 			];
-			attribute<bool> levert_koude : [
-				true, false, false, false, false, false, false, false, false, false, false, false
-			];
 			attribute<bool> vraagt_koude_koude : [
-				false, false, true, false, false, false, true, true, true, true, true, false
+				true, false, true, false, false, false, true, true, true, true, true, false
 			];
 			attribute<TJ_yr> V_Bron : [0, 334, 40, 0, 30, 78, 0, 0, 0];
 		}
@@ -227,19 +224,16 @@ container WarmteBronnen
 		,	Source          = "CE-Delft"
 		{
 			attribute<rdc_meter> Geometry(poly);	
-			attribute<string> GeometryStr := String(Geometry);	
-			attribute<dpoint>    Geometry2(poly) :=  dpolygon(GeometryStr);
-			attribute<rdc_meter> Geometry3(poly) :=  value(Geometry2, rdc_meter);
 			
-			
-			attribute<rdc_meter> Point := centroid(Geometry);
+			attribute<rdc_meter> Point := centroid_or_mid(Geometry);
 
 			attribute<string>    plannaam;
 			attribute<string>    label := plannaam;
 			
-			attribute<GJ_Yr>     bron_vol;
-			attribute<MW>        bron_cap;
+			attribute<Ratio>     bron_vol;
+			attribute<Ratio>     bron_cap;
 			attribute<MW>        cap_MW;
+			attribute<TJ_Yr>     V_Bron;// @@@: Missing
 		}
 		
 		unit<uint32> Glastuinbouw
@@ -256,9 +250,10 @@ container WarmteBronnen
 			attribute<string>    FID;
 			attribute<string>    label := FID;
 			
-			attribute<GJ_Yr>     bron_vol;
-			attribute<MW>        bron_cap;
+			attribute<Ratio>     bron_vol;
+			attribute<Ratio>     bron_cap;
 			attribute<MW>        cap_MW;
+			attribute<TJ_Yr>     V_Bron; // @@@: Missing
 		}
 		
 		unit<uint32> LTbronnen_capaciteit
@@ -281,8 +276,9 @@ container WarmteBronnen
 			attribute<string>    naam;
 			attribute<string>    label := naam;
 			
-			attribute<GJ_Yr>     bron_vol;
-			attribute<MW>        bron_cap;
+			// ISSUE: hoe volume en capaciteitsfracties te bepalen voor een netwerk met en cluster van gekoppelde bronnen.
+			attribute<Ratio>     bron_vol;
+			attribute<Ratio>     bron_cap; // TODO: gebruik bij bijstook berekening
 			attribute<MW>        cap_MW;
 		}
 /* REMOVE		
@@ -306,11 +302,10 @@ container WarmteBronnen
 			
 			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), LTbronnen_capaciteit/Categorie_rel);
 			
-			attribute<GJ_Yr>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
-			attribute<MW>      Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
+			attribute<Ratio>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
+			attribute<Ratio>   Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
 			attribute<MW>      cap_MW   := union_data(., bedrijventerrein/cap_MW  , glastuinbouw/cap_MW  , LTbronnen_capaciteit/cap_MW  );
-			attribute<KW>      cap_KW_warmte := cap_MW * 1000[KW / MW];
-			attribute<KW>      cap_KW_koude  := Categorie/levert_koude[categorie_rel] ? cap_KW_warmte * 0.5 : 0[KW]; // ??? CHECK MTA 10-01-2019
+			attribute<KW>      cap_KW   := cap_MW * 1000[KW / MW];
 
 			attribute<Celsius> Bron_Temperatuur := const(35[Celsius], .);
 			

@@ -30,6 +30,8 @@ template WKOResults
 		attribute<Cluster>          Cluster_Rel          := Cluster/Partitioning[UnitedCandidates_rel];
 	}
 
+	// TODO: rename WKO->ClusterOptie
+	
 	attribute<Cluster> Cluster_RelNow (BebouwingsObject) := AllowedObjects/Cluster_rel[invert(AllowedObjects/nr_OrgEntity)];
 	attribute<Cluster> Cluster_Rel    (BebouwingsObject) := MakeDefined(Cluster_RelNow, BCdata/WkoCluster_rel);
 	attribute<bool>    StartWKO       (BebouwingsObject) := IsDefined(Cluster_RelNow);

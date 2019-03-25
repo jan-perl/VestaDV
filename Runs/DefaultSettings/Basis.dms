@@ -444,6 +444,10 @@ container Basis: Using = "Units"
 				}
 			}
 
+			unit<uint32> sprongtabel {
+				attribute<string> BAG_VBO_ID;
+				attribute<string> Sprong;
+			}
 			container BestaandeWoning := Generiek;
 			container BestaandeUtil   := Generiek;
 			container BestaandeGlTb   := Generiek;
