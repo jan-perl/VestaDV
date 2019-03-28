@@ -144,6 +144,7 @@ Template LtWarmtenetImpl
 
 		attribute<Eur_yr>    Oj_verbruik  := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Oj_verbruik[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<Eur_yr>    AC_Netto     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AC_Netto  [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<GJ_Yr >    V_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/V_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<KW>    P_Warmte_primair := P_Warmte * constanten/AandeelPrimairVermogen;
@@ -174,7 +175,7 @@ Template LtWarmtenetImpl
 		attribute<rdc_meter> point := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/point')+', LastClusters/Point)';
 		attribute<string>    Label := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+', LastClusters/Label)';
 		
-		attribute<kW>        P_Warmte_primair  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte_primair')+', LastClusters/P_Warmte)';
+		attribute<kW>        P_Warmte_primair  := ='union_data(., '+AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte_primair')+', LastClusters/P_warmte_primair)';
 		
 		attribute<float64>   n      := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/n')+', LastClusters/n)';
 		attribute<float64>   SSD_xx := ='union_data(., ' + asItemList('BronIterations/' + BronIteration/Name + '/Selected/SSD_xx')+', LastClusters/SSD_xx)';
@@ -208,7 +209,10 @@ Template LtWarmtenetImpl
 		attribute<BronSelectie> BronSelectie_rel := ../BronSelectie_rel[nr_OrgEntity];
 		attribute<EUR_Yr> Oj_Verbruik := UnitedCandidates/Oj_Verbruik[nr_OrgEntity];
 		attribute<EUR_Yr> AC_Netto    := UnitedCandidates/AC_Netto[nr_OrgEntity];
-		attribute<KW> P_Warmte_primair:= UnitedCandidates/P_Warmte_primair;
+		attribute<GJ_Yr> V_Warmte     := UnitedCandidates/V_Warmte[nr_OrgEntity];
+		attribute<GJ_Yr> V_Koude      := UnitedCandidates/V_Koude [nr_OrgEntity];
+		attribute<KW> P_Warmte_primair:= UnitedCandidates/P_Warmte_primair[nr_OrgEntity];
+		attribute<KW> P_Warmte_secundair := UnitedCandidates/P_Warmte[nr_OrgEntity];
 		attribute<KW> P_Koude         := UnitedCandidates/P_Koude [nr_OrgEntity];
 		attribute<float64> n      := UnitedCandidates/n     [nr_OrgEntity] + UnitedCandidates/n[nr_OrgEntity];
 		attribute<float64> SSD_xx := UnitedCandidates/SSD_xx[nr_OrgEntity] + abs(PointCol(BronSelectie/point[BronSelectie_rel]) - PointCol(UnitedCandidates/point[nr_OrgEntity]));
@@ -228,26 +232,27 @@ Template LtWarmtenetImpl
 		attribute<float64>   SqrtDetSSD(BronSelectie)  := MakeDefined(Sqrt(SSD_xx*SSD_yy-SSD_xy*SSD_xy), 0.0);
 		attribute<m2>        AreaProxy (BronSelectie)  := (PI() * SqrtDetSSD / n)[m2];
 		
-		attribute<KW>        P_Warmte_secundair(BronSelectie)  := sum(Selected/P_Warmte,         Selected/BronSelectie_rel);
-		attribute<KW>        P_Warmte_primair  (BronSelectie)  := sum(Selected/P_Warmte_primair, Selected/BronSelectie_rel);
+		attribute<GJ_Yr>     V_Warmte          (BronSelectie)  := sum(Selected/V_Warmte,           Selected/BronSelectie_rel);
+		attribute<KW>        P_Warmte_primair  (BronSelectie)  := sum(Selected/P_Warmte_primair,   Selected/BronSelectie_rel);
+		attribute<KW>        P_Warmte_secundair(BronSelectie)  := sum(Selected/P_Warmte_secundair, Selected/BronSelectie_rel);
 
-		attribute<Eur>       Ki_A        (BronSelectie):= (constanten/Ki_Uitkoppel + constanten/Ki_WOS) * P_Warmte + constanten/Ki_Buffer;
+		attribute<Eur>       Ki_A        (BronSelectie):= (constanten/Ki_Uitkoppel + constanten/Ki_WOS) * P_Warmte_secundair + constanten/Ki_Buffer;
 		attribute<Eur_yr>    AC_Netto    (BronSelectie) := sum(Selected/AC_Netto, Selected/BronSelectie_rel);
 //		attribute<Eur_yr>    Oj_Verbruik (BronSelectie) := sum(Selected/Oj_Verbruik, Selected/BronSelectie_rel);
 		attribute<Eur>       Ki_B        (BronSelectie)   := AreaProxy * constanten/Ki_distr; // omvat area voor broncluster, TODO: broncluster en  afname cluster splitsen.
-		attribute<Eur_yr>    Kj_admin    (BronSelectie)   := (Ki_A + Ki_B) * 0.025[_Jaar];
+		attribute<Eur_yr>    Kj_admin    (BronSelectie)   := (Ki_A + Ki_B) * 0.025[_Yr];
 		attribute<Eur_yr>    Kj_onderhoud(BronSelectie)   := 
-			  constanten/Ki_Uitkoppel * P_Warmte_primair  * 0.05[_Jaar]
-			+ constanten/Ki_WOS       * P_Warmte_secundair* (IsCollectief ? 0.035[_Jaar] : 0.025[_Jaar])
-			+ constanten/Ki_Buffer    * 0.05[_Jaar];
+			  constanten/Ki_Uitkoppel * P_Warmte_primair  * 0.05[_Yr]
+			+ constanten/Ki_WOS       * P_Warmte_secundair* (CollectieveWP ? 0.035[_Yr] : 0.025[_Yr])
+			+ constanten/Ki_Buffer    * 0.05[_Yr];
 		
 		attribute<GJ_Yr>     V_Elek(BronSelectie) := (1.0 - constanten/AandeelPrimairVolume) * V_Warmte;
 		attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BronSelectie) := classify(V_Elek, Prijzen_elec/ClassBreak);
 		
 		attribute<Eur_yr>    Kj_hulpCWP (BronSelectie)    := V_Elek * Prijzen_elec/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel];
 		attribute<Eur_yr>    Km_hulpCWP (BronSelectie)    := V_Elek * Prijzen_elec/KGJ_maatschappelijk [gebruiksgrootteklasse_rel];
-		attribute<bool>      Kj_total   (BronSelectie)    := Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Kj_hulpCWP;
-		attribute<bool>      Km_total   (BronSelectie)    := Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Km_hulpCWP;
+		attribute<Eur_yr>    Kj_total   (BronSelectie)    := Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Kj_hulpCWP;
+		attribute<Eur_yr>    Km_total   (BronSelectie)    := Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Km_hulpCWP;
 		attribute<bool>      Afweging   (BronSelectie)    := Kj_total < AC_Netto; 
 	}
 	unit<uint32> RendabelCluster := subset(gebied/Afweging) {

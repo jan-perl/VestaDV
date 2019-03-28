@@ -27,7 +27,8 @@ template WKOWoningData
 	attribute<GJ_yr>      V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
 	
 	attribute<kW>         P_Warmte   (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won;
-	attribute<kW>         P_Koude    (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? constanten/ASW_wa : constanten/ASW_kc) * nr_won;
+	attribute<kW>         P_Koude    (BebouwingsObject) := P_Warmte;
+	attribute<kW>         P_Elek     (BebouwingsObject) := P_Warmte / constanten/SPF_coll;
 
 	attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen_elec/ClassBreak);
 

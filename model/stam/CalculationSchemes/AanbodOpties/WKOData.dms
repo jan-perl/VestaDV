@@ -38,6 +38,7 @@ template WKOData
 	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ (IsWKO ? 'BCdata/LtVerwarmingGeschikt' : LabelConditie);
 
 	 // kosten excl distributie
+	attribute<GJ_Yr> V_Warmte     (BebouwingsObject) := WkoDataComponent/V_Warmte;
 	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte, WkoDataComponent/P_Koude);
 	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
 	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
