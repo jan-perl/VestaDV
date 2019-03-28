@@ -9,6 +9,7 @@ template WKOData
 	// begin case parameters
 	container WkoDataComponent;
 	parameter<string> ComponentNaam;
+	parameter<Celsius> T_sec;
 	parameter<bool> IsWKO := true;
 	parameter<string> LabelConditie := '';
 	// end case parameters
@@ -35,7 +36,9 @@ template WKOData
 	attribute <bool> InContour            (BebouwingsObject) := =UseContour
 		? 'IsDefined( RuimtelijkeData/WarmteBronnen/WKO/GeschikteContour/grid[RuimtelijkeVraagComponent/point[Geography/rdc_grids/m100]] )'
 		: 'const(true, BebouwingsObject)';
-	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ (IsWKO ? 'BCdata/LtVerwarmingGeschikt' : LabelConditie);
+	
+	
+	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
 
 	 // kosten excl distributie
 	attribute<GJ_Yr> V_Warmte     (BebouwingsObject) := WkoDataComponent/V_Warmte;
@@ -76,11 +79,11 @@ template WKOData
 		- Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
 	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
 
-	attribute<bool> MarginaleAfweging      (BebouwingsObject) := geschikt && RentabiliteitsAfweging;
-	attribute<bool> WasAllocated           (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
-	attribute<bool> AllowWKO               (BebouwingsObject) := MarginaleAfweging && !WasAllocated; // TODO: rename WKO -> LT
+	attribute<bool> MarginaleAfweging(BebouwingsObject) := geschikt && RentabiliteitsAfweging;
+	attribute<bool> WasAllocated     (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
+	attribute<bool> Toegestaan       (BebouwingsObject) := MarginaleAfweging && !WasAllocated; // TODO: rename WKO -> LT
 
-	unit<uint32> AllowedObjects := Subset(AllowWKO)
+	unit<uint32> AllowedObjects := Subset(Toegestaan)
 	{
 		attribute<string> Label := '(' + BCdata/BebouwingsObject/Label[nr_OrgEntity]+')';
 	}

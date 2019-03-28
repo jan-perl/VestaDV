@@ -18,23 +18,52 @@ template WKOWoningData
 	attribute<bool>       IsAppt     (BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
 
 	attribute<NrWoningen> nr_won     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
-	attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      V_WW       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := V_RV + V_WW;
 	attribute<GJ_yr>      V_Koude    (BebouwingsObject) := 7.2[GJ_yr / nrWoningen] * nr_won, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>      F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>      V_ElekW    (BebouwingsObject) := V_Warmte / constanten/SPF_coll;
-	attribute<GJ_yr>      V_ElekK    (BebouwingsObject) := V_Koude / (constanten/SPF_coll - 1.0);
-	attribute<GJ_yr>      V_Elek     (BebouwingsObject) := V_ElekW + V_ElekK;
-	attribute<GJ_yr>      V_WKO      (BebouwingsObject) := F_Elek - V_Elek;
+	
+	attribute<float64>    SPF_ind_rv  (BebouwingsObject) := 
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/SPF_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/SPF_ind_CE_rv : 1.0;
+		
+	attribute<float64>    AEO_ind_rv  (BebouwingsObject) := 
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/AEO_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/AEO_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/AEO_ind_CE_rv : 1.0;
+	
+	attribute<GJ_yr>      V_Elek_RW_ind(BebouwingsObject) := V_RV * AEO_ind_rv / SPF_ind_rv;
+	attribute<GJ_yr>      V_Elek_WW_ind(BebouwingsObject) := V_WW * constanten/AEO_ind_ww / constanten/SPF_ind_ww;
+	attribute<GJ_yr>      V_ElekW      (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
+	attribute<GJ_yr>      V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_koude;
+	
+	attribute<GJ_yr>      V_Elek      (BebouwingsObject) := V_ElekW + V_ElekK;
+	attribute<GJ_yr>      V_WKO       (BebouwingsObject) := F_Elek - V_Elek;
+	
+	attribute<GJ_yr>      V_RV_sec    (BebouwingsObject) := V_RV * (1.0 - AEO_ind_rv);
+	attribute<GJ_yr>      V_WW_sec    (BebouwingsObject) := V_WW * (1.0 - constanten/AEO_ind_ww);
+	attribute<GJ_yr>      V_Warmte_sec(BebouwingsObject) := V_RV_sec + V_WW_sec;
+	attribute<GJ_yr>      V_koude_sec (BebouwingsObject) := V_Koude * (1.0 + AEO_ind_rv);
 	
 	attribute<kW>         P_Warmte   (BebouwingsObject) := 0.5[Ratio] * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won;
 	attribute<kW>         P_Koude    (BebouwingsObject) := P_Warmte;
-	attribute<kW>         P_Elek     (BebouwingsObject) := P_Warmte / constanten/SPF_coll;
+	
+//	attribute<kW>         P_Elek     (BebouwingsObject) := P_Warmte / constanten/SPF_ind_rv;
 
 	attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen_elec/ClassBreak);
 
 	container Kosten // excl doublet en distributie, excl kosten LTAS
 	{
 		attribute<Eur_Woning> K_wv        (BebouwingsObject) := IsAppt ? constanten/K_wvwa : constanten/K_wvwc, Source = "F 54..56";
+		attribute<Eur>        Ki_eWP       (BebouwingsObject) := BcData/Sprongen/VerbeterKosten_i/eWP * nr_won;
+		attribute<Eur>        Ki_EO       (BebouwingsObject) := 
+			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? constanten/Ki_Booster : 0.0[eur]) :
+			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelB ) ? ((T_sec <= 35[Celsius]) ? Ki_eWP : (T_sec <= 55[Celsius]) ? constanten/Ki_booster : 0.0[eur]) :
+			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE ) ? ((T_sec <= 55[Celsius]) ? Ki_eWP : 0.0[eur]) 
+			: 1000000.0[eur];
+		
 		attribute<Eur>        Ki_id       (BebouwingsObject) := K_wv * nr_won, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
 		attribute<Eur>        Ki_ge_pm    (BebouwingsObject) := KostenBase/Ki_ge_pm_o;
 		attribute<Eur>        Ki_ge_ov    (BebouwingsObject) := KostenBase/Ki_ge_ov_o;

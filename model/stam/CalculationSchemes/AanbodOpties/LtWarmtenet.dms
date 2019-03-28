@@ -59,11 +59,29 @@ Template LtWarmtenetImpl
 
 		parameter<Float64> BijstookFactor := 2.0; // afgenomen warmte / geleverde warmte
 		parameter<Float64> AandeelPrimairVermogen := 0.30; // primair beschikbare warmtecapaciteit / aangesloten warmtecapaciteit; rest wordt met CWP opgeplust.
+		
 		parameter<Float64> AandeelPrimairVolume   := 0.70; // primair geleverde warmte / afgenomen warmte (in GJ); rest wordt met CWP opgeplust.
 		
-		//Seasonal Performance Factor
-		parameter<Ratio> SPF_coll: [3.5];
+		//Seasonal Performance Factors
+		//REMOVE parameter<Ratio> SPF_coll: [3.5];
+		parameter<Ratio> SPF_koude: [30]; // alleen wat pompkosten van water in de buurt via afgifte systeem naar buffer of terug
+		
+		parameter<Float64> SPF_ind_A_rv  := 1.0;
+		parameter<Float64> SPF_ind_B_rv  := T_sec <= 35[Celsius] ? 4.2 : 1.0;
+		parameter<Float64> SPF_ind_CE_rv := T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0;
+		
+		parameter<Float64> SPF_ind_ww  := T_sec <= 55[Celsius] ? 2.5 : (0.0 / 0.0);
+		
+		
+		// Aandeel eigen opwekking
+		parameter<Float64> AEO_ind_A_rv  := 0.0;
+		parameter<Float64> AEO_ind_B_rv  := T_sec <= 35[Celsius] ? 0.3 : 0.0;
+		parameter<Float64> AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
+		
+		parameter<Float64> AEO_ind_ww    := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
 
+		parameter<EUR> Ki_booster := 2000[Eur]; //
+		
 		//ASW AanSluitWaarde
 		parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
 		parameter<float64> ASW_kc := 2[kW_Woning];
@@ -74,7 +92,6 @@ Template LtWarmtenetImpl
 
 		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten afleverset (=warmtewisselaar+meter)        Notitie Issue 442";
 		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten inpandinge buizen + afleverset appartement Notitie Issue 442, issue 503.";
-		parameter<Float64> SPF := CollectieveWP ? 3.8 : 3.8;
 		
 		parameter<EUR_KW> Ki_Uitkoppel:= 250 [EUR / KW];
 		parameter<EUR_KW> Ki_WOS      := 680 [EUR / KW];
@@ -111,7 +128,7 @@ Template LtWarmtenetImpl
 	
 	parameter<string> geschiktExpr := 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
 	container CandidateSets := for_each_ne(WkoComponent/Name, 
-		'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', false, '+Quote(geschiktExpr)+')');
+		'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', T_sec, false, '+Quote(geschiktExpr)+')');
 	
 	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
 			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 

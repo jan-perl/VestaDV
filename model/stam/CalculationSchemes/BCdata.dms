@@ -215,8 +215,6 @@ template BCdata
 		}
 	}
 
-	attribute<bool> LtVerwarmingGeschikt(BebouwingsObject) := IsNieuwbouw || (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010) || (Sprongen/NaarEnergieLabel == Classifications/EnergieLabel/V/Aplus);
-
 	container Opwekking
 	{
 		attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Hoeveelheden/ZonneBoiler * VraagKentallen/ZonneBoiler/Opbrengst;
@@ -344,6 +342,8 @@ template BCdata
 			attribute<ModelUnit> NrModelUnits       (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/NrModelUnits; // @@@ Let op GlasTuinbouw alleen areaal warmte glastuinbouw
 			attribute<kW>        AansluitCapaciteit (BebouwingsObject) := Aandeel/WarmteVraag * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte;
 			attribute<GJ_yr>     Verbruik           (BebouwingsObject) := Aandeel/WarmteVraag * DragerOpties/Warmte/Warmte;
+			attribute<GJ_yr>     Verbruik_RV        (BebouwingsObject) := Aandeel/WarmteVraag * DragerOpties/RuimteVerwarming/Warmte;
+			attribute<GJ_yr>     Verbruik_WW        (BebouwingsObject) := Aandeel/WarmteVraag * DragerOpties/WarmWater/Warmte;
 		}
 
 		container alle

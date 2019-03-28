@@ -393,7 +393,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_BW,
 					''
 
-			,	'projectmanagemente', 'Admin', 'KL_e',
+			,	'projectmanagemente', 'Admin', 'KL_e', // DEBUG, TODO: @@@ Test of de 'e' uit de naam weg kan. N.B.: mogelijke name-collision met voor-voorgaande.
 					'StateNaAllocatie/Stock/Ki_ge_pm',
 					AF28_MR,
 					''

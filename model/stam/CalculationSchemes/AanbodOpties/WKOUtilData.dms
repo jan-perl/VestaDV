@@ -16,11 +16,28 @@ template WKOUtilData
 	attribute<GJ_yr> Lq4bis    (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * BCdata/Functioneel/Koude, Descr = "KoudeVraag";
 	attribute<m2>    Lu        (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/NrModelUnits;
 
-	attribute<GJ_yr>  V_Warmte (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik;
+	
+	attribute<GJ_yr>  V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>  V_WW       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>  V_Warmte   (BebouwingsObject) := V_RV + V_WW;
 	attribute<GJ_yr>  V_Koude  (BebouwingsObject) := Lq4bis;
 	attribute<GJ_yr>  F_Elek   (BebouwingsObject) := V_Warmte + V_Koude;
-	attribute<GJ_yr>  V_ElekW  (BebouwingsObject) := V_Warmte / constanten/SPF_coll;
-	attribute<GJ_yr>  V_ElekK  (BebouwingsObject) := V_Koude / (constanten/SPF_coll - 1.0);
+	
+	attribute<float64> SPF_ind_rv  (BebouwingsObject) := 
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/SPF_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/SPF_ind_CE_rv : 1.0;
+		
+	attribute<float64> AEO_ind_rv  (BebouwingsObject) := 
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/AEO_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/AEO_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/AEO_ind_CE_rv : 1.0;
+	
+	attribute<GJ_yr> V_Elek_RW_ind(BebouwingsObject) := V_RV * AEO_ind_rv / SPF_ind_rv;
+	attribute<GJ_yr> V_Elek_WW_ind(BebouwingsObject) := V_WW * constanten/AEO_ind_ww / constanten/SPF_ind_ww;
+	attribute<GJ_yr> V_ElekW      (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
+	attribute<GJ_yr> V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_koude;
+		
 	attribute<GJ_yr>  V_Elek   (BebouwingsObject) := V_ElekW + V_ElekK;
 	attribute<GJ_yr>  V_WKO    (BebouwingsObject) := F_Elek - V_Elek;
 
