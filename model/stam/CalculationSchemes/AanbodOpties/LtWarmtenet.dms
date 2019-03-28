@@ -39,8 +39,12 @@ Template LtWarmtenetImpl
 	container AanbodKentallen;
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> RunJaar;
-	parameter<bool> CollectieveWP;
+	
+	parameter<units/Celsius> T_ow;
+	parameter<units/Celsius> T_sec;
 	// end case parameters
+	
+	parameter<bool> CollectieveWP := (T_ow < T_sec);
 		
 	container KostenBaten           := BeginStatus/KostenBaten;
 	container BebouwingsComponenten := KostenBaten/BebouwingsComponenten;
@@ -68,8 +72,8 @@ Template LtWarmtenetImpl
 		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
 		parameter<float64> ASW_ku := 0.06[kW_m2];
 
-		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
-		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
+		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten afleverset (=warmtewisselaar+meter)        Notitie Issue 442";
+		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten inpandinge buizen + afleverset appartement Notitie Issue 442, issue 503.";
 		parameter<Float64> SPF := CollectieveWP ? 3.8 : 3.8;
 		
 		parameter<EUR_KW> Ki_Uitkoppel:= 250 [EUR / KW];
@@ -279,8 +283,8 @@ Template LtWarmtenetImpl
 		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 		attribute<Selected> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
 		attribute<Eur>      Ki_C        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_C')+')';
-		attribute<Eur>      Ki_A_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Selected/Ki_A);
-		attribute<Eur>      Ki_B_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Selected/Ki_B);
+		attribute<Eur>      Ki_A_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Gebied/Ki_A);
+		attribute<Eur>      Ki_B_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Gebied/Ki_B);
 	}
 
 	container Results := BeginStatus

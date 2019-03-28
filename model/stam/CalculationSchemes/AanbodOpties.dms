@@ -65,7 +65,7 @@ container AanbodOpties
 		unit<uint32> PlanRegio := ../PlanRegio;
 		attribute<float32> CO2(PlanRegio) := impl/CO2;
 	}
-	Template LtWarmtenetMetCollectieveWP
+	Template Lt15_30
 	{
 		// begin case parameters
 		container BeginStatus;
@@ -74,13 +74,13 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, true);
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 30[Celsius]);
 		container Results := Impl/Results {
-			container LtWarmtenetMetCollectieveWP := LtWarmtenet;
+			container Lt15_30 := LtWarmtenet;
 		}
 	}
 	
-	Template LtWarmtenetMetIndividueleWP
+	Template Lt15_50
 	{
 		// begin case parameters
 		container BeginStatus;
@@ -89,9 +89,65 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, false);
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 50[Celsius]);
 		container Results := Impl/Results {
-			container LtWarmtenetMetIndividueleWP := LtWarmtenet;
+			container Lt15_50 := LtWarmtenet;
+		}
+	}
+	Template Lt15_70
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 70[Celsius]);
+		container Results := Impl/Results {
+			container Lt15_70 := LtWarmtenet;
+		}
+	}
+	Template Lt30_30
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 30[Celsius]);
+		container Results := Impl/Results {
+			container Lt30_30 := LtWarmtenet;
+		}
+	}
+	Template Lt30_50
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 50[Celsius]);
+		container Results := Impl/Results {
+			container Lt30_50 := LtWarmtenet;
+		}
+	}
+	Template Lt30_70
+	{
+		// begin case parameters
+		container BeginStatus;
+		container AanbodKentallen;
+		container EnergiePrijzen;
+		parameter<units/yr_uint16> Jaar;
+		// end case parameters
+		
+		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 70[Celsius]);
+		container Results := Impl/Results {
+			container Lt30_70 := LtWarmtenet;
 		}
 	}
 
