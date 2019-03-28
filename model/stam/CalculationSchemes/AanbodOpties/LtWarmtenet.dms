@@ -145,6 +145,7 @@ Template LtWarmtenetImpl
 		attribute<Eur_yr>    Oj_verbruik  := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Oj_verbruik[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<Eur_yr>    AC_Netto     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AC_Netto  [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<GJ_Yr >    V_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/V_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<GJ_Yr >    V_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/V_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<KW>    P_Warmte_primair := P_Warmte * constanten/AandeelPrimairVermogen;
@@ -238,7 +239,7 @@ Template LtWarmtenetImpl
 
 		attribute<Eur>       Ki_A        (BronSelectie):= (constanten/Ki_Uitkoppel + constanten/Ki_WOS) * P_Warmte_secundair + constanten/Ki_Buffer;
 		attribute<Eur_yr>    AC_Netto    (BronSelectie) := sum(Selected/AC_Netto, Selected/BronSelectie_rel);
-//		attribute<Eur_yr>    Oj_Verbruik (BronSelectie) := sum(Selected/Oj_Verbruik, Selected/BronSelectie_rel);
+		attribute<Eur_yr>    Oj_Verbruik (BronSelectie) := sum(Selected/Oj_Verbruik, Selected/BronSelectie_rel);
 		attribute<Eur>       Ki_B        (BronSelectie)   := AreaProxy * constanten/Ki_distr; // omvat area voor broncluster, TODO: broncluster en  afname cluster splitsen.
 		attribute<Eur_yr>    Kj_admin    (BronSelectie)   := (Ki_A + Ki_B) * 0.025[_Yr];
 		attribute<Eur_yr>    Kj_onderhoud(BronSelectie)   := 
