@@ -371,12 +371,19 @@ container Sprongen
 			+')-1'
 		', Classifications/LabelSprong)';
 
-	attribute<Classifications/LabelSprong> LabelSprong (BebouwingsObject) :=
-		=LocatieSpecifiekeOpties/Verbeteringen/SpringMeestRendabel
-			? 'LabelSprong_eg'
-			: LocatieSpecifiekeOpties/Verbeteringen/SpringMaatschappelijk
-				? 'LabelSprong_m'
-				: 'LabelSprongFirst';
+	attribute<Classifications/LabelSprong> LabelSprong_opgelegd (BebouwingsObject) := 
+		= BCname = 'BestaandeWoning'
+			? 'rlookup(Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/labelsprong_opgelegd/J' + string(RunJaar) +', Classifications/LabelSprong/code)'
+			: 'const(0 / 0, BebouwingsObject, Classifications/LabelSprong)';
+	
+	attribute<Classifications/LabelSprong> LabelSprong_rendabel (BebouwingsObject) :=
+			= LocatieSpecifiekeOpties/Verbeteringen/SpringMeestRendabel
+				? 'LabelSprong_eg'
+				: LocatieSpecifiekeOpties/Verbeteringen/SpringMaatschappelijk
+					? 'LabelSprong_m'
+					: 'LabelSprongFirst';
+
+	attribute<Classifications/LabelSprong> LabelSprong (BebouwingsObject) := MakeDefined(LabelSprong_opgelegd, LabelSprong_rendabel);
 
 	attribute<bool> KanVerbeteren (BebouwingsObject) := IsDefined(LabelSprong);
 	attribute<bool> eWP           (BebouwingsObject) := NaarEnergieLabel == Classifications/EnergieLabel/V/eWP;

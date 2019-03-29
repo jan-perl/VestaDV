@@ -55,8 +55,27 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		{
 			attribute<uint32> aantal := pcount(src/voorkomend_rel);
 		}
+
+		unit<uint32> opgelegd
+		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/sprongtabel_fixed.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		{
+			container controle
+			{
+				attribute<bool> heeft_voorkomende_labelsprong_2020  (opgelegd) := strlen(J2020) == 0 || isDefined(rlookup(J2020, Classifications/LabelSprong/code));
+				attribute<bool> heeft_voorkomende_labelsprong_2030  (opgelegd) := strlen(J2030) == 0 || isDefined(rlookup(J2030, Classifications/LabelSprong/code));
+				attribute<bool> heeft_voorkomende_labelsprong_2040  (opgelegd) := strlen(J2040) == 0 || isDefined(rlookup(J2040, Classifications/LabelSprong/code));
+				attribute<bool> heeft_voorkomende_labelsprong_2050  (opgelegd) := strlen(J2050) == 0 || isDefined(rlookup(J2050, Classifications/LabelSprong/code));
+
+				attribute<bool> heeft_voorkomende_vbo_identificatie (opgelegd) := strlen(J2050) == 0 || isDefined(rlookup(identificatie, Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/identificatie));
+
+				parameter<bool> alle_labelsprongen_komen_voor      := all(heeft_voorkomende_labelsprong_2020) && all(heeft_voorkomende_labelsprong_2030) && all(heeft_voorkomende_labelsprong_2040) && all(heeft_voorkomende_labelsprong_2050);
+				parameter<bool> alle_vbo_identificaties_komen_voor := all(heeft_voorkomende_vbo_identificatie);
+			}
+		}
 	}
-	
+
 	#include <WarmteBronnen.dms>
 
 	
