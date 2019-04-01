@@ -327,14 +327,5 @@ template Resultaten
 	{
 		parameter<string> RunName      := Expand(., '%configName%');
 		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RunJaarLabel;
-	}
-	
-	container RegressieTest: isHidden = "True"
-	{
-		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
-		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
-		parameter<string> Generate                := 'Ready'
-		,	IntegrityCheck    = "All"
-		,	ExplicitSuppliers = "Generate/All"; // Generates All reports.
-	}
+	}	
 }
