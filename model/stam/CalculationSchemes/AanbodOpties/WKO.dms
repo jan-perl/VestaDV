@@ -54,6 +54,7 @@ template WKO
 		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
 		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
 	}
+	parameter<Celsius> T_sec := constanten/T_sec;
 	
 	container BestaandeWoningData :=
 		WKOWoningData(
@@ -121,14 +122,13 @@ template WKO
 	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
 	
 	// decouple the cluster to the individual object level to support reporting of the allocation result
-	
-	unit<uint32> Selected := ='union_unit(BeginStatus/AanbodOpties/WkoCluster, '+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
+	unit<uint32> Selected := ='union_unit('+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
 	{
 
-		attribute<rdc_meter> point := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Point, '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
-		attribute<string>    Label := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Label, '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
-		attribute<Eur>       Ki_A  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_A , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
-		attribute<Eur>       Ki_B  := ='union_data(., BeginStatus/AanbodOpties/WkoCluster/Ki_B , '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
+		attribute<rdc_meter> point := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
+		attribute<string>    Label := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
+		attribute<Eur>       Ki_A  := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_A')+')';
+		attribute<Eur>       Ki_B  := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_B')+')';
 		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+Iteration/CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
 	}
 
