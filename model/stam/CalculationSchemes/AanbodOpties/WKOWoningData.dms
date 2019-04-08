@@ -37,7 +37,7 @@ template WKOWoningData
 	attribute<GJ_yr>      V_Elek_RW_ind(BebouwingsObject) := V_RV * AEO_ind_rv / SPF_ind_rv;
 	attribute<GJ_yr>      V_Elek_WW_ind(BebouwingsObject) := V_WW * constanten/AEO_ind_ww / constanten/SPF_ind_ww;
 	attribute<GJ_yr>      V_ElekW      (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
-	attribute<GJ_yr>      V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_koude;
+	attribute<GJ_yr>      V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
 	
 	attribute<GJ_yr>      V_Elek      (BebouwingsObject) := V_ElekW + V_ElekK;
 	attribute<GJ_yr>      V_WKO       (BebouwingsObject) := F_Elek - V_Elek;
@@ -56,7 +56,9 @@ template WKOWoningData
 
 	container Kosten // excl doublet en distributie, excl kosten LTAS
 	{
-		attribute<Eur_Woning> K_wv        (BebouwingsObject) := IsAppt ? constanten/K_wvwa : constanten/K_wvwc, Source = "F 54..56";
+		attribute<Eur_woning> Ki_inpandig	(BebouwingsObject) := IsAppt ? constanten/Ki_inpandig : 0 [Eur_woning];
+		attribute<Eur_woning> Ki_afleverset	(BebouwingsObject) := const(constanten/Ki_afleverset, BebouwingsObject);
+		attribute<Eur_Woning> K_wv        (BebouwingsObject) := Ki_inpandig + Ki_afleverset;
 		attribute<Eur>        Ki_eWP       (BebouwingsObject) := BcData/Sprongen/VerbeterKosten_i/eWP * nr_won;
 		attribute<Eur>        Ki_EO       (BebouwingsObject) := 
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? constanten/Ki_Booster : 0.0[eur]) :

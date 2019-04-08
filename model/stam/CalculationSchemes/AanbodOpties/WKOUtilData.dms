@@ -36,7 +36,7 @@ template WKOUtilData
 	attribute<GJ_yr> V_Elek_RW_ind(BebouwingsObject) := V_RV * AEO_ind_rv / SPF_ind_rv;
 	attribute<GJ_yr> V_Elek_WW_ind(BebouwingsObject) := V_WW * constanten/AEO_ind_ww / constanten/SPF_ind_ww;
 	attribute<GJ_yr> V_ElekW      (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
-	attribute<GJ_yr> V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_koude;
+	attribute<GJ_yr> V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
 		
 	attribute<GJ_yr>  V_Elek   (BebouwingsObject) := V_ElekW + V_ElekK;
 	attribute<GJ_yr>  V_WKO    (BebouwingsObject) := F_Elek - V_Elek;
