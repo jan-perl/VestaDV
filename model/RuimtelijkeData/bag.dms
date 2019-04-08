@@ -139,6 +139,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 			attribute<units/m2>                      footprint         := area(geometry, m2);
 			attribute<units/m2>                      vbo_oppervlak     := sum(vbo/Oppervlakte, vbo/pand_rel)[units/m2];
 			attribute<float32>                       bouwlagen_fictief := float32(vbo_oppervlak / footprint);
+			attribute<uint32> nr_woningen := pcount(vbo_woonfunctie/pand_rel);
 		}
 
 		unit<uint32> nummeraanduiding
@@ -183,6 +184,8 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 
 		attribute<Units/m2>                               oppervlakte                := import/vbo/oppervlak_filters/wonen[nr_OrgEntity];
 		attribute<string>                                 pand_id                    := import/vbo/pand_id[nr_OrgEntity];
+		attribute<import/pand>                            pand_rel                   := import/vbo/pand_rel[nr_OrgEntity];
+		attribute<Float64>                                pand_aandeel               := 1.0 / float64(import/pand/nr_woningen[pand_rel]);
 
 		attribute<Units/Yr>                               bouwjaar                   := rjoin(pand_id, import/pand/identificatie, import/pand/bouwjaar_gecorrigeerd);
 		attribute<Classifications/BouwjaarWoningBestaand> BouwjaarWoningBestaand_rel := isNull(bouwjaar) ? Classifications/BouwjaarWoningBestaand/onbekend : classify(bouwjaar,Classifications/BouwjaarWoningBestaand/ClassBreak);
@@ -232,6 +235,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 
 		attribute<Units/m2>                             oppervlakte              := import/vbo/oppervlak_filters/utiliteit[nr_OrgEntity];
 		attribute<string>                               pand_id                  := import/vbo/pand_id[nr_OrgEntity];
+		attribute<import/pand>                          pand_rel                 := import/vbo/pand_rel[nr_OrgEntity];
 
 		attribute<units/Yr>                             bouwjaar                 := rjoin(pand_id, import/pand/identificatie, import/pand/bouwjaar_gecorrigeerd);
 		attribute<Classifications/BouwjaarUtilBestaand> BouwjaarUtilBestaand_rel := isNull(bouwjaar) ? Classifications/BouwjaarUtilBestaand/V/onbekend :classify(bouwjaar,Classifications/BouwjaarUtilBestaand/ClassBreak);

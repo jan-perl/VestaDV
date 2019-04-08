@@ -59,14 +59,17 @@ template WKOWoningData
 		attribute<Eur_woning> Ki_inpandig	(BebouwingsObject) := IsAppt ? constanten/Ki_inpandig : 0 [Eur_woning];
 		attribute<Eur_woning> Ki_afleverset	(BebouwingsObject) := const(constanten/Ki_afleverset, BebouwingsObject);
 		attribute<Eur_Woning> K_wv        (BebouwingsObject) := Ki_inpandig + Ki_afleverset;
-		attribute<Eur>        Ki_eWP       (BebouwingsObject) := BcData/Sprongen/VerbeterKosten_i/eWP * nr_won;
-		attribute<Eur>        Ki_EO       (BebouwingsObject) := 
+		
+		// TODO: boosters altijd individueel, eWP volgen blokverwarming.
+		attribute<float64>    Pand_aandeel (BebouwingsObject) := IsAppt ? (Schuiven/VerketelingMax * BebouwingsObject/pand_aandeel +  Schuiven/VerketelingMin) : 1.0;
+		attribute<Eur>        Ki_eWP       (BebouwingsObject) := BcData/Sprongen/VerbeterKosten_i/eWP * nr_won * Pand_aandeel;
+		attribute<Eur>        Ki_EigenOpwekking(BebouwingsObject) := 
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? constanten/Ki_Booster : 0.0[eur]) :
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelB ) ? ((T_sec <= 35[Celsius]) ? Ki_eWP : (T_sec <= 55[Celsius]) ? constanten/Ki_booster : 0.0[eur]) :
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE ) ? ((T_sec <= 55[Celsius]) ? Ki_eWP : 0.0[eur]) 
 			: 1000000.0[eur];
 		
-		attribute<Eur>        Ki_id       (BebouwingsObject) := K_wv * nr_won, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
+		attribute<Eur>        Ki_id       (BebouwingsObject) := K_wv * nr_won + Ki_EigenOpwekking, Descr = "Investeringskosten systeem bij woningen en appartementen, F 54..56";
 		attribute<Eur>        Ki_ge_pm    (BebouwingsObject) := KostenBase/Ki_ge_pm_o;
 		attribute<Eur>        Ki_ge_ov    (BebouwingsObject) := KostenBase/Ki_ge_ov_o;
 		attribute<Eur>        Ki_ge       (BebouwingsObject) := Ki_ge_ov + Ki_ge_pm;
