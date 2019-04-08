@@ -331,7 +331,7 @@ Template LtWarmtenetImpl
 			attribute<Eur>    Ki_id       (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Ki_id')+')';
 			attribute<Eur>    Ki_ge_pm    (PlanRegio) := ObjectResults/BestaandeWoning/PR/Ki_ge_pm;
 			attribute<Eur>    Ki_ge_ov    (PlanRegio) := ObjectResults/BestaandeWoning/PR/Ki_ge_ov;
-
+			
 			// recalculated Flow
 			container Oj_Verbruik := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Oj_Verbruik', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
 			container Om_comfort  := for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Om_comfort' , '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
@@ -346,7 +346,7 @@ Template LtWarmtenetImpl
 			attribute<Eur_yr> Kj_ge       (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ge')+')';
 
 			// accumulated stock
-//			attribute<Eur>    Ki_ow       (PlanRegio) := ='BeginStatus/Wko/Ki_ow + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_ow')+')';
+			attribute<Eur>    Ki_ow       (PlanRegio) := ='PrevLtWarmtenet/Ki_ow + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_ow')+')';
 			attribute<Eur>    Ki_wd       (PlanRegio) := ='PrevLtWarmtenet/Ki_wd + add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Ki_wd')+')';
 //			attribute<Eur_yr> Kj_ge_hv    (PlanRegio) := BeginStatus/Wko/Kj_ge_hv + ObjectResults/Woning/PR/Kj_ge_hv;
 //			attribute<Eur>    Oi_Aansl    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Oi_Aansl')+')';
