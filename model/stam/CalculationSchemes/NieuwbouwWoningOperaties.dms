@@ -29,6 +29,7 @@ container NieuwbouwWoningOperaties
 			attribute<Classifications/BouwJaar>            Bouwjaar           (BebouwingsObject) := const(classify(value(zichtjaar, Units/Yr)-value(0.5, Units/Yr),  classifications/bouwjaar/ClassBreak),BebouwingsObject);
 			attribute<bool>                                KanBesparen        (BebouwingsObject) := const(true, BebouwingsObject); // woning Nieuwbouw wordt al optimaal gebouwd
 			attribute<float64>                             AandeelWarmteVraag (BebouwingsObject) := const(1.0, BebouwingsObject); // alle woning Nieuwbouw is geschikt voor WarmteOpties
+			attribute<float64>                             pand_aandeel       (BebouwingsObject) := const(Classifications/WoningtypeNieuwbouw/pand_aandeel[type], BebouwingsObject);
 
 			container Gebied
 			{
@@ -73,6 +74,8 @@ container NieuwbouwWoningOperaties
 			attribute<nrWoningen>                         nrWoonUnits_i      := nrJoinedUnits;
 
 			attribute<float64>                            AandeelWarmteVraag := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/BebouwingsObject/AandeelWarmteVraag') + ')';
+			attribute<float64>                            pand_aandeel       := ='union_data(., ' + asItemList('bron/' + WoningType/Name + '/BebouwingsObject/pand_aandeel') + ')';
+
 
 			container Gebied
 			{
