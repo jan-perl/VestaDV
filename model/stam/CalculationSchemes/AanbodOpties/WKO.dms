@@ -40,6 +40,7 @@ template WKO
 		parameter<Float64> AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
 		
 		parameter<Float64> AEO_ind_ww    := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
+		parameter<Float64> AEO_ind_koude : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
 
 		parameter<EUR> Ki_booster := 2000[Eur];
 		
@@ -64,7 +65,8 @@ template WKO
 			BebouwingsComponenten/BestaandeWoning, 
 			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/bw
+			BeginStatus/KostenBaten/KostenD/Wonen/bw,
+			true
 		);
 
 	container NieuwbouwWoningData :=
@@ -72,7 +74,8 @@ template WKO
 			BebouwingsComponenten/NieuwbouwWoning, 
 			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/nw
+			BeginStatus/KostenBaten/KostenD/Wonen/nw,
+			true
 		);
 
 	container BestaandeUtilData :=

@@ -196,6 +196,21 @@ container WarmteBronnen
 	{
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
+			attribute<string> code : [
+				'Middelgrote industrie (bedrijventerreinen)'
+			,	'RWZI'
+			,	'Koel- en vrieshuizen'
+			,	'Industriële bakkerijen'
+			,	'Industriële wasserijen'
+			,	'Diervoederindustrie'
+			,	'Levensmiddelen industrie'
+			,	'Slachthuizen'
+			,	'Datacenter'
+			,	'IJsbanen'
+			,	'Supermarkten'
+			,	'Glastuinbouw'
+			];
+			
 			attribute<string> Label : [
 				'Middelgrote industrie (bedrijventerreinen)'
 			,	'Rioolwater-zuiveringen'
@@ -210,10 +225,20 @@ container WarmteBronnen
 			,	'Supermarkten'
 			,	'Glastuinbouw'
 			];
+			attribute<bool> levert_koude := const(false, .);				
 			attribute<bool> vraagt_koude_koude : [
 				true, false, true, false, false, false, true, true, true, true, true, false
 			];
-			attribute<TJ_yr> V_Bron : [0, 334, 40, 0, 30, 78, 0, 0, 0];
+			attribute<MW> MWth_max : [
+				0, 11, 2, 0, 2, 5, 24, 3, 13, 0, 0, 0
+			];
+			attribute<Float64> bron_vol := const(0.70, .);			
+			attribute<Float64> bron_cap := const(0.30, .);
+			
+			attribute<Celsius> T_Bron : [30, 15, 30, 30, 30, 50, 30, 30, 30, 30, 30, 30];
+			attribute<Eur_kW>  Ki_KW:= const(250[Eur_kW], .);
+			attribute<Eur_GJ>  K_GJ := const(0[Eur_GJ], .);	
+			attribute<ratio>   E_GJ := const(0[Eur_GJ], .);	
 		}
 		unit<uint32> Bedrijventerrein
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
@@ -233,7 +258,9 @@ container WarmteBronnen
 			attribute<Ratio>     bron_vol;
 			attribute<Ratio>     bron_cap;
 			attribute<MW>        cap_MW;
-			attribute<TJ_Yr>     V_Bron;// @@@: Missing
+			attribute<Celsius>   T_bron := const(30[Celsius], .);
+			
+			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
 		}
 		
 		unit<uint32> Glastuinbouw
@@ -253,7 +280,9 @@ container WarmteBronnen
 			attribute<Ratio>     bron_vol;
 			attribute<Ratio>     bron_cap;
 			attribute<MW>        cap_MW;
-			attribute<TJ_Yr>     V_Bron; // @@@: Missing
+			attribute<Celsius>   T_bron := const(30[Celsius], .);
+			
+			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
 		}
 		
 		unit<uint32> LTbronnen_capaciteit
@@ -280,6 +309,9 @@ container WarmteBronnen
 			attribute<Ratio>     bron_vol;
 			attribute<Ratio>     bron_cap; // TODO: gebruik bij bijstook berekening
 			attribute<MW>        cap_MW;
+			attribute<Celsius>   T_bron := const(0[Celsius],.); 
+			
+			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
 		}
 /* REMOVE		
 		unit<uint32> Bekende_LTbronnen := subset(IsDefined(LTbronnen_capaciteit/categorie_rel)) {
@@ -302,26 +334,21 @@ container WarmteBronnen
 			
 			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), LTbronnen_capaciteit/Categorie_rel);
 			
-			attribute<Ratio>   Bron_vol := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
-			attribute<Ratio>   Bron_cap := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
-			attribute<MW>      cap_MW   := union_data(., bedrijventerrein/cap_MW  , glastuinbouw/cap_MW  , LTbronnen_capaciteit/cap_MW  );
-			attribute<KW>      cap_KW   := cap_MW * 1000[KW / MW];
-
-			attribute<Celsius> Bron_Temperatuur := const(35[Celsius], .);
+			attribute<Ratio>   Bron_vol_spec := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
+			attribute<Ratio>   Bron_cap_spec := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
+			attribute<MW>      MWth_max_spec := union_data(., bedrijventerrein/MWth_max  , glastuinbouw/MWth_max  , LTbronnen_capaciteit/MWth_max  );
+			attribute<Celsius> T_bron_spec   := union_data(., bedrijventerrein/T_bron  , glastuinbouw/T_bron  , LTbronnen_capaciteit/T_bron  );
+			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], categorie/MWth_max[categorie_rel]);
+			attribute<Ratio>   Bron_vol := replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, categorie/Bron_vol[categorie_rel]);
+			attribute<Ratio>   Bron_cap := replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, categorie/Bron_cap[categorie_rel]);
+			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], categorie/T_bron[categorie_rel]);
 			
+			attribute<KW>      P_ow_max  := MWth_max * 1000[KW / MW];			
+						
 			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
-			attribute<TJ_Yr>  V_Bron       := Categorie/V_Bron[Categorie_rel];
 			
-			attribute<MW>     MWth_max     := const(10[MW],.); // bron specifiek of per categorie ?
-			attribute<MW>     MWth_min     := const( 5[MW],.); 
-			attribute<_yr>    Rj_Onderhoud := const(0.05[_yr], .);
 			attribute<Eur_GJ> K_GJ         := const(10[Eur_GJ], .);
-			attribute<KG_GJ > CO2_GJ       := const(0[KG_GJ], .); // bron specifiek of per categorie ?
-			attribute<G_GJ >  NOx_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
-			attribute<G_GJ >  SO2_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
-			attribute<G_GJ >  VOS_GJ       := const(0[G_GJ], .);  // bron specifiek of per categorie ?
-			attribute<G_GJ >  TS_GJ        := const(0[G_GJ], .);  // bron specifiek of per categorie ?
 		}
 	}
 	container OndiepeGeoThermie {

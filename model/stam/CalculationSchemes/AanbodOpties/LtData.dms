@@ -4,7 +4,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-template WKOData
+template LtData
 {
 	// begin case parameters
 	container WkoDataComponent;

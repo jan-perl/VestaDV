@@ -17,9 +17,9 @@ template WKOUtilData
 	attribute<m2>    Lu        (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/NrModelUnits;
 
 	
-	attribute<GJ_yr>  V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>  V_WW       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>  V_Warmte   (BebouwingsObject) := V_RV + V_WW;
+	attribute<GJ_yr>  V_RV      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>  V_WW      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>  V_Warmte  (BebouwingsObject) := V_RV + V_WW;
 	attribute<GJ_yr>  V_Koude  (BebouwingsObject) := Lq4bis;
 	attribute<GJ_yr>  F_Elek   (BebouwingsObject) := V_Warmte + V_Koude;
 	

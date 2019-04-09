@@ -48,7 +48,14 @@ template LtBronIter
 		attribute<.> RelPartitioning (Candidates)       := rlookup(Candidates/Point, Values);
 		attribute<.> Partitioning    (OrgineleBronSet) := RelPartitioning[Candidates/Partitioning];
 
-		attribute<kW>        P_Warmte_primair := sum(Candidates/P_Warmte_primair, RelPartitioning);
+		attribute<kW>        P_Warmte_primair   := sum(Candidates/P_Warmte_primair, RelPartitioning);
+		attribute<kW>        P_Warmte_secundair := sum(Candidates/P_Warmte_secundair, RelPartitioning);
+		attribute<Ratio>     Weight             := sum(Candidates/Weight, RelPartitioning);
+		
+		attribute<Ratio>  Bron_vol_Weighted  := sum(Candidates/Bron_vol_Weighted, RelPartitioning);
+		attribute<Eur_kW> Ki_kW_min_weighted := sum(Candidates/Ki_kW_min_weighted, RelPartitioning);
+		attribute<Eur_kW> Ki_kW_max_weighted := sum(Candidates/Ki_kW_max_weighted, RelPartitioning);		
+		attribute<Eur_GJ> K_GJ_weighted := sum(Candidates/K_GJ_weighted, RelPartitioning);
 
 		attribute<float64>   n           := sum(Candidates/n, RelPartitioning);
 		attribute<float64>   MEAN_x      := sum(Candidates/n * Candidates/MEAN_x, RelPartitioning) / n;
@@ -65,7 +72,7 @@ template LtBronIter
 		// het door samenvoegen behalen van een positieve afweging wordt verondersteld alleen mogelijk te zijn als  de onderdelen nog onder de 400000 opleveren, maar meer dan de ongerestricteerde Ki_ABC.
 
 		attribute<bool> MarginaleAfweging := const(true, .); // Ki_B * NCW/wd28/AnnualisationFactor < AC_Netto;
-		attribute<bool> ClusterAfweging   := P_warmte_primair < 10000[kW]; // TODO: check
+		attribute<bool> ClusterAfweging   := P_Warmte_secundair < 10000[kW]; // TODO: check
 		
 		attribute<bool> SelectAfweging    := MarginaleAfweging && !ClusterAfweging; // cluster is klaar
 		attribute<bool> CombiAfweging     := MarginaleAfweging &&  ClusterAfweging; // er moet verder geclusterd worden om aan het minimum te gaan voldoen.
@@ -77,6 +84,13 @@ template LtBronIter
 		attribute<string>    Label                                := UniqueCandidates/Label[nr_OrgEntity], DialogType = "LabelText";
 		
 		attribute<kW>        P_warmte_primair    := UniqueCandidates/P_warmte_primair   [nr_OrgEntity];
+		attribute<kW>        P_Warmte_secundair := UniqueCandidates/P_Warmte_secundair   [nr_OrgEntity];
+		attribute<Ratio>     Weight             := UniqueCandidates/Weight   [nr_OrgEntity];
+		
+		attribute<Ratio>  Bron_vol_Weighted  := UniqueCandidates/Bron_vol_Weighted   [nr_OrgEntity];
+		attribute<Eur_kW> Ki_kW_min_weighted := UniqueCandidates/Ki_kW_min_weighted   [nr_OrgEntity];
+		attribute<Eur_kW> Ki_kW_max_weighted := UniqueCandidates/Ki_kW_max_weighted   [nr_OrgEntity];
+		attribute<Eur_GJ> K_GJ_weighted := UniqueCandidates/K_GJ_weighted   [nr_OrgEntity];
 		
 		attribute<.>         Partitioning (OrgineleBronSet) := invert(nr_OrgEntity)[UniqueCandidates/Partitioning];
 		
@@ -105,7 +119,14 @@ template LtBronIter
 		attribute<.> Partitioning (OrgineleBronSet) := MakeDefined(invert(src1)[Candidates/Partitioning], invert(src2)[Candidates/Partitioning]);
 
 		attribute<string> Label       := '['+Candidates/Label  [src1] + ';' + Candidates/Label[src2]+']', DialogType = "LabelText";
-		attribute<kW>     P_warmte_primair    := Candidates/P_warmte_primair   [src1] + Candidates/P_warmte_primair   [src2];
+		attribute<kW>     P_warmte_primair   := Candidates/P_warmte_primair   [src1] + Candidates/P_warmte_primair   [src2];
+		attribute<kW>     P_Warmte_secundair := Candidates/P_Warmte_secundair   [src1] + Candidates/P_Warmte_secundair   [src2];
+		attribute<Ratio>  Weight             := Candidates/Weight   [src1] + Candidates/Weight   [src2];
+		
+		attribute<Ratio>  Bron_vol_Weighted  := Candidates/Bron_vol_Weighted [src1] + Candidates/Bron_vol_Weighted   [src2];
+		attribute<Eur_kW> Ki_kW_min_weighted := Candidates/Ki_kW_min_weighted[src1] + Candidates/Ki_kW_min_weighted   [src2];
+		attribute<Eur_kW> Ki_kW_max_weighted := Candidates/Ki_kW_max_weighted[src1] + Candidates/Ki_kW_max_weighted   [src2];
+		attribute<Eur_GJ> K_GJ_weighted      := Candidates/K_GJ_weighted     [src1] + Candidates/K_GJ_weighted   [src2];
 
 		attribute<float64> n1         := Candidates/n[src1];
 		attribute<float64> n2         := Candidates/n[src2];
@@ -128,7 +149,14 @@ template LtBronIter
 		attribute<.>          Partitioning (OrgineleBronSet) := invert(src1)[Candidates/Partitioning];
 		
 		attribute<string>  Label       := Candidates/Label    [src1], DialogType = "LabelText";
-		attribute<kW>      P_warmte_primair    := Candidates/P_warmte_primair [src1];
+		attribute<kW>      P_warmte_primair   := Candidates/P_warmte_primair [src1];
+		attribute<kW>      P_Warmte_secundair := Candidates/P_Warmte_secundair   [src1];
+		attribute<Ratio>   Weight             := Candidates/Weight   [src1];
+		
+		attribute<Ratio>  Bron_vol_Weighted  := Candidates/Bron_vol_Weighted   [src1];
+		attribute<Eur_kW> Ki_kW_min_weighted := Candidates/Ki_kW_min_weighted   [src1];
+		attribute<Eur_kW> Ki_kW_max_weighted := Candidates/Ki_kW_max_weighted   [src1];
+		attribute<Eur_GJ> K_GJ_weighted := Candidates/K_GJ_weighted   [src1];
 
 		attribute<float64> n           := Candidates/n     [src1];
 		attribute<float64> MEAN_x      := Candidates/MEAN_x[src1];
@@ -143,7 +171,20 @@ template LtBronIter
 	unit <uint32> SelectedClusters := union_unit(InheritedClusters, JoinedClusters), DialogType = "Map", DialogData = "Point"
 	{
 		attribute<string>  Label       := union_data(., InheritedClusters/Label      , JoinedClusters/Label), DialogType = "LabelText";
-		attribute<kW>      P_warmte_primair    := union_data(., InheritedClusters/P_warmte_primair   , JoinedClusters/P_warmte_primair);
+		attribute<kW>      P_warmte_primair   := union_data(., InheritedClusters/P_warmte_primair   , JoinedClusters/P_warmte_primair);
+		attribute<kW>      P_Warmte_secundair := union_data(., InheritedClusters/P_Warmte_secundair   , JoinedClusters/P_Warmte_secundair);
+		attribute<Ratio>   Weight             := union_data(., InheritedClusters/Weight   , JoinedClusters/Weight);
+		
+		attribute<Ratio>  Bron_vol_Weighted  := union_data(., InheritedClusters/Bron_vol_Weighted   , JoinedClusters/Bron_vol_Weighted);
+		attribute<Eur_kW> Ki_kW_min_weighted := union_data(., InheritedClusters/Ki_kW_min_weighted   , JoinedClusters/Ki_kW_min_weighted);
+		attribute<Eur_kW> Ki_kW_max_weighted := union_data(., InheritedClusters/Ki_kW_max_weighted   , JoinedClusters/Ki_kW_max_weighted);
+		attribute<Eur_GJ> K_GJ_weighted      := union_data(., InheritedClusters/K_GJ_weighted   , JoinedClusters/K_GJ_weighted);
+
+		attribute<Ratio>  Bron_vol  := Bron_vol_Weighted / Weight;
+		attribute<Eur_kW> Ki_kW_min := Ki_kW_min_weighted / Weight;
+		attribute<Eur_kW> Ki_kW_max := Ki_kW_max_weighted / Weight;
+		attribute<Eur_GJ> K_GJ      := K_GJ_weighted / Weight;
+		attribute<Ratio>  bron_cap  := P_warmte_primair / P_Warmte_secundair;
 
 		attribute<.>      Partitioning (OrgineleBronSet) := MakeDefined(InheritedClusters/Partitioning, JoinedClusters/Partitioning + #InheritedClusters)[.];
 

@@ -74,6 +74,7 @@ Template LtWarmtenetImpl
 		parameter<Float64> 		SPF_ind_B_rv  		:= T_sec <= 35[Celsius] ? 4.2 : 1.0,			Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label B";
 		parameter<Float64> 		SPF_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0, Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label C, D of E";
 		parameter<Float64> 		SPF_ind_ww  		:= T_sec <= 55[Celsius] ? 2.5 : 1.0,			Descr = "efficientie van de individuele warmtepomp voor tapwaterverwarming";
+		parameter<Ratio> 		SPF_ind_K			: [3],											Descr = "efficientie van een individuele warmtepomp bij koudelevering"; // TODO, Check.
 		
 		
 		// Aandeel eigen opwekking
@@ -81,6 +82,7 @@ Template LtWarmtenetImpl
 		parameter<Float64> 		AEO_ind_B_rv  		:= T_sec <= 35[Celsius] ? 0.3 : 0.0, 			Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
 		parameter<Float64> 		AEO_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0, Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
 		parameter<Float64> 		AEO_ind_ww    		:= T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0, Descr = "Aandeel eigen opwekking, warm tapwater";
+		parameter<Float64> 		AEO_ind_K           : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden";
 		parameter<Ratio> 		Leidingverlies		: [0.20],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		
 		//aansluitwaardes
@@ -90,6 +92,8 @@ Template LtWarmtenetImpl
 		parameter<float64> 		ASW_ka 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude meergezinswoning (gevraagde capaciteit)";
 		parameter<float64> 		ASW_wu 				:= 						0.05	[kW_m2], 		Descr = "aansluitwaarde warmte utiliteit per m2 (gevraagde capaciteit)";
 		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
+		
+		parameter<float64>      gelijktijdigheidsfactor_warmte :=           0.5;
 		
 		// investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
@@ -139,7 +143,8 @@ Template LtWarmtenetImpl
 			BebouwingsComponenten/BestaandeWoning, 
 			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/bw
+			BeginStatus/KostenBaten/KostenD/Wonen/bw,
+			false
 		);
 
 	container NieuwbouwWoningData :=
@@ -147,7 +152,8 @@ Template LtWarmtenetImpl
 			BebouwingsComponenten/NieuwbouwWoning, 
 			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/nw
+			BeginStatus/KostenBaten/KostenD/Wonen/nw,
+			false
 		);
 
 	container BestaandeUtilData :=
@@ -164,24 +170,37 @@ Template LtWarmtenetImpl
 	
 	parameter<string> geschiktExpr := 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
 	container CandidateSets := for_each_ne(WkoComponent/Name, 
-		'WkoData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', T_sec, false, '+Quote(geschiktExpr)+')');
+		'LtData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', T_sec, false, '+Quote(geschiktExpr)+')');
 	
 	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
 			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
 		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
 	
 	unit<uint32> BronSrc := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron;
-	unit<uint32> Bronnen := subset(BronSrc/cap_KW > 0.0) {
+	unit<uint32> Bronnen := subset(BronSrc/P_ow_max > 0.0 && BronSrc/T_bron >= T_ow)
+		,	DialogType = "Map", DialogData = "Point"
+	{
 	
-		attribute<rdc_meter> Point := BronSrc/Point[nr_OrgEntity];
-		attribute<string>    Label := BronSrc/Label[nr_OrgEntity];
+		attribute<BronSrc> BronSrc_rel := nr_OrgEntity;
+		
+		attribute<rdc_meter> Point := BronSrc/Point[BronSrc_rel];
+		attribute<string>    Label := BronSrc/Label[BronSrc_rel];
 		
 		attribute<.> Partitioning := id(.);
 		attribute<bool> SelectAfweging := const(true, .);
 //		attribute<EUR_Yr> AC_Netto := 250[EUR / KW] * P_Warmte * NCW/ow28/AnnualisationFactor;
-		attribute<KW>     P_Warmte_primair := BronSrc/cap_KW[nr_OrgEntity];
+		attribute<KW>     P_Warmte_primair   := BronSrc/P_ow_max[BronSrc_rel]; // warmte op T_bron voor eWP
+		attribute<KW>     P_Warmte_secundair := P_Warmte_primair / BronSrc/bron_cap[BronSrc_rel]; // warmte op temperatuur T_bron na eWP
+		attribute<Ratio>  Weight := P_Warmte_secundair / 1[KW];
 
-//		attribute<EUR>     Ki_bron  := 250[EUR / KW] * cap_KW; // uitkoppelkosten bepalen obv WOS vraag 
+		attribute<Ratio>   Bron_vol_Weighted := BronSrc/Bron_vol[BronSrc_rel] * Weight; // bron_vol maal gewicht tbv gewogen middeling.
+		
+		attribute<Celsius> T_bron   := BronSrc/T_bron[BronSrc_rel];
+							
+		attribute<Eur_kW> Ki_kW_min_weighted := BronSrc/Ki_kW_min[BronSrc_rel] * Weight;
+		attribute<Eur_kW> Ki_kW_max_weighted := BronSrc/Ki_kW_max[BronSrc_rel] * Weight;
+		
+		attribute<Eur_GJ> K_GJ_weighted := const(10[Eur_GJ], .) * Weight;
 		
 		attribute<float64>   n           := const(1.0, .);
 		attribute<float64>   MEAN_x      := PointCol(Point);
@@ -311,7 +330,7 @@ Template LtWarmtenetImpl
 		attribute<Eur_yr>    Km_hulpCWP 		(BronSelectie)	:= V_Elek * Prijzen_elec/KGJ_maatschappelijk [gebruiksgrootteklasse_rel];
 		attribute<Eur_yr>    Kj_total   		(BronSelectie)	:= Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Kj_hulpCWP;
 		attribute<Eur_yr>    Km_total   		(BronSelectie)	:= Ki_B * NCW/ow28/AnnualisationFactor + Kj_admin + Kj_onderhoud + Km_hulpCWP;
-		attribute<bool>      Afweging   		(BronSelectie)	:= Kj_total < AC_Netto; 
+		attribute<bool>      Afweging   		(BronSelectie)	:= Kj_total < AC_Netto;
 	}
 	unit<uint32> 			RendabelCluster 	:= subset(gebied/Afweging) {
 		attribute<Eur_yr> 	Oj_Verbruik 		:= Gebied/Oj_Verbruik[nr_OrgEntity];
