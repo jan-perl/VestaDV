@@ -55,7 +55,7 @@ Template LtWarmtenetImpl
 
 	container constanten {
 	
-		parameter<bool> KoudeBeschikbaar := false;
+		parameter<bool> KoudeBeschikbaar := false; // centraal opgewekte koude is niet beschikbaar
 		
 		//Aandelen primair en hulp in het secundaire net
 		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";

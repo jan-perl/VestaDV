@@ -21,26 +21,30 @@ template WKO
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
 	container constanten {
+	
+		parameter<bool> KoudeBeschikbaar := true; // centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.
+		
 		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
 		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 
 		//Seasonal Performance Factor
-		parameter<Ratio>   SPF_coll: [3.5]; // @@@ LET OP: Bij LT15_50 nemen we aan: COP = 4.2, dd 28/03/2019 
-		parameter<Ratio> SPF_coll_k := SPF_coll - 1.0;
+		parameter<Ratio>   SPF_ind_k := 1.0; // Wordt niet gebruikt; bij WKO is AEO_ind_k toch 0
+		parameter<Ratio>   SPF_coll_w: [3.5]; // @@@ LET OP: Bij LT15_50 nemen we aan: COP = 4.2, dd 28/03/2019 
+		parameter<Ratio>   SPF_coll_k := SPF_coll_w - 1.0;
 		parameter<Celsius> T_sec:   [50];
 		
-		parameter<Float64> SPF_ind_A_rv  := SPF_coll;
-		parameter<Float64> SPF_ind_B_rv  := SPF_coll;
-		parameter<Float64> SPF_ind_CE_rv := SPF_coll;		
-		parameter<Float64> SPF_ind_ww    := SPF_coll;
+		parameter<Float64> SPF_ind_A_rv  := SPF_coll_w; // irrelevant, AEO is toch 0
+		parameter<Float64> SPF_ind_B_rv  := SPF_coll_w; // TODO: CHECK, relevant indien T_sec <= 35[Celsius]
+		parameter<Float64> SPF_ind_CE_rv := SPF_coll_w; // TODO: CHECK
+		parameter<Float64> SPF_ind_ww    := SPF_coll_w; // TODO: CHECK
 
 		// Aandeel eigen opwekking
 		parameter<Float64> AEO_ind_A_rv  := 0.0;
 		parameter<Float64> AEO_ind_B_rv  := T_sec <= 35[Celsius] ? 0.3 : 0.0;
 		parameter<Float64> AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
 		
-		parameter<Float64> AEO_ind_ww    := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
-		parameter<Float64> AEO_ind_koude : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
+		parameter<Float64> AEO_ind_ww := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
+		parameter<Float64> AEO_ind_k  : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
 
 		parameter<EUR> Ki_booster := 2000[Eur];
 		
@@ -52,6 +56,8 @@ template WKO
 		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
 		parameter<float64> ASW_ku := 0.06[kW_m2];
 
+		parameter<float64>      gelijktijdigheidsfactor_warmte :=           0.5;
+		
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
 
@@ -66,7 +72,7 @@ template WKO
 			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
 			BeginStatus/KostenBaten/KostenD/Wonen/bw,
-			true
+			constanten/KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
@@ -75,19 +81,21 @@ template WKO
 			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
 			BeginStatus/KostenBaten/KostenD/Wonen/nw,
-			true
+			constanten/KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs
+			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
+			constanten/KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs
+			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
+			constanten/KoudeBeschikbaar
 		);
 	
 

@@ -65,7 +65,7 @@ template WKOData
 	attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
 	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
 
-	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek;
+	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek_ow;
 	attribute<GJ_yr > GJw         (BebouwingsObject) := WkoDataComponent/V_WKO;
 	attribute<KG_yr>  CO2         (BebouwingsObject) := Prijzen/Elektriciteit/CO2_GJ * GJe;
 	attribute<Eur_yr >SDE         (BebouwingsObject) := GJw * SpecifiekeInstellingen/Beleid/EEA/SDE_WKO;
