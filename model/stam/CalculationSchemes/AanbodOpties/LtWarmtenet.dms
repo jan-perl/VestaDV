@@ -54,6 +54,8 @@ Template LtWarmtenetImpl
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
 	container constanten {
+	
+		parameter<bool> KoudeBeschikbaar := false;
 		
 		//Aandelen primair en hulp in het secundaire net
 		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
@@ -82,7 +84,7 @@ Template LtWarmtenetImpl
 		parameter<Float64> 		AEO_ind_B_rv  		:= T_sec <= 35[Celsius] ? 0.3 : 0.0, 			Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
 		parameter<Float64> 		AEO_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0, Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
 		parameter<Float64> 		AEO_ind_ww    		:= T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0, Descr = "Aandeel eigen opwekking, warm tapwater";
-		parameter<Float64> 		AEO_ind_K           : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden";
+		parameter<Float64> 		AEO_ind_K           : [1.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
 		parameter<Ratio> 		Leidingverlies		: [0.20],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		
 		//aansluitwaardes
@@ -144,7 +146,7 @@ Template LtWarmtenetImpl
 			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
 			BeginStatus/KostenBaten/KostenD/Wonen/bw,
-			false
+			constanten/KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
@@ -153,19 +155,21 @@ Template LtWarmtenetImpl
 			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
 			BeginStatus/KostenBaten/KostenD/Wonen/nw,
-			false
+			constanten/KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs
+			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
+			constanten/KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs
+			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
+			constanten/KoudeBeschikbaar
 		);
 	
 	parameter<string> geschiktExpr := 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
@@ -222,8 +226,8 @@ Template LtWarmtenetImpl
 		attribute<Eur_yr>    AC_Netto     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AC_Netto  [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<GJ_Yr >    V_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/V_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<GJ_Yr >    V_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/V_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
-		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
-		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte_sec[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude_sec [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<KW>    P_Warmte_primair := P_Warmte * constanten/AandeelPrimairVermogen;
 
 		attribute<float64>   n            := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/n     [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';

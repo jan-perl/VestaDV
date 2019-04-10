@@ -9,6 +9,7 @@ template WKOUtilData
 	// begin case parameters
 	container BCdata;              // := BebouwingsComponenten/NieuwbouwUtil;
 	parameter<Eur_GJ> WarmtePrijs; // := BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs;
+	parameter<bool> KoudeBeschikbaar;
 	// end case parameters
 
 	unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
@@ -20,8 +21,8 @@ template WKOUtilData
 	attribute<GJ_yr>  V_RV      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>  V_WW      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>  V_Warmte  (BebouwingsObject) := V_RV + V_WW;
-	attribute<GJ_yr>  V_Koude  (BebouwingsObject) := Lq4bis;
-	attribute<GJ_yr>  F_Elek   (BebouwingsObject) := V_Warmte + V_Koude;
+	attribute<GJ_yr>  V_Koude   (BebouwingsObject) := Lq4bis;
+//REMOVE	attribute<GJ_yr>  F_Elek    (BebouwingsObject) := V_Warmte + V_Koude;
 	
 	attribute<float64> SPF_ind_rv  (BebouwingsObject) := 
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :
@@ -33,20 +34,38 @@ template WKOUtilData
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/AEO_ind_B_rv :
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/AEO_ind_CE_rv : 1.0;
 	
-	attribute<GJ_yr> V_Elek_RW_ind(BebouwingsObject) := V_RV * AEO_ind_rv / SPF_ind_rv;
-	attribute<GJ_yr> V_Elek_WW_ind(BebouwingsObject) := V_WW * constanten/AEO_ind_ww / constanten/SPF_ind_ww;
-	attribute<GJ_yr> V_ElekW      (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
-	attribute<GJ_yr> V_ElekK      (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
+	attribute<GJ_yr> V_RV_ind     (BebouwingsObject) := V_RV * AEO_ind_rv;
+	attribute<GJ_yr> V_WW_ind     (BebouwingsObject) := V_WW * constanten/AEO_ind_ww;
+	attribute<GJ_yr> V_Koude_ind  (BebouwingsObject) := V_Koude * constanten/AEO_ind_K;
+	attribute<GJ_yr> V_ind        (BebouwingsObject) := V_RV_ind + V_WW_ind + V_Koude_ind;
+	attribute<GJ_yr> V_Elek_RV_ind(BebouwingsObject) := V_RV_ind / SPF_ind_rv;
+	attribute<GJ_yr> V_Elek_WW_ind(BebouwingsObject) := V_WW_ind / constanten/SPF_ind_ww;
+	attribute<GJ_yr> V_ElekW_ind  (BebouwingsObject) := V_Elek_RV_ind + V_Elek_WW_ind;
+	attribute<GJ_yr> V_ElekK_ind  (BebouwingsObject) := V_Koude_ind / constanten/SPF_ind_K;
 		
-	attribute<GJ_yr>  V_Elek   (BebouwingsObject) := V_ElekW + V_ElekK;
-	attribute<GJ_yr>  V_WKO    (BebouwingsObject) := F_Elek - V_Elek;
+	attribute<GJ_yr>  V_RV_sec    (BebouwingsObject) := V_RV - V_RV_ind;
+	attribute<GJ_yr>  V_WW_sec    (BebouwingsObject) := V_WW - V_WW_ind;
+	attribute<GJ_yr>  V_Warmte_sec(BebouwingsObject) := V_RV_sec + V_WW_sec;
+	attribute<GJ_yr>  V_Koude_sec (BebouwingsObject) := V_Koude - V_Koude_ind;
+	attribute<GJ_yr>  V_sec       (BebouwingsObject) := V_Warmte + V_Koude - V_ind;
 
-	attribute<kW>     P_Warmte (BebouwingsObject) := 0.95[Ratio] * constanten/ASW_wu[kW_m2] * Lu;
-	attribute<kW>     P_Koude  (BebouwingsObject) := 0.95[Ratio] * constanten/ASW_ku[kW_m2] * Lu;
+	attribute<kW>     P_Warmte_sec(BebouwingsObject) := 0.95 * constanten/ASW_wu * Lu;
+	attribute<kW>     P_Koude_sec (BebouwingsObject) := KoudeBeschikbaar ? 0.95 * constanten/ASW_ku * Lu : 0[kW];
 
-	attribute<classifications/gebruiksgrootteklasse> gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_Elek, Prijzen_elec/ClassBreak);
-	attribute<Eur_GJ>                                KGJj_Elek                 (BebouwingsObject) := Prijzen_elec/KGJ_eindgebruik_excl[gebruiksgrootteklasse_rel];
-	attribute<Eur_GJ>                                KGJm_Elek                 (BebouwingsObject) := Prijzen_elec/KGJ_maatschappelijk [gebruiksgrootteklasse_rel];
+	attribute<GJ_yr>  V_ElekW_ow  (BebouwingsObject) := V_Warmte_sec / constanten/SPF_coll_w; // eWP van de opwekker
+	attribute<GJ_yr>  V_ElekK_ow  (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
+	attribute<GJ_yr>  V_Warmte_ow (BebouwingsObject) := V_Warmte_sec - V_ElekW_ow; // warmte geleverd aan centrale eWP door opwekker tbv warmtelevering aan woning
+	attribute<GJ_yr>  V_Koude_ow  (BebouwingsObject) := V_Koude_sec  + V_ElekK_ow; // warmte onttrokken aan cenrale eWP door opwekker tbv koude levering aan woning
+	
+	attribute<GJ_yr>  V_WKO       (BebouwingsObject) := V_Warmte_ow - V_Koude_ow; // netto aan de bodem of andere leverancier onttrokken warmte.
+	
+	attribute<GJ_yr>  V_Elek_ind  (BebouwingsObject) := V_ElekW_ind+ V_ElekK_ind;
+	attribute<GJ_yr>  V_Elek_ow   (BebouwingsObject) := V_ElekW_ow + V_ElekK_ow;
+	
+//	attribute<kW>     P_Elek      (BebouwingsObject) := P_Warmte / constanten/SPF_ind_rv;
+
+	attribute<classifications/gebruiksgrootteklasse> ind_gebruiksgrootteklasse_rel(BebouwingsObject) := classify(V_ElekW_ind, Prijzen_elec/ClassBreak);
+	parameter<classifications/gebruiksgrootteklasse> ow_gebruiksgrootteklasse_rel := last(ID(Prijzen_elec));
 
 	container Kosten
 	{
@@ -65,17 +84,20 @@ template WKOUtilData
 //				attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 		attribute<Eur_yr> Kj_ge_netto (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 
-		attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := V_Elek * KGJj_Elek, Descr = "F 65"; 
-		attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_yr / m2] * Lu;
-		attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := V_Elek * KGJm_Elek;
+		attribute<Eur_Yr> Kj_ind_e    (BebouwingsObject) := V_Elek_ind * Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel];
+		attribute<Eur_Yr> Km_ind_e    (BebouwingsObject) := V_Elek_ind * Prijzen_elec/KGJ_maatschappelijk [ind_gebruiksgrootteklasse_rel];
 
-		attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_EnergieHeffing[gebruiksgrootteklasse_rel];
-		attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := V_Elek * Prijzen_elec/KGJ_CO2Heffing[gebruiksgrootteklasse_rel];
+		attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := V_Elek_ow * Prijzen_elec/KGJ_eindgebruik_excl[ow_gebruiksgrootteklasse_rel], Descr = "F 65"; 
+		attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := V_Elek_ow * Prijzen_elec/KGJ_maatschappelijk [ow_gebruiksgrootteklasse_rel];
+		attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_yr / m2] * Lu;
+
+		attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := V_Elek_ow * Prijzen_elec/KGJ_EnergieHeffing[ow_gebruiksgrootteklasse_rel];
+		attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := V_Elek_ow * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel];
 	}
 	
 	container Opbrengsten
 	{
-		attribute<Eur_GJ> KoudePrijs       (BebouwingsObject) := KGJj_Elek / BCdata/Efficiency/Koude/Elektriciteit;
+		attribute<Eur_GJ> KoudePrijs       (BebouwingsObject) := Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel] / BCdata/Efficiency/Koude/Elektriciteit; // TODO: Check deze oude waardering van koude
 
 		attribute<Eur>    AansluitBijdrage (BebouwingsObject) := BCdata/Opbrengsten/AansluitBijdrageD, Source = "F 65 jo F 10";
 		attribute<Eur_yr> VastRecht        (BebouwingsObject) := BCdata/Opbrengsten/VastRechtBijdrageD, Source = "F 11";

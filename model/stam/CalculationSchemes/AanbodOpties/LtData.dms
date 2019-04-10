@@ -42,7 +42,7 @@ template LtData
 
 	 // kosten excl distributie
 	attribute<GJ_Yr> V_Warmte     (BebouwingsObject) := WkoDataComponent/V_Warmte;
-	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
+	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * max_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
 	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
 	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
 	attribute<Eur   > Ki_D        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
@@ -65,7 +65,7 @@ template LtData
 	attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
 	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
 
-	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek;
+	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek_ind + WkoDataComponent/V_Elek_ow;
 	attribute<GJ_yr > GJw         (BebouwingsObject) := WkoDataComponent/V_WKO;
 	attribute<KG_yr>  CO2         (BebouwingsObject) := Prijzen/Elektriciteit/CO2_GJ * GJe;
 	attribute<Eur_yr >SDE         (BebouwingsObject) := GJw * SpecifiekeInstellingen/Beleid/EEA/SDE_WKO;

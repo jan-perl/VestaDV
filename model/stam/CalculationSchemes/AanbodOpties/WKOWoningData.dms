@@ -17,14 +17,14 @@ template WKOWoningData
 
 	unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
 
-	attribute<bool>       IsAppt     (BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
+	attribute<bool>       IsAppt(BebouwingsObject) := Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
 
-	attribute<NrWoningen> nr_won     (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte;
-	attribute<GJ_yr>      V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>      V_WW       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>      V_Warmte   (BebouwingsObject) := V_RV + V_WW;
-	attribute<GJ_yr>      V_Koude    (BebouwingsObject) := =KoudeBeschikbaar ?'7.2[GJ_yr / nrWoningen] * nr_won' : 'const(0[GJ_Yr], BebouwingsObject)', Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-//	attribute<GJ_yr>      F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<NrWoningen> nr_won(BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen"; //+ Vraag/NieuwbouwWoning/Totaal/Warmte
+	attribute<GJ_yr> V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr> V_WW       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr> V_Warmte   (BebouwingsObject) := V_RV + V_WW;
+	attribute<GJ_yr> V_Koude    (BebouwingsObject) := =KoudeBeschikbaar ?'7.2[GJ_yr / nrWoningen] * nr_won' : 'const(0[GJ_Yr], BebouwingsObject)', Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+//	attribute<GJ_yr> F_Elek     (BebouwingsObject) := (V_Warmte + V_Koude), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	
 	attribute<float64>    SPF_ind_rv  (BebouwingsObject) := 
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :
@@ -36,40 +36,37 @@ template WKOWoningData
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/AEO_ind_B_rv :
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/AEO_ind_CE_rv : 1.0;
 	
-	attribute<GJ_yr>      V_RW_ind     (BebouwingsObject) := V_RV * AEO_ind_rv;
-	attribute<GJ_yr>      V_WW_ind     (BebouwingsObject) := V_WW * constanten/AEO_ind_ww;
-	attribute<GJ_yr>      V_Koude_ind  (BebouwingsObject) := V_Koude * constanten/AEO_ind_K;
+	attribute<GJ_yr> V_RV_ind     (BebouwingsObject) := V_RV * AEO_ind_rv;
+	attribute<GJ_yr> V_WW_ind     (BebouwingsObject) := V_WW * constanten/AEO_ind_ww;
+	attribute<GJ_yr> V_Koude_ind  (BebouwingsObject) := V_Koude * constanten/AEO_ind_K;
 	
-	attribute<GJ_yr>      V_Elek_RW_ind(BebouwingsObject) := V_RW_ind / SPF_ind_rv;
-	attribute<GJ_yr>      V_Elek_WW_ind(BebouwingsObject) := V_WW_ind / constanten/SPF_ind_ww;
-	attribute<GJ_yr>      V_ElekW_ind  (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
-	attribute<GJ_yr>      V_ElekK_ind  (BebouwingsObject) := V_Koude_ind / constanten/SPF_ind_k; // tbv WKO: TODO: Koude specifieke SPF checken en evt toevoegen.
-	
-	
-	attribute<GJ_yr>      V_RV_sec    (BebouwingsObject) := V_RV * (1.0 - AEO_ind_rv);
-	attribute<GJ_yr>      V_WW_sec    (BebouwingsObject) := V_WW * (1.0 - constanten/AEO_ind_ww);
-	attribute<GJ_yr>      V_Warmte_sec(BebouwingsObject) := V_RV_sec + V_WW_sec;
-	attribute<GJ_yr>      V_Koude_sec  (BebouwingsObject) := V_Koude - V_Koude_ind;
-//	attribute<GJ_yr>      V_Warmte_sec (BebouwingsObject) := V_Warmte - (V_RW_ind + V_WW_ind);
-//	attribute<GJ_yr>      V_koude_sec (BebouwingsObject) := V_Koude * (1.0 + AEO_ind_rv);
+	attribute<GJ_yr> V_Elek_RW_ind(BebouwingsObject) := V_RV_ind / SPF_ind_rv;
+	attribute<GJ_yr> V_Elek_WW_ind(BebouwingsObject) := V_WW_ind / constanten/SPF_ind_ww;
+	attribute<GJ_yr> V_ElekW_ind  (BebouwingsObject) := V_Elek_RW_ind + V_Elek_WW_ind;
+	attribute<GJ_yr> V_ElekK_ind  (BebouwingsObject) := V_Koude_ind / constanten/SPF_ind_k; // tbv WKO: TODO: Koude specifieke SPF checken en evt toevoegen.
+		
+	attribute<GJ_yr> V_RV_sec    (BebouwingsObject) := V_RV - V_RV_ind;
+	attribute<GJ_yr> V_WW_sec    (BebouwingsObject) := V_WW - V_WW_ind;
+	attribute<GJ_yr> V_Warmte_sec(BebouwingsObject) := V_RV_sec + V_WW_sec;
+	attribute<GJ_yr> V_Koude_sec (BebouwingsObject) := V_Koude - V_Koude_ind;
 
-	attribute<kW>         P_Warmte_sec(BebouwingsObject) := constanten/gelijktijdigheidsfactor_warmte * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won; // TODO: afhankelijk van label maken. en gelijktijdigheidsfactor aanpassen indien ASW scherper gemodelleerd worden.
-	attribute<kW>         P_Koude_sec (BebouwingsObject) := 0.5 * P_Warmte_sec;
+	attribute<kW>    P_Warmte_sec(BebouwingsObject) := constanten/gelijktijdigheidsfactor_warmte * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won; // TODO: afhankelijk van label maken. en gelijktijdigheidsfactor aanpassen indien ASW scherper gemodelleerd worden.
+	attribute<kW>    P_Koude_sec (BebouwingsObject) := 0.5 * P_Warmte_sec;
 	
-	attribute<GJ_yr>      V_ElekW_ow   (BebouwingsObject) := V_Warmte_sec / constanten/SPF_coll_w; // eWP van de opwekker
-	attribute<GJ_yr>      V_ElekK_ow   (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
-	attribute<GJ_yr>      V_Warmte_ow  (BebouwingsObject) := V_Warmte_sec - V_ElekW_ow; // warmte geleverd aan centrale eWP door opwekker tbv warmtelevering aan woning
-	attribute<GJ_yr>      V_Koude_ow   (BebouwingsObject) := V_Koude_sec  + V_ElekK_ow; // warmte onttrokken aan cenrale eWP door opwekker tbv koude levering aan woning
+	attribute<GJ_yr> V_ElekW_ow  (BebouwingsObject) := V_Warmte_sec / constanten/SPF_coll_w; // eWP van de opwekker
+	attribute<GJ_yr> V_ElekK_ow  (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;
+	attribute<GJ_yr> V_Warmte_ow (BebouwingsObject) := V_Warmte_sec - V_ElekW_ow; // warmte geleverd aan centrale eWP door opwekker tbv warmtelevering aan woning
+	attribute<GJ_yr> V_Koude_ow  (BebouwingsObject) := V_Koude_sec  + V_ElekK_ow; // warmte onttrokken aan cenrale eWP door opwekker tbv koude levering aan woning
 	
-	attribute<GJ_yr>      V_WKO       (BebouwingsObject) := V_Warmte_ow - V_Koude_ow; // netto aan de bodem of andere leverancier onttrokken warmte.
+	attribute<GJ_yr> V_WKO       (BebouwingsObject) := V_Warmte_ow - V_Koude_ow; // netto aan de bodem of andere leverancier onttrokken warmte.
 	
-	attribute<GJ_yr>      V_Elek_ind  (BebouwingsObject) := V_ElekW_ind+ V_ElekK_ind;
-	attribute<GJ_yr>      V_Elek_ow   (BebouwingsObject) := V_ElekW_ow + V_ElekK_ow;
+	attribute<GJ_yr> V_Elek_ind  (BebouwingsObject) := V_ElekW_ind+ V_ElekK_ind;
+	attribute<GJ_yr> V_Elek_ow   (BebouwingsObject) := V_ElekW_ow + V_ElekK_ow;
 	
-//	attribute<kW>         P_Elek     (BebouwingsObject) := P_Warmte / constanten/SPF_ind_rv;
+//	attribute<kW>    P_Elek       (BebouwingsObject) := P_Warmte / constanten/SPF_ind_rv;
 
 	attribute<classifications/gebruiksgrootteklasse> ind_gebruiksgrootteklasse_rel(BebouwingsObject) := classify(V_ElekW_ind, Prijzen_elec/ClassBreak);
-	attribute<classifications/gebruiksgrootteklasse> ow_gebruiksgrootteklasse_rel (BebouwingsObject) := classify(V_ElekW_ow,  Prijzen_elec/ClassBreak);
+	parameter<classifications/gebruiksgrootteklasse> ow_gebruiksgrootteklasse_rel := last(ID(Prijzen_elec));
 
 	container Kosten // excl doublet en distributie, excl kosten LTAS
 	{
