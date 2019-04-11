@@ -46,7 +46,6 @@ template WKOData
 	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
 	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
 	attribute<Eur   > Ki_D        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
-	attribute<Eur_yr> Kj_D        (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_netto;
 	attribute<Eur   > Ki_ge_pm    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 	attribute<Eur   > Ki_ge_ov    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 //			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
@@ -57,8 +56,8 @@ template WKOData
 	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Vastrecht + WkoDataComponent/Opbrengsten/Warmte + WkoDataComponent/Opbrengsten/Koude;
 
 	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_o;
-	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_e;
-	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_ow_e;
+	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_elek_ow;
+	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_elek_ow;
 	attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_ow_e;
 	attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_ow_e;
 
@@ -72,9 +71,9 @@ template WKOData
 
 	attribute<Eur_yr> AC_Netto    (BebouwingsObject) := 
 		Oj_Aansl + Oj_verbruik + SDE
-		- Kj_D
 		- Kj_ow_totaal
 		- Kj_wd_pr
+		- Ki_D * (BCdata/NcwRefs/_30/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ge))
 		- Ki_C * (NCW/id28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/id ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/id))
 		- Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
 	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
