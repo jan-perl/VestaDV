@@ -24,9 +24,6 @@ template WKO
 	
 		parameter<bool> KoudeBeschikbaar := true; // centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.
 		
-		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
-		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
-
 		//Seasonal Performance Factor
 		parameter<Ratio>   SPF_ind_k := 1.0; // Wordt niet gebruikt; bij WKO is AEO_ind_k toch 0
 		parameter<Ratio>   SPF_coll_w: [3.5]; // @@@ LET OP: Bij LT15_50 nemen we aan: COP = 4.2, dd 28/03/2019 
@@ -38,13 +35,14 @@ template WKO
 		parameter<Float64> SPF_ind_CE_rv := SPF_coll_w; // TODO: CHECK
 		parameter<Float64> SPF_ind_ww    := SPF_coll_w; // TODO: CHECK
 
-		// Aandeel eigen opwekking
+		//Aandeel eigen opwekking
 		parameter<Float64> AEO_ind_A_rv  := 0.0;
 		parameter<Float64> AEO_ind_B_rv  := T_sec <= 35[Celsius] ? 0.3 : 0.0;
 		parameter<Float64> AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
 		
 		parameter<Float64> AEO_ind_ww := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
 		parameter<Float64> AEO_ind_k  : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
+		parameter<Ratio> 		Leidingverlies		: [0.20],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 
 		//gelijktijdigheidsfactoren
 		parameter<float64>		GTF_woning_w		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
@@ -52,19 +50,24 @@ template WKO
 		parameter<float64>		GTF_util_w			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
 		parameter<float64>		GTF_util_k			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
 		
-		//ASW AanSluitWaarde
-		parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
-		parameter<float64> ASW_kc := 2[kW_Woning];
-		parameter<float64> ASW_wa := 5[kW_Woning]; // appartement
-		parameter<float64> ASW_ka := 2[kW_Woning];
-		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
-		parameter<float64> ASW_ku := 0.06[kW_m2];
+		//aansluitwaardes
+		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
+		parameter<float64> 		ASW_kc 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude eengezinswoning (gevraagde capaciteit)";
+		parameter<float64> 		ASW_wa 				:= 						5		[kW_Woning], 	Descr = "aansluitwaarde warmte meergezinswoning (gevraagde capaciteit)";
+		parameter<float64> 		ASW_ka 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude meergezinswoning (gevraagde capaciteit)";
+		parameter<float64> 		ASW_wu 				:= 						0.05	[kW_m2], 		Descr = "aansluitwaarde warmte utiliteit per m2 (gevraagde capaciteit)";
+		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
 		
 		//investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	2000	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	2000	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater";
+		parameter<Eur_kW>		Ki_Doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "bron zonder distributiekosten";
+		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 
+		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
+		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		
 		//		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
 //		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
 	}
