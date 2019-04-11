@@ -57,7 +57,8 @@ template WKOUtilData
 	//Gelijktijdige capaciteitsvraag aan het secundaire net
 	attribute<kW>		P_Warmte_sec	(BebouwingsObject)	:= constanten/GTF_util_w * constanten/ASW_wu * Lu;
 	attribute<kW>		P_Koude_sec		(BebouwingsObject)	:= KoudeBeschikbaar ? constanten/GTF_util_k * constanten/ASW_ku * Lu : 0[kW];
-	
+	attribute<kW>		P_sec			(BebouwingsObject)	:= max_elem(P_Warmte_sec, P_Koude_sec),		Descr = "capaciteitsvraag aan secundair net";
+
 	//elektriciteitsverbruik
 	attribute<GJ_yr>	V_ElekW_ow		(BebouwingsObject)	:= V_Wsec_netto / constanten/SPF_coll_w,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor warmteproductie";
 	attribute<GJ_yr>	V_ElekK_ow		(BebouwingsObject)	:= V_Ksec_netto / constanten/SPF_coll_k,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor koudeproductie";
@@ -82,13 +83,19 @@ template WKOUtilData
 				: Lu < 100[m2]  
 					? constanten/Ki_id_uklein[Eur_m2] 
 					: constanten/Ki_id_uklein[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),					Descr = "kosten inpandige warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
-		attribute<Eur>			Ki_id				(BebouwingsObject)	:= Leercurves/Curve2 * K_wvu * Lu,		Descr = "Investeringskosten systeem bij utiliteit, F 64";
+		attribute<Eur>			Ki_id				(BebouwingsObject)	:= K_wvu * Lu,		Descr = "Investeringskosten systeem bij utiliteit, F 64";
 		
 		//geen gebouweigenaar-kosten bij utiliteit
 		attribute<Eur>			Ki_ge_pm			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 		attribute<Eur>			Ki_ge				(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 
+		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
+		attribute<Eur>			Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
+		attribute<Eur>			Ki_wd_aansluiting	(BebouwingsObject)	:= const(constanten/Ki_aansl_util[Eur], BebouwingsObject), Descr = "Investeringskosten aansluitleidingen";
+		attribute<Eur>			Ki_wd				(BebouwingsObject)	:= Ki_wd_OS + Ki_wd_aansluiting,		Descr = "Investeringskosten wijkdistributie exclusief distributieleidingen";
+
+		
 		//Jaarlijkse kosten elektriciteitsverbruik
 		attribute<Eur_yr>		Kj_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel],	Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten individueel eindgebruiker";
 		attribute<Eur_yr>		Km_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_maatschappelijk [ind_gebruiksgrootteklasse_rel],	Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten individueel maatschappelijk";
@@ -104,9 +111,6 @@ template WKOUtilData
 		attribute<Eur_yr>		KCO2_elek_ow		(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik collectief";
 		attribute<Eur_yr>		KEH_elek			(BebouwingsObject)	:= KEH_elek_ind  + KEH_elek_ow,			Descr = "totaal energieheffing over elektriciteitsverbruik";
 		attribute<Eur_yr>		KCO2_elek			(BebouwingsObject)	:= KCO2_elek_ind + KCO2_elek_ow,		Descr = "totaal co2heffing over elektriciteitsverbruik";
-		
-		
-		attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := Leercurves/Curve2 * 0.09[Eur_yr / m2] * Lu; //onderhoud
 	}
 	
 	container Opbrengsten

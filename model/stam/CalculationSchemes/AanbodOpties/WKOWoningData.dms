@@ -58,6 +58,7 @@ template WKOWoningData
 	//gelijktijdige capaciteitsvraag aan het secundaire net
 	attribute<kW>		P_Warmte_sec	(BebouwingsObject)	:= constanten/GTF_woning_w * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won; // TODO: afhankelijk van label maken. en gelijktijdigheidsfactor aanpassen indien ASW scherper gemodelleerd worden.
 	attribute<kW>		P_Koude_sec		(BebouwingsObject)	:= KoudeBeschikbaar ? (constanten/GTF_woning_k * (IsAppt ? constanten/ASW_ka : constanten/ASW_kc) * nr_won) : 0[kW];
+	attribute<kW>		P_sec			(BebouwingsObject)	:= max_elem(P_Warmte_sec, P_Koude_sec),		Descr = "capaciteitsvraag aan secundair net";
 	
 	//elektriciteitsverbruik
 	attribute<GJ_yr>	V_ElekW_ow		(BebouwingsObject)	:= V_Wsec_netto / constanten/SPF_coll_w,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor warmteproductie";
@@ -93,6 +94,11 @@ template WKOWoningData
 		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= KostenBase/Ki_ge_ov_o,				Descr = "Investeringskosten vergoeding ongerief aan gebouweigenaar";
 		attribute<Eur>			Ki_ge				(BebouwingsObject)	:= Ki_ge_ov + Ki_ge_pm,					Descr = "Investeringskosten vergoedingen aan gebouweigenaar";
 
+		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
+		attribute<Eur>			Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
+		attribute<Eur>			Ki_wd_aansluiting	(BebouwingsObject)	:= (IsAppt ? constanten/Ki_aansl_meergezins : constanten/Ki_aansl_grondgeb) * nr_won, Descr = "Investeringskosten aansluitleidingen";
+		attribute<Eur>			Ki_wd				(BebouwingsObject)	:= Ki_wd_OS + Ki_wd_aansluiting,		Descr = "Investeringskosten wijkdistributie exclusief distributieleidingen";
+		
 		//Jaarlijkse kosten elektriciteitsverbruik
 		attribute<Eur_yr>		Kj_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel],	Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten individueel eindgebruiker";
 		attribute<Eur_yr>		Km_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_maatschappelijk [ind_gebruiksgrootteklasse_rel],	Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten individueel maatschappelijk";
@@ -107,13 +113,7 @@ template WKOWoningData
 		attribute<Eur_yr>		KEH_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_EnergieHeffing[ow_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik collectief";
 		attribute<Eur_yr>		KCO2_elek_ow		(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik collectief";
 		attribute<Eur_yr>		KEH_elek			(BebouwingsObject)	:= KEH_elek_ind  + KEH_elek_ow,			Descr = "totaal energieheffing over elektriciteitsverbruik";
-		attribute<Eur_yr>		KCO2_elek			(BebouwingsObject)	:= KCO2_elek_ind + KCO2_elek_ow,		Descr = "totaal co2heffing over elektriciteitsverbruik";
-		
-		
-		attribute<Eur_yr>	Kj_ow_o				(BebouwingsObject)	:= Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * nr_won; //onderhoud
-		attribute<Eur_yr>     Kj_ind_o     (BebouwingsObject) := Leercurves/Curve2 * 5[Eur_yr / NrWoningen] * nr_won; // TODO: Check. onderhoud
-	
-		
+		attribute<Eur_yr>		KCO2_elek			(BebouwingsObject)	:= KCO2_elek_ind + KCO2_elek_ow,		Descr = "totaal co2heffing over elektriciteitsverbruik";		
 	}
 
 	container Opbrengsten
