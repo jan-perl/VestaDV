@@ -50,8 +50,9 @@ template WKOWoningData
 	attribute<GJ_yr> V_Warmte_sec(BebouwingsObject) := V_RV_sec + V_WW_sec;
 	attribute<GJ_yr> V_Koude_sec (BebouwingsObject) := V_Koude - V_Koude_ind;
 
-	attribute<kW>    P_Warmte_sec(BebouwingsObject) := constanten/gelijktijdigheidsfactor_warmte * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won; // TODO: afhankelijk van label maken. en gelijktijdigheidsfactor aanpassen indien ASW scherper gemodelleerd worden.
-	attribute<kW>    P_Koude_sec (BebouwingsObject) := 0.5 * P_Warmte_sec;
+	//gelijktijdige capaciteitsvraag aan het secundaire net
+	attribute<kW>    P_Warmte_sec(BebouwingsObject) := constanten/GTF_woning_w * (IsAppt ? constanten/ASW_wa : constanten/ASW_wc) * nr_won; // TODO: afhankelijk van label maken. en gelijktijdigheidsfactor aanpassen indien ASW scherper gemodelleerd worden.
+	attribute<kW>    P_Koude_sec (BebouwingsObject) := KoudeBeschikbaar ? (constanten/GTF_woning_k * (IsAppt ? constanten/ASW_ka : constanten/ASW_kc) * nr_won) : 0[kW];
 	
 	attribute<GJ_yr> V_ElekW_ow  (BebouwingsObject) := V_Warmte_sec / constanten/SPF_coll_w; // eWP van de opwekker
 	attribute<GJ_yr> V_ElekK_ow  (BebouwingsObject) := V_Koude / constanten/SPF_coll_k;

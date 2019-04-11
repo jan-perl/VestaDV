@@ -46,7 +46,11 @@ template WKO
 		parameter<Float64> AEO_ind_ww := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
 		parameter<Float64> AEO_ind_k  : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
 
-		parameter<EUR> Ki_booster := 2000[Eur];
+		//gelijktijdigheidsfactoren
+		parameter<float64>		GTF_woning_w		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
+		parameter<float64>		GTF_woning_k		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
+		parameter<float64>		GTF_util_w			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
+		parameter<float64>		GTF_util_k			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
 		
 		//ASW AanSluitWaarde
 		parameter<float64> ASW_wc := 6[kW_Woning]; // collectief niet appt
@@ -55,13 +59,13 @@ template WKO
 		parameter<float64> ASW_ka := 2[kW_Woning];
 		parameter<float64> ASW_wu := 0.05[kW_m2]; // utiliteit
 		parameter<float64> ASW_ku := 0.06[kW_m2];
-
-		parameter<float64>      gelijktijdigheidsfactor_warmte :=           0.5;
 		
+		//investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	2000	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater";
 
-//		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
+		//		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
 //		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
 	}
 	parameter<Celsius> T_sec := constanten/T_sec;
