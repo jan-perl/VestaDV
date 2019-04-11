@@ -77,40 +77,40 @@ template WKOUtilData
 	container Kosten
 	{
 		//investeringskosten inpandige systemen
-		attribute<Eur_m2> K_wvu       (BebouwingsObject) :=
+		attribute<Eur_m2>	K_wvu				(BebouwingsObject) :=
 			Lu > 7500[m2] 
 				?  constanten/Ki_id_ugroot[Eur_m2] 
 				: Lu < 100[m2]  
 					? constanten/Ki_id_uklein[Eur_m2] 
-					: constanten/Ki_id_uklein[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),					Descr = "kosten inpandige warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
-		attribute<Eur>			Ki_id				(BebouwingsObject)	:= K_wvu * Lu,		Descr = "Investeringskosten systeem bij utiliteit, F 64";
+					: constanten/Ki_id_uklein[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),				Descr = "kosten inpandige warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
+		attribute<Eur>		Ki_id				(BebouwingsObject)	:= K_wvu * Lu,							Descr = "Investeringskosten systeem bij utiliteit, F 64";
 		
 		//geen gebouweigenaar-kosten bij utiliteit
-		attribute<Eur>			Ki_ge_pm			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
-		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
-		attribute<Eur>			Ki_ge				(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
+		attribute<Eur>		Ki_ge_pm			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
+		attribute<Eur>		Ki_ge_ov			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
+		attribute<Eur>		Ki_ge				(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 
 		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
-		attribute<Eur>			Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
-		attribute<Eur>			Ki_wd_aansluiting	(BebouwingsObject)	:= const(constanten/Ki_aansl_util[Eur], BebouwingsObject), Descr = "Investeringskosten aansluitleidingen";
-		attribute<Eur>			Ki_wd				(BebouwingsObject)	:= Ki_wd_OS + Ki_wd_aansluiting,		Descr = "Investeringskosten wijkdistributie exclusief distributieleidingen";
+		attribute<Eur>		Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
+		attribute<Eur>		Ki_wd_aansluiting	(BebouwingsObject)	:= const(constanten/Ki_aansl_util[Eur], BebouwingsObject), Descr = "Investeringskosten aansluitleidingen";
+		attribute<Eur>		Ki_wd				(BebouwingsObject)	:= Ki_wd_OS + Ki_wd_aansluiting,		Descr = "Investeringskosten wijkdistributie exclusief distributieleidingen";
 
 		
 		//Jaarlijkse kosten elektriciteitsverbruik
-		attribute<Eur_yr>		Kj_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel],	Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten individueel eindgebruiker";
-		attribute<Eur_yr>		Km_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_maatschappelijk [ind_gebruiksgrootteklasse_rel],	Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten individueel maatschappelijk";
-		attribute<Eur_yr>		Kj_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_eindgebruik_excl[ow_gebruiksgrootteklasse_rel],		Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten collectief eindgebruiker";
-		attribute<Eur_yr>		Km_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_maatschappelijk [ow_gebruiksgrootteklasse_rel],		Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten collectief maatschappelijk";	
-		attribute<Eur_yr>		Kj_elek				(BebouwingsObject)	:= Kj_elek_ind + Kj_elek_ow,			Descr = "jaarlijkse kosten elektriciteitsverbruik eindgebruiker";
-		attribute<Eur_yr>		Km_elek				(BebouwingsObject)	:= Km_elek_ind + Km_elek_ow,			Descr = "jaarlijkse kosten elektriciteitsverbruik maatschappelijk";
+		attribute<Eur_yr>	Kj_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_eindgebruik_excl[ind_gebruiksgrootteklasse_rel],	Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten individueel eindgebruiker";
+		attribute<Eur_yr>	Km_elek_ind			(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_maatschappelijk [ind_gebruiksgrootteklasse_rel],	Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten individueel maatschappelijk";
+		attribute<Eur_yr>	Kj_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_eindgebruik_excl[ow_gebruiksgrootteklasse_rel],		Source = "FO v7a p 82 F 57",	Descr = "jaarlijkse elektriciteitskosten collectief eindgebruiker";
+		attribute<Eur_yr>	Km_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_maatschappelijk [ow_gebruiksgrootteklasse_rel],		Source = "FO C6 Tabel 6 WKO",	Descr = "jaarlijkse elektriciteitskosten collectief maatschappelijk";	
+		attribute<Eur_yr>	Kj_elek				(BebouwingsObject)	:= Kj_elek_ind + Kj_elek_ow,			Descr = "jaarlijkse kosten elektriciteitsverbruik eindgebruiker";
+		attribute<Eur_yr>	Km_elek				(BebouwingsObject)	:= Km_elek_ind + Km_elek_ow,			Descr = "jaarlijkse kosten elektriciteitsverbruik maatschappelijk";
 
 		//energieheffing en co2prijs
-		attribute<Eur_yr>		KEH_elek_ind		(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_EnergieHeffing[ind_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik individueel";
-		attribute<Eur_yr>		KCO2_elek_ind		(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_CO2Heffing[ind_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik individueel";
-		attribute<Eur_yr>		KEH_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_EnergieHeffing[ow_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik collectief";
-		attribute<Eur_yr>		KCO2_elek_ow		(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik collectief";
-		attribute<Eur_yr>		KEH_elek			(BebouwingsObject)	:= KEH_elek_ind  + KEH_elek_ow,			Descr = "totaal energieheffing over elektriciteitsverbruik";
-		attribute<Eur_yr>		KCO2_elek			(BebouwingsObject)	:= KCO2_elek_ind + KCO2_elek_ow,		Descr = "totaal co2heffing over elektriciteitsverbruik";
+		attribute<Eur_yr>	KEH_elek_ind		(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_EnergieHeffing[ind_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik individueel";
+		attribute<Eur_yr>	KCO2_elek_ind		(BebouwingsObject)	:= V_Elek_ind * Prijzen_elec/KGJ_CO2Heffing[ind_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik individueel";
+		attribute<Eur_yr>	KEH_elek_ow			(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_EnergieHeffing[ow_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik collectief";
+		attribute<Eur_yr>	KCO2_elek_ow		(BebouwingsObject)	:= V_Elek_ow * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel],		Descr = "co2heffing over elektriciteitsverbruik collectief";
+		attribute<Eur_yr>	KEH_elek			(BebouwingsObject)	:= KEH_elek_ind  + KEH_elek_ow,			Descr = "totaal energieheffing over elektriciteitsverbruik";
+		attribute<Eur_yr>	KCO2_elek			(BebouwingsObject)	:= KCO2_elek_ind + KCO2_elek_ow,		Descr = "totaal co2heffing over elektriciteitsverbruik";
 	}
 	
 	container Opbrengsten
