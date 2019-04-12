@@ -50,9 +50,9 @@ template LtData
 //			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
 	attribute<Eur_yr> Kj_wd_pr    (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
-	attribute<Eur   > Oi_Aansl    (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
+	attribute<Eur   > Oi_Aansl    (BebouwingsObject) := WkoDataComponent/Opbrengsten/Oi_Aansl;
 	attribute<Eur_yr> Oj_Aansl    (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
-	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Vastrecht + WkoDataComponent/Opbrengsten/Warmte + WkoDataComponent/Opbrengsten/Koude;
+	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Oj_Vastrecht + WkoDataComponent/Opbrengsten/Oj_Warmte + WkoDataComponent/Opbrengsten/Oj_Koude;
 
 	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject); // TODO terugzetten onderhoudskosten
 	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_elek_ow;
@@ -61,7 +61,7 @@ template LtData
 	attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_elek_ow;
 
 	attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
-	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
+	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_Comfort, Source = "F 59 joF 63";
 
 	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek_ind + WkoDataComponent/V_Elek_ow;
 	attribute<GJ_yr > GJw         (BebouwingsObject) := WkoDataComponent/V_WKO;
