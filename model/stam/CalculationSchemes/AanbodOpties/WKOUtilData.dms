@@ -88,6 +88,7 @@ template WKOUtilData
 		//geen gebouweigenaar-kosten bij utiliteit
 		attribute<Eur>		Ki_ge_pm			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 		attribute<Eur>		Ki_ge_ov			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
+		attribute<Eur>		Oi_ge_EIA			(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 		attribute<Eur>		Ki_ge				(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 
 		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
