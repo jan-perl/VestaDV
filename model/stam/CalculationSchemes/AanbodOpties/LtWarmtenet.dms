@@ -117,17 +117,11 @@ Template LtWarmtenetImpl
 		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/Curve2 * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
 		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/Curve2 * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
 		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
-		parameter<Eur_m2> 		Ki_distr   			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
-		parameter<EUR_KW> 		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
+		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
 
-// 		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten afleverset (=warmtewisselaar+meter)        Notitie Issue 442";
-// 		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten inpandinge buizen + afleverset appartement Notitie Issue 442, issue 503.";
-// 		
-// 		parameter<EUR_KW> Ki_Uitkoppel:= 250 [EUR / KW];
-// 		parameter<EUR_KW> Ki_WOS      := 680 [EUR / KW];
-// 		parameter<EUR>    Ki_Buffer   := 100000[EUR];
-// 		parameter<Eur_kW> Ki_Doublet := Leercurves/Curve2 * 1133[Eur_kW]                                   , Descr = "bron zonder distributiekosten";
-// 		parameter<Eur_m2> Ki_distr   := Leercurves/Curve2 * 6000[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
+		//meerkosten warmteproductie per bron (voor nu constant per bron)
+		parameter<Eur_GJ>		K_GJ_bron			:=						0.000	[EUR_GJ],		Descr = "meerkosten voor warmteproductie in de primaire bron, in latere versies afhankelijk van brontype";
 
 		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
 		container OenM  {
