@@ -41,29 +41,29 @@ template WKOData
 	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
 
 	 // kosten excl distributie
-	attribute<GJ_Yr> V_Warmte     (BebouwingsObject) := WkoDataComponent/V_Warmte;
+	attribute<GJ_Yr > V_Warmte    (BebouwingsObject) := WkoDataComponent/V_Warmte;
+	attribute<GJ_Yr > V_Koude     (BebouwingsObject) :=	WkoDataComponent/V_Koude,																Descr = "jaarlijkse volumevraag koude";
 	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
 	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
 	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
 	attribute<Eur   > Ki_D        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
-	attribute<Eur_yr> Kj_D        (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_netto;
 	attribute<Eur   > Ki_ge_pm    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 	attribute<Eur   > Ki_ge_ov    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 //			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
 	attribute<Eur_yr> Kj_wd_pr    (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
-	attribute<Eur   > Oi_Aansl    (BebouwingsObject) := WkoDataComponent/Opbrengsten/AansluitBijdrage;
+	attribute<Eur   > Oi_Aansl    (BebouwingsObject) := WkoDataComponent/Opbrengsten/Oi_Aansl;
 	attribute<Eur_yr> Oj_Aansl    (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
-	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Vastrecht + WkoDataComponent/Opbrengsten/Warmte + WkoDataComponent/Opbrengsten/Koude;
+	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Oj_Vastrecht + WkoDataComponent/Opbrengsten/Oj_Warmte + WkoDataComponent/Opbrengsten/Oj_Koude;
 
-	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_o;
-	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ow_e;
-	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_ow_e;
-	attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_ow_e;
-	attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_ow_e;
+	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject); // TODO terugzetten onderhoudskosten
+	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_elek_ow;
+	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_elek_ow;
+	attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_elek_ow;
+	attribute<Eur_yr> KCO2_ow_e   (BebouwingsObject) := WkoDataComponent/Kosten/KCO2_elek_ow;
 
 	attribute<Eur_yr> Kj_ow_totaal(BebouwingsObject) := Kj_ow_o + Kj_ow_e;
-	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_comfort, Source = "F 59 joF 63";
+	attribute<Eur_yr> Om_comfort  (BebouwingsObject) := WkoDataComponent/Opbrengsten/Om_Comfort, Source = "F 59 joF 63";
 
 	attribute<GJ_yr > GJe         (BebouwingsObject) := WkoDataComponent/V_Elek_ow;
 	attribute<GJ_yr > GJw         (BebouwingsObject) := WkoDataComponent/V_WKO;
@@ -72,9 +72,9 @@ template WKOData
 
 	attribute<Eur_yr> AC_Netto    (BebouwingsObject) := 
 		Oj_Aansl + Oj_verbruik + SDE
-		- Kj_D
 		- Kj_ow_totaal
 		- Kj_wd_pr
+		- Ki_D * (BCdata/NcwRefs/_30/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ge))
 		- Ki_C * (NCW/id28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/id ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/id))
 		- Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
 	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];

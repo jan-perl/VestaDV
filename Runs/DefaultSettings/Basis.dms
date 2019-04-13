@@ -70,6 +70,7 @@ container Basis: Using = "Units"
 			parameter<float64> wd  := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
 			parameter<float64> pt  := 0.0; // primair transport
 			parameter<float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
+			parameter<float64> LT  := 0.0, Descr = "investeringssubsidie opwekking lage temperatuur warmtenetten";
 
 			// voor opwekkings-type specifieke investerings-subsidies
 			attribute<float64> ow (TypeInfoList) := const(0.0, TypeInfoList);
@@ -96,7 +97,9 @@ container Basis: Using = "Units"
 			parameter<float64> wd     := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
 			parameter<float64> pt     := 0.0; // primair transport
 			parameter<float64> WKO    := 0.0; // exploitatie subsidie op Ki_A (doublet) als fractie van de kapitaallasten
-			parameter<Eur_GJ> SDE_WKO := 0.0[Eur_GJ]; // exploitatie subsidie op WKO per GJ.
+			parameter<float64> LT     := 0.0, Descr = "exploitatiesubsidie opwekking lage temperatuur warmtenetten";	
+			parameter<Eur_GJ>  SDE_LT := 0.0[Eur_GJ], Descr = "SDE subsidie opwekking lage temperatuur warmtenetten";	
+			parameter<Eur_GJ>  SDE_WKO:= 0.0[Eur_GJ]; // exploitatie subsidie op WKO per GJ.
 
 			attribute<float64> ow (TypeInfoList) := const(0.0, TypeInfoList);
 			// SDE: subsidie [Eur per GJ] per gebiedsoptie technologie (STEG, Geothermie) aan opwekker.

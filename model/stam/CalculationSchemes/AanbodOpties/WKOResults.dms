@@ -92,9 +92,8 @@ template WKOResults
 	{
 		unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
 
-		attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := StartThis ? AanbodOptie_rel : BeginStatusComponent/WarmteAllocatie;
-		
-		attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Koude      : BeginStatusComponent/KoudeAllocatie;
+		attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := StartThis ? AanbodOptie_rel                         : BeginStatusComponent/WarmteAllocatie;
+		attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Oj_Koude   : BeginStatusComponent/KoudeAllocatie;
 		attribute<Eur_yr>                      Om_comfort      (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Om_comfort : BeginStatusComponent/Om_comfort;
 		attribute<Cluster>                     WkoCluster_rel  (BebouwingsObject) := Cluster_rel;
 	}
