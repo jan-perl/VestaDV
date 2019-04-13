@@ -74,7 +74,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 30[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_30, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 30[Celsius]);
 		container Results := Impl/Results {
 			container Lt15_30 := LtWarmtenet;
 		}
@@ -89,7 +89,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 50[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_50, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 50[Celsius]);
 		container Results := Impl/Results {
 			container Lt15_50 := LtWarmtenet;
 		}
@@ -103,7 +103,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 70[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_70, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 70[Celsius]);
 		container Results := Impl/Results {
 			container Lt15_70 := LtWarmtenet;
 		}
@@ -117,7 +117,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 30[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_30, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 30[Celsius]);
 		container Results := Impl/Results {
 			container Lt30_30 := LtWarmtenet;
 		}
@@ -131,7 +131,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 50[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_50, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 50[Celsius]);
 		container Results := Impl/Results {
 			container Lt30_50 := LtWarmtenet;
 		}
@@ -145,7 +145,7 @@ container AanbodOpties
 		parameter<units/yr_uint16> Jaar;
 		// end case parameters
 		
-		container impl := LtWarmtenetImpl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 70[Celsius]);
+		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_70, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 70[Celsius]);
 		container Results := Impl/Results {
 			container Lt30_70 := LtWarmtenet;
 		}
