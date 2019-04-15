@@ -143,9 +143,9 @@ Template LtWarmtenetImpl
 	}
 
 	// TOOD: BronWarmtePrijs wordt nu (14/04/2019) niet gebruikt. Weghalen of gebruiken ?
-	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
-			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
-		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
+// 	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
+// 			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
+// 		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
 	
 	unit<uint32> BronSrc := BeginStatus/LtWarmte/bron;
 	unit<uint32> Bronnen := subset(BronSrc/P_ow_max > 0.0 && BronSrc/T_bron >= T_ow && not(BronSrc/Toegewezen))
@@ -368,7 +368,7 @@ Template LtWarmtenetImpl
 		
 		attribute<.> per_bronnen(bronnen) := BronSel_rendabel_rel[BronSel_per_bronnen];
 		attribute<.> per_bronSrc(BronSrc) := per_bronnen[invert(bronnen/nr_OrgEntity)];
-		attribute<Eur_yr> 	Oj_Verbruik 		:= Gebied/Oj_Verbruik[nr_OrgEntity];
+		attribute<Eur_yr> 	Rentabiliteit 		:= Gebied/Rentabiliteit[nr_OrgEntity];
 		
 		attribute<.> Partitioning(UnitedCandidates) := BronSel_rendabel_rel[BronCluster/BO_Partitioning]; // relatie van BebouwingsObjecten naar geselecteerde bron-clusters
 	}
@@ -389,11 +389,14 @@ Template LtWarmtenetImpl
 
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
-		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<Selected> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
-		attribute<Eur>      Ki_wd        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_wd')+')';
-		attribute<Eur>      Ki_A_Part   := scalesum(max_elem(Ki_wd, 1[Eur]), Cluster_rel, Selected/Ki_ow);
-		attribute<Eur>      Ki_B_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Gebied/Ki_B);
+		attribute<string>		Label				:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
+		attribute<Selected>		Cluster_rel			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<Eur_yr>		Kj_totaal			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
+		attribute<Eur_yr>		KL_ow_Part			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/KL_ow);
+		attribute<Eur_yr>		KL_wd_Part			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/KL_wd);
+		attribute<Eur_yr>		Kj_onderhoud_Part	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_onderhoud);
+		attribute<Eur_yr>		Kj_admin_Part		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_admin);
+		attribute<Eur_yr>		Kj_productie_Part	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_productie);
 	}
 
 	container Results := BeginStatus
