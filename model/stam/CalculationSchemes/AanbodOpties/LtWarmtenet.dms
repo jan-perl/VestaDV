@@ -513,6 +513,6 @@ Template LtWarmtenetImpl
 			attribute<GJ_yr>  GJe_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJe')+')';
 			attribute<GJ_yr>  GJw_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJw')+')';
 		}
-		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen, ZichtJaar);
+		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen);
 	}
 }

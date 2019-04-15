@@ -76,7 +76,7 @@ template WKOResults
 		attribute<Eur_yr> Oj_verbruik (PlanRegio) := sum(WkoData/Oj_verbruik* float64(HasThis)  , BCdata/PlanRegio_rel);
 		attribute<Eur_yr> Om_comfort  (PlanRegio) := sum(WkoData/Om_comfort * float64(HasThis)  , BCdata/PlanRegio_rel);
 
-		attribute<Eur_yr> Kj_ge       (PlanRegio) := sum(WkoData/Kj_D       * float64(HasThis)  , BCdata/PlanRegio_rel);
+//		attribute<Eur_yr> Kj_ge       (PlanRegio) := sum(WkoData/Kj_ge      * float64(HasThis)  , BCdata/PlanRegio_rel);
 		attribute<Eur_yr> Kj_wd_pr    (PlanRegio) := sum(WkoData/Kj_wd_pr   * float64(HasThis)  , BCdata/PlanRegio_rel);
 		attribute<Eur_yr> Km_ow_e     (PlanRegio) := sum(WkoData/Km_ow_e    * float64(HasThis)  , BCdata/PlanRegio_rel);
 		attribute<Eur_yr> Kj_ow_e     (PlanRegio) := sum(WkoData/Kj_ow_e    * float64(HasThis)  , BCdata/PlanRegio_rel);
