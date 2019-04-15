@@ -85,7 +85,7 @@ container WarmteBronnen
 			parameter<units/yr_uint16> Jaar;
 			unit<uint32> WarmteBronnen := Bron;
 
-			unit<uint32> BronElementen := SubSet(WarmteBronnen/ingebruik <= Jaar)
+			unit<uint32> BronElementen := SubSet(WarmteBronnen/ingebruik <= Jaar && (WarmteBronnen/uitgebruik == 0w || WarmteBronnen/uitgebruik > Jaar))
 			{
 //				attribute<WarmteBronnen> WarmteBron_rel := nr_OrgEntity;
 
