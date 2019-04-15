@@ -390,7 +390,8 @@ Template LtWarmtenetImpl
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
 		attribute<string>		Label				:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<Selected>		Cluster_rel			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<RendabelCluster>	RendabelCluster_rel		:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<BronCluster>	Cluster_rel		    := RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
 		attribute<Eur_yr>		Kj_totaal			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
 		attribute<Eur_yr>		KL_ow_Part			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/KL_ow);
 		attribute<Eur_yr>		KL_wd_Part			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/KL_wd);
