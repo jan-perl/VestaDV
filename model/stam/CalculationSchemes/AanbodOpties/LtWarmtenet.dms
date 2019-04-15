@@ -457,41 +457,41 @@ Template LtWarmtenetImpl
 
 			attribute<Eur_yr> Kj_ge_Bruto (PlanRegio) :=                     Ki_ge * NCW/bw28/AnnualisationFactor;
 			attribute<Eur_yr> Kj_id_Bruto (PlanRegio) :=                     Ki_id * NCW/id28/AnnualisationFactor;
-//			attribute<Eur_yr> Kj_wd_Bruto (PlanRegio) := Kj_wd_pr          + Ki_wd * NCW/wd28/AnnualisationFactor;
-//			attribute<Eur_yr> Kj_ow_Bruto (PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow * NCW/ow28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_wd_Bruto (PlanRegio) := Kj_wd_pr          + Ki_wd * NCW/wd28/AnnualisationFactor;
+			attribute<Eur_yr> Kj_ow_Bruto (PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow * NCW/ow28/AnnualisationFactor;
 
 			attribute<Eur>    Ki_ge       (PlanRegio) := Ki_ge_pm + Ki_ge_ov;
-			attribute<Eur>    Ki_Totaal   (PlanRegio) := Ki_id + Ki_ge ; // +Ki_ow + Ki_wd
+			attribute<Eur>    Ki_Totaal   (PlanRegio) := Ki_id + Ki_ge + Ki_ow + Ki_wd;
 
 			attribute<Eur_yr> Km_Totaal   (PlanRegio) := Km_ow_e + Kj_ow_o;
 
-			attribute<Eur>    Si_ow       (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/wko;
+			attribute<Eur>    Si_ow       (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT;
 			attribute<Eur>    Si_wd       (PlanRegio) := Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd;
 			attribute<Eur>    Si_id       (PlanRegio) := Ki_id * SpecifiekeInstellingen/Beleid/EIA/id;
 			attribute<Eur>    Si_ge       (PlanRegio) := Ki_ge_pm * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement + Ki_ge_ov * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding;
-//			attribute<Eur>    Si_T        (PlanRegio) := Si_ow + Si_wd + Si_id + Si_ge;
+			attribute<Eur>    Si_T        (PlanRegio) := Si_ow + Si_wd + Si_id + Si_ge;
 
 			attribute<Eur>    Ki_ow_Netto (PlanRegio) := Ki_ow - Si_ow;
 			attribute<Eur>    Ki_wd_Netto (PlanRegio) := Ki_wd - Si_wd;
 			attribute<Eur>    Ki_id_Netto (PlanRegio) := Ki_id - Si_id;
 			attribute<Eur>    Ki_ge_Netto (PlanRegio) := Ki_ge - Si_ge;
 
-//			attribute<Eur_yr> Sj          (PlanRegio) := Si_ow * NCW/ow28/AnnualisationFactor + Si_wd * NCW/wd28/AnnualisationFactor + Si_id * NCW/id28/AnnualisationFactor + Si_ge * NCW/bw28/AnnualisationFactor;
-//			attribute<Eur_yr> Sm          (PlanRegio) := Si_T * NCW/mr28/AnnualisationFactor;
+			attribute<Eur_yr> Sj          (PlanRegio) := Si_ow * NCW/ow28/AnnualisationFactor + Si_wd * NCW/wd28/AnnualisationFactor + Si_id * NCW/id28/AnnualisationFactor + Si_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr> Sm          (PlanRegio) := Si_T * NCW/mr28/AnnualisationFactor;
 
-			attribute<Eur_yr> SDE         (PlanRegio) := GJw_Totaal * SpecifiekeInstellingen/Beleid/EEA/SDE_WKO;
-			attribute<Eur_yr> Se_ow       (PlanRegio) := Ki_ow_Netto * NCW/ow28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/wko + SDE;
+			attribute<Eur_yr> SDE         (PlanRegio) := GJw_Totaal * SpecifiekeInstellingen/Beleid/EEA/SDE_LT;
+			attribute<Eur_yr> Se_ow       (PlanRegio) := Ki_ow_Netto * NCW/ow28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/LT + SDE;
 			attribute<Eur_yr> Se_wd       (PlanRegio) := Ki_wd_Netto * NCW/wd28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/wd;
 			attribute<Eur_yr> Se_id       (PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/id;
 			attribute<Eur_yr> Se_ge       (PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/ge;
-//			attribute<Eur_yr> Se          (PlanRegio) := Sj + Se_ow + Se_wd + Se_id + Se_ge;
-//			attribute<Eur_yr> Sme         (PlanRegio) := Sm + Se_ow + Se_wd + Se_id + Se_ge;
+			attribute<Eur_yr> Se          (PlanRegio) := Sj + Se_ow + Se_wd + Se_id + Se_ge;
+			attribute<Eur_yr> Sme         (PlanRegio) := Sm + Se_ow + Se_wd + Se_id + Se_ge;
 
 			attribute<Eur_yr> Kj_ge_netto (PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor - Se_ge;
 			attribute<Eur_yr> Kj_id_netto (PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor - Se_id;
 			attribute<Eur_yr> Kj_wd_netto (PlanRegio) := Kj_wd_pr + Ki_wd_Netto * NCW/wd28/AnnualisationFactor - Se_wd;
 			attribute<Eur_yr> Kj_ow_netto (PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow_Netto * NCW/ow28/AnnualisationFactor - Se_ow;
-//			attribute<Eur_yr> Kj_netto    (PlanRegio) := Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
+			attribute<Eur_yr> Kj_netto    (PlanRegio) := Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
 			attribute<Eur   > Oi_AanslT   (PlanRegio) := ='add('+AsItemList('Oi_Aansl/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Oj_VerbrT   (PlanRegio) := ='add('+AsItemList('Oj_Verbruik/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Oj_totaal   (PlanRegio) := Oj_VerbrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
