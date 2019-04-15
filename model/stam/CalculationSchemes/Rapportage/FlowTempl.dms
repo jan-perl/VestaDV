@@ -22,9 +22,9 @@ template Flow: using = "Classifications"
 	container PerInkomensGroep
 	{
 		container Inkomen := RegioIndelingen/buurt/Inkomen;
-		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
-		container midden  := Components('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
-		container hoog    := Components('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
+		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum, zichtjaar);
+		container midden  := Components('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum, zichtjaar);
+		container hoog    := Components('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum, zichtjaar);
 
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;midden/GenerateAll;hoog/GenerateAll";
 	}
@@ -32,9 +32,9 @@ template Flow: using = "Classifications"
 	container PerEigendom
 	{
 		container Eigendom := RegioIndelingen/buurt/Eigendom;
-		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw / Eigendom/p_checksum);
-		container wcorpw   := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
-		container ov_hw    := Components('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw / Eigendom/p_checksum);
+		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw  / Eigendom/p_checksum, zichtjaar);
+		container wcorpw   := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum, zichtjaar);
+		container ov_hw    := Components('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw  / Eigendom/p_checksum, zichtjaar);
 
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "koop/GenerateAll;wcorpw/GenerateAll;ov_hw/GenerateAll";
 	}

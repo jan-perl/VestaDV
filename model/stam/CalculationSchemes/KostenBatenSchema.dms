@@ -9,7 +9,6 @@ template KostenBaten
 	// begin case parameters
 	container BebouwingsComponenten;
 	container EnergiePrijzen;
-	parameter<units/yr_uint16> Jaar;
 	// end case parameters
 
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;

@@ -46,9 +46,9 @@ template WKOData
 	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
 	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
 	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
-	attribute<Eur   > Ki_D        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
 	attribute<Eur   > Ki_ge_pm    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 	attribute<Eur   > Ki_ge_ov    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
+	attribute<Eur   > Ki_ge       (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
 //			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
 	attribute<Eur_yr> Kj_wd_pr    (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
@@ -74,9 +74,9 @@ template WKOData
 		Oj_Aansl + Oj_verbruik + SDE
 		- Kj_ow_totaal
 		- Kj_wd_pr
-		- Ki_D * (BCdata/NcwRefs/_30/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ge))
-		- Ki_C * (NCW/id28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/id ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/id))
-		- Ki_A * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
+		- Ki_ge * (BCdata/NcwRefs/_30/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ge))
+		- Ki_C  * (NCW/id28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/id ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/id))
+		- Ki_A  * (NCW/ow28/AnnualisationFactor  * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO));
 	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
 
 	attribute<bool> MarginaleAfweging(BebouwingsObject) := geschikt && RentabiliteitsAfweging;

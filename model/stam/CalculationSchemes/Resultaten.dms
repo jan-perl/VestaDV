@@ -22,7 +22,8 @@ template Resultaten
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
 
 	container Allocatie             := TussenResultaten/Allocatie;
-	parameter<units/yr_uint16> ZichtJaar   := rjoin(ZichtJaarName, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
+	parameter<Classifications/zichtjaar> ZichtJaar_rel  := rlookup(ZichtJaarName, Classifications/zichtjaar/name);
+	parameter<units/yr_uint16>           ZichtJaar_jaar := Classifications/zichtjaar/jaar[zichtjaar_rel];
 
 	container RestWamte
 	{
