@@ -1,0 +1,108 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+template LtResults
+{
+	// begin case parameters
+	unit<uint32> UnitedCandidates;
+	unit<uint32> Cluster;
+	container WkoData;
+	parameter<Classifications/AanbodOptie> AanbodOptie_rel;
+	
+	parameter<uint32> NrPrevAllowedObjects;
+	parameter<uint32> NrPrevAllObjects;
+	// end case parameters
+
+	container WkoDataComponent          := WkoData/WkoDataComponent;
+	parameter<string> ComponentNaam     := WkoData/ComponentNaam;
+
+	container BeginStatusComponent      := ='BeginStatus/bebouwing/'+ComponentNaam;
+
+	container BCdata                    := WkoDataComponent/BCdata;
+	container RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;
+	unit<uint32> BebouwingsObject       := BCdata/BebouwingsObject;
+	unit<uint32> PlanRegio              := Invoer/SpecifiekeInstellingen/PlanRegio;
+
+	unit<uint32> AllowedObjects := WkoData/AllowedObjects
+	{
+		attribute<UnitedCandidates> UnitedCandidates_rel := value(id(.) + NrPrevAllowedObjects, UnitedCandidates);
+		attribute<Cluster>          Cluster_Rel          := Cluster/Partitioning[UnitedCandidates_rel];
+	}
+
+	// TODO: rename WKO->ClusterOptie
+	
+	attribute<Cluster> Cluster_RelNow (BebouwingsObject) := AllowedObjects/Cluster_rel[invert(AllowedObjects/nr_OrgEntity)];
+	attribute<Cluster> Cluster_Rel    (BebouwingsObject) := MakeDefined(Cluster_RelNow, BCdata/WkoCluster_rel);
+	attribute<bool>    HadWarmte      (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie);
+	attribute<bool>    StartThis      (BebouwingsObject) := IsDefined(Cluster_RelNow), IntegrityCheck = "not(and(HadWarmte, IsDefined(Cluster_RelNow)))";
+	attribute<bool>    WasThis        (BebouwingsObject) := (BeginStatusComponent/WarmteAllocatie == AanbodOptie_rel);
+	attribute<bool>    HasThis        (BebouwingsObject) := StartThis || WasThis;
+
+	//volumevraag voor nieuwe allocatie
+	attribute<GJ_yr>   V_Warmte       (BebouwingsObject) := WkoData/WkoDataComponent/V_Warmte		* float64(StartThis); // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_Koude        (BebouwingsObject) := WkoData/WkoDataComponent/V_Koude		* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_ElekW        (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekW_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_ElekK        (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekK_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_Elek         (BebouwingsObject) := V_ElekW + V_ElekK;
+	
+	//volumevraag na nieuwe allocatie
+	attribute<GJ_yr>   V_WarmteC      (BebouwingsObject) := WkoData/WkoDataComponent/V_Warmte		* float64(StartThis); // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_KoudeC       (BebouwingsObject) := WkoData/WkoDataComponent/V_Koude		* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_ElekWC       (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekW_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_ElekKC       (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekK_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
+	attribute<GJ_yr>   V_ElekC        (BebouwingsObject) := V_ElekWC + V_ElekKC;
+
+	attribute<kW>      P_Warmte       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(StartThis);
+
+	container BC
+	{
+		attribute<Eur_yr>	KL_ow_Part			(BebouwingsObject)	:=	AllObjects/KL_ow_Part			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		attribute<Eur_yr>	KL_wd_Part			(BebouwingsObject)	:=	AllObjects/KL_wd_Part			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_onderhoud_Part	(BebouwingsObject)	:=	AllObjects/Kj_onderhoud_Part	[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_admin_Part		(BebouwingsObject)	:=	AllObjects/Kj_admin_Part		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_productie_Part	(BebouwingsObject)	:=	AllObjects/Kj_productie_Part	[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)];
+	}
+
+	container PR
+	{
+		attribute<Eur_yr>	KL_ow_Part			(PlanRegio)			:=	sum(BC/KL_ow_Part,			BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	KL_wd_Part			(PlanRegio)			:=	sum(BC/KL_wd_Part,			BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_onderhoud_Part	(PlanRegio)			:=	sum(BC/Kj_onderhoud_Part,	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_admin_Part		(PlanRegio)			:=	sum(BC/Kj_admin_Part,		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_productie_Part	(PlanRegio)			:=	sum(BC/Kj_productie_Part,	BCdata/PlanRegio_rel);
+		
+		
+		attribute<Eur>    Ki_id       (PlanRegio) := sum(WkoData/Ki_C       * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur>    Ki_ge_pm    (PlanRegio) := sum(WkoData/Ki_ge_pm   * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur>    Ki_ge_ov    (PlanRegio) := sum(WkoData/Ki_ge_ov   * float64(HasThis)  , BCdata/PlanRegio_rel);
+//			attribute<Eur_yr> Kj_ge_hv    (PlanRegio) := sum(WkoData/Kj_ge_hv   * float64(HasThis)  , BCdata/PlanRegio_rel);
+
+		attribute<Eur>    Oi_Aansl    (PlanRegio) := sum(WkoData/Oi_Aansl   * float64(StartThis), BCdata/PlanRegio_rel); // accumulate
+		attribute<Eur_yr> Oj_verbruik (PlanRegio) := sum(WkoData/Oj_verbruik* float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> Om_comfort  (PlanRegio) := sum(WkoData/Om_comfort * float64(HasThis)  , BCdata/PlanRegio_rel);
+
+		attribute<Eur_yr> Kj_ge       (PlanRegio) := sum(WkoData/Kj_D       * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> Kj_wd_pr    (PlanRegio) := sum(WkoData/Kj_wd_pr   * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> Km_ow_e     (PlanRegio) := sum(WkoData/Km_ow_e    * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> Kj_ow_e     (PlanRegio) := sum(WkoData/Kj_ow_e    * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> Kj_ow_o     (PlanRegio) := sum(WkoData/Kj_ow_o    * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> KEH_ow_e    (PlanRegio) := sum(WkoData/KEH_ow_e   * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<Eur_yr> KCO2_ow_e   (PlanRegio) := sum(WkoData/KCO2_ow_e  * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<KG_yr>  CO2         (PlanRegio) := sum(WkoData/CO2        * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<GJ_yr>  GJe         (PlanRegio) := sum(WkoData/GJe        * float64(HasThis)  , BCdata/PlanRegio_rel);
+		attribute<GJ_yr>  GJw         (PlanRegio) := sum(WkoData/GJw        * float64(HasThis)  , BCdata/PlanRegio_rel);
+	}
+
+	container Result := BCdata
+	{
+		unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
+
+		attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := StartThis ? AanbodOptie_rel                         : BeginStatusComponent/WarmteAllocatie;
+		attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Oj_Koude   : BeginStatusComponent/KoudeAllocatie;
+		attribute<Eur_yr>                      Om_comfort      (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Om_comfort : BeginStatusComponent/Om_comfort;
+		attribute<Cluster>                     WkoCluster_rel  (BebouwingsObject) := Cluster_rel;
+	}
+}
