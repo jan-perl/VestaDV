@@ -29,6 +29,7 @@ template TussenResultaten
 			attribute<Eur> Ki_ge_ov       (PlanRegio) := const(0[Eur], PlanRegio);
 			attribute<Eur> Ki_ge_pm       (PlanRegio) := const(0[Eur], PlanRegio);
 			attribute<Eur> Ki_id          (PlanRegio) := const(0[Eur], PlanRegio);
+			attribute<Eur> Ki_ge          (PlanRegio) := const(0[Eur], PlanRegio);
 			attribute<Eur> Ki_wd          (PlanRegio) := const(0[Eur], PlanRegio);
 			attribute<Eur> Ki_pt          (PlanRegio) := const(0[Eur], PlanRegio);
 			attribute<Eur> Ki_ow          (PlanRegio) := const(0[Eur], PlanRegio);

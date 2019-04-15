@@ -83,6 +83,7 @@ template LtResults
 		attribute<Eur>		Ki_id				(PlanRegio)			:=	sum(WkoData/Ki_id			* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_ge_pm			(PlanRegio)			:=	sum(WkoData/Ki_ge_pm		* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_ge_ov			(PlanRegio)			:=	sum(WkoData/Ki_ge_ov		* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur>		Ki_ge				(PlanRegio)			:=	sum(WkoData/Ki_ge			* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Kj_ge_hv			(PlanRegio)			:=	const(0[Eur_yr], PlanRegio);
 
 		attribute<Eur>		Oi_Aansl			(PlanRegio)			:=	sum(WkoData/Oi_Aansl		* float64(StartThis),	BCdata/PlanRegio_rel); // accumulate
