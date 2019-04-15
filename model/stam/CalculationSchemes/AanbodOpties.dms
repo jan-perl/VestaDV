@@ -19,6 +19,7 @@ container AanbodOpties
 	#include <LtWarmtenet.dms>
 	#include <LtData.dms>
 	#include <LtBronIter.dms>
+	#include <ltResults.dms>
 
 	Template WijkWKK
 	{

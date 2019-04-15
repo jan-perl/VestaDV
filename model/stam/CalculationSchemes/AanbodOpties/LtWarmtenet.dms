@@ -380,7 +380,7 @@ Template LtWarmtenetImpl
 
 	container ObjectResults :=
 		for_each_ne(WkoComponent/Name, 
-			'WkoResults('
+			'LtResults('
 				'UnitedCandidates, RendabelCluster, CandidateSets/'+WkoComponent/Name+',Classifications/AanbodOptie/V/'+AanbodOptie_name+',' 
 				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
