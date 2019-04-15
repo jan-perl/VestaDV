@@ -160,7 +160,6 @@ Template LtWarmtenetImpl
 		
 		attribute<.> Partitioning := id(.);
 		attribute<bool> SelectAfweging := const(true, .);
-//		attribute<EUR_Yr> AC_Netto := 250[EUR / KW] * P_Warmte * NCW/ow28/AnnualisationFactor;
 		attribute<KW>     P_Warmte_primair   := BronSrc/P_ow_max[BronSrc_rel]; // warmte op T_bron voor eWP
 		attribute<KW>     P_Warmte_secundair := P_Warmte_primair / BronSrc/bron_cap[BronSrc_rel]; // warmte op temperatuur T_bron na eWP
 		attribute<Ratio>  Weight := P_Warmte_secundair / 1[KW];
@@ -306,7 +305,7 @@ Template LtWarmtenetImpl
 	{
 		//attributen benodigd voor bepalen brongerelateerde kosten
 		attribute<rdc_meter>		Point 					:= UnitedCandidates/Point				[nr_Orgentity];
-		attribute<BronCluster>		BronCluster_rel		:= UnitedCandidates/BronCluster_rel    [nr_OrgEntity];
+		attribute<BronCluster>		BronCluster_rel			:= UnitedCandidates/BronCluster_rel		[nr_OrgEntity];
 		attribute<EUR_Yr>			Contributiemarge		:= UnitedCandidates/Contributiemarge	[nr_OrgEntity];
 		attribute<GJ_Yr>			V_Warmte_primair		:= UnitedCandidates/V_Warmte_primair	[nr_OrgEntity];
 		attribute<GJ_Yr>			V_Koude_primair			:= UnitedCandidates/V_Koude_primair		[nr_OrgEntity];
@@ -392,8 +391,8 @@ Template LtWarmtenetImpl
 	{
 		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 		attribute<Selected> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
-		attribute<Eur>      Ki_C        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_C')+')';
-		attribute<Eur>      Ki_A_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Gebied/Ki_A);
+		attribute<Eur>      Ki_wd        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_wd')+')';
+		attribute<Eur>      Ki_A_Part   := scalesum(max_elem(Ki_wd, 1[Eur]), Cluster_rel, Selected/Ki_ow);
 		attribute<Eur>      Ki_B_Part   := scalesum(max_elem(Ki_C, 1[Eur]), Cluster_rel, Gebied/Ki_B);
 	}
 

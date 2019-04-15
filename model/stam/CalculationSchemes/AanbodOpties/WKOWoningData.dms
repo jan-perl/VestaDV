@@ -17,6 +17,7 @@ template WKOWoningData
 
 	unit<uint32>		BebouwingsObject						:=	BCdata/BebouwingsObject;
 	attribute<bool>		IsAppt				(BebouwingsObject)	:=	Type/IsMeergezins[BCdata/RuimtelijkeVraagComponent/BebouwingsType];
+	parameter<bool>		IsNieuwbouw								:=	BCdata/IsNieuwbouw;
 
 	attribute<NrWoningen> nr_won(BebouwingsObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen * 1[NrWoningen / NrAansl], Descr = "Aantal woningen";
 	attribute<GJ_yr> V_RV       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV,	Descr = "metervraag naar ruimteverwarming", Source = "FO v7a F 54";
@@ -90,8 +91,10 @@ template WKOWoningData
 		//Investeringskosten vergoedingen gebouweigenaar
 		attribute<Eur>			Ki_ge_pm			(BebouwingsObject)	:= KostenBase/Ki_ge_pm_o,							Descr = "Investeringskosten vergoeding projectmanagement aan gebouweigenaar";
 		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= KostenBase/Ki_ge_ov_o,							Descr = "Investeringskosten vergoeding ongerief aan gebouweigenaar";
-		attribute<Eur>			Oi_ge_pm_EIA		(BebouwingsObject)	:= Ki_ge_pm * SpecifiekeInstellingen/Beleid/Eia/E_bw/Rs_ProjectManagement,		Descr = "investeringssubsidie vergoeding projectmanagement aan gebouweigenaar";
-		attribute<Eur>			Oi_ge_ov_EIA		(BebouwingsObject)	:= Ki_ge_ov * SpecifiekeInstellingen/Beleid/Eia/E_bw/Rs_OngeriefsVergoeding,	Descr = "investeringssubsidie vergoeding ongerief aan gebouweigenaar";
+		attribute<Eur>			Oi_ge_pm_EIA		(BebouwingsObject)	:= IsNieuwbouw ? Ki_ge_pm * SpecifiekeInstellingen/Beleid/Eia/E_nw/Rs_ProjectManagement
+																			: Ki_ge_pm * SpecifiekeInstellingen/Beleid/Eia/E_bw/Rs_ProjectManagement,	Descr = "investeringssubsidie vergoeding projectmanagement aan gebouweigenaar";
+		attribute<Eur>			Oi_ge_ov_EIA		(BebouwingsObject)	:= IsNieuwbouw ? Ki_ge_ov * SpecifiekeInstellingen/Beleid/Eia/E_nw/Rs_OngeriefsVergoeding
+																			: Ki_ge_ov * SpecifiekeInstellingen/Beleid/Eia/E_bw/Rs_OngeriefsVergoeding,	Descr = "investeringssubsidie vergoeding ongerief aan gebouweigenaar";
 		attribute<Eur>			Ki_ge				(BebouwingsObject)	:= Ki_ge_ov + Ki_ge_pm,								Descr = "Investeringskosten vergoedingen aan gebouweigenaar";
 		attribute<Eur>			Oi_ge_EIA			(BebouwingsObject)	:= Oi_ge_pm_EIA + Oi_ge_ov_EIA,						Descr = "Investeringssubsidies vergoedingen aan gebouweigenaar";
 
