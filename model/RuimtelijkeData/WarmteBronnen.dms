@@ -139,6 +139,7 @@ container WarmteBronnen
 				attribute<Bronnen>               Bronnen_rel  := id(.);
 			}
 		}
+		// Vooralsnog per zichtjaar, zou ook per rekenstap kunnnen.
 		container BronSelecties := for_each_ne(Classifications/zichtjaar/name, 'BronSelectie('+string(Classifications/zichtjaar/Jaar)+'[units/yr_uint16])');
 	}
 

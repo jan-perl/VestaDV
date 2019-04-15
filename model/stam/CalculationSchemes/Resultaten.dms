@@ -7,10 +7,11 @@
 template Resultaten
 {
 	// begin case parameters
-	parameter<String> RunJaarLabel;
+	parameter<String> RekenstapName;
+	parameter<String> ZichtjaarName;
 	// optional case parameter
 
-	container TussenResultaten := ='/TussenResultaten/' + RunJaarLabel;
+	container TussenResultaten := ='/TussenResultaten/' + RekenstapName;
 	unit<uint32> PlanRegio     := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 	container Prijzen               := TussenResultaten/Prijzen;
@@ -21,7 +22,7 @@ template Resultaten
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
 
 	container Allocatie             := TussenResultaten/Allocatie;
-	parameter<units/yr_uint16> RunJaar   := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
+	parameter<units/yr_uint16> ZichtJaar   := rjoin(ZichtJaarName, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
 
 	container RestWamte
 	{
@@ -325,7 +326,7 @@ template Resultaten
 	container FolderInfo: isHidden = "True"
 	{
 		parameter<string> RunName      := Expand(., '%configName%');
-		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RunJaarLabel;
+		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RekenstapName;
 	}
 	
 	container RegressieTest: isHidden = "True"

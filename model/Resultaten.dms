@@ -7,7 +7,10 @@
 container Resultaten :=
 	for_each_ne(
 		Classifications/zichtjaar/Name
-		, 'Model/CalculationSchemes/Resultaten(' + quote(Classifications/zichtjaar/Name) + ')'
+		, 'Model/CalculationSchemes/Resultaten('
+			+ quote(Classifications/RekenStap/Name) + ','
+			+ quote(Classifications/Zichtjaar/Name[Classifications/RekenStap/zichtjaar_rel])
+			+ ')'
 	)
 	, using = "Model"
 {

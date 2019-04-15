@@ -35,11 +35,16 @@ container Referentie
 		container SpecifiekeInstellingen := DefaultInstellingen/Basis
 		{
 			container StartJaar := DefaultInstellingen/Basis;
+			
+			// Per rekenstap kun je hier specifieke instelling overrulen. De lijst van rekenstappen wordt gedefinieerd bij Classifications/Rekenstap
+			// Houdt deze items 
+			// - namen van subitems van in Invoer/SpecifiekeInstellingen
+			// - 
 
-			container J2020 := DefaultInstellingen/Toekomst;
-			container J2030 := J2020;
-			container J2040 := J2030;
-			container J2050 := J2040;
+			container R1_2020 := DefaultInstellingen/Toekomst;
+			container R2_2030 := R1_2020;
+			container R3_2040 := R2_2030;
+			container R4_2050 := R3_2040;
 		}
 		// End
 	}

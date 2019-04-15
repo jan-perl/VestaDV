@@ -7,7 +7,8 @@
 template TussenResultaten
 {
 	// begin case parameters
-	parameter<String> RunJaarLabel;
+	parameter<String> RekenstapName;
+	parameter<String> ZichtjaarName;
 	// optional case parameter
 
 	container StateVoorAllocatie // overridable by called 
@@ -72,18 +73,18 @@ template TussenResultaten
 		}
 	}
 	// end case parameters
-	parameter<units/yr_uint16> RunJaar := rjoin(RunJaarLabel, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
+	parameter<units/yr_uint16> ZichtJaar := rjoin(ZichtjaarName, Classifications/zichtjaar/name , Classifications/zichtjaar/jaar);
 	unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
 
-	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/' + RunJaarLabel;
+	container SpecifiekeInstellingen := ='Invoer/SpecifiekeInstellingen/' + RekenStapName;
 	container VraagKentallen         := SpecifiekeInstellingen/VraagKentallen;
 	container AanbodKentallen        := SpecifiekeInstellingen/AanbodKentallen;
 
-	container Bebouwing              := ='RuimtelijkeData/Bebouwing/' + RunJaarLabel;
+	container Bebouwing              := ='RuimtelijkeData/Bebouwing/' + ZichtjaarName;
 
 	unit<uint32> WarmteBronnen       := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 
-	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/'+ RunJaarLabel +'[Units/Ratio]';
+	attribute<Units/Ratio> KlimaatFactorMap (Geography/rdc_grids/m100) := = 'Invoer/RuimtelijkeData/klimaat/'+ ZichtjaarName +'[Units/Ratio]';
 
 	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{
@@ -148,10 +149,10 @@ template TussenResultaten
 		attribute <Ratio> DataMin2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
 		attribute <Ratio> DataMax2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
 
-		parameter<Ratio> Curve1Min := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin1);
-		parameter<Ratio> Curve1Max := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax1);
-		parameter<Ratio> Curve2Min := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMin2);
-		parameter<Ratio> Curve2Max := interpolate_linear(RunJaar, Classifications/ZichtJaar/Jaar, DataMax2);
+		parameter<Ratio> Curve1Min := interpolate_linear(ZichtJaar, Classifications/ZichtJaar/Jaar, DataMin1);
+		parameter<Ratio> Curve1Max := interpolate_linear(ZichtJaar, Classifications/ZichtJaar/Jaar, DataMax1);
+		parameter<Ratio> Curve2Min := interpolate_linear(ZichtJaar, Classifications/ZichtJaar/Jaar, DataMin2);
+		parameter<Ratio> Curve2Max := interpolate_linear(ZichtJaar, Classifications/ZichtJaar/Jaar, DataMax2);
 
 		parameter<Ratio> Base1     := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
 		parameter<Ratio> Base2     := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
@@ -222,7 +223,7 @@ template TussenResultaten
 			'CalculationSchemes/AanbodOpties/'+Voorkeuren/WarmteOpties/SchemaName+'(
 				'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
 				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
-				EnergiePrijzen, RunJaar
+				EnergiePrijzen, ZichtJaar
 			)'
 		)
 	{
@@ -244,7 +245,7 @@ template TussenResultaten
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 			}
 	
-			container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, invoer/Energieprijzen, RunJaar);
+			container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, invoer/Energieprijzen, ZichtJaar);
 		}
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
 	}
