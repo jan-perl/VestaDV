@@ -66,8 +66,8 @@ container Basis: Using = "Units"
 			container E_bt := EigenarenBasis;
 			container E_nt := EigenarenBasis;
 
-			parameter<float64> id  := 1.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
-			parameter<float64> wd  := 1.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
+			parameter<float64> id  := 0.0; // 0.1 = 10% subsidie op inpandige di incl eWP en EWV, alleen voor meergezinswoningen die niet in het zichtjaar gebouwd worden.
+			parameter<float64> wd  := 0.0; // wijkdistributie 0.20 = 20% subsidie op wijkdistributie investeringen.
 			parameter<float64> pt  := 0.0; // primair transport
 			parameter<float64> WKO := 0.0; // subsidie op Ki_A (doublet) als fractie van de investering
 			parameter<float64> LT  := 0.0, Descr = "investeringssubsidie opwekking lage temperatuur warmtenetten";
