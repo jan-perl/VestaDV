@@ -200,7 +200,8 @@ Template LtWarmtenetImpl
 	{
 		attribute<rdc_meter> point := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/point')+', LastClusters/Point)';
 		attribute<string>    Label := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+', LastClusters/Label)';
-		attribute<.>         per_bronnen(bronnen) := ='value(MakeDefined('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Partitioning + '+string(BronIteration/CumulNrPrevSelectedObjects))+'), .)';
+		attribute<.>         per_bronnen(bronnen) := ='value(MakeDefined('
+			+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Partitioning + BronIteration/CumulNrPrevSelectedObjects['+ string(ID(BronIteration))+']')+'), .)';
 		
 		//resultaten bronclustering, eigenschappen per broncluster
 		attribute<kW>		P_Warmte_primair				:=	='union_data(., ' +AsItemList('BronIterations/'+BronIteration/Name+'/Selected/P_Warmte_primair')+',		LastClusters/P_warmte_primair)';
