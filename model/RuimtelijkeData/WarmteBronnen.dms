@@ -200,46 +200,44 @@ container WarmteBronnen
 			attribute<string> code : [
 				'Middelgrote industrie (bedrijventerreinen)'
 			,	'RWZI'
-			,	'Koel- en vrieshuizen'
-			,	'Industriële bakkerijen'
-			,	'Industriële wasserijen'
-			,	'Diervoederindustrie'
-			,	'Levensmiddelen industrie'
-			,	'Slachthuizen'
+			,	'KoelVries'
+			,	'Bakkerij'
+			,	'Wasserij'
+			,	'Diervoeder'
+			,	'Levensmiddelen'
+			,	'Slachthuis'
 			,	'Datacenter'
-			,	'IJsbanen'
-			,	'Supermarkten'
+			,	'IJsbaan'
+			,	'Supermarkt'
 			,	'Glastuinbouw'
 			];
 			
 			attribute<string> Label : [
 				'Middelgrote industrie (bedrijventerreinen)'
-			,	'Rioolwater-zuiveringen'
-			,	'Koel- en vrieshuizen'
-			,	'Industriële bakkerijen'
-			,	'Industriële wasserijen'
-			,	'Diervoeder-bedrijven'
-			,	'Levensmiddelen-industrie'
-			,	'Slachthuizen'
-			,	'Datacenters'
-			,	'Kunstijsbanen'
-			,	'Supermarkten'
+			,	'RWZI'
+			,	'KoelVries'
+			,	'Bakkerij'
+			,	'Wasserij'
+			,	'Diervoeder'
+			,	'Levensmiddelen'
+			,	'Slachthuis'
+			,	'Datacenter'
+			,	'IJsbaan'
+			,	'Supermarkt'
 			,	'Glastuinbouw'
 			];
 			attribute<bool> levert_koude := const(false, .);				
 			attribute<bool> vraagt_koude_koude : [
 				true, false, true, false, false, false, true, true, true, true, true, false
 			];
-			attribute<MW> MWth_max : [
-				0, 11, 2, 0, 2, 5, 24, 3, 13, 0, 0, 0
-			];
-			attribute<Float64> bron_vol := const(0.70, .);			
-			attribute<Float64> bron_cap := const(0.30, .);
-			
-			attribute<Celsius> T_Bron : [30, 15, 30, 30, 30, 50, 30, 30, 30, 30, 30, 30];
-			attribute<Eur_kW>  Ki_KW:= const(250[Eur_kW], .);
-			attribute<Eur_GJ>  K_GJ := const(0[Eur_GJ], .);	
-			attribute<ratio>   E_GJ := const(0[Eur_GJ], .);	
+			attribute<MW>		MWth_max	: [0, 11, 2, 0, 2, 5, 24, 3, 13, 0, 0, 0],			Descr = "Maximale capaciteit waarvoor de bron kan worden ingezet";
+			attribute<Float64>	bron_vol	:= const(0.70, .),									Descr = "Aandeel op secundair netvolume dat de bron voor rekening kan nemen";
+			attribute<Float64>	bron_cap	:= const(0.30, .),									Descr = "Aandeel op secundaire netcapaciteit dat de bron voor rekening kan nemen";
+			attribute<Celsius>	T_Bron		: [30, 15, 30, 30, 30, 50, 30, 30, 30, 30, 30, 30],	Descr = "Temperatuur welke de bron maximaal kan leveren zonder hulpvoorziening";
+			attribute<Eur_kW>	Ki_KW_min	:= const(50	[Eur_kW], .),							Descr = "";
+			attribute<Eur_kW>	Ki_KW_max	:= const(250[Eur_kW], .),							Descr = "";
+			attribute<Eur_GJ>	K_GJ		:= const(0[Eur_GJ], .),								Descr = "";
+			attribute<Eur_GJ>	E_GJ		:= const(0[Eur_GJ], .),								Descr = "";
 		}
 		unit<uint32> Bedrijventerrein
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
@@ -287,43 +285,37 @@ container WarmteBronnen
 		}
 		
 		unit<uint32> LTbronnen_capaciteit
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/LTbronnen_capaciteit.shp"
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190415_LT_puntbronnen.shp"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "Geometry"
 		,	Source          = "CE-Delft"
 		{
-			attribute<dpoint> LatLong := point(float64(Lat), float64(Long), dpoint);
-			attribute<rdc_meter> PointFromLL := LatLongWGS842RD(LatLong, rdc_meter);
-			attribute<rdc_meter> Geometry;
-			attribute<rdc_meter> Point := MakeDefined(Geometry, PointFromLL);
+			attribute<dpoint>		LatLong := point(float64(Lat), float64(Long), dpoint);
+			attribute<rdc_meter>	PointFromLL := LatLongWGS842RD(LatLong, rdc_meter);
+			attribute<rdc_meter>	Geometry;
+			attribute<rdc_meter>	Point := MakeDefined(Geometry, PointFromLL);
 			
-			attribute<string> categorie;			
-			attribute<unique_categorie> unique_categorie_rel := rlookup(categorie, unique_categorie/values);
+			attribute<string> Type;			
+			attribute<unique_categorie> unique_categorie_rel := rlookup(Type, unique_categorie/values);
 			attribute<../categorie> categorie_rel := unique_categorie/categorie_rel[unique_categorie_rel];
 
-			attribute<string>    naam;
-			attribute<string>    label := naam;
+			attribute<string>	naam;
+			attribute<string>	label := naam;
+			attribute<Ratio>	bron_vol;
+			attribute<Ratio>	bron_cap;
+			attribute<Celsius>	T_bron; 
+			attribute<Eur>		Ki_KW_min;
+			attribute<Eur>		Ki_KW_max;
+			attribute<Eur_GJ>	K_GJ;
+			attribute<MW>		MWth_max;
 			
-			// ISSUE: hoe volume en capaciteitsfracties te bepalen voor een netwerk met en cluster van gekoppelde bronnen.
-			attribute<Ratio>     bron_vol;
-			attribute<Ratio>     bron_cap; // TODO: gebruik bij bijstook berekening
-			attribute<MW>        cap_MW;
-			attribute<Celsius>   T_bron := const(0[Celsius],.); 
-			
-			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
 		}
-/* REMOVE		
-		unit<uint32> Bekende_LTbronnen := subset(IsDefined(LTbronnen_capaciteit/categorie_rel)) {
-			attribute<categorie> categorie_rel := LTbronnen_capaciteit/categorie_rel[nr_OrgEntity];
-			attribute<rdc_meter> point := LTbronnen_capaciteit/point[nr_OrgEntity];
-			attribute<string>    label := LTbronnen_capaciteit/label[nr_OrgEntity];   
-		}
-*/		
+		
 		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/categorie)
 		{
-			attribute<categorie> categorie_rel := rlookup(values, categorie/Label);
+			attribute<categorie> categorie_rel := rlookup(values, categorie/code);
 		}
 		
 		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, LTbronnen_capaciteit) 
@@ -349,7 +341,7 @@ container WarmteBronnen
 			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
 			
-			attribute<Eur_GJ> K_GJ         := const(10[Eur_GJ], .);
+			attribute<Eur_GJ> K_GJ         := const(0[Eur_GJ], .);
 		}
 	}
 	container OndiepeGeoThermie {
