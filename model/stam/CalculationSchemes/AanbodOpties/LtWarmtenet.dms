@@ -131,13 +131,13 @@ Template LtWarmtenetImpl
 		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
 		container OenM  {
 			Parameter<_yr> 		R_id_onderhoud      := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten inpandige distributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_id_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten inpandige distributie als percentage van de initiele investering";
+			Parameter<_yr> 		R_id_admin		    := 						0.000 	[_yr], 			Descr = "jaarlijkse administratiekosten inpandige distributie als percentage van de initiele investering";
 			Parameter<_yr> 		R_ow_onderhoud	    := 						0.050 	[_yr], 			Descr = "jaarlijkse onderhoudskosten opwekking aan de bron als percentage van de initiele investering";
 			Parameter<_yr> 		R_ow_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten opwekking aan de bron als percentage van de initiele investering";
 			Parameter<_yr> 		R_wd_onderhoud	    := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten wijkdistributie als percentage van de initiele investering";
 			Parameter<_yr> 		R_wd_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten wijkdistributie als percentage van de initiele investering";
 			Parameter<_yr> 		R_wpColl_onderhoud	:= 						0.035 	[_yr], 			Descr = "jaarlijkse onderhoudskostencollectieve warmtepomp als percentage van de initiele investering";
-			Parameter<_yr> 		R_wpColl_admin		:= 						0.035 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
+			Parameter<_yr> 		R_wpColl_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_onderhoud	:= 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
 			}
