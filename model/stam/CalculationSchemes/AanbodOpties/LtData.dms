@@ -57,7 +57,7 @@ template LtData
 	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_Elek_ind + V_Elek_ow,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
 	attribute<GJ_yr>		GJw					(BebouwingsObject)	:=	V_warmte - GJe,																			Descr = "warmte geleverd uit gebiedsoptie";
 	attribute<KG_yr>		CO2					(BebouwingsObject)	:=	Prijzen/Elektriciteit/CO2_GJ * GJe,														Descr = "co2-uitstoot door elektriciteitsverbruik gebiedsoptie";
-	attribute<Eur_yr>		Kj_productie		(BebouwingsObject)	:=	V_Warmte_primair * constanten/K_GJ_bron,												Descr = "meerkosten van warmteproductie in primaire bron";
+	//attribute<Eur_yr>		Kj_productie		(BebouwingsObject)	:=	V_Warmte_primair * constanten/K_GJ_bron,												Descr = "meerkosten van warmteproductie in primaire bron";
 	
 	
 	//Investeringskosten vergoedingen gebouweigenaar
@@ -114,12 +114,13 @@ template LtData
 	attribute<Eur_yr>		Oj_vastrecht		(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oj_Vastrecht,												Descr = "jaarlijkse opbrengsten uit vastrecht";
 	attribute<Eur_yr>		KL_Aansl			(BebouwingsObject)	:=	Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor),				Descr = "geannualiseerde aansluitbijdrage";
 	attribute<Eur_yr>		Om_comfort			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Om_comfort,												Descr = "maatschappelijke opbrengsten door koudelevering";
-	attribute<Eur_yr>		Oj_SDE				(BebouwingsObject)	:=	GJw [Gj_yr] * SpecifiekeInstellingen/Beleid/EEA/SDE_LT [Eur_Gj],							Descr = "jaarlijkse opbrengsten uit SDE op lage temperatuur warmte";		
+	attribute<Eur_yr>		Oj_SDE				(BebouwingsObject)	:=	GJw [Gj_yr] * SpecifiekeInstellingen/Beleid/EEA/SDE_LT [Eur_Gj],						Descr = "jaarlijkse opbrengsten uit SDE op lage temperatuur warmte";		
 	
 	//Netto contributiemarge
 	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	KL_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE,											Descr = "totale jaarlijkse opbrengsten";
 	attribute<Eur_yr>		KL_totaal			(BebouwingsObject)	:=	KL_id + KL_wd + KL_ow + KL_ge,															Descr = "totale jaarlijkse kapitaallasten";
-	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_productie + Kj_elek_id + Kj_elek_ow + Kj_onderhoud + Kj_administratie,				Descr = "totale jaarlijkse kapitaallasten";
+	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_elek_id + Kj_elek_ow + Kj_onderhoud + Kj_administratie,								Descr = "totale jaarlijkse kapitaallasten";
+//	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_productie + Kj_elek_id + Kj_elek_ow + Kj_onderhoud + Kj_administratie,				Descr = "totale jaarlijkse kapitaallasten";
 	attribute<Eur_yr>		Contributiemarge	(BebouwingsObject)	:=	Oj_totaal - KL_totaal - Kj_totaal,														Descr = "Netto contributiemarge per object";																																		
 	
 	//selectie van geschikte kandidaten uit alle bebouwingsobjecten op basis van rentabiliteit en geselecteerde criteria

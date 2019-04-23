@@ -52,14 +52,14 @@ container Nieuwbouw
 // 			, Geography/rdc_grids/m100
 // 			, nrWoningen_32
 // 		);
-//
+
 // 	container UtilOppervlak:=
 // 		for_each_nedv(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
 // 			,'const(0f,Geography/rdc_grids/m100)'
 // 			, Geography/rdc_grids/m100
 // 			, Float32
 // 		);
-//		
+// 		
 // 	container InbreidingUtilFactor :=
 // 		for_each_nedv(ZU/HasMutations && strlen(ZU/wlo_filename_Nieuwbouw) > 0  ? ZU/Name : ''
 // 			,'const(1f,Geography/rdc_grids/m100)'

@@ -122,10 +122,11 @@ Template LtWarmtenetImpl
 		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/Curve2 * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
 		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
 		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
+		parameter<Eur_m2>		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
 		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
 
 		//meerkosten warmteproductie per bron (voor nu constant per bron)
-		parameter<Eur_GJ>		K_GJ_bron			:=						0.000	[EUR_GJ],		Descr = "meerkosten voor warmteproductie in de primaire bron, in latere versies afhankelijk van brontype";
+		//parameter<Eur_GJ>		K_GJ_bron			:=						0.000	[EUR_GJ],		Descr = "meerkosten voor warmteproductie in de primaire bron, in latere versies afhankelijk van brontype";
 
 		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
 		container OenM  {
@@ -171,7 +172,7 @@ Template LtWarmtenetImpl
 		attribute<Eur_kW> Ki_kW_min_weighted := BronSrc/Ki_kW_min[BronSrc_rel] * Weight;
 		attribute<Eur_kW> Ki_kW_max_weighted := BronSrc/Ki_kW_max[BronSrc_rel] * Weight;
 		
-		attribute<Eur_GJ> K_GJ_weighted := const(10[Eur_GJ], .) * Weight;
+		attribute<Eur_GJ> K_GJ_weighted := BronSrc/K_GJ[BronSrc_rel] * Weight;
 		
 		attribute<float64>   n           := const(1.0, .);
 		attribute<float64>   MEAN_x      := PointCol(Point);
@@ -182,7 +183,7 @@ Template LtWarmtenetImpl
 	}
 
 	//samenvoegen invoerbronnen tot geclusterde modelbronnen
-	parameter<uint32> NrBronIterations: [ 10 ];
+	parameter<uint32> NrBronIterations: [ 3 ];
 	unit<uint32> BronIteration := Range(uint32, 0, NrBronIterations) 
 	{
 		attribute<string> Name := 'I'+string(id(.));
@@ -342,7 +343,7 @@ Template LtWarmtenetImpl
 		attribute<KW>				P_sec_hulp			(BronCluster)	:=	sum(Selected/P_sec_hulp,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de hulpvoorziening van gebouwen in vraaggebied";
 
 		//Aanvullende kosten brongerelateerd
-		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/AreaProxy * constanten/Ki_distr,							Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
+		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/AreaProxy * constanten/Ki_brondist,							Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
 		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	const(constanten/Ki_Buffer, BronCluster),								Descr ="investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
@@ -382,7 +383,7 @@ Template LtWarmtenetImpl
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
 		attribute<string>		Label				:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<RendabelCluster>	RendabelCluster_rel		:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<RendabelCluster>	RendabelCluster_rel		:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_relNow')+')';
 		attribute<BronCluster>	Cluster_rel			:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
 		attribute<Eur_yr>		Kj_totaal			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
 		attribute<Eur>			Ki_ow_bron			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);

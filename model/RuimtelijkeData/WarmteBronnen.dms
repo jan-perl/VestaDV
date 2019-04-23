@@ -239,50 +239,50 @@ container WarmteBronnen
 			attribute<Eur_GJ>	K_GJ		:= const(0[Eur_GJ], .),								Descr = "";
 			attribute<Eur_GJ>	E_GJ		:= const(0[Eur_GJ], .),								Descr = "";
 		}
-		unit<uint32> Bedrijventerrein
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
-		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		,	DialogType      = "Map"
-		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft"
-		{
-			attribute<rdc_meter> Geometry(poly);	
-			
-			attribute<rdc_meter> Point := centroid_or_mid(Geometry);
+// 		unit<uint32> Bedrijventerrein
+// 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
+// 		,	StorageType     = "gdal.vect"
+// 		,	StorageReadOnly = "True"
+// 		,	DialogType      = "Map"
+// 		,	DialogData      = "Geometry"
+// 		,	Source          = "CE-Delft"
+// 		{
+// 			attribute<rdc_meter> Geometry(poly);	
+// 			
+// 			attribute<rdc_meter> Point := centroid_or_mid(Geometry);
 
-			attribute<string>    plannaam;
-			attribute<string>    label := plannaam;
-			
-			attribute<Ratio>     bron_vol;
-			attribute<Ratio>     bron_cap;
-			attribute<MW>        cap_MW;
-			attribute<Celsius>   T_bron := const(30[Celsius], .);
-			
-			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
-		}
+// 			attribute<string>    plannaam;
+// 			attribute<string>    label := plannaam;
+// 			
+// 			attribute<Ratio>     bron_vol;
+// 			attribute<Ratio>     bron_cap;
+// 			attribute<MW>        cap_MW;
+// 			attribute<Celsius>   T_bron := const(30[Celsius], .);
+// 			
+// 			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
+// 		}
 		
-		unit<uint32> Glastuinbouw
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/glastuinbouw.shp"
-		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		,	DialogType      = "Map"
-		,	DialogData      = "Geometry"
-		,	Source          = "CE-Delft"
-		{
-			attribute<rdc_meter> Geometry(poly);
-			attribute<rdc_meter> Point := centroid_or_mid(Geometry); 
+// 		unit<uint32> Glastuinbouw
+// 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/glastuinbouw.shp"
+// 		,	StorageType     = "gdal.vect"
+// 		,	StorageReadOnly = "True"
+// 		,	DialogType      = "Map"
+// 		,	DialogData      = "Geometry"
+// 		,	Source          = "CE-Delft"
+// 		{
+// 			attribute<rdc_meter> Geometry(poly);
+// 			attribute<rdc_meter> Point := centroid_or_mid(Geometry); 
 
-			attribute<string>    FID;
-			attribute<string>    label := FID;
-			
-			attribute<Ratio>     bron_vol;
-			attribute<Ratio>     bron_cap;
-			attribute<MW>        cap_MW;
-			attribute<Celsius>   T_bron := const(30[Celsius], .);
-			
-			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
-		}
+// 			attribute<string>    FID;
+// 			attribute<string>    label := FID;
+// 			
+// 			attribute<Ratio>     bron_vol;
+// 			attribute<Ratio>     bron_cap;
+// 			attribute<MW>        cap_MW;
+// 			attribute<Celsius>   T_bron := const(30[Celsius], .);
+// 			
+// 			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
+// 		}
 		
 		unit<uint32> LTbronnen_capaciteit
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190415_LT_puntbronnen.shp"
@@ -313,28 +313,27 @@ container WarmteBronnen
 			
 		}
 		
-		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/categorie)
+		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/Type)
 		{
 			attribute<categorie> categorie_rel := rlookup(values, categorie/code);
 		}
-		
-		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, LTbronnen_capaciteit) 
+		unit<uint32> bron := LTbronnen_capaciteit 
 		,	DialogType = "Map", DialogData = "point"
 		{
-			attribute<rdc_meter>  point := union_data(., bedrijventerrein/point, glastuinbouw/point, LTbronnen_capaciteit/point);
-			attribute<string>     Label := union_data(., bedrijventerrein/Label, glastuinbouw/Label, LTbronnen_capaciteit/Label);
+			attribute<rdc_meter>  point := LTbronnen_capaciteit/Geometry;
+			attribute<string>     Label := LTbronnen_capaciteit/Label;
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
 			
-			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), LTbronnen_capaciteit/Categorie_rel);
+			attribute<../categorie>  Categorie_rel := LTbronnen_capaciteit/Categorie_rel;
 			
-			attribute<Ratio>   Bron_vol_spec := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
-			attribute<Ratio>   Bron_cap_spec := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
-			attribute<MW>      MWth_max_spec := union_data(., bedrijventerrein/MWth_max  , glastuinbouw/MWth_max  , LTbronnen_capaciteit/MWth_max  );
-			attribute<Celsius> T_bron_spec   := union_data(., bedrijventerrein/T_bron  , glastuinbouw/T_bron  , LTbronnen_capaciteit/T_bron  );
-			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], categorie/MWth_max[categorie_rel]);
-			attribute<Ratio>   Bron_vol := replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, categorie/Bron_vol[categorie_rel]);
-			attribute<Ratio>   Bron_cap := replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, categorie/Bron_cap[categorie_rel]);
-			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], categorie/T_bron[categorie_rel]);
+			attribute<Ratio>   Bron_vol_spec := LTbronnen_capaciteit/bron_vol;
+			attribute<Ratio>   Bron_cap_spec := LTbronnen_capaciteit/bron_cap;
+			attribute<MW>      MWth_max_spec := LTbronnen_capaciteit/MWth_max;
+			attribute<Celsius> T_bron_spec   := LTbronnen_capaciteit/T_bron  ;
+			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], LTwarmte/Categorie/MWth_max[categorie_rel]);
+			attribute<Ratio>   Bron_vol := replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, LTwarmte/categorie/Bron_vol[categorie_rel]);
+			attribute<Ratio>   Bron_cap := replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, LTwarmte/categorie/Bron_cap[categorie_rel]);
+			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], LTwarmte/categorie/T_bron[categorie_rel]);
 			
 			attribute<KW>      P_ow_max  := MWth_max * 1000[KW / MW];			
 						
@@ -343,6 +342,31 @@ container WarmteBronnen
 			
 			attribute<Eur_GJ> K_GJ         := const(0[Eur_GJ], .);
 		}
+// 		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, LTbronnen_capaciteit) 
+// 		,	DialogType = "Map", DialogData = "point"
+// 		{
+// 			attribute<rdc_meter>  point := union_data(., bedrijventerrein/point, glastuinbouw/point, LTbronnen_capaciteit/point);
+// 			attribute<string>     Label := union_data(., bedrijventerrein/Label, glastuinbouw/Label, LTbronnen_capaciteit/Label);
+// 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
+// 			
+// 			attribute<categorie>  Categorie_rel := union_data(., const(0[categorie], bedrijventerrein), const(11[categorie], glastuinbouw), LTbronnen_capaciteit/Categorie_rel);
+// 			
+// 			attribute<Ratio>   Bron_vol_spec := union_data(., bedrijventerrein/bron_vol, glastuinbouw/bron_vol, LTbronnen_capaciteit/bron_vol);
+// 			attribute<Ratio>   Bron_cap_spec := union_data(., bedrijventerrein/bron_cap, glastuinbouw/bron_cap, LTbronnen_capaciteit/bron_cap);
+// 			attribute<MW>      MWth_max_spec := union_data(., bedrijventerrein/MWth_max  , glastuinbouw/MWth_max  , LTbronnen_capaciteit/MWth_max  );
+// 			attribute<Celsius> T_bron_spec   := union_data(., bedrijventerrein/T_bron  , glastuinbouw/T_bron  , LTbronnen_capaciteit/T_bron  );
+// 			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], categorie/MWth_max[categorie_rel]);
+// 			attribute<Ratio>   Bron_vol := replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, categorie/Bron_vol[categorie_rel]);
+// 			attribute<Ratio>   Bron_cap := replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, categorie/Bron_cap[categorie_rel]);
+// 			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], categorie/T_bron[categorie_rel]);
+// 			
+// 			attribute<KW>      P_ow_max  := MWth_max * 1000[KW / MW];			
+// 						
+// 			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
+// 			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
+// 			
+// 			attribute<Eur_GJ> K_GJ         := const(0[Eur_GJ], .);
+// 		}
 	}
 	container OndiepeGeoThermie {
 		unit<uint32> LTA_potentieel

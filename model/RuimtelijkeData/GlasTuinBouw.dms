@@ -23,7 +23,7 @@ container GlasTuinBouw
 		FreeData        = "False"
 	{
 		attribute<rdc_meter> point:
-			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.shp",
+			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219_leeg.shp",
 			StorageReadOnly = "True"
 		{
 			parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";

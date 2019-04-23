@@ -17,7 +17,7 @@ container AanbodOpties
 		unit<uint32> WarmteBronnen := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 		
 		// inlezen bestaande warmtenetten met indicatie van huidige bron en doorkoppelingen
-		unit<uint32> linkset: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/20190119_CBS_bestaande_warmtenetten_2019.csv"
+		unit<uint32> linkset: StorageName = "%SourceDataProjDir%/hulpbestanden/buurt/20190101_CBS_bestaande_warmtenetten_2019.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		,	url             = "%SourceDataProjDir%/hulpbestanden/buurt/20190118_update_bestaande_warmtenetten_FvdM.txt"
