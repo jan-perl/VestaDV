@@ -307,7 +307,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
-	unit<uint8> zichtjaar: nrofrows = 5
+	unit<uint8> zichtjaar: nrofrows = 5 
 	{
 		attribute<units/yr_uint16> Jaar         : [2010, 2020, 2030, 2040, 2050 ];
 		attribute<bool>            HasMutations := Jaar > 2010[units/yr_uint16];
@@ -317,10 +317,14 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
-	unit<uint8> rekenstap: nrofrows = 5
+	
+	// Hier kun je meer of minder rekenstappen per jaar gaan definieren. Pas dan ook de onderstaande attribuutdata aan.
+	// Waarschijnlijk moet de eerste rekenstap wel verwijzen naar het eerste zichtjaar en moeten volgende rekenstappen niet naar eerdere jaren verwijzen.
+	
+	unit<uint8> rekenstap: nrofrows = 5 
 	{
 		attribute<units/yr_uint16> Jaar         : [2010, 2020, 2030, 2040, 2050 ];
-		attribute<zichtjaar>       zichtjaar_rel := rlookup(Jaar, zichtjaar/Jaar);
+		attribute<zichtjaar>       zichtjaar_rel := classify(Jaar, zichtjaar/Jaar);
 		
 		attribute<bool>            HasMutations := Jaar > 2010[units/yr_uint16];
 		// bij label en name kun je eigen rekenstappen opgeven. Deze namen moeten overeen komen met:
@@ -329,8 +333,6 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string>          Label        := string(ID(.))+'_'+string(Jaar);
 		attribute<string>          Name         := id(.) == 0b ? 'StartJaar' : 'R' + Label; 
 		
-//		attribute<string>          period_name  := Name[id(.)-1[.]] + '_' + Name;
-
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
