@@ -76,6 +76,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_30, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 30[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_30 := LtWarmtenet;
 		}
@@ -91,6 +92,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_50, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 50[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_50 := LtWarmtenet;
 		}
@@ -105,6 +107,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_70, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 70[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_70 := LtWarmtenet;
 		}
@@ -119,6 +122,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_30, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 30[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_30 := LtWarmtenet;
 		}
@@ -133,6 +137,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_50, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 50[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_50 := LtWarmtenet;
 		}
@@ -147,9 +152,9 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_70, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 70[Celsius]);
+		container ObjectResults := impl/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_70 := LtWarmtenet;
 		}
 	}
-
 }
