@@ -14,7 +14,7 @@
 container GlasTuinBouw
 {
 	unit<uint32> gltb_180219:
-		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.dbf",
+		StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219_leeg.dbf",
 		DialogData      = "point",
 		DialogType      = "Map",
 		StorageReadOnly = "True",
