@@ -333,7 +333,7 @@ template Resultaten
 	{
 		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
 		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
-		parameter<string> Generate                := 'Ready'
+		parameter<string> GenerateAll             := 'Ready'
 		,	IntegrityCheck    = "All"
 		,	ExplicitSuppliers = "Generate/All"; // Generates All reports.
 	}
