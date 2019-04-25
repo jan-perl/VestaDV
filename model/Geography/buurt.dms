@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 unit<uint32> buurt:
-	StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/20190101_CBS_buurt_2019.dbf",
+	StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/20190425_CBS_buurt_2019.dbf",
 	DialogData      = "geometry",
 	DialogType      = "Map",
 	StorageReadOnly = "True",
@@ -20,7 +20,7 @@ unit<uint32> buurt:
 {
 	attribute<rdc_meter> geometry (poly):
 		label           = "De CBS buurtkaart 2019",
-		StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/20190101_CBS_buurt_2019.shp",
+		StorageName     = "%SourceDataProjDir%/hulpbestanden/buurt/20190425_CBS_buurt_2019.shp",
 		StorageReadOnly = "True";
 
 	attribute<string>    BU_CODE;
@@ -34,6 +34,7 @@ unit<uint32> buurt:
 	// ruimtelijke niveau's nationaal, provincie, gemeente en wijk worden afgeleid uit de buurtkaart
 	attribute<NL>        NL_rel        := const(0[NL],.);
 	attribute<Provincie> Provincie_rel := rlookup(PROV_CODE, Provincie/Values);
+	attribute<Energieregio>	Energieregio_rel	:=	rlookup(ER_NAAM, Energieregio/Values);
 	attribute<Gemeente>  Gemeente_rel  := rlookup(GM_CODE, Gemeente/Values);
 	attribute<Wijk>      Wijk_rel      := rlookup(WK_CODE, Wijk/Values);
 	
