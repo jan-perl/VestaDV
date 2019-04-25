@@ -254,7 +254,7 @@ Template LtWarmtenetImpl
 		//gebiedsbeschrijving broncluster
 		attribute<m>        LengthProxy                     := sum(Feature/LengthProxy, Feature/MST_rel);
 		
-		attribute<.>		BO_Partitioning(UnitedCandidates) :=	Selected/BronCluster_rel[invert(Selected/nr_OrgEntity)];
+		attribute<.>		per_UnitedCandidates(UnitedCandidates) :=	Selected/BronCluster_rel[invert(Selected/nr_OrgEntity)];
 	}
 	
 	container BestaandeWoningData :=
@@ -378,10 +378,9 @@ Template LtWarmtenetImpl
 		attribute<BronCluster> BronCluster_rel := nr_OrgEntity;
 		attribute<RendabelCluster> RendabelCluster_per_BronCluster(BronCluster) := invert(BronCluster_rel);
 		attribute<.> per_bronSrc(bronSrc) := RendabelCluster_per_BronCluster[BronCluster/per_bron[rlookup(bronSrc/Point, bron/Point)]];
+		attribute<.> per_UnitedCandidates(UnitedCandidates) := RendabelCluster_per_BronCluster[BronCluster/per_UnitedCandidates]; // relatie van BebouwingsObjecten naar geselecteerde bron-clusters
 		
-		attribute<Eur_yr> Rentabiliteit := Gebied/Rentabiliteit[nr_OrgEntity];
-		
-		attribute<.> Partitioning(UnitedCandidates) := RendabelCluster_per_BronCluster[BronCluster/BO_Partitioning]; // relatie van BebouwingsObjecten naar geselecteerde bron-clusters
+		attribute<Eur_yr> Rentabiliteit := Gebied/Rentabiliteit[BronCluster_rel];
 		
 		// feature selectie
 		unit<uint32> BronClusterFeature := BronCluster/Feature;
