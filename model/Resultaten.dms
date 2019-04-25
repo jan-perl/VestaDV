@@ -6,7 +6,7 @@
 
 container Resultaten :=
 	for_each_ne(
-		Classifications/zichtjaar/Name
+		Classifications/RekenStap/Name
 		, 'Model/CalculationSchemes/Resultaten('
 			+ quote(Classifications/RekenStap/Name) + ','
 			+ quote(Classifications/Zichtjaar/Name[Classifications/RekenStap/zichtjaar_rel])
@@ -15,14 +15,14 @@ container Resultaten :=
 	, using = "Model"
 {
 	container ProductiePerBron := 
-		for_each_nedv(Classifications/ZichtJaar/period_name
+		for_each_nedv(Classifications/RekenStap/name
 		,	replace(
 				'sum('
 					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
 					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], Kengetallen/WarmteBronnen/MetaData/TypeInfoList/V/Onbekend)'
 				') / 1000000[Units/GJ / Units/PJ]'
-			,	'@RW@', 'TussenResultaten/@YR@/GebiedsAllocatie/RestWarmte'
-			,	'@YR@', Classifications/ZichtJaar/Name
+			,	'@RW@', 'TussenResultaten/@STAP@/GebiedsAllocatie/RestWarmte'
+			,	'@STAP@', Classifications/RekenStap/Name
 			)
 		,	Kengetallen/WarmteBronnen/MetaData/TypeInfoList, Units/PJ_yr
 		);
