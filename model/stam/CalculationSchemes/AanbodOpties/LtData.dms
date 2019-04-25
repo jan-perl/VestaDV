@@ -19,17 +19,6 @@ template LtData
 	container				BeginStatusComponent			:= ='BeginStatus/Bebouwing/'+ComponentNaam;
 	unit<uint32>			BebouwingsObject				:= BCdata/BebouwingsObject;
 
-	container Gebied
-	{
-		//beschrijving van gebiedskenmerken
-		attribute<float64>	n			(BebouwingsObject)	:= value(BCdata/BebouwingsObject/Gebied/n, float64);
-		attribute<float64>	MEAN_x		(BebouwingsObject)	:= BCdata/BebouwingsObject/Gebied/MEAN_x + rnd_uniform(0, BebouwingsObject, Range(float64, -1.0, 1.0));
-		attribute<float64>	MEAN_y		(BebouwingsObject)	:= BCdata/BebouwingsObject/Gebied/MEAN_y + rnd_uniform(0, BebouwingsObject, Range(float64, -1.0, 1.0));
-		attribute<float64>	SSD_xx		(BebouwingsObject)	:= BCdata/BebouwingsObject/Gebied/SSD_xx;
-		attribute<float64>	SSD_xy		(BebouwingsObject)	:= BCdata/BebouwingsObject/Gebied/SSD_xy;
-		attribute<float64>	SSD_yy		(BebouwingsObject)	:= BCdata/BebouwingsObject/Gebied/SSD_yy;
-	}
-
 	//selectie op basis van eisen potentiecontour en minimaal schillabel, indien van toepassing
 	parameter<bool>			UseContour						:= =IsWKO ? '!AanbodKentallen/BuitenContour' : 'false',												Descr = "indien de gebiedsoptie WKO is wordt gebruik gemaakt van een potentiecontour";
 	attribute<bool>			InContour	(BebouwingsObject)	:= =UseContour
@@ -131,6 +120,7 @@ template LtData
 	attribute<bool>		Toegestaan				(BebouwingsObject)	:=	MarginaleAfweging && !WasAllocated,														Descr = "selectie op alle bebouwingsobjecten dioe voldoen aan de gestelde criteria";
 	unit<uint32>		AllowedObjects								:=	Subset(Toegestaan)
 	{
-		attribute<string>	Label									:=	'(' + BCdata/BebouwingsObject/Label[nr_OrgEntity]+')',									Descr = "koppelveld om relatie tussen eerder domein en domein van geselecteerde kandidaten te leggen";
+		attribute<string>	 Label									:=	'(' + BCdata/BebouwingsObject/Label[nr_OrgEntity]+')',									Descr = "koppelveld om relatie tussen eerder domein en domein van geselecteerde kandidaten te leggen";
+		attribute<rdc_meter> Point                                  := BCdata/BebouwingsObject/Point[nr_OrgEntity];
 	}
 }
