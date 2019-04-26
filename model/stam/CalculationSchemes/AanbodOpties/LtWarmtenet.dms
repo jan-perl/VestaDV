@@ -152,7 +152,7 @@ Template LtWarmtenetImpl
 // 		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
 	
 	unit<uint32> BronSrc := BeginStatus/LtWarmte/bron;
-	unit<uint32> BronSelectie := subset(BronSrc/P_ow_max > 0.0 && BronSrc/T_bron >= T_ow && not(BronSrc/Toegewezen))
+	unit<uint32> BronSelectie := subset(BronSrc/P_ow_max > 0.0 && BronSrc/T_bron >= T_ow && not(BronSrc/Toegewezen) && pointrow(BronSrc/Point) > 0d && pointcol(BronSrc/Point) > 0d)
 		,	DialogType = "Map", DialogData = "Point"
 	{
 	
