@@ -303,8 +303,8 @@ container WarmteBronnen
 
 			attribute<string>	naam;
 			attribute<string>	label := naam;
-			attribute<Ratio>	bron_vol;
-			attribute<Ratio>	bron_cap;
+			attribute<Percent>	bron_vol;
+			attribute<Percent>	bron_cap;
 			attribute<Celsius>	T_bron; 
 			attribute<Eur>		Ki_KW_min;
 			attribute<Eur>		Ki_KW_max;
@@ -326,13 +326,13 @@ container WarmteBronnen
 			
 			attribute<../categorie>  Categorie_rel := LTbronnen_capaciteit/Categorie_rel;
 			
-			attribute<Ratio>   Bron_vol_spec := LTbronnen_capaciteit/bron_vol;
-			attribute<Ratio>   Bron_cap_spec := LTbronnen_capaciteit/bron_cap;
+			attribute<Percent> Bron_vol_spec := LTbronnen_capaciteit/bron_vol;
+			attribute<Percent> Bron_cap_spec := LTbronnen_capaciteit/bron_cap;
 			attribute<MW>      MWth_max_spec := LTbronnen_capaciteit/MWth_max;
 			attribute<Celsius> T_bron_spec   := LTbronnen_capaciteit/T_bron  ;
 			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], LTwarmte/Categorie/MWth_max[categorie_rel]);
-			attribute<Ratio>   Bron_vol := (replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, LTwarmte/categorie/Bron_vol[categorie_rel])) / 100d;
-			attribute<Ratio>   Bron_cap := (replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, LTwarmte/categorie/Bron_cap[categorie_rel])) / 100d;
+			attribute<Ratio>   Bron_vol := (replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, LTwarmte/categorie/Bron_vol[categorie_rel])) / 100[Percent];
+			attribute<Ratio>   Bron_cap := (replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, LTwarmte/categorie/Bron_cap[categorie_rel])) / 100[Percent];
 			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], LTwarmte/categorie/T_bron[categorie_rel]);
 			
 			attribute<KW>      P_ow_max  := MWth_max * 1000[KW / MW];			
