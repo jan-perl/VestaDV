@@ -328,6 +328,8 @@ Template LtWarmtenetImpl
 	unit<uint32> Selected := Subset(UnitedCandidates/connect_info/dist <= distance_threshold[UnitedCandidates/BronCluster_rel])
 	,	DialogType = "Map", DialogData = "Point" 
 	{
+		attribute<rdc_meter>        Point                   := UnitedCandidates/Point               [nr_OrgEntity];
+		
 		//attributen benodigd voor bepalen brongerelateerde kosten
 		attribute<BronCluster>		BronCluster_rel			:= UnitedCandidates/BronCluster_rel		[nr_OrgEntity];
 		attribute<EUR_Yr>			Contributiemarge		:= UnitedCandidates/Contributiemarge	[nr_OrgEntity];
@@ -389,6 +391,10 @@ Template LtWarmtenetImpl
 			attribute<BronClusterFeature> BronClusterFeature_rel := nr_OrgEntity;
 			attribute<rdc_meter>    Geometry(arc) := BronClusterFeature/Geometry[BronClusterFeature_rel];
 			attribute<..>           MST_rel  := invert(BronCluster_rel)[BronClusterFeature/MST_rel[BronClusterFeature_rel]];			
+		}
+		
+		unit<uint32> Network := connect_eq(Feature/Geometry, BronCluster_rel[Feature/MST_rel], Selected/Point, selected/BronCluster_rel) {
+			attribute<rdc_meter> UnionData(arc);
 		}
 	}
 	
@@ -464,12 +470,25 @@ Template LtWarmtenetImpl
 					, DialogType = "Map", DialogData = "Geometry"
 					{
 						attribute<rdc_meter> Geometry(arc) := union_data(., PrevClusterSet/Feature/Geometry, RendabelCluster/Feature/Geometry);
-						attribute<..> MST_rel := value(union_data(., PrevClusterSet/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
+						attribute<..> Cluster_rel := value(union_data(., PrevClusterSet/Feature/Cluster_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
 											
-						attribute<Classifications/AanbodOptie> AanbodOptie_rel := CumulativeClusterSet/AanbodOptie_rel[MST_rel];
-						attribute<Classifications/Rekenstap  > Rekenstap_rel   := CumulativeClusterSet/Rekenstap_rel  [MST_rel];
-						attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := CumulativeClusterSet/ZichtJaar_rel  [MST_rel];
+						attribute<Classifications/AanbodOptie> AanbodOptie_rel := CumulativeClusterSet/AanbodOptie_rel[Cluster_rel];
+						attribute<Classifications/Rekenstap  > Rekenstap_rel   := CumulativeClusterSet/Rekenstap_rel  [Cluster_rel];
+						attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := CumulativeClusterSet/ZichtJaar_rel  [Cluster_rel];
 					}
+				}
+				
+				unit<uint32> PrevNetwork := BeginStatus/LtWarmte/bron/CumulativeNetwork;
+				unit<uint32> CumulativeNetwork := union_unit(PrevNetwork, RendabelCluster/Network)
+				, DialogType = "Map", DialogData = "Geometry"
+				{
+					attribute<rdc_meter> Geometry(arc) := union_data(., PrevNetwork/Geometry, RendabelCluster/Network/UnionData);
+					
+//					attribute<..> Cluster_rel := value(union_data(., PrevNetwork/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
+										
+					attribute<Classifications/AanbodOptie> AanbodOptie_rel := union_data(., PrevNetwork/AanbodOptie_rel, const(impl/AanbodOptie_rel, RendabelCluster/Network));
+					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevNetwork/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster/Network));
+					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevNetwork/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), RendabelCluster/Network));
 				}
 			}
 		}

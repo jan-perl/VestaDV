@@ -86,6 +86,17 @@ template TussenResultaten
 						
 					}
 				}
+				unit<uint32> CumulativeNetwork : nrofrows = 0
+				, DialogType = "Map", DialogData = "Geometry"
+				{
+					// TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
+					attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .));
+//					attribute<..> Cluster_rel := value(union_data(., PrevNetwork/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);										
+					// TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
+					attribute<Classifications/AanbodOptie> AanbodOptie_rel := const(0[Classifications/AanbodOptie], .);
+					attribute<Classifications/Rekenstap  > Rekenstap_rel   := const(0[Classifications/Rekenstap], .);
+					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := const(0[Classifications/Zichtjaar], .);
+				}
 				
 			}
 		}

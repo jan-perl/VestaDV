@@ -589,6 +589,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,rgb(255,255,  0) // geel
 		];
 		attribute<uint32> SymbolColor := Color, DialogType = "SymbolColor";
+		attribute<uint32> PenColor := Color, DialogType = "PenColor";
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
