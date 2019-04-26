@@ -395,6 +395,8 @@ Template LtWarmtenetImpl
 		
 		unit<uint32> Network := connect_eq(Feature/Geometry, BronCluster_rel[Feature/MST_rel], Selected/Point, selected/BronCluster_rel) {
 			attribute<rdc_meter> UnionData(arc);
+			attribute<Feature>   nr_OrgEntity;
+			attribute<..>        MST_rel := Feature/MST_rel[nr_OrgEntity];
 		}
 	}
 	
@@ -460,7 +462,7 @@ Template LtWarmtenetImpl
 				{
 					attribute<.> per_bron(..) := MakeDefined(RendabelCluster/per_bronSrc, PrevClusterSet/per_bron);
 					
-					attribute<rdc_meter> Point := mean(center_bound(Feature/Geometry), Feature/MST_rel);
+					attribute<rdc_meter> Point := mean(center_bound(Feature/Geometry), Feature/Cluster_rel);
 										
 					attribute<Classifications/AanbodOptie> AanbodOptie_rel := union_data(., PrevClusterSet/AanbodOptie_rel, const(impl/AanbodOptie_rel, RendabelCluster));
 					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevClusterSet/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster));

@@ -82,7 +82,7 @@ template TussenResultaten
 					unit<uint32> Feature : nrofrows = 0
 					{
 						attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .));
-						attribute<..> MST_rel := const(0, .);
+						attribute<..> Cluster_rel := const(0, .);
 						
 					}
 				}
