@@ -320,7 +320,7 @@ container WarmteBronnen
 		unit<uint32> bron := LTbronnen_capaciteit 
 		,	DialogType = "Map", DialogData = "point"
 		{
-			attribute<rdc_meter>  point := LTbronnen_capaciteit/Geometry;
+			attribute<rdc_meter>  point := LTbronnen_capaciteit/Point;
 			attribute<string>     Label := LTbronnen_capaciteit/Label;
 			attribute<yr_uint16>  ingebruik := const(2020[yr_uint16], .);
 			

@@ -177,7 +177,7 @@ Template LtWarmtenetImpl
 	unit <uint32> bron := Unique(BronSelectie/Point) // dit moet omdat connect_points anders weigert.
 	,	DialogType = "Map",	DialogData = "Point"
 	{
-		attribute<rdc_meter> Point       := Values;
+		attribute<rdc_meter> Point := Values;
 		attribute<.> BronSelectie_rel (BronSelectie) := rlookup(BronSelectie/Point, Values);
 		
 		attribute<string>    Label       := AsItemList(BronSelectie/Label, BronSelectie_rel), DialogType = "LabelText";
@@ -218,7 +218,7 @@ Template LtWarmtenetImpl
 	container LastClusters := LastBronIter/SelectedClusters;
 	
 	//modelbronnen als resultaat van samenvoegen kleine bron
-	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+',LastClusters)'
+	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+',LastClusters)', DialogType = "Map", DialogData = "Point"
 	{
 		// features samenvoegen 
 		unit<uint32> Feature := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Feature')+', LastClusters/Feature)'
@@ -231,6 +231,7 @@ Template LtWarmtenetImpl
 //		attribute<rdc_meter> point := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/point')+', LastClusters/Point)';
 
 		attribute<string>    Label  := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+', LastClusters/Label)';
+		attribute<rdc_meter> Point  := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Point')+', LastClusters/Point)';
 		attribute<.>         per_bron(bron) := ='value(MakeDefined('
 			+asItemList('BronIterations/'+BronIteration/Name+'/Selected/per_bron + BronIteration/CumulNrPrevSelectedObjects['+ string(ID(BronIteration))+']')+', LastClusters/per_bron + sum(BronIteration/NrSelectedObjects)), .)';
 		

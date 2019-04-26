@@ -52,10 +52,11 @@ template LtBronIter
 		attribute<bool> Combi    (Candidates) := Marginaal &&  Cluster; // er moet verder geclusterd worden om aan het minimum te gaan voldoen.
 	}
 
-	unit<uint32> Selected := Subset(Afweging/Select)
+	unit<uint32> Selected := Subset(Afweging/Select), DialogType = "Map", DialogData = "Point"
 	{
 		attribute<Candidates> Candidates_rel := nr_OrgEntity;
 		attribute<string>    Label := Candidates/Label[Candidates_rel], DialogType = "LabelText";
+		attribute<rdc_meter> Point := Candidates/Point[Candidates_rel];
 		
 		attribute<kW>        P_warmte_primair   := Candidates/P_warmte_primair  [Candidates_rel];
 		attribute<kW>        P_Warmte_secundair := Candidates/P_Warmte_secundair[Candidates_rel];
@@ -79,9 +80,11 @@ template LtBronIter
 		}
 	}
 
-	unit<uint32> ClusterSet := Subset(Afweging/Combi)
+	unit<uint32> ClusterSet := Subset(Afweging/Combi), DialogType = "Map", DialogData = "Point"
 	{
 		attribute<Candidates> Candidates_rel := nr_OrgEntity;
+		attribute<string>    Label := Candidates/Label[Candidates_rel], DialogType = "LabelText";
+		attribute<rdc_meter> Point := Candidates/Point[Candidates_rel];
 		
 		// feature selectie
 		unit<uint32> CandiFeature := Candidates/Feature;
@@ -123,7 +126,7 @@ template LtBronIter
 		attribute<bool>       NotInCluster := Not(InCluster);
 	}
 
-	unit <uint32> JoinedClusters := Subset(ClusterSet/CanCluster)
+	unit <uint32> JoinedClusters := Subset(ClusterSet/CanCluster), DialogType = "Map", DialogData = "Point"
 	{
 		attribute<ClusterSet> cluster1_rel := nr_OrgEntity;
 		attribute<ClusterSet> cluster2_rel := ClusterSet/Near_rel[cluster1_rel];
@@ -133,7 +136,9 @@ template LtBronIter
 
 		attribute<.> per_bron (bron) := MakeDefined(invert(src1)[Candidates/per_bron], invert(src2)[Candidates/per_bron]);
 
-		attribute<string> Label       := '['+Candidates/Label  [src1] + ';' + Candidates/Label[src2]+']', DialogType = "LabelText";
+		attribute<string>    Label       := '['+Candidates/Label  [src1] + ';' + Candidates/Label[src2]+']', DialogType = "LabelText";
+		attribute<rdc_meter> Point       := MEAN(center_bound(Feature/Geometry), Feature/MST_rel);
+		
 		attribute<kW>     P_warmte_primair   := Candidates/P_warmte_primair   [src1] + Candidates/P_warmte_primair   [src2];
 		attribute<kW>     P_Warmte_secundair := Candidates/P_Warmte_secundair   [src1] + Candidates/P_Warmte_secundair   [src2];
 		attribute<Ratio>  Weight             := Candidates/Weight   [src1] + Candidates/Weight   [src2];
@@ -143,10 +148,6 @@ template LtBronIter
 		attribute<Eur_kW> Ki_kW_max_weighted := Candidates/Ki_kW_max_weighted[src1] + Candidates/Ki_kW_max_weighted   [src2];
 		attribute<Eur_GJ> K_GJ_weighted      := Candidates/K_GJ_weighted     [src1] + Candidates/K_GJ_weighted   [src2];
 
-		attribute<float64> n1         := Candidates/n[src1];
-		attribute<float64> n2         := Candidates/n[src2];
-		attribute<float64> n          := n1 + n2;
-		
 		// feature selectie
 		unit<uint32> CandiFeatures := Candidates/Feature;
 		unit<uint32> Features1 := subset(IsDefined(invert(src1)[CandiFeatures/MST_rel]));
@@ -170,11 +171,11 @@ template LtBronIter
 				CandiFeatures/Geometry[Features2/nr_OrgEntity], 
 				connection
 			);
-			attribute<..> MST_rel  := union_data(., 
+			attribute<..> MST_rel  := value(union_data(., 
 				CandiFeatures/MST_rel[Features1/nr_OrgEntity], 
 				CandiFeatures/MST_rel[Features2/nr_OrgEntity], 
 				ID(..)
-			);
+			), ..);
 		}
 	}
 
@@ -183,7 +184,9 @@ template LtBronIter
 		attribute<Candidates> Candidates_rel := ClusterSet/Candidates_rel[nr_OrgEntity];
 		attribute<.>          per_bron (bron) := invert(Candidates_rel)[Candidates/per_bron];
 		
-		attribute<string>  Label := Candidates/Label[Candidates_rel], DialogType = "LabelText";
+		attribute<string>    Label := Candidates/Label[Candidates_rel], DialogType = "LabelText";
+		attribute<rdc_meter> Point := Candidates/Point[Candidates_rel];
+		
 		attribute<kW>      P_warmte_primair   := Candidates/P_warmte_primair  [Candidates_rel];
 		attribute<kW>      P_Warmte_secundair := Candidates/P_Warmte_secundair[Candidates_rel];
 		attribute<Ratio>   Weight             := Candidates/Weight            [Candidates_rel];
@@ -207,6 +210,7 @@ template LtBronIter
 	unit <uint32> SelectedClusters := union_unit(InheritedClusters, JoinedClusters), DialogType = "Map", DialogData = "Point"
 	{
 		attribute<string>  Label              := union_data(., InheritedClusters/Label             , JoinedClusters/Label), DialogType = "LabelText";
+		attribute<rdc_meter> Point            := union_data(., InheritedClusters/Point             , JoinedClusters/Point);
 		attribute<kW>      P_warmte_primair   := union_data(., InheritedClusters/P_warmte_primair  , JoinedClusters/P_warmte_primair);
 		attribute<kW>      P_Warmte_secundair := union_data(., InheritedClusters/P_Warmte_secundair, JoinedClusters/P_Warmte_secundair);
 		attribute<Ratio>   Weight             := union_data(., InheritedClusters/Weight            , JoinedClusters/Weight);
@@ -229,7 +233,7 @@ template LtBronIter
 		, DialogType = "Map", DialogData = "Geometry"
 		{
 			attribute<rdc_meter>    Geometry(arc) := union_data(., InheritedClusters/Feature/Geometry, JoinedClusters/Feature/Geometry);
-			attribute<..> MST_rel  := union_data(., value(InheritedClusters/Feature/MST_rel, ..), value(JoinedClusters/Feature/MST_rel + #InheritedClusters/Feature, ..));
+			attribute<..> MST_rel  := value(union_data(., InheritedClusters/Feature/MST_rel, JoinedClusters/Feature/MST_rel + #InheritedClusters/Feature), ..);
 		}
 	}
 }
