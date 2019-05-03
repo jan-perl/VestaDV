@@ -67,6 +67,9 @@ template AllocatieComponent
 		attribute<GJ_yr> CvPomp        (BebouwingsObject) := BCdata/Functioneel/PompEnergie * (Aandelen/AardGasExclMicroWKK - VraagKentallen/hWP/DekkingsGraad * Aandelen/hWP);
 		attribute<GJ_yr> Koude         (BebouwingsObject) := BCdata/DragerOpties/Koude/Elektriciteit * (1.0 - Aandelen/WKO); // Efficiency/Koude/Elektriciteit is al toegepast in de DragerOptie; WKO en Koude alleen beiden aan bij NieuwbouwUtil
 
+		attribute<GJ_yr>	WarmteMT		(BebouwingsObject)	:= RestWarmte+GeoThermie+WijkWKK+BioWKK,		Descr = "totale volumevraag naar warmte uit gebiedsopties 70 graden of hoger";
+		attribute<GJ_yr>	Warmtetotaal	(BebouwingsObject)	:= eWP + hWP + Aardgas + GebiedsOptie,			Descr = "totale volumevraag warmte uit gebiedsopties en individuele opwek";
+		
 		attribute<GJ_yr> Elektriciteit (BebouwingsObject) :=
 			  BCdata/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
 			+ CvPomp + Koude + eWP + EWV + hWP 
