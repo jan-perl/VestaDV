@@ -200,15 +200,9 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 
 		attribute<uint8>                                  nr_verdiepingen             := rjoin(pand_id, import/pand/identificatie, import/pand/nr_verdiepingen);
 		
-		container labelsprong_opgelegd
-		{
-			attribute<string> J2010 (..) := const(string(0 / 0), vbo_woonfunctie);// voor 2010 geen sprongen geconfigureerd
-
-			attribute<string> J2020 (..) := rjoin(identificatie, energielabel/opgelegd/identificatie, energielabel/opgelegd/J2020);
-			attribute<string> J2030 (..) := rjoin(identificatie, energielabel/opgelegd/identificatie, energielabel/opgelegd/J2030);
-			attribute<string> J2040 (..) := rjoin(identificatie, energielabel/opgelegd/identificatie, energielabel/opgelegd/J2040);
-			attribute<string> J2050 (..) := rjoin(identificatie, energielabel/opgelegd/identificatie, energielabel/opgelegd/J2050);
-		}
+		container labelsprong_opgelegd := for_each_nedv(classifications/zichtjaar/name
+		,	'rjoin(identificatie, energielabel/opgelegd/identificatie, energielabel/opgelegd/'+classifications/zichtjaar/name+')'
+		,	., string);
 	}
 	
 	unit<uint32> vbo_woonfunctie_export := Subset(

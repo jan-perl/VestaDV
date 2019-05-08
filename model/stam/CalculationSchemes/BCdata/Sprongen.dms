@@ -373,7 +373,7 @@ container Sprongen
 
 	attribute<Classifications/LabelSprong> LabelSprong_opgelegd (BebouwingsObject) := 
 		= BCname = 'BestaandeWoning'
-			? 'rlookup(Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/labelsprong_opgelegd/J' + string(RunJaar) +', Classifications/LabelSprong/code)'
+			? 'rlookup(Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/labelsprong_opgelegd/' + classifications/zichtjaar/name[zichtjaar_rel] +', Classifications/LabelSprong/code)'
 			: 'const(0 / 0, BebouwingsObject, Classifications/LabelSprong)';
 	
 	attribute<Classifications/LabelSprong> LabelSprong_rendabel (BebouwingsObject) :=
