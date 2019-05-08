@@ -9,13 +9,11 @@ container Maatschappelijk: Source = "FO v7a C6"
 	container impl: IsHidden = "true"
 	{
 		attribute<String> BronExpr(Classifications/AanbodOptie) :=
-			union_data(Classifications/AanbodOptie,
-				'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
-				'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
-				'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
-				'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
-				'(StateNaAllocatie/WKO/Ki_Totaal *NCW/mr28/AnnualisationFactor + StateNaAllocatie/WKO/Km_Totaal)'
-			);
+				+replace(
+					Classifications/AanbodOptie/IsPlanregioOptie
+					? 'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)'
+					: 'StateNaAllocatie/@RO@/Ki_Totaal * NCW/mr28/AnnualisationFactor + StateNaAllocatie/@RO@/Km_Totaal'
+				, '@RO@', Classifications/AanbodOptie/Name);
 	}
 
 	container gebouwen
