@@ -65,7 +65,7 @@ template RestWarmteIteratie
 		attribute<Eur_yr> Oji_Netto       (PlanRegio) := KostenBaten/Oji_NettoD- Kj_owpt;
 
 		attribute<Eur_yr> Oj_SDE          (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfoList_rel], 0[Eur_GJ]);
-		attribute<Eur_MW_yr> Mr           (PlanRegio) := (Oj_Netto + Oj_SDE - Kj_KL_ptow) / KostenBaten/CapaciteitsVraagD; // contribution  margin per consumed MW capacity
+		attribute<Eur_MW_yr> Mr           (PlanRegio) := (Oji_Netto + Oj_SDE - Kj_KL_ptow) / KostenBaten/CapaciteitsVraagD; // contribution  margin per consumed MW capacity
 	}
 	attribute<Eur_MW_yr>  Ranking         (PlanRegio) := Assignment/Mr// ranking niet op prijs per GJ maar op opbrengsten per MW capaciteit, itt FO v7a $7.
 		* float64(KostenBaten/CapaciteitsVraagD <= MWth_capaciteit[Assignment/Bronnen_rel]) // itt FO v7a $7.: te grote gebieden worden overgeslagen zodat kleinere gebieden toch aan de bEurt kunnen komen.
