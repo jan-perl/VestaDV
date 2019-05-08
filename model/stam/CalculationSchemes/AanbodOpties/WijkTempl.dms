@@ -58,16 +58,16 @@ template WijkTempl
 	attribute<Eur_yr> Ke_Totaal  (PlanRegio) := Kosten/Ke_Totaal;
 	
 	attribute<Eur_yr> Km_Totaal  (PlanRegio) := KostenBaten/Km_TotaalD + Kosten/Km_Totaal;
-	attribute<Eur_yr> Oj_Netto   (PlanRegio) := KostenBaten/Oj_NettoD  - Kosten/Kj_Totaal;
+	attribute<Eur_yr> Oji_Netto  (PlanRegio) := KostenBaten/Oji_NettoD - Kosten/Kj_Totaal;
 	attribute<kg_yr>  CO2_Primair(PlanRegio) := KostenBaten/Vj_WarmtePrimairD * Kosten/CO2_GJ;
 	attribute<GJ_yr>  GJe_Totaal (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * TypeInfo/RekenType/Factoren/Elektriciteit;
 	attribute<kg_yr>  CO2_e      (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * Kosten/CO2e_GJ;
 	attribute<kg_yr>  CO2        (PlanRegio) := KostenBaten/CO2_BijstookD + CO2_Primair;
 	
-	attribute<Eur_yr> Oj_Yield   (PlanRegio) :=  Oj_Netto - Kosten/Ki_Netto * NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel]);
+	attribute<Eur_yr> Oji_Yield  (PlanRegio) :=  Oji_Netto - Kosten/Ki_Netto * NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel]);
 
 	attribute<GJ_yr>  Vj_Warmte  (PlanRegio) := max_elem(KostenBaten/Vj_WarmtePrimairD, 0.001[GJ_yr]);
-	attribute<Eur_GJ> YieldPerGJ (PlanRegio) := Oj_Yield / Vj_Warmte + SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
+	attribute<Eur_GJ> YieldPerGJ (PlanRegio) := Oji_Yield / Vj_Warmte + SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	parameter<Eur_GJ> Threshold := -nth_element_weighted( -YieldPerGJ  * Float64(not(OldGebruik)), MaxTotalDemand * 1000000[GJ / PJ], Vj_Warmte);
 	
 	attribute<Bool> RentabiliteitsAfweging (PlanRegio) := YieldPerGJ > max_elem(Threshold, 0[Eur_GJ]);

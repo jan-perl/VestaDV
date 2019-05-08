@@ -168,20 +168,20 @@ container Payments: FreeData = "False" // DEBUG
 				)
 			{
 				attribute<string>    name      (RowSet) := RowSet/name;
-				attribute<MQuantity> Oj_Totaal (RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
-				attribute<MQuantity> Kj_Totaal (RowSet) := ='union_data(RowSet, '+AsItemList('sum(max_elem(Table/'+RowSet/Name+', 0[MQuantity]))')+')';
-				attribute<MQuantity> Oj_Netto  (RowSet) := (1.0 / 1000000.0) * float64(int64(0.5 + 1000000.0*(Oj_Totaal - Kj_Totaal)));
+				attribute<MQuantity> Oji_Totaal(RowSet) := ='add('+AsItemList('max_elem('+ColSet/Name+', 0[MQuantity])')+')';
+				attribute<MQuantity> Kji_Totaal(RowSet) := ='union_data(RowSet, '+AsItemList('sum(max_elem(Table/'+RowSet/Name+', 0[MQuantity]))')+')';
+				attribute<MQuantity> Oji_Netto (RowSet) := (1.0 / 1000000.0) * float64(int64(0.5 + 1000000.0*(Oji_Totaal - Kji_Totaal)));
 			}
 			attribute<string>        rows      (RowSet) := ='add('+AsItemList(quote(';')+'+string(Table/'+ColSet/Name+')')+')';
 
 			parameter<string> csv := 
-				'name;Oj_Totaal;Kj_Totaal;Oj_Netto;'+AsList(ColSet/Name,';')+'\n'+
+				'name;Oji_Totaal;Kji_Totaal;Oji_Netto;'+AsList(ColSet/Name,';')+'\n'+
 				'[text];[MEur/Yr];[MEur/Yr];[MEur/Yr];'+AsList(const('[MEur/Yr]', ColSet),';')+'\n'
-				+ AsList(RowSet/name+';'+string(table/Oj_Totaal)+';'+string(table/Kj_Totaal)+';'+string(table/Oj_Netto)+rows+'\n', '')
+				+ AsList(RowSet/name+';'+string(table/Oji_Totaal)+';'+string(table/Kji_Totaal)+';'+string(table/Oji_Netto)+rows+'\n', '')
 			,	StorageType = "str"
 			,	StorageName = "=OutputSubFolder+'/Matrix.csv'";
 		}
-		attribute<MQuantity> mut_overview   (impl/Active_Actor) := matrix/table/Oj_Netto;
+		attribute<MQuantity> mut_overview   (impl/Active_Actor) := matrix/table/Oji_Netto;
 
 		attribute<string>    mut_herkomst   (impl/Active_Actor) := mut_overview > 0[MQuantity] ? string( mut_overview) : '';
 		attribute<string>    mut_bestemming (impl/Active_Actor) := mut_overview < 0[MQuantity] ? string(-mut_overview) : '';

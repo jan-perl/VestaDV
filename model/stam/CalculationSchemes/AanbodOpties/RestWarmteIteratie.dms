@@ -62,7 +62,7 @@ template RestWarmteIteratie
 		attribute<Eur_yr> Km_ow           (PlanRegio) := Km_WarmteWaarde + Kj_ow_onderhoud + Kj_ow_admin;
 
 		attribute<Eur_yr> Kj_owpt         (PlanRegio) := Kj_ow + Kj_pt;
-		attribute<Eur_yr> Oj_Netto        (PlanRegio) := KostenBaten/Oj_NettoD- Kj_owpt;
+		attribute<Eur_yr> Oji_Netto       (PlanRegio) := KostenBaten/Oji_NettoD- Kj_owpt;
 
 		attribute<Eur_yr> Oj_SDE          (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfoList_rel], 0[Eur_GJ]);
 		attribute<Eur_MW_yr> Mr           (PlanRegio) := (Oj_Netto + Oj_SDE - Kj_KL_ptow) / KostenBaten/CapaciteitsVraagD; // contribution  margin per consumed MW capacity

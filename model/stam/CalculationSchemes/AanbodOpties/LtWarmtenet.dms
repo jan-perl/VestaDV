@@ -542,7 +542,7 @@ Template LtWarmtenetImpl
 			attribute<Eur>		Si_T		(PlanRegio)		:= Si_ow + Si_wd + Si_id + Si_ge,	Descr = "totale initiele subsidie";
 								
 			attribute<Eur>		Ki_Totaal	(PlanRegio)		:= Ki_id + Ki_ge + Ki_ow + Ki_wd,	Descr = "totale initiele investering";
-			attribute<Eur_yr>	Km_Totaal	(PlanRegio)		:= Km_ow_e + Kj_ow_o + NCW/mr28/AnnualisationFactor * Ki_Totaal - Om_ComfortT;
+			attribute<Eur_yr>	Kmi_Totaal	(PlanRegio)		:= Km_ow_e + Kj_ow_o + NCW/mr28/AnnualisationFactor * Ki_Totaal - Om_ComfortT;
 
 			//netto investeringskosten
 			attribute<Eur>		Ki_ow_Netto	(PlanRegio)		:= Ki_ow - Si_ow,	Descr = "netto investering opwekking na aftrek investeringssubsidie";
@@ -563,17 +563,17 @@ Template LtWarmtenetImpl
 			attribute<Eur_yr>	Sme			(PlanRegio)		:= Sm + Se_ow + Se_wd + Se_id + Se_ge;
 
 			//netto kapitaallasten na aftrek subsidies
-			attribute<Eur_yr>	Kj_ge_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge		')+')',		Descr = "";
-			attribute<Eur_yr>	Kj_id_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id		')+')',		Descr = "";
-			attribute<Eur_yr>	Kj_wd_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_wd		')+')',		Descr = "";
-			attribute<Eur_yr>	Kj_ow_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow		')+')',		Descr = "";
-			attribute<Eur_yr>	Kj_netto	(PlanRegio)		:= Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
+			attribute<Eur_yr>	Kji_ge_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge		')+')',		Descr = "";
+			attribute<Eur_yr>	Kji_id_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id		')+')',		Descr = "";
+			attribute<Eur_yr>	Kji_wd_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_wd		')+')',		Descr = "";
+			attribute<Eur_yr>	Kji_ow_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow		')+')',		Descr = "";
+			attribute<Eur_yr>	Kji_netto	(PlanRegio)		:= Kji_ge_netto + Kji_id_netto + Kji_wd_netto + Kji_ow_netto;
 			
 			attribute<Eur>		Oi_AanslT	(PlanRegio)		:= ='add('+AsItemList('Oi_Aansl/'+LT_Component/Name)+')';
 			attribute<Eur_yr>	Oj_VerbrT	(PlanRegio)		:= ='add('+AsItemList('Oj_Verbruik/'+LT_Component/Name)+')';
 			attribute<Eur_yr>	Oj_VastrT	(PlanRegio)		:= ='add('+AsItemList('Oj_Vastrecht/'+LT_Component/Name)+')';
 			attribute<Eur_yr>	Om_ComfortT	(PlanRegio)		:= ='add('+AsItemList('Om_Comfort/'+LT_Component/Name)+')';
-			attribute<Eur_yr>	Oj_totaal	(PlanRegio)		:= Oj_VerbrT + Oj_VastrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+			attribute<Eur_yr>	Oji_totaal	(PlanRegio)		:= Oj_VerbrT + Oj_VastrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 
 			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
 			attribute<Eur_yr> KCO2_ow_e   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+LT_Component/Name+'/PR/KCO2_ow_e')+')';

@@ -26,39 +26,39 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 	}
 	container Flow := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Flow'
 	{
-		attribute<Eur_yr> Kj_ge_KL        (PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
-		attribute<Eur_yr> Kj_id_KL        (PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
-		attribute<Eur_yr> Kj_wd_KL        (PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
-		attribute<Eur_yr> Kj_pt_KL        (PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
-		attribute<Eur_yr> Kj_ow_KL        (PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
+		attribute<Eur_yr> Kji_ge_KL       (PlanRegio) := Stock/Ki_ge * NCW/bw28/AnnualisationFactor;
+		attribute<Eur_yr> Kji_id_KL       (PlanRegio) := Stock/Ki_id * NCW/id28/AnnualisationFactor;
+		attribute<Eur_yr> Kji_wd_KL       (PlanRegio) := Stock/Ki_wd * NCW/wd28/AnnualisationFactor;
+		attribute<Eur_yr> Kji_pt_KL       (PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
+		attribute<Eur_yr> Kji_ow_KL       (PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
 
 		attribute<Eur_yr> Kj_KL           (PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
 
-		attribute<Eur_yr> Km_ge_KL        (PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
-		attribute<Eur_yr> Km_id_KL        (PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
-		attribute<Eur_yr> Km_wd_KL        (PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
-		attribute<Eur_yr> Km_pt_KL        (PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
-		attribute<Eur_yr> Km_ow_KL        (PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_ge_KL       (PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_id_KL       (PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_wd_KL       (PlanRegio) := Stock/Ki_wd * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_pt_KL       (PlanRegio) := Stock/Ki_pt * NCW/mr28/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_ow_KL       (PlanRegio) := Stock/Ki_ow * NCW/mr28/AnnualisationFactor;
 
-		attribute<Eur_yr> Km_KL           (PlanRegio) := Km_ge_KL + Km_id_KL + Km_wd_KL + Km_pt_KL + Km_ow_KL;
+		attribute<Eur_yr> Kmi_KL          (PlanRegio) := Kmi_ge_KL + Kmi_id_KL + Kmi_wd_KL + Kmi_pt_KL + Kmi_ow_KL;
 
 		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * float64(GebiedsOptie);
 
 		attribute<Eur_yr> Kj_id_onderhoud (PlanRegio) := KostenBaten/KostenD/Kj_id_Onderhoud * float64(GebiedsOptie);
 
-		attribute<Eur_yr> Kj_ge_Total     (PlanRegio) := Kj_ge_KL + Kj_ge_hv;
-		attribute<Eur_yr> Km_ge_Total     (PlanRegio) := Km_ge_KL + Kj_ge_hv;
+		attribute<Eur_yr> Kji_ge_Total    (PlanRegio) := Kji_ge_KL + Kj_ge_hv;
+		attribute<Eur_yr> Kmi_ge_Total    (PlanRegio) := Kmi_ge_KL + Kj_ge_hv;
 		attribute<Eur_yr> Oe_ge_subsidie  (PlanRegio) := KostenBaten/Oe_ge_subsidie * float64(GebiedsOptie);
 		attribute<Eur_yr> Oj_ge_subsidie  (PlanRegio) := Stock/Oi_ge_subsidie * NCW/bw28/AnnualisationFactor + Oe_ge_subsidie;
-		attribute<Eur_yr> Om_ge_subsidie  (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
-		attribute<Eur_yr> Kj_ge_Netto     (PlanRegio) := Kj_ge_Total - Oj_ge_subsidie;
+//		attribute<Eur_yr> Om_ge_subsidie  (PlanRegio) := Stock/Oi_ge_subsidie * NCW/mr28/AnnualisationFactor + Oe_ge_subsidie;
+		attribute<Eur_yr> Kji_ge_Netto    (PlanRegio) := Kji_ge_Total - Oj_ge_subsidie;
 
-		attribute<Eur_yr> Kj_id_Total     (PlanRegio) := Kj_id_KL + Kj_id_onderhoud;
-		attribute<Eur_yr> Km_id_Total     (PlanRegio) := Km_id_KL + Kj_id_onderhoud;
+		attribute<Eur_yr> Kji_id_Total    (PlanRegio) := Kji_id_KL + Kj_id_onderhoud;
+		attribute<Eur_yr> Kmi_id_Total    (PlanRegio) := Kmi_id_KL + Kj_id_onderhoud;
 		attribute<Eur_yr> Oe_id_subsidie  (PlanRegio) := KostenBaten/Oe_id_subsidie * float64(GebiedsOptie);
 		attribute<Eur_yr> Oj_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
-		attribute<Eur_yr> Om_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
-		attribute<Eur_yr> Kj_id_Netto     (PlanRegio) := Kj_id_Total - Oj_id_subsidie;
+//		attribute<Eur_yr> Om_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
+		attribute<Eur_yr> Kji_id_Netto    (PlanRegio) := Kji_id_Total - Oj_id_subsidie;
 
 		attribute<Eur_yr>	Kj_wd_onderhoud		(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_Onderhoud							* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor onderhoud aan het wijkdistributienet";
 		attribute<Eur_yr>	Kj_wd_admin			(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_Admin								* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor administratie ten behoeve van het wijkdistributienet";
@@ -70,36 +70,31 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 		attribute<Eur_yr>	Oe_wd_subsidie		(PlanRegio)		:= KostenBaten/Oe_wd_subsidie									* float64(GebiedsOptie),		Descr = "jaarlijkse opbrengsten voor wijkdistributie uit exploitatiesubsidies";
 		attribute<Eur_yr>	Oj_totaal			(PlanRegio)		:= KostenBaten/Opbrengsten/JaarlijksD/Oj_Totaal					* float64(GebiedsOptie),		Descr = "totale jaarlijkse opbrengsten uit warmtelevering aan deze planregio (buurt)";
 
-		attribute<Eur_yr>	Kj_wd_Total			(PlanRegio)		:= Kj_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik,					Descr = "totale jaarlijkse eindgebruikerskosten voor wijkdistributie inclusief kapitaallasten";
-		attribute<Eur_yr>	Km_wd_Total			(PlanRegio)		:= Km_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik,									Descr = "totale jaarlijkse maatschappelijke kosten voor wijkdistributie inslusief kapitaallasten";
-		attribute<Eur_yr>	Oj_wd_subsidie		(PlanRegio)		:= Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie,						Descr = "geannualiseerde jaarlijkse opbrengsten uit investeringssubsidies voor wijkdistributie";
-		attribute<Eur_yr>	Om_wd_subsidie		(PlanRegio)		:= Stock/Oi_wd_subsidie * NCW/mr28/AnnualisationFactor + Oe_wd_subsidie,						Descr = "maatschappelijk geannualiseerde jaarlijkse opbrengsten uit investeringssubsidies voor wijkdistributie";
-		attribute<Eur_yr>	Kj_wd_Netto			(PlanRegio)		:= Kj_wd_Total - Oj_wd_subsidie,																Descr = "jaarlijkse nettokosten voor wijkdistributie na verrekening van subsidies";
+		attribute<Eur_yr>	Kji_wd_Total	    (PlanRegio)		:= Kji_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Kj_wd_precario + Kj_wd_verbruik,					Descr = "totale jaarlijkse eindgebruikerskosten voor wijkdistributie inclusief kapitaallasten";
+		attribute<Eur_yr>	Kmi_wd_Total		(PlanRegio)		:= Kmi_wd_KL + Kj_wd_onderhoud + Kj_wd_admin + Km_wd_verbruik,									Descr = "totale jaarlijkse maatschappelijke kosten voor wijkdistributie inslusief kapitaallasten";
+		attribute<Eur_yr>	Oji_wd_subsidie		(PlanRegio)		:= Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie,						Descr = "geannualiseerde jaarlijkse opbrengsten uit investeringssubsidies voor wijkdistributie";
+		attribute<Eur_yr>	Kji_wd_Netto		(PlanRegio)		:= Kji_wd_Total - Oji_wd_subsidie,																Descr = "jaarlijkse nettokosten voor wijkdistributie na verrekening van subsidies";
 
-		attribute<Eur_yr>	Kj_pt_Total			(PlanRegio)		:= (Kj_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario)	* float64(GebiedsOptie),		Descr = "";
-		attribute<Eur_yr>	Km_pt_Total			(PlanRegio)		:= (Km_pt_KL + Kj_pt_onderhoud + Kj_pt_admin)					* float64(GebiedsOptie),		Descr = "";
+		attribute<Eur_yr>	Kji_pt_Total		(PlanRegio)		:= (Kji_pt_KL + Kj_pt_onderhoud + Kj_pt_admin + Kj_pt_precario)	* float64(GebiedsOptie),		Descr = "";
+		attribute<Eur_yr>	Kmi_pt_Total		(PlanRegio)		:= (Kmi_pt_KL + Kj_pt_onderhoud + Kj_pt_admin)					* float64(GebiedsOptie),		Descr = "";
 		attribute<Eur_yr>	Oe_pt_subsidie		(PlanRegio)		:= (Stock/Ki_pt - Stock/Oi_pt_subsidie) * NCW/pt28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/pt,		Descr = "";
-		attribute<Eur_yr>	Oj_pt_subsidie		(PlanRegio)		:= Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie,						Descr = "";
-		attribute<Eur_yr>	Om_pt_subsidie		(PlanRegio)		:= Stock/Oi_pt_subsidie * NCW/mr28/AnnualisationFactor + Oe_pt_subsidie,						Descr = "";
-		attribute<Eur_yr>	Kj_pt_Netto			(PlanRegio)		:= Kj_pt_Total - Oj_pt_subsidie,																Descr = "";
+		attribute<Eur_yr>	Oji_pt_subsidie		(PlanRegio)		:= Stock/Oi_pt_subsidie * NCW/wd28/AnnualisationFactor + Oe_pt_subsidie,						Descr = "";
+		attribute<Eur_yr>	Kji_pt_Netto		(PlanRegio)		:= Kji_pt_Total - Oji_pt_subsidie,																Descr = "";
 
-		attribute<Eur_yr>	Kj_ow_Total			(PlanRegio)		:= (Kj_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik)	* float64(GebiedsOptie),		Descr = "";
-		attribute<Eur_yr>	Km_ow_Total			(PlanRegio)		:= (Km_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik)	* float64(GebiedsOptie),		Descr = "";
+		attribute<Eur_yr>	Kji_ow_Total		(PlanRegio)		:= (Kji_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Kj_ow_verbruik)	* float64(GebiedsOptie),		Descr = "";
+		attribute<Eur_yr>	Kmi_ow_Total		(PlanRegio)		:= (Kmi_ow_KL + Kj_ow_onderhoud + Kj_ow_admin + Km_ow_verbruik)	* float64(GebiedsOptie),		Descr = "";
 		attribute<Eur_yr>	Oe_ow_subsidie		(PlanRegio)		:= Stock/Oe_ow_subsidie * NCW/ow28/AnnualisationFactor + Oj_SDE,								Descr = "";
-		attribute<Eur_yr>	Oj_ow_subsidie		(PlanRegio)		:= Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie,						Descr = "";
-		attribute<Eur_yr>	Om_ow_subsidie		(PlanRegio)		:= Stock/Oi_ow_subsidie * NCW/mr28/AnnualisationFactor + Oe_ow_subsidie,						Descr = "";
-		attribute<Eur_yr>	Kj_ow_Netto			(PlanRegio)		:= Kj_ow_Total - Oj_ow_subsidie;
+		attribute<Eur_yr>	Oji_ow_subsidie		(PlanRegio)		:= Stock/Oi_ow_subsidie * NCW/wd28/AnnualisationFactor + Oe_ow_subsidie,						Descr = "";
+		attribute<Eur_yr>	Kji_ow_Netto		(PlanRegio)		:= Kji_ow_Total - Oji_ow_subsidie;
 
 		attribute<Eur_yr>	Kj_lv_admin			(PlanRegio)		:= KostenBaten/KostenD/Kj_lv_Admin								* float64(GebiedsOptie),		Descr = "";
 		
-		attribute<Eur_yr>	Kj_Total			(PlanRegio)		:= Kj_ge_Total + Kj_id_Total + Kj_wd_Total + Kj_pt_Total + Kj_ow_Total + Kj_lv_admin,			Descr = "";
-		attribute<Eur_yr>	Km_Total			(PlanRegio)		:= Km_ge_Total +Km_id_Total + Km_wd_Total + Km_pt_Total + Km_ow_Total + Kj_lv_admin,			Descr = "";
+		attribute<Eur_yr>	Kji_Total			(PlanRegio)		:= Kji_ge_Total + Kji_id_Total + Kji_wd_Total + Kji_pt_Total + Kji_ow_Total + Kj_lv_admin,		Descr = "";
+		attribute<Eur_yr>	Kmi_Total			(PlanRegio)		:= Kmi_ge_Total + Kmi_id_Total + Kmi_wd_Total + Kmi_pt_Total + Kmi_ow_Total + Kj_lv_admin,		Descr = "";
 		attribute<Eur_yr>	Kj_Precario			(PlanRegio)		:= Kj_wd_precario + Kj_pt_precario,																Descr = "";
 
 		attribute<Eur_yr>	Kj_lopendekosten	(PlanRegio)		:= Kj_ge_hv + Kj_id_onderhoud + Kj_wd_Onderhoud + Kj_wd_Admin + Kj_pt_admin + Kj_pt_onderhoud + Kj_ow_onderhoud + Kj_ow_admin + Kj_lv_Admin,	Descr = "jaarlijkse lopende kosten niet variabel";
-		attribute<Eur_yr>	Oj_subsidie			(PlanRegio)		:= Oj_id_subsidie + Oj_wd_subsidie + Oj_pt_subsidie + Oj_ow_subsidie,							Descr = "eindverbruiker-geannualiseerde jaarlijkse opbrengsten uit subsidie";
-		attribute<Eur_yr>	Om_subsidie			(PlanRegio)		:= Om_id_subsidie + Om_wd_subsidie + Om_pt_subsidie + Om_ow_subsidie,							Descr = "maatschappelijk geannualiseerde jaarlijkse opbrengsten uit subsidie";
-		attribute<Eur_yr>	Kj_Netto			(PlanRegio)		:= Kj_Total - Oj_subsidie,																		Descr = "jaarlijkse netto eindgebruikerskosten";
-		attribute<Eur_yr>	Km_Netto			(PlanRegio)		:= Km_Total - Om_subsidie,																		Descr = "jaarlijkse netto maatschappelijke kosten";
+		attribute<Eur_yr>	Oji_subsidie		(PlanRegio)		:= Oji_id_subsidie + Oji_wd_subsidie + Oji_pt_subsidie + Oji_ow_subsidie,						Descr = "eindverbruiker-geannualiseerde jaarlijkse opbrengsten uit subsidie";
+		attribute<Eur_yr>	Kji_Netto			(PlanRegio)		:= Kji_Total - Oji_subsidie,																	Descr = "jaarlijkse netto eindgebruikerskosten";
 	}
 }

@@ -42,7 +42,7 @@ container AanbodOpties
 		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]), isHidden = "True";
 		container Results := Impl/Results;
 		unit<uint32> PlanRegio := .../PlanRegio;
-		attribute<float32> CO2(PlanRegio) := impl/CO2;
+		attribute<kg_yr> CO2(PlanRegio) := impl/CO2;
 	}
 	
 	Template BioWKK
@@ -64,7 +64,7 @@ container AanbodOpties
 		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]), isHidden = "True";
 		container Results := Impl/Results;
 		unit<uint32> PlanRegio := .../PlanRegio;
-		attribute<float32> CO2(PlanRegio) := impl/CO2;
+		attribute<kg_yr> CO2(PlanRegio) := impl/CO2;
 	}
 	Template Lt15_30
 	{

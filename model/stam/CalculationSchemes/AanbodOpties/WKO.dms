@@ -207,8 +207,6 @@ template WKO
 			attribute<Eur_yr> Km_ow_e     (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Km_ow_e')+')';
 			attribute<Eur_yr> Kj_ow_e     (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ow_e')+')';
 			attribute<Eur_yr> Kj_ow_o     (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ow_o')+')';
-//			attribute<Eur_yr> Oj_verbruik (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oj_verbruik')+')';
-//			attribute<Eur_yr> Om_comfort  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Om_comfort')+')';
 			attribute<Eur_yr> KEH_ow_e    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/KEH_ow_e')+')';
 			attribute<Eur_yr> Kj_ge       (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ge')+')';
 
@@ -226,7 +224,7 @@ template WKO
 			attribute<Eur>    Ki_ge       (PlanRegio) := Ki_ge_pm + Ki_ge_ov;
 			attribute<Eur>    Ki_Totaal   (PlanRegio) := Ki_ow + Ki_wd + Ki_id + Ki_ge;
 
-			attribute<Eur_yr> Km_Totaal   (PlanRegio) := Km_ow_e + Kj_ow_o;
+			attribute<Eur_yr> Kmi_Totaal   (PlanRegio) := Km_ow_e + Kj_ow_o + NCW/mr28/AnnualisationFactor * Ki_Totaal - Om_ComfortT;
 
 			attribute<Eur>    Si_ow       (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/wko;
 			attribute<Eur>    Si_wd       (PlanRegio) := Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd;
@@ -250,15 +248,15 @@ template WKO
 			attribute<Eur_yr> Se          (PlanRegio) := Sj + Se_ow + Se_wd + Se_id + Se_ge;
 			attribute<Eur_yr> Sme         (PlanRegio) := Sm + Se_ow + Se_wd + Se_id + Se_ge;
 
-			attribute<Eur_yr> Kj_ge_netto (PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor - Se_ge;
-			attribute<Eur_yr> Kj_id_netto (PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor - Se_id;
-			attribute<Eur_yr> Kj_wd_netto (PlanRegio) := Kj_wd_pr + Ki_wd_Netto * NCW/wd28/AnnualisationFactor - Se_wd;
-			attribute<Eur_yr> Kj_ow_netto (PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow_Netto * NCW/ow28/AnnualisationFactor - Se_ow;
-			attribute<Eur_yr> Kj_netto    (PlanRegio) := Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
+			attribute<Eur_yr> Kji_ge_netto(PlanRegio) := Ki_ge_Netto * NCW/bw28/AnnualisationFactor - Se_ge;
+			attribute<Eur_yr> Kji_id_netto(PlanRegio) := Ki_id_Netto * NCW/id28/AnnualisationFactor - Se_id;
+			attribute<Eur_yr> Kji_wd_netto(PlanRegio) := Kj_wd_pr + Ki_wd_Netto * NCW/wd28/AnnualisationFactor - Se_wd;
+			attribute<Eur_yr> Kji_ow_netto(PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow_Netto * NCW/ow28/AnnualisationFactor - Se_ow;
+			attribute<Eur_yr> Kji_netto   (PlanRegio) := Kji_ge_netto + Kji_id_netto + Kji_wd_netto + Kji_ow_netto;
 			attribute<Eur   > Oi_AanslT   (PlanRegio) := ='add('+AsItemList('Oi_Aansl/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Oj_VerbrT   (PlanRegio) := ='add('+AsItemList('Oj_Verbruik/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Om_ComfortT (PlanRegio) := ='add('+AsItemList('Om_Comfort/'+WkoComponent/Name)+')';
-			attribute<Eur_yr> Oj_totaal   (PlanRegio) := Oj_VerbrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+			attribute<Eur_yr> Oji_totaal  (PlanRegio) := Oj_VerbrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 
 			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
 			attribute<Eur_yr> KCO2_ow_e   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/KCO2_ow_e')+')';

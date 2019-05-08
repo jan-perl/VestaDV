@@ -604,27 +604,27 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== LEVERANCIER
 			,	'Verrekening', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/Flow/Kj_ge_Netto', 
+					'StateNaAllocatie/Flow/Kji_ge_Netto', 
 					'', 
 					''
 
 			,	'Verrekening', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kj_id_netto',
+					'StateNaAllocatie/Flow/Kji_id_netto',
 					'', 
 					''
 
 			,	'Verrekening', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kj_wd_netto',
+					'StateNaAllocatie/Flow/Kji_wd_netto',
 					'', 
 					''
 
 			,	'Verrekening', 'PrimairTransporteur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kj_pt_netto',
+					'StateNaAllocatie/Flow/Kji_pt_netto',
 					'', 
 					''
 
 			,	'Verrekening', '@RO@', 'Leverancier',
-					'StateNaAllocatie/Flow/Kj_ow_netto * '+ROSEL,
+					'StateNaAllocatie/Flow/Kji_ow_netto * '+ROSEL,
 					'', 
 					''
 
@@ -836,20 +836,20 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== WKO LEVERANCIER
 			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kj_ge_netto', 
+					'StateNaAllocatie/@CO@/Kji_ge_netto', 
 					'',
 					''
 
 			,	'Verrekening@CO@', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kj_id_netto', 
+					'StateNaAllocatie/@CO@/Kji_id_netto', 
 					'',
 					''
 			,	'Verrekening@CO@', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kj_wd_netto', 
+					'StateNaAllocatie/@CO@/Kji_wd_netto', 
 					'',
 					''
 			,	'Verrekening', '@CO@', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kj_ow_netto', 
+					'StateNaAllocatie/@CO@/Kji_ow_netto', 
 					'',
 					''
 //			,	'@CO@', 'Admin', 'Leverancier', 

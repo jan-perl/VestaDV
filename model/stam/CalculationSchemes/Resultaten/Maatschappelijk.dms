@@ -11,8 +11,8 @@ container Maatschappelijk: Source = "FO v7a C6"
 		attribute<String> BronExpr(Classifications/AanbodOptie) :=
 				+replace(
 					Classifications/AanbodOptie/IsPlanregioOptie
-					? 'StateNaAllocatie/Flow/Km_Total * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)'
-					: 'StateNaAllocatie/@RO@/Km_Totaal'
+					? 'StateNaAllocatie/Flow/Kmi_Total * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)'
+					: 'StateNaAllocatie/@RO@/Kmi_Totaal'
 				, '@RO@', Classifications/AanbodOptie/Name);
 	}
 
@@ -45,12 +45,12 @@ container Maatschappelijk: Source = "FO v7a C6"
 		}
 
 		attribute<Eur>    Ki_GebouwVerbetering (PlanRegio) := ='add('+AsItemList('sum(BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/Kosten/Ki_GebouwVerbetering, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)')+')';
-		attribute<Eur_yr> Km_GebouwVerbetering (PlanRegio) :=  Ki_GebouwVerbetering *NCW/mr30/AnnualisationFactor;
+		attribute<Eur_yr> Kmi_GebouwVerbetering(PlanRegio) :=  Ki_GebouwVerbetering *NCW/mr30/AnnualisationFactor;
 
 		attribute<Eur_yr> Kj_Onderhoud         (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Kj_Onderh_excl')+')';
 		attribute<Eur_yr> Kj_Admin             (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/gebouwen/Kj_Admin_excl')+')';
 
-		attribute<Eur_yr> Km_Totaal            (PlanRegio) := ElektriciteitsVraag/Km_Totaal + AardGasVerbruik/Km_Totaal + Km_GebouwVerbetering + Kj_Onderhoud + Kj_Admin;
+		attribute<Eur_yr> Kmi_Totaal            (PlanRegio) := ElektriciteitsVraag/Km_Totaal + AardGasVerbruik/Km_Totaal + Kmi_GebouwVerbetering + Kj_Onderhoud + Kj_Admin;
 	}
 	container LokaleEnergieProductie
 	{
@@ -65,11 +65,11 @@ container Maatschappelijk: Source = "FO v7a C6"
 		attribute<Eur>    Ki_Totaal      (PlanRegio) := Ki_Totaal30 + Ki_Totaal15;
 		attribute<Eur_yr> Kj_Onderhoud   (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Kj_Onderh_excl')+')';
 		attribute<Eur_yr> Kj_Admin       (PlanRegio) := ='add('+AsItemList('Eindgebruiker/'+Classifications/BebouwingsComponent/Name+'/LokaleEnergieProductie/Kj_admin_excl')+')';
-		attribute<Eur_yr> Km_Totaal      (PlanRegio) := Ki_Totaal30 * NCW/mr30/AnnualisationFactor + Ki_Totaal15 * NCW/mr15/AnnualisationFactor + Kj_Onderhoud + Kj_Admin;
+		attribute<Eur_yr> Kmi_Totaal     (PlanRegio) := Ki_Totaal30 * NCW/mr30/AnnualisationFactor + Ki_Totaal15 * NCW/mr15/AnnualisationFactor + Kj_Onderhoud + Kj_Admin;
 	}
 	container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, Eur_yr)
 	{
-		attribute<Eur_yr> Km_Totaal  (PlanRegio) := =#Voorkeuren/WarmteOpties == 0 ? 'const(0, PlanRegio, Eur_yr)' : 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')';
+		attribute<Eur_yr> Kmi_Totaal  (PlanRegio) := =#Voorkeuren/WarmteOpties == 0 ? 'const(0, PlanRegio, Eur_yr)' : 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')';
 	}
 	container net
 	{
@@ -77,6 +77,5 @@ container Maatschappelijk: Source = "FO v7a C6"
 		attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerken/elektriciteit/Kj_totaal - netwerken/elektriciteit/netbijdrage;
 	}
 	attribute<Eur_yr> Om_Comfort        (PlanRegio) := ='add('+AsItemList('StateNaAllocatie/' + Voorkeuren/WarmteOpties/Name + '/Om_ComfortT')+')';
-	attribute<Eur_yr> Km_Totaal         (PlanRegio) := net/Aardgas + net/Elektriciteit + 
-		gebouwen/Km_Totaal + LokaleEnergieProductie/Km_Totaal + CentraleWarmteBronnen/Km_Totaal;
+	attribute<Eur_yr> Kmi_Totaal         (PlanRegio) := net/Aardgas + net/Elektriciteit + gebouwen/Kmi_Totaal + LokaleEnergieProductie/Kmi_Totaal + CentraleWarmteBronnen/Kmi_Totaal;
 }

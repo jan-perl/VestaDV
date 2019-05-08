@@ -416,9 +416,9 @@ template KostenBaten
 	}
 
 	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Totaal;
-	attribute<Eur_yr> Oj_wd_KL            (PlanRegio) := Oi_Aansluitbijdrage * NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor;
-	attribute<Eur_yr> Kj_ge_KL            (PlanRegio) := Ki_ge_Bruto * NCW/bw28/AnnualisationFactor;
-	attribute<Eur_yr> Kj_id_KL            (PlanRegio) := Ki_id_Bruto * NCW/id28/AnnualisationFactor;
+	attribute<Eur_yr> Oji_wd_KL           (PlanRegio) := Oi_Aansluitbijdrage * NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor;
+	attribute<Eur_yr> Kji_ge_KL           (PlanRegio) := Ki_ge_Bruto * NCW/bw28/AnnualisationFactor;
+	attribute<Eur_yr> Kji_id_KL           (PlanRegio) := Ki_id_Bruto * NCW/id28/AnnualisationFactor;
 
 	attribute<Eur>    Ki_ge_ov            (PlanRegio) := KostenD/Ki_ge_ov;
 	attribute<Eur>    Ki_ge_pm            (PlanRegio) := KostenD/Ki_ge_pm;
@@ -429,19 +429,19 @@ template KostenBaten
 	attribute<Eur>    Oi_ge_subsidie      (PlanRegio) := Ki_ge_ov * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding + Ki_ge_pm * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement;
 	attribute<Eur>    Oi_id_subsidie      (PlanRegio) := Ki_id_Bruto * SpecifiekeInstellingen/Beleid/EIA/id;
 	attribute<Eur>    Oi_wd_subsidie      (PlanRegio) := Ki_wd_Bruto * SpecifiekeInstellingen/Beleid/EIA/wd;
-	attribute<Eur_yr> Kj_ge_base          (PlanRegio) := (Ki_ge_Bruto - Oi_ge_subsidie) * NCW/bw28/AnnualisationFactor + Kj_ge_hv;
-	attribute<Eur_yr> Kj_id_base          (PlanRegio) := (Ki_id_Bruto - Oi_id_subsidie) * NCW/id28/AnnualisationFactor + KostenD/Kj_id_Onderhoud;
-	attribute<Eur_yr> Kj_wd_base          (PlanRegio) := (Ki_wd_Bruto - Oi_wd_subsidie) * NCW/wd28/AnnualisationFactor + KostenD/Kj_wd_Onderhoud + KostenD/Kj_wd_Admin;
-	attribute<Eur_yr> Oe_ge_subsidie      (PlanRegio) := Kj_ge_base * SpecifiekeInstellingen/Beleid/EEA/ge;
-	attribute<Eur_yr> Oe_id_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/Beleid/EEA/id;
-	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kj_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
-	attribute<Eur_yr> Kj_ge_Netto         (PlanRegio) := Kj_ge_base - Oe_ge_subsidie;
-	attribute<Eur_yr> Kj_id_Netto         (PlanRegio) := Kj_id_base - Oe_id_subsidie;
-	attribute<Eur_yr> Kj_wd_Netto         (PlanRegio) := Kj_wd_base  + KostenD/Kj_Verbruik + KostenD/Kj_Precario - Oe_wd_subsidie - Oj_wd_KL;
-	attribute<Eur_yr> Kj_Netto            (PlanRegio) := Kj_ge_Netto + Kj_id_Netto + Kj_wd_Netto + KostenD/Kj_lv_Admin;
+	attribute<Eur_yr> Kji_ge_base         (PlanRegio) := (Ki_ge_Bruto - Oi_ge_subsidie) * NCW/bw28/AnnualisationFactor + Kj_ge_hv;
+	attribute<Eur_yr> Kji_id_base         (PlanRegio) := (Ki_id_Bruto - Oi_id_subsidie) * NCW/id28/AnnualisationFactor + KostenD/Kj_id_Onderhoud;
+	attribute<Eur_yr> Kji_wd_base         (PlanRegio) := (Ki_wd_Bruto - Oi_wd_subsidie) * NCW/wd28/AnnualisationFactor + KostenD/Kj_wd_Onderhoud + KostenD/Kj_wd_Admin;
+	attribute<Eur_yr> Oe_ge_subsidie      (PlanRegio) := Kji_ge_base * SpecifiekeInstellingen/Beleid/EEA/ge;
+	attribute<Eur_yr> Oe_id_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/id;
+	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
+	attribute<Eur_yr> Kji_ge_Netto        (PlanRegio) := Kji_ge_base - Oe_ge_subsidie;
+	attribute<Eur_yr> Kji_id_Netto        (PlanRegio) := Kji_id_base - Oe_id_subsidie;
+	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_Verbruik + KostenD/Kj_Precario - Oe_wd_subsidie - Oji_wd_KL;
+	attribute<Eur_yr> Kji_Netto           (PlanRegio) := Kji_ge_Netto + Kji_id_Netto + Kji_wd_Netto + KostenD/Kj_lv_Admin;
 
-	attribute<Eur_yr> Oj_wd               (PlanRegio) := Oj_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;
-	attribute<Eur_yr> Oj_NettoD           (PlanRegio) := Opbrengsten/JaarlijksD/Oj_Totaal - Kj_Netto;
+	attribute<Eur_yr> Oji_wd              (PlanRegio) := Oji_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;
+	attribute<Eur_yr> Oji_NettoD          (PlanRegio) := Opbrengsten/JaarlijksD/Oj_Totaal - Kji_Netto;
 	attribute<Eur_yr> Km_totaalD          (PlanRegio) := KostenD/Km_Totaal;
 	attribute<MW>     CapaciteitsVraagD   (PlanRegio) := KostenD/PrimairNet/P;
 	attribute<GJ_yr>  Vj_WarmtePrimairD   (PlanRegio) := KostenD/Vj_WarmtePrimair;
