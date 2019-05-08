@@ -92,7 +92,7 @@ container Geography: Using = "Units", IsHidden = "True"
 		unit<uint32> Energieregio := unique(buurt/ER_NAAM)
 		{
 			attribute<string> label     := 'RES '+string(Values);
-			attribute<string> Name      := replace_value(Replace(Label, '-', ''), '', 'Elders');
+			attribute<string> Name      := replace_value(Replace(Label, '-', '', '/', '_', ' ', '', '(', '', ')', ''), '', 'Elders');
 			parameter<string> RegioNaam := 'Energieregio';
 		}
 
