@@ -239,51 +239,7 @@ container WarmteBronnen
 			attribute<Eur_GJ>	K_GJ		:= const(0[Eur_GJ], .),								Descr = "";
 			attribute<Eur_GJ>	E_GJ		:= const(0[Eur_GJ], .),								Descr = "";
 		}
-// 		unit<uint32> Bedrijventerrein
-// 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/bedrijventerreinen.shp"
-// 		,	StorageType     = "gdal.vect"
-// 		,	StorageReadOnly = "True"
-// 		,	DialogType      = "Map"
-// 		,	DialogData      = "Geometry"
-// 		,	Source          = "CE-Delft"
-// 		{
-// 			attribute<rdc_meter> Geometry(poly);	
-// 			
-// 			attribute<rdc_meter> Point := centroid_or_mid(Geometry);
 
-// 			attribute<string>    plannaam;
-// 			attribute<string>    label := plannaam;
-// 			
-// 			attribute<Ratio>     bron_vol;
-// 			attribute<Ratio>     bron_cap;
-// 			attribute<MW>        cap_MW;
-// 			attribute<Celsius>   T_bron := const(30[Celsius], .);
-// 			
-// 			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
-// 		}
-		
-// 		unit<uint32> Glastuinbouw
-// 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/glastuinbouw.shp"
-// 		,	StorageType     = "gdal.vect"
-// 		,	StorageReadOnly = "True"
-// 		,	DialogType      = "Map"
-// 		,	DialogData      = "Geometry"
-// 		,	Source          = "CE-Delft"
-// 		{
-// 			attribute<rdc_meter> Geometry(poly);
-// 			attribute<rdc_meter> Point := centroid_or_mid(Geometry); 
-
-// 			attribute<string>    FID;
-// 			attribute<string>    label := FID;
-// 			
-// 			attribute<Ratio>     bron_vol;
-// 			attribute<Ratio>     bron_cap;
-// 			attribute<MW>        cap_MW;
-// 			attribute<Celsius>   T_bron := const(30[Celsius], .);
-// 			
-// 			attribute<MW>        MWth_max := cap_MW; // TODO: aanpassen wanneer brondata is aangepast.
-// 		}
-		
 		unit<uint32> LTbronnen_capaciteit
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190415_LT_puntbronnen.shp"
 		,	StorageType     = "gdal.vect"

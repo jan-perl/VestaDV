@@ -57,7 +57,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		}
 
 		unit<uint32> opgelegd
-		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/sprongtabel_fixed.csv"
+		:	StorageName     = "%SourceDataProjDir%/vraag/wonen/sprongtabel.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		{
@@ -79,6 +79,13 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 	#include <WarmteBronnen.dms>
 
+	container infra {
+		unit<uint32> netbeheerders_input
+		:	StorageName     = "%SourceDataProjDir%/infra/test_netbeheerders_input.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		{}
+	}
 	
 	// KNMI klimaatscenario voor daling functionele warmtevraag in de toekomst door hogere gemiddelde buitentemperatuur
 	// Beschikbare varianten:
