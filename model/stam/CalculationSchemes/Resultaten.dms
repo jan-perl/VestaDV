@@ -57,7 +57,7 @@ template Resultaten
 		{
 			attribute<String> BronExpr (Classifications/AanbodOptie) := 		 
 				replace(Classifications/AanbodOptie/IsPlanRegioOptie 
-					? 'StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
+					? 'StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
 					: 'StateNaAllocatie/@AO@/CO2', 
 				'@AO@', Classifications/AanbodOptie/name
 				);
@@ -120,15 +120,15 @@ template Resultaten
 		container impl: IsHidden = "True"
 		{
 			attribute<String> FlowExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
-				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
-				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
-				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
-				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
+				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
+				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
+				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
+				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
 				'StateNaAllocatie/WKO/Oj_totaal - StateNaAllocatie/WKO/Kj_Netto'
 			);
 
 			attribute<String> StockExpr(Classifications/AanbodOptie) :=
-				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
+				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
 		}
 
 		container CashFlow := for_each_nedv(Voorkeuren/WarmteOpties/Name

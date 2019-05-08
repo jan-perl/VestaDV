@@ -51,6 +51,7 @@ container Referentie
 
 //	Include Model, Toepassing similar for each run, as is part of the Resultaatberekening , and auxiliary containers
 	#include <%projDir%/model/stam.dms>
+	#include <%projDir%/model/BeginSituatie.dms>
 	#include <%projDir%/model/TussenResultaten.dms>
 	#include <%projDir%/model/Resultaten.dms>
 

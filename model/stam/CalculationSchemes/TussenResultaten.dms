@@ -9,99 +9,9 @@ template TussenResultaten
 	// begin case parameters
 	parameter<String> RekenstapName;
 	parameter<String> ZichtjaarName;
-	// optional case parameter
-
-	container StateVoorAllocatie // overridable by called 
-	{
-		container Bebouwing := 
-			for_each_ne(Classifications/BebouwingsComponent/name, 
-				'CalculationSchemes/StartingStateComponent('+
-					'.../Bebouwing/'+Classifications/BebouwingsComponent/Name+
-					','+ 'Kengetallen/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/results
-					, '+ string(id(Classifications/BebouwingsComponent))+'[Classifications/BebouwingsComponent]'+
-				')'
-			);
-			
-		#include<Aanbodopties.dms>
-
-		container Stock
-		{
-			attribute<Eur> Ki_ge_ov       (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_ge_pm       (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_id          (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_ge          (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_wd          (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_pt          (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_ow          (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oi_ge_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oi_id_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oi_wd_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oi_pt_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oi_ow_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Oe_ow_subsidie (PlanRegio) := const(0[Eur], PlanRegio);
-		}
-
-		container Wko := Stock
-		{
-			container	Oi_Aansl		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur]   , PlanRegio)', PlanRegio, Eur);
-			container	Oj_Verbruik		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
-			container	Oj_Vastrecht	:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
-			container	Om_comfort		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
-
-			attribute<Eur_yr> Kj_ge     (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_wd_pr  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Km_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> KEH_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> KCO2_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_ow_o   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-
-			attribute<Eur_yr> Se        (PlanRegio) := const(0[Eur_yr], PlanRegio);
-			attribute<GJ_yr> GJw_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
-			attribute<GJ_yr> GJe_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
-			attribute<KG_yr> CO2        (PlanRegio) := const(0[KG_yr], PlanRegio);
-		}
-		container Lt15_30 := Stock;
-		container Lt15_50 := Stock;
-		container Lt15_70 := Stock;
-		container Lt30_30 := Stock;
-		container Lt30_50 := Stock;
-		container Lt30_70 := Stock;
-		
-		container LtWarmte {
-			unit<uint32> bron := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {
-				attribute<Bool> Toegewezen := const(false, .);
-				unit<uint32> CumulativeClusterSet : nrofrows = 0 {
-					attribute<.> per_bron(..) := const(0[.], ..); // TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
-					
-					// TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
-					attribute<Classifications/AanbodOptie> AanbodOptie_rel := const(0[Classifications/AanbodOptie], .);
-					attribute<Classifications/Rekenstap  > Rekenstap_rel   := const(0[Classifications/Rekenstap], .);
-					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := const(0[Classifications/Zichtjaar], .);
-					
-					unit<uint32> Feature : nrofrows = 0
-					{
-						attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .));
-						attribute<..> Cluster_rel := const(0, .);
-						
-					}
-				}
-				unit<uint32> CumulativeNetwork : nrofrows = 0
-				, DialogType = "Map", DialogData = "Geometry"
-				{
-					// TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
-					attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .));
-//					attribute<..> Cluster_rel := value(union_data(., PrevNetwork/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);										
-					// TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
-					attribute<Classifications/AanbodOptie> AanbodOptie_rel := const(0[Classifications/AanbodOptie], .);
-					attribute<Classifications/Rekenstap  > Rekenstap_rel   := const(0[Classifications/Rekenstap], .);
-					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := const(0[Classifications/Zichtjaar], .);
-				}
-				
-			}
-		}
-	}
+	container StateVoorAllocatie;
 	// end case parameters
+	
 	parameter<Classifications/Zichtjaar> ZichtJaar_rel := rlookup(ZichtjaarName, Classifications/zichtjaar/name);
 	parameter<units/yr_uint16>           ZichtJaar_jaar := Classifications/zichtjaar/jaar[Zichtjaar_rel];
 	unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -138,7 +48,7 @@ template TussenResultaten
 		}
 
 		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
-		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/AanbodOpties/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
+		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
 
 		unit<uint8> WarmteOpties     := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
 		unit<uint8> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))
@@ -286,7 +196,7 @@ template TussenResultaten
 		for_each_ne(Classifications/BebouwingsComponent/Name,
 			'AllocatieComponent(
 				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
-				,StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie
+				,StateNaAllocatie/PlanRegioWarmteAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort

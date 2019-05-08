@@ -13,7 +13,7 @@ template StartingStateComponent
 	// end of case parameters
 
 	unit<uint32> ModelObject := EnergieVraagModellen/ModelObject;
-	unit<uint32> WkoCluster  := StateVoorAllocatie/AanbodOpties/WkoCluster;
+	unit<uint32> WkoCluster  := Wko/Cluster;
 
 	attribute<ModelObject>                 Model_rel       (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := const((0 / 0)[Classifications/AanbodOptie], BebouwingsObject);

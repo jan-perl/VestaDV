@@ -46,7 +46,7 @@ template BCdata
 	unit<uint8>   BebouwingsTypeDomein := BebouwingsObject/BebouwingsTypeDomein;
 	unit<uint32>  ModelObject          := EnergieVraagModellen/ModelObject;
 	unit<float64> ModelUnit            := EnergieVraagModellen/ModelUnit;
-	unit<uint32>  WkoCluster           := StateVoorAllocatie/AanbodOpties/WkoCluster;
+	unit<uint32>  WkoCluster           := StateVoorAllocatie/Wko/Cluster;
 
 	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
 

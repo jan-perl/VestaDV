@@ -97,8 +97,8 @@ template GeoThermie
 		- Kosten/PijpKosten  * NCW/pt28/AnnualisationFactor * ((1.0 - SpecifiekeInstellingen/Beleid/EIA/pt)*(1.0 - SpecifiekeInstellingen/Beleid/EEA/pt));
 	attribute<bool> RentabiliteitsAfweging (PlanRegio) := Oj_Afweging > 0[Eur_yr];
 
-	attribute<bool> OldGebruik             (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie);                                  // een optie (deze of andere) was al in gebruik
-	attribute<bool> GebruiktOptie          (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Geothermie; // deze optie was al in gebruik;
+	attribute<bool> OldGebruik             (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie);                                  // een optie (deze of andere) was al in gebruik
+	attribute<bool> GebruiktOptie          (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Geothermie; // deze optie was al in gebruik;
 	attribute<bool> NewGebruik             (PlanRegio) := RentabiliteitsAfweging && bron/InContour && not(OldGebruik);
 	attribute<bool> GebruikOptie           (PlanRegio) := NewGebruik || GebruiktOptie;
 
@@ -116,13 +116,10 @@ template GeoThermie
 			parameter<float64> Elektriciteit := 1.0 / 30.0;
 		}
 
-		container AanbodOpties := BeginStatus/AanbodOpties
-		{
-			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) :=
-				GebruikOptie
-					? MakeDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie, Classifications/AanbodOptie/V/GeoThermie)
-					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie;
-		}
+		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) :=
+			../GebruikOptie
+				? Classifications/AanbodOptie/V/GeoThermie
+				: BeginStatus/PlanRegioWarmteAllocatie;
 
 		container Stock := BeginStatus/Stock
 		{

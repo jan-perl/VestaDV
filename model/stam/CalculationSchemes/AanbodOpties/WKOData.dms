@@ -82,7 +82,7 @@ template WKOData
 	attribute<bool> RentabiliteitsAfweging (BebouwingsObject) :=  AC_Netto > 0[Eur_yr];
 
 	attribute<bool> MarginaleAfweging(BebouwingsObject) := geschikt && RentabiliteitsAfweging;
-	attribute<bool> WasAllocated     (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
+	attribute<bool> WasAllocated     (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
 	attribute<bool> Toegestaan       (BebouwingsObject) := MarginaleAfweging && !WasAllocated; // TODO: rename WKO -> LT
 
 	unit<uint32> AllowedObjects := Subset(Toegestaan)

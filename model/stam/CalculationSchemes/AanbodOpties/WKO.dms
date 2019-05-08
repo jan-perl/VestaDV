@@ -139,7 +139,7 @@ template WKO
 		attribute<string> Prev := MakeDefined(Name[id(.)-1] + '/SelectedClusters', 'UnitedCandidates');
 		
 		attribute<.> NrSelectedObjects          := ='union_data(Iteration, '+AsItemList('#Iterations/'+Iteration/Name+'/Selected')+')';
-		attribute<.> CumulNrPrevSelectedObjects := #(BeginStatus/AanbodOpties/WkoCluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
+		attribute<.> CumulNrPrevSelectedObjects := #(BeginStatus/Wko/Cluster) + cumulate(NrSelectedObjects) - NrSelectedObjects;
 	}
 
 	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
@@ -188,16 +188,9 @@ template WKO
 					: 'BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name
 			);
 			
-		container AanbodOpties : = BeginStatus/AanbodOpties
-		{
-			unit<uint32> WkoCluster := Selected;
-		}
-
-		container Stock := BeginStatus/Stock;
-		container Flow  := BeginStatus/Flow;
-
 		container Wko
 		{
+			unit<uint32> Cluster := Selected;
 			// accumulated capital
 			container Oi_Aansl := for_each_nedv(WkoComponent/Name, replace('BeginStatus/Wko/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);
 
@@ -264,6 +257,7 @@ template WKO
 			attribute<Eur_yr> Kj_netto    (PlanRegio) := Kj_ge_netto + Kj_id_netto + Kj_wd_netto + Kj_ow_netto;
 			attribute<Eur   > Oi_AanslT   (PlanRegio) := ='add('+AsItemList('Oi_Aansl/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Oj_VerbrT   (PlanRegio) := ='add('+AsItemList('Oj_Verbruik/'+WkoComponent/Name)+')';
+			attribute<Eur_yr> Om_ComfortT (PlanRegio) := ='add('+AsItemList('Om_Comfort/'+WkoComponent/Name)+')';
 			attribute<Eur_yr> Oj_totaal   (PlanRegio) := Oj_VerbrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 
 			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
@@ -273,6 +267,7 @@ template WKO
 			attribute<GJ_yr>  GJe_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJe')+')';
 			attribute<GJ_yr>  GJw_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJw')+')';
 		}
+
 		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen);
 	}
 }

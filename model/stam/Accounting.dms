@@ -82,7 +82,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
 			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
 			parameter<string> AFAB_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@BC@/NcwRefs/_28/AnnualisationFactor';
-			parameter<string> ROSEL   := 'float64(StateNaAllocatie/AanbodOpties/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
+			parameter<string> ROSEL   := 'float64(StateNaAllocatie/PlanRegioWarmteAllocatie == classifications/AanbodOptie/V/@RO@)';
 			parameter<string> VAT_F   := '(SpecifiekeInstellingen/VAT / 100[Percent])';
 			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))';
 			attribute<string> Text := union_data(.,

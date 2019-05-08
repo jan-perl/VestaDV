@@ -6,8 +6,8 @@
 
 container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName
 {
-	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(AanbodOpties/PlanRegioWarmteAllocatie);
-	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/AanbodOpties/PlanRegioWarmteAllocatie));
+	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(PlanRegioWarmteAllocatie);
+	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/PlanRegioWarmteAllocatie));
 	container Stock := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Stock'
 	{
 		// gebiedsmaatregelen

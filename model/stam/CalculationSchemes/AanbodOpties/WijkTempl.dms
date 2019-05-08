@@ -72,8 +72,8 @@ template WijkTempl
 	
 	attribute<Bool> RentabiliteitsAfweging (PlanRegio) := YieldPerGJ > max_elem(Threshold, 0[Eur_GJ]);
 
-	attribute<Bool> OldGebruik    (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
-	attribute<Bool> GebruiktOptie (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Optie;   // deze optie was al in gebruik;
+	attribute<Bool> OldGebruik    (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
+	attribute<Bool> GebruiktOptie (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Optie;   // deze optie was al in gebruik;
 	attribute<Bool> NewGebruik    (PlanRegio) := RentabiliteitsAfweging && (PlanRegio/StartJaar >= Jaar) && not(OldGebruik);
 	attribute<Bool> GebruikOptie  (PlanRegio) := NewGebruik || GebruiktOptie;
 
@@ -81,13 +81,8 @@ template WijkTempl
 	{
 		container Factoren := TypeInfo/RekenType/Factoren;
 		
-		container AanbodOpties := BeginStatus/AanbodOpties
-		{
-			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) :=
-				GebruikOptie
-					? MakeDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie, Optie)
-					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie;
-		}
+		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := ../GebruikOptie ? Optie : BeginStatus/PlanRegioWarmteAllocatie;
+				
 		container Stock := BeginStatus/Stock
 		{
 			attribute<Eur> Ki_ow         (PlanRegio) := BeginStatus/Stock/Ki_ow          + (NewGebruik ? Kosten/Ki_Totaal : 0[Eur]);

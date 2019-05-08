@@ -23,7 +23,7 @@ template RestWarmte
 		attribute<Eur_kW_yr> Kj_kW     := Ki_kW * Rj_Onderhoud;
 	}
 
-	container RestWarmteStartingState := BeginStatus/AanbodOpties/RestWarmte
+	container RestWarmteStartingState := BeginStatus/RestWarmte
 	{
 		unit<uint32> BronConnections := ../Bronnen;
 
@@ -33,7 +33,7 @@ template RestWarmte
 		attribute<MW>               MWth_used       (BronConnections) := sum(KostenBaten/CapaciteitsVraagD * float64(GebruikRestwarmte) , CurrBron);
 		attribute<MW>               MWth_capaciteit (BronConnections) := Bronnen/MWth_max  - MWth_used;
 	}
-	attribute<Bool> HasWarmteVraag (PlanRegio) := not(IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie));
+	attribute<Bool> HasWarmteVraag (PlanRegio) := not(IsDefined(BeginStatus/PlanRegioWarmteAllocatie));
 
 	parameter<uint32> NrIterations := Voorkeuren/NewRestWarmte ? 25 : 1;
 
@@ -56,8 +56,8 @@ template RestWarmte
 	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
 	,	IntegrityCheck = "not(any(LastIter/ExtraGebruikRestWarmte))"; // @@@ Increase NrIterations is this fails.
 	
-	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
-	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
+	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
+	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
 	attribute<Bool> NewGebruik           (PlanRegio) := RentabiliteitsAfweging && not(OldGebruik);
 	attribute<Bool> GebruikOptieAfweging (PlanRegio) := NewGebruik || GebruiktOptie;
 	attribute<Bool> GebruikOptie         (PlanRegio) := = Voorkeuren/OldRestwarmte
@@ -115,45 +115,42 @@ template RestWarmte
 			attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + (NewGebruik ? lastiter/Assignment/ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt : 0[Eur]);
 		}
 
-		container AanbodOpties := BeginStatus/AanbodOpties
+		attribute<bool> GebruikRestWarmteMetBron (PlanRegio) := GebruikOptie;
+		
+		container RestWarmte := MiniStock, FreeData = "False"
 		{
-			attribute<bool> GebruikRestWarmteMetBron (PlanRegio) := GebruikOptie;
-			
-			container RestWarmte: FreeData = "False"
+			attribute<bool> GebruikRestWarmte      (PlanRegio) := GebruikRestWarmteMetBron;
+			attribute<bool> ExtraGebruikRestWarmte (PlanRegio) := GebruikOptie && !RestWarmteStartingState/GebruikRestWarmte;
+
+			unit<uint32> StartArcSet         := RestWarmteStartingState/CumulatedArcSet;
+			unit<uint32> LastCumulatedArcSet := LastState/CumulatedArcSet;
+
+			unit<uint32> ExtraArcSet := SubSet(ExtraGebruikRestWarmte)
 			{
-				attribute<bool> GebruikRestWarmte      (PlanRegio) := GebruikRestWarmteMetBron;
-				attribute<bool> ExtraGebruikRestWarmte (PlanRegio) := GebruikOptie && !RestWarmteStartingState/GebruikRestWarmte;
-
-				unit<uint32> StartArcSet         := RestWarmteStartingState/CumulatedArcSet;
-				unit<uint32> LastCumulatedArcSet := LastState/CumulatedArcSet;
-
-				unit<uint32> ExtraArcSet := SubSet(ExtraGebruikRestWarmte)
-				{
-					attribute<PlanRegio>           PlanRegio_rel           := nr_OrgEntity;
-					attribute<LastCumulatedArcSet> LastCumulatedArcSet_rel := rlookup(PlanRegio_rel, LastCumulatedArcSet/PlanRegio_rel);
-				}
-
-				unit<uint32> CumulatedArcSet := union_unit(StartArcSet, ExtraArcSet), DialogType = "Map", DialogData = "CumulatedArcs"
-				{
-					attribute<rdc_meter> BronPoint     := union_data(., StartArcSet/BronPoint, LastCumulatedArcSet/BronPoint[ExtraArcSet/LastCumulatedArcSet_rel]), DisableStorage = "True";
-					attribute<PlanRegio> PlanRegio_rel := union_data(., StartArcSet/PlanRegio_rel, ExtraArcSet/PlanRegio_rel);
-
-					parameter<bool> HasArcs := true, DisableStorage = "True";
-				}
-
-				attribute<rdc_meter> CumulatedArcs (CumulatedArcSet, arc) := union_data(CumulatedArcSet, RestWarmteStartingState/CumulatedArcs, LastState/CumulatedArcs[ExtraArcSet/LastCumulatedArcSet_rel])
-				{
-					parameter<uint32> PenColor := rgb(0,0,0), DialogType = "PenColor";
-					parameter<int16>  PenWidth := 2s        , DialogType = "PenWidth";
-				}
+				attribute<PlanRegio>           PlanRegio_rel           := nr_OrgEntity;
+				attribute<LastCumulatedArcSet> LastCumulatedArcSet_rel := rlookup(PlanRegio_rel, LastCumulatedArcSet/PlanRegio_rel);
 			}
-			attribute<bool>                        WasAllocated             (PlanRegio) := BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte;
-			attribute<bool>                        Alloc_OK                 (PlanRegio) := GebruikRestWarmteMetBron || !WasAllocated; // it never stops.
-			attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := 
-				GebruikRestWarmteMetBron
-					? Classifications/AanbodOptie/V/RestWarmte
-					: BeginStatus/AanbodOpties/PlanRegioWarmteAllocatie
-			,	IntegrityCheck = "Alloc_OK";
+
+			unit<uint32> CumulatedArcSet := union_unit(StartArcSet, ExtraArcSet), DialogType = "Map", DialogData = "CumulatedArcs"
+			{
+				attribute<rdc_meter> BronPoint     := union_data(., StartArcSet/BronPoint, LastCumulatedArcSet/BronPoint[ExtraArcSet/LastCumulatedArcSet_rel]), DisableStorage = "True";
+				attribute<PlanRegio> PlanRegio_rel := union_data(., StartArcSet/PlanRegio_rel, ExtraArcSet/PlanRegio_rel);
+
+				parameter<bool> HasArcs := true, DisableStorage = "True";
+			}
+
+			attribute<rdc_meter> CumulatedArcs (CumulatedArcSet, arc) := union_data(CumulatedArcSet, RestWarmteStartingState/CumulatedArcs, LastState/CumulatedArcs[ExtraArcSet/LastCumulatedArcSet_rel])
+			{
+				parameter<uint32> PenColor := rgb(0,0,0), DialogType = "PenColor";
+				parameter<int16>  PenWidth := 2s        , DialogType = "PenWidth";
+			}
 		}
+		attribute<bool>                        WasAllocated             (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte;
+		attribute<bool>                        Alloc_OK                 (PlanRegio) := GebruikRestWarmteMetBron || !WasAllocated; // it never stops.
+		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := 
+			GebruikRestWarmteMetBron
+				? Classifications/AanbodOptie/V/RestWarmte
+				: BeginStatus/PlanRegioWarmteAllocatie
+		,	IntegrityCheck = "Alloc_OK";
 	}
 }
