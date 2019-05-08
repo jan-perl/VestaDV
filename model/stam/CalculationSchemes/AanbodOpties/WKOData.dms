@@ -38,9 +38,11 @@ template WKOData
 		: 'const(true, BebouwingsObject)';
 	
 	
-	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
+	attribute <bool> LtVerwarmingGeschikt (BebouwingsObject) := BCdata/LtVerwarmingGeschikt;
+//	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE'; zie Issue 
+	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'LtVerwarmingGeschikt';
 
-	 // kosten excl distributie
+	// kosten excl distributie
 	attribute<GJ_Yr > V_Warmte    (BebouwingsObject) := WkoDataComponent/V_Warmte;
 	attribute<GJ_Yr > V_Koude     (BebouwingsObject) :=	WkoDataComponent/V_Koude,																Descr = "jaarlijkse volumevraag koude";
 	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
