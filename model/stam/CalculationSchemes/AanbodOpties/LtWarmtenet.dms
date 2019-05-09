@@ -530,10 +530,10 @@ Template LtWarmtenetImpl
 			attribute<Eur>		Ki_id		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_id + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id		')+')';
 			attribute<Eur>		Ki_ge		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_ge + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge		')+')';
 			//kapitaallasten op investeringen
-			attribute<Eur_yr>	Kj_ge_Bruto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge')+')';
-			attribute<Eur_yr>	Kj_id_Bruto	(PlanRegio)		:= ='Kj_id_oh + Kj_id_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id	')+')';
-			attribute<Eur_yr>	Kj_wd_Bruto	(PlanRegio)		:= ='Kj_wd_oh + Kj_wd_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge	')+')';
-			attribute<Eur_yr>	Kj_ow_Bruto	(PlanRegio)		:= ='Kj_ow_oh + Kj_ow_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow	')+')';
+			attribute<Eur_yr>	Kji_ge_Bruto(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge')+')';
+			attribute<Eur_yr>	Kji_id_Bruto(PlanRegio)		:= ='Kj_id_oh + Kj_id_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id	')+')';
+			attribute<Eur_yr>	Kji_wd_Bruto(PlanRegio)		:= ='Kj_wd_oh + Kj_wd_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge	')+')';
+			attribute<Eur_yr>	Kji_ow_Bruto(PlanRegio)		:= ='Kj_ow_oh + Kj_ow_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow	')+')';
 			//subsidies op investeringen
 			attribute<Eur>		Si_ow		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
 			attribute<Eur>		Si_wd		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';

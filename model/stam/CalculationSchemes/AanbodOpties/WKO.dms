@@ -216,10 +216,10 @@ template WKO
 //			attribute<Eur_yr> Kj_ge_hv    (PlanRegio) := BeginStatus/Wko/Kj_ge_hv + ObjectResults/Woning/PR/Kj_ge_hv;
 //			attribute<Eur>    Oi_Aansl    (PlanRegio) := ='add('+AsItemList('ObjectResults/'+WkoComponent/Name+'/PR/Oi_Aansl')+')';
 
-			attribute<Eur_yr> Kj_ge_Bruto (PlanRegio) :=                     Ki_ge * NCW/bw28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_id_Bruto (PlanRegio) :=                     Ki_id * NCW/id28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_wd_Bruto (PlanRegio) := Kj_wd_pr          + Ki_wd * NCW/wd28/AnnualisationFactor;
-			attribute<Eur_yr> Kj_ow_Bruto (PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow * NCW/ow28/AnnualisationFactor;
+			attribute<Eur_yr> Kji_ge_Bruto(PlanRegio) :=                     Ki_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr> Kji_id_Bruto(PlanRegio) :=                     Ki_id * NCW/id28/AnnualisationFactor;
+			attribute<Eur_yr> Kji_wd_Bruto(PlanRegio) := Kj_wd_pr          + Ki_wd * NCW/wd28/AnnualisationFactor;
+			attribute<Eur_yr> Kji_ow_Bruto(PlanRegio) := Kj_ow_o + Kj_ow_e + Ki_ow * NCW/ow28/AnnualisationFactor;
 
 			attribute<Eur>    Ki_ge       (PlanRegio) := Ki_ge_pm + Ki_ge_ov;
 			attribute<Eur>    Ki_Totaal   (PlanRegio) := Ki_ow + Ki_wd + Ki_id + Ki_ge;
