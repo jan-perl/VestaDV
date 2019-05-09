@@ -866,6 +866,11 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 		attribute<string> Expr         := Elements/Text[value(id(.)* nrAttr + 3, Elements)];
 		attribute<string> AnnuFactor   := Elements/Text[value(id(.)* nrAttr + 4, Elements)];
 		attribute<string> PlanRegioRel := Elements/Text[value(id(.)* nrAttr + 5, Elements)];
+		attribute<string> FullDescr    := 
+				Name + ': ' + Leverancier + ' -> ' + Afnemer +
+				' = ' + Expr 
+				+ iif(AnnuFactor = '','', ' * '+AnnuFactor ) 
+				+ iif(PlanRegioRel == '', '', ' per '+PlanRegioRel);
 	}
 
 	unit<uint8> BTWC := subset(BC/DraagtBTW)
