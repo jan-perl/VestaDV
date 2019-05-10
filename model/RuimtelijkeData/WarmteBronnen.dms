@@ -198,41 +198,41 @@ container WarmteBronnen
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
 		{
 			attribute<string> code : [
-				'Middelgrote industrie (bedrijventerreinen)'
+				'Supermarkt'
 			,	'RWZI'
 			,	'KoelVries'
 			,	'Bakkerij'
 			,	'Wasserij'
-			,	'Diervoeder'
-			,	'Levensmiddelen'
+			,	'Dienstverlening_Informatie'
+			,	'Voedingsmiddelen_dranken_tabak'
 			,	'Slachthuis'
 			,	'Datacenter'
 			,	'IJsbaan'
-			,	'Supermarkt'
-			,	'Glastuinbouw'
+			,	'GemaalKoude'
+			,	'GemaalWarmte'
 			];
 			
 			attribute<string> Label : [
-				'Middelgrote industrie (bedrijventerreinen)'
+				'Supermarkt'
 			,	'RWZI'
 			,	'KoelVries'
 			,	'Bakkerij'
 			,	'Wasserij'
-			,	'Diervoeder'
-			,	'Levensmiddelen'
+			,	'Dienstverlening_Informatie'
+			,	'Voedingsmiddelen_dranken_tabak'
 			,	'Slachthuis'
 			,	'Datacenter'
 			,	'IJsbaan'
-			,	'Supermarkt'
-			,	'Glastuinbouw'
+			,	'GemaalKoude'
+			,	'GemaalWarmte'
 			];
 			attribute<bool> levert_koude := const(false, .);				
 			attribute<bool> vraagt_koude_koude : [
 				true, false, true, false, false, false, true, true, true, true, true, false
 			];
 			attribute<MW>		MWth_max	: [0, 11, 2, 0, 2, 5, 24, 3, 13, 0, 0, 0],			Descr = "Maximale capaciteit waarvoor de bron kan worden ingezet";
-			attribute<Float64>	bron_vol	:= const(0.70, .),									Descr = "Aandeel op secundair netvolume dat de bron voor rekening kan nemen";
-			attribute<Float64>	bron_cap	:= const(0.30, .),									Descr = "Aandeel op secundaire netcapaciteit dat de bron voor rekening kan nemen";
+			attribute<Percent>	bron_vol	:= const(70[Percent], .),									Descr = "Aandeel op secundair netvolume dat de bron voor rekening kan nemen";
+			attribute<Percent>	bron_cap	:= const(30[Percent], .),									Descr = "Aandeel op secundaire netcapaciteit dat de bron voor rekening kan nemen";
 			attribute<Celsius>	T_Bron		: [30, 15, 30, 30, 30, 50, 30, 30, 30, 30, 30, 30],	Descr = "Temperatuur welke de bron maximaal kan leveren zonder hulpvoorziening";
 			attribute<Eur_kW>	Ki_KW_min	:= const(50	[Eur_kW], .),							Descr = "";
 			attribute<Eur_kW>	Ki_KW_max	:= const(250[Eur_kW], .),							Descr = "";
@@ -241,7 +241,7 @@ container WarmteBronnen
 		}
 
 		unit<uint32> LTbronnen_capaciteit
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190415_LT_puntbronnen.shp"
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190510_LT_puntbronnen.shp"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
@@ -254,7 +254,7 @@ container WarmteBronnen
 			attribute<rdc_meter>	Point := MakeDefined(Geometry, PointFromLL);
 			
 			attribute<string> Type;			
-			attribute<unique_categorie> unique_categorie_rel := rlookup(Type, unique_categorie/values);
+			attribute<unique_categorie> unique_categorie_rel := rlookup(DEFTYPE, unique_categorie/values);
 			attribute<../categorie> categorie_rel := unique_categorie/categorie_rel[unique_categorie_rel];
 
 			attribute<string>	naam;
@@ -262,14 +262,14 @@ container WarmteBronnen
 			attribute<Percent>	bron_vol;
 			attribute<Percent>	bron_cap;
 			attribute<Celsius>	T_bron; 
-			attribute<Eur>		Ki_KW_min;
-			attribute<Eur>		Ki_KW_max;
+			attribute<Eur_KW>	Ki_KW_min;
+			attribute<Eur_KW>	Ki_KW_max;
 			attribute<Eur_GJ>	K_GJ;
 			attribute<MW>		MWth_max;
 			
 		}
 		
-		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/Type)
+		unit<uint32> unique_categorie := unique(LTbronnen_capaciteit/DEFTYPE)
 		{
 			attribute<categorie> categorie_rel := rlookup(values, categorie/code);
 		}
@@ -282,21 +282,27 @@ container WarmteBronnen
 			
 			attribute<../categorie>  Categorie_rel := LTbronnen_capaciteit/Categorie_rel;
 			
-			attribute<Percent> Bron_vol_spec := LTbronnen_capaciteit/bron_vol;
-			attribute<Percent> Bron_cap_spec := LTbronnen_capaciteit/bron_cap;
-			attribute<MW>      MWth_max_spec := LTbronnen_capaciteit/MWth_max;
-			attribute<Celsius> T_bron_spec   := LTbronnen_capaciteit/T_bron  ;
-			attribute<MW>      MWth_max := replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], LTwarmte/Categorie/MWth_max[categorie_rel]);
-			attribute<Ratio>   Bron_vol := (replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, LTwarmte/categorie/Bron_vol[categorie_rel])) / 100[Percent];
-			attribute<Ratio>   Bron_cap := (replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, LTwarmte/categorie/Bron_cap[categorie_rel])) / 100[Percent];
-			attribute<Celsius> T_bron   := replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], LTwarmte/categorie/T_bron[categorie_rel]);
+			//invoerwaardes
+			attribute<MW>			MWth_max_spec	:=	LTbronnen_capaciteit/MWth_max;
+			attribute<Percent>		Bron_vol_spec	:=	LTbronnen_capaciteit/bron_vol;
+			attribute<Percent>		Bron_cap_spec	:=	LTbronnen_capaciteit/bron_cap;
+			attribute<Celsius>		T_bron_spec		:=	LTbronnen_capaciteit/T_bron;
 			
-			attribute<KW>      P_ow_max  := MWth_max * 1000[KW / MW];			
+			attribute<Eur_KW>		Ki_kW_min_spec	:=	LTbronnen_capaciteit/Ki_kW_min;
+			attribute<Eur_KW>		Ki_kW_max_spec	:=	LTbronnen_capaciteit/Ki_kW_max;
+			attribute<Eur_GJ>		K_GJ_spec		:=	LTbronnen_capaciteit/K_GJ;
+			
+			//aangevulde waardes met kentallen wanneer geen invoerwaarde is opgegeven
+			attribute<MW>			MWth_max		:=	replace_value(MakeDefined(MWth_max_spec, 0[MW]), 0[MW], LTwarmte/Categorie/MWth_max[categorie_rel]);
+			attribute<Ratio>		Bron_vol		:=	(replace_value(MakeDefined(Bron_vol_spec, 0d), 0d, LTwarmte/categorie/Bron_vol[categorie_rel])) / 100[Percent];
+			attribute<Ratio>		Bron_cap		:=	(replace_value(MakeDefined(Bron_cap_spec, 0d), 0d, LTwarmte/categorie/Bron_cap[categorie_rel])) / 100[Percent];
+			attribute<Celsius>		T_bron			:=	replace_value(MakeDefined(T_bron_spec  , 0[Celsius]), 0[Celsius], LTwarmte/categorie/T_bron[categorie_rel]);
+
+			attribute<KW>			P_ow_max		:=	MWth_max * 1000[KW / MW];			
 						
-			attribute<Eur_kW> Ki_kW_min    := const(50[Eur_kw],.); // Source FO LT-warmtenetten, tabel 8
-			attribute<Eur_kW> Ki_kW_max    := const(250[Eur_kw],.);
-			
-			attribute<Eur_GJ> K_GJ         := const(0[Eur_GJ], .);
+			attribute<Eur_kW>		Ki_kW_min		:=	MakeDefined( Ki_kW_min_spec ,  50[Eur_kW]); // Source FO LT-warmtenetten, tabel 8
+			attribute<Eur_kW>		Ki_kW_max		:=	MakeDefined( Ki_kW_max_spec , 250[Eur_kW]);
+			attribute<Eur_GJ>		K_GJ			:=	MakeDefined( K_GJ_spec ,        0[Eur_GJ]);
 		}
 // 		unit<uint32> bron := union_unit(bedrijventerrein, glastuinbouw, LTbronnen_capaciteit) 
 // 		,	DialogType = "Map", DialogData = "point"
