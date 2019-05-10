@@ -343,7 +343,7 @@ Template LtWarmtenetImpl
 	//bepaling brongerelateerde kosten
 	container Gebied {
 		//Omvang gebied vraag-cluster
-		attribute<m2>				AreaProxy			(BronCluster)	:=	BronCluster/LengthProxy * distance_threshold,							Descr = "indicatie van oppervlakte afnamegebied";
+		attribute<m2>				AreaProxy			(BronCluster)	:=	max_elem((BronCluster/LengthProxy * distance_threshold), (PI() * distance_threshold^2d)) ,		Descr = "indicatie van oppervlakte afnamegebied";
 		
 		//Omvang gebied bron-cluster en vraag-cluster gecombineerd
 		
@@ -354,13 +354,30 @@ Template LtWarmtenetImpl
 		attribute<KW>				P_sec_primair		(BronCluster)	:=	sum(Selected/P_sec_primair,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de primaire bron van gebouwen in vraaggebied";
 		attribute<KW>				P_sec_hulp			(BronCluster)	:=	sum(Selected/P_sec_hulp,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de hulpvoorziening van gebouwen in vraaggebied";
 
+		container secundairnet
+		{
+			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
+			attribute<MW>		P_sec			(BronCluster)	:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
+			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
+			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
+			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
+			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
+			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
+			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
+			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
+			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
+			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
+		}
+		
 		//Aanvullende kosten brongerelateerd
-		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/LengthProxy * constanten/Ki_brondist,						Descr ="investeringskosten distributieleidingen om bron met elkaar te verbinden";
+		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/LengthProxy * secundairnet/K_m_brondist,					Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
 		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	const(constanten/Ki_Buffer, BronCluster),								Descr ="investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
 		attribute<Eur_Yr>			KL_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
-		attribute<Eur>				Ki_wd_wijkdist		(BronCluster)	:=	AreaProxy * constanten/Ki_distr,										Descr ="investeringskosten distributieleidingen wijkdistributie";
+		attribute<Eur>				Ki_wd_wijkdist		(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
 		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd_wijkdist * SpecifiekeInstellingen/Beleid/EIA/wd,					Descr ="investeringssubsidie distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			KL_wd				(BronCluster)	:=	(Ki_wd_wijkdist - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,			Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
