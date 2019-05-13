@@ -91,18 +91,10 @@ container Payments: FreeData = "False" // DEBUG
 
 		unit<float64> MQuantity   := 1000000 * Quantity;
 		unit<uint32>  PR          := Invoer/SpecifiekeInstellingen/PlanRegio;
-		unit<uint32>  Kostensoort := Accounting/KostenSoort;
-		unit<uint8>   BC          := Accounting/BC;
-
-		unit<uint32>  Actor := union_unit(Accounting/Kostensoort, BC, BC, Classifications/AanbodOptie) //Voorkeuren/WarmteOpties)
-		{
-			attribute<string> BaseName                 := union_data(., Kostensoort/name, BC/name, BC/name,  Classifications/AanbodOptie/name);
-			attribute<string> Name                     := union_data(., Kostensoort/name, BC/name + '/Eigenaar', BC/name + '/Gebruiker', Classifications/AanbodOptie/name);
-			attribute<string> full_name                := replace(name, '/', '_');
-			attribute<bool>   IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
-			attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BC), const(false, BC), const(false, Classifications/AanbodOptie));
-		}
-
+		unit<uint32>  Kostensoort := Classifications/KostenSoort;
+		unit<uint8>   BC          := Classifications/BebouwingsComponent;
+		unit<uint32>  Actor       := Classifications/Actor;
+		
 		container impl: IsHidden = "True"
 		{
 			unit<uint8> WKOC := subset(BC/KanWKO)

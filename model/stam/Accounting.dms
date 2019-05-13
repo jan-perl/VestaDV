@@ -13,53 +13,6 @@
 
 container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> Kostensoort : nrofrows = 26
-	{
-		parameter<uint32> nrAttr := 3;
-		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
-		{
-			attribute<string> values:
-			[
-				//name                   ,IsMaatschappelijkeKosten ,IsOverheid
-				 'Netwerk'               ,'True'                   ,'False'
-				,'GasNet'                ,'False'                  ,'True'
-				,'ElektriciteitsNet'     ,'False'                  ,'True'
-				,'AardGas'               ,'True'                   ,'False'
-				,'Elektriciteit'         ,'True'                   ,'False'
-				,'LokaleOpwekking'       ,'True'                   ,'False'
-				,'Gebouw'                ,'True'                   ,'False'
-				,'Onderhoud'             ,'True'                   ,'False'
-				,'Admin'                 ,'True'                   ,'False'
-				,'Comfort'               ,'True'                   ,'False'
-				,'InpandigeDistributie'  ,'True'                   ,'False'
-				,'WijkDistributie'       ,'True'                   ,'False'
-				,'PrimairTransport'      ,'True'                   ,'False'
-				,'Opwekking'             ,'True'                   ,'False'
-				,'WarmteInkoop'          ,'True'                   ,'False'
-				,'InpandigeDistributeur' ,'False'                  ,'False'
-				,'WijkDistributeur'      ,'False'                  ,'False'
-				,'PrimairTransporteur'   ,'False'                  ,'False'
-				,'Leverancier'           ,'False'                  ,'False'
-				,'KL_p'                  ,'False'                  ,'False'
-				,'KL_e'                  ,'False'                  ,'False'
-				,'EmissieRechten'        ,'True'                   ,'False'
-				,'BTW'                   ,'False'                  ,'True'
-				,'Precario'              ,'False'                  ,'True'
-				,'EnergieHeffing'        ,'False'                  ,'True'
-				,'Subsidie'              ,'False'                  ,'True'
-			];
-		}
-		attribute<.>      id                       := id(.);
-		attribute<string> name                     :=      Elements/values[value(id * nrAttr + 0,Elements)];
-		attribute<bool>   IsMaatschappelijkeKosten := bool(Elements/values[value(id * nrAttr + 1,Elements)]);
-		attribute<bool>   IsOverheid               := bool(Elements/values[value(id * nrAttr + 2,Elements)]);
-	}
-
-	unit<uint8> BC := Classifications/BebouwingsComponent
-	{
-		attribute<string> entity := 'BebouwingsComponenten/'+ name +'/BebouwingsObject';
-	}
-	
 	unit<uint32> mutatieSchema: nrofrows = 142
 	{
 		parameter<uint32> nrAttr := 6;
@@ -873,10 +826,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 				+ iif(PlanRegioRel == '', '', ' per '+PlanRegioRel);
 	}
 
-	unit<uint8> BTWC := subset(BC/DraagtBTW)
-	{
-		attribute<string> name := BC/name[nr_OrgEntity];
-	}
-	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', BTWC);
+	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', Classifications/BtwComponent);
 	unit<uint32> mutatie := applyBTW/result;
 }
