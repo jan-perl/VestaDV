@@ -166,6 +166,7 @@ Template LtWarmtenetImpl
 		attribute<KW>     P_Warmte_secundair := P_Warmte_primair / BronSrc/bron_cap[BronSrc_rel]; // warmte op temperatuur T_bron na eWP
 		
 		attribute<Celsius> T_bron            := BronSrc/T_bron[BronSrc_rel];
+		attribute<UInt32>	Categorie		:=	BronSrc/categorie_rel[BronSrc_rel];
 		
 		attribute<Ratio>   Weight            := P_Warmte_secundair / 1[KW];
 		attribute<Ratio>   Bron_vol_Weighted := BronSrc/Bron_vol[BronSrc_rel] * Weight; // bron_vol maal gewicht tbv gewogen middeling.									
