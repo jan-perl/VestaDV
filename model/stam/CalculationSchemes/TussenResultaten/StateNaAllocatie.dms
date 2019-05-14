@@ -32,7 +32,7 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 		attribute<Eur_yr> Kji_pt_KL       (PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
 		attribute<Eur_yr> Kji_ow_KL       (PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
 
-		attribute<Eur_yr> Kj_KL           (PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
+		attribute<Eur_yr> Kji_KL           (PlanRegio) := Kji_ge_KL + Kji_id_KL + Kji_wd_KL + Kji_pt_KL + Kji_ow_KL;
 
 		attribute<Eur_yr> Kmi_ge_KL       (PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
 		attribute<Eur_yr> Kmi_id_KL       (PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
