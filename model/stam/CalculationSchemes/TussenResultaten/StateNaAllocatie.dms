@@ -56,9 +56,9 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 		attribute<Eur_yr> Kji_id_Total    (PlanRegio) := Kji_id_KL + Kj_id_onderhoud;
 		attribute<Eur_yr> Kmi_id_Total    (PlanRegio) := Kmi_id_KL + Kj_id_onderhoud;
 		attribute<Eur_yr> Oe_id_subsidie  (PlanRegio) := KostenBaten/Oe_id_subsidie * float64(GebiedsOptie);
-		attribute<Eur_yr> Oj_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
+		attribute<Eur_yr> Oji_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
 //		attribute<Eur_yr> Om_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
-		attribute<Eur_yr> Kji_id_Netto    (PlanRegio) := Kji_id_Total - Oj_id_subsidie;
+		attribute<Eur_yr> Kji_id_Netto    (PlanRegio) := Kji_id_Total - Oji_id_subsidie;
 
 		attribute<Eur_yr>	Kj_wd_onderhoud		(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_Onderhoud							* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor onderhoud aan het wijkdistributienet";
 		attribute<Eur_yr>	Kj_wd_admin			(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_Admin								* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor administratie ten behoeve van het wijkdistributienet";
