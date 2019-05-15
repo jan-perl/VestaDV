@@ -66,6 +66,8 @@ container Units: isHidden = "True"
 
 	// actor based
 	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
+	unit<float64> nrUtil        := BaseUnit('Utiliteitsobjecten', float64);
+	unit<float64> nrVBO         := BaseUnit('Verblijfsobjecten', float64);
 	unit<float64> nrAansl       := BaseUnit('Aansluiting', float64);
 	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);
 	unit<float64> kW_Woning     := kW / nrWoningen;
@@ -73,6 +75,9 @@ container Units: isHidden = "True"
 	unit<float64> m_Aansl       := m  / nrAansl;
 	unit<float64> m2_Aansl      := m2 / nrAansl;
 	unit<float64> m2_Woning     := m2 / nrWoningen;
+	
+	unit<float64> MSR           := BaseUnit('Middenspanningsruimte', float64);
+
 
 	// financial
 	unit<float64> Eur           := BaseUnit('EurO', float64), Descr = "Euro prijspeil 2010";
@@ -95,6 +100,8 @@ container Units: isHidden = "True"
 	unit<float64> Eur_Woning    := Eur / nrWoningen;
 	unit<float64> Eur_Aansl     := Eur / nrAansl;
 	unit<float64> Eur_yr_Aansl  := Eur / yr / nrAansl;
+	unit<float64> Eur_MSR       := Eur / MSR;
+	
 
 	// no metric
 	unit<float64> Ratio         := range(1.0 * ha / ha, 0.0, 1.0), cdf = "Classifications/Ratio9K/ClassBreaks";
