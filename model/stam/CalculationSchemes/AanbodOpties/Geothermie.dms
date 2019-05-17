@@ -102,7 +102,7 @@ template GeoThermie
 	attribute<bool> NewGebruik             (PlanRegio) := RentabiliteitsAfweging && bron/InContour && not(OldGebruik);
 	attribute<bool> GebruikOptie           (PlanRegio) := NewGebruik || GebruiktOptie;
 
-	attribute<Eur_yr> Kj_Netto             (PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oj_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
+	attribute<Eur_yr> Kj_Netto             (PlanRegio) := Ki_Netto * NCW/ow28/AnnualisationFactor - Oji_Netto; // Rentabiliteit: jaarlijkse opbrengsten voor de energieproducent
 	
 	container Results := BeginStatus
 	{
