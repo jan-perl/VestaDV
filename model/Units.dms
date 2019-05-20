@@ -37,6 +37,8 @@ container Units: isHidden = "True"
 	// energy
 	unit<float64> J             := BaseUnit('J', float64), label = "Joule", descr = "SI unit for energy";
 //	unit<float64> J             := kg * m2 / (s * s), label = "Joule", descr = "SI unit for energy";
+	unit<float64> V             := BaseUnit('V', float64), label = "Volt";
+	unit<float64> A             := W / V;
 
 	// power
 	unit<float64> W             := J / s, label = "Watt", descr = "SI unit for power";
@@ -58,6 +60,8 @@ container Units: isHidden = "True"
 	unit<float64> PJ_yr         := PJ / yr, label = "PetaJoule per Year", Descr = "alternative unit for aggregated consumption";
 	unit<float64> GJ_yr_m2      := GJ_yr / m2;
 	unit<float64> GJ_m3         := GJ / m3;
+	unit<float64> m_kW          := m / kW;
+	
 
 	// effects of energyproduction
 	unit<float64> kg_GJ         := kg / GJ, Descr = "Co2 effect van energieproductie";
@@ -72,9 +76,17 @@ container Units: isHidden = "True"
 	unit<float64> Bouwlaag      := BaseUnit('Bouwlaag', float64);
 	unit<float64> kW_Woning     := kW / nrWoningen;
 	unit<float64> kW_m2         := kW / m2;
+	unit<float64> kW_Aansl      := kW / nrAansl;
 	unit<float64> m_Aansl       := m  / nrAansl;
 	unit<float64> m2_Aansl      := m2 / nrAansl;
 	unit<float64> m2_Woning     := m2 / nrWoningen;
+	
+	unit<float64> nrGroep       := BaseUnit('Groep', float64), Descr = "Aantal groepen in een aansluiting";
+	unit<float64> Groep_Aansl   := nrGroep / nrAansl;
+	unit<float64> Amp_Groep     := A / nrGroep;
+	
+	
+	
 	
 	unit<float64> MSR           := BaseUnit('Middenspanningsruimte', float64);
 
