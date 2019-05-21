@@ -69,7 +69,8 @@ template LtData
 	//Investeringskosten opwekking gebouwgerelateerd
 	attribute<Eur>			Ki_ow_Uitkoppel		(BebouwingsObject)	:=	P_sec_primair * constanten/Ki_uitkoppel,												Descr = "investeringskosten voor het uitkoppelen van de primaire bron";
 	attribute<Eur>			Ki_ow_eWP_col		(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * constanten/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
-	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Ki_ow_Uitkoppel + Ki_ow_eWP_col,														Descr = "investeringskosten opwekking gebouwgerelateerd";
+	attribute<Eur>			Ki_ow_buffer		(BebouwingsObject)	:=	const(constanten/Ki_buffer,	BebouwingsObject),											Descr = "voorlopige inschatting van investeringskosten voor warmtebuffer";
+	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Ki_ow_Uitkoppel + Ki_ow_eWP_col +Ki_ow_buffer,											Descr = "investeringskosten opwekking gebouwgerelateerd";
 	attribute<Eur>			Oi_ow_EIA			(BebouwingsObject)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,											Descr = "investeringssubsidie opwekking gebouwgerelateerd";
 	attribute<Eur_yr>		KL_ow				(BebouwingsObject)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten bronzijde opwekking";
 	

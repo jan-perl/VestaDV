@@ -361,69 +361,77 @@ template Resultaten
 		attribute<GJ_yr>	I15_Vraag_elektotaal		(Planregio)	:=	subitem/BW_elek + subitem/BU_elek;
 		attribute<GJ_yr>	I16_Vraag_elekwarmte		(Planregio)	:=	subitem/BW_ewP_warmte + subitem/BU_eWP_warmte;
 		attribute<GJ_yr>	I17_Vraag_warmtetotaal		(Planregio)	:=	subitem/BW_totaal + subitem/BU_totaal;
-		attribute<GJ_yr_ha>	I18_Warmte_hectare			(Planregio)	:=	const(10 [GJ_yr_ha], Planregio); //dummywaarde
+		attribute<GJ_yr_ha>	I18_Warmte_hectare			(Planregio)	:=	I17_Vraag_warmtetotaal / subitem/Oppervlak; //dummywaarde
 		attribute<GJ_yr>	I19_Vraag_koude				(Planregio)	:=	const(10 [GJ_yr], Planregio); //dummywaarde
-		attribute<KG_yr>	I18_Uitstoot_CO2			(Planregio)	:=	AllocExports/PlanRegioResults/Table/CO2_totaal;
-		attribute<Eur_yr>	I19_Nationale_kosten		(Planregio)	:=	maatschappelijk/Kmi_totaal - maatschappelijk/Om_comfort;
+		attribute<KG_yr>	I20_Uitstoot_CO2			(Planregio)	:=	AllocExports/PlanRegioResults/Table/CO2_totaal;
+		attribute<Eur_yr>	I21_Nationale_kosten		(Planregio)	:=	maatschappelijk/Kmi_totaal - maatschappelijk/Om_comfort;
 				
 		//eindverbruikerskosten woningen
-		attribute<EUR>		I18_W_eig_investering		(Planregio)	:=	subitem/W_Ki_aansl + subitem/W_Ki_gebouw + subitem/W_Ki_instal;
-		attribute<EUR>		I19_W_eig_subsidie			(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
-		attribute<EUR_yr>	I20_W_eig_kapitaallast		(Planregio)	:=	subitem/W_KL_installatie + subitem/W_KL_gebouw + subitem/W_KL_aansl;
-		attribute<EUR_yr>	I21_W_eig_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio); //split incentive moet nog over besloten worden
-		attribute<EUR>		I22_W_eig_BTWinvest			(Planregio)	:=	I18_W_eig_investering * 0.21; //voor nu constant, afhankelijk van beleidsscenario
-		attribute<EUR_yr>	I23_W_geb_inkoopgas			(Planregio)	:=	(Groengas ? 3d : 1d) * sum(Allocatie/BestaandeWoning/Aardgas/eindgebruik_excl, BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-		attribute<EUR_yr>	I24_W_geb_inkoopwarmte		(Planregio)	:=	subitem/W_MT_rest + subitem/W_MT_bio + subitem/W_MT_geo;
-		attribute<EUR_yr>	I25_W_geb_inkoopElek		(Planregio)	:=	Eindgebruiker/BestaandeWoning/gebouwen/Elektriciteit/Vraag_excl;
-		attribute<EUR_yr>	I26_W_geb_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio);//split incentive moet nog over besloten worden
-		attribute<EUR_yr>	I27_W_geb_energiebelasting	(Planregio)	:=	subitem/W_EH_gas + subitem/W_EH_elek;
+		attribute<EUR>		I22_W_eig_investering		(Planregio)	:=	subitem/W_Ki_aansl + subitem/W_Ki_gebouw + subitem/W_Ki_instal;
+		attribute<EUR>		I23_W_eig_subsidie			(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
+		attribute<EUR_yr>	I24_W_eig_kapitaallast		(Planregio)	:=	subitem/W_KL_installatie + subitem/W_KL_gebouw + subitem/W_KL_aansl;
+		attribute<EUR_yr>	I25_W_eig_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio); //split incentive moet nog over besloten worden
+		attribute<EUR>		I26_W_eig_BTWinvest			(Planregio)	:=	I22_W_eig_investering * 0.21; //voor nu constant, afhankelijk van beleidsscenario
+		attribute<EUR_yr>	I27_W_geb_inkoopgas			(Planregio)	:=	(Groengas ? 3d : 1d) * sum(Allocatie/BestaandeWoning/Aardgas/eindgebruik_excl, BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+		attribute<EUR_yr>	I28_W_geb_inkoopwarmte		(Planregio)	:=	subitem/W_MT_rest + subitem/W_MT_bio + subitem/W_MT_geo;
+		attribute<EUR_yr>	I29_W_geb_inkoopElek		(Planregio)	:=	Eindgebruiker/BestaandeWoning/gebouwen/Elektriciteit/Vraag_excl;
+		attribute<EUR_yr>	I30_W_geb_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio);//split incentive moet nog over besloten worden
+		attribute<EUR_yr>	I31_W_geb_energiebelasting	(Planregio)	:=	subitem/W_EH_gas + subitem/W_EH_elek;
 				
 		//eindverbruikerskosten utiliteit
-		attribute<EUR>		I28_U_eig_investering		(Planregio)	:=	subitem/U_Ki_aansl + subitem/U_Ki_gebouw + subitem/U_Ki_instal;
-		attribute<EUR>		I29_U_eig_subsidie			(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
-		attribute<EUR_yr>	I30_U_eig_kapitaallast		(Planregio)	:=	subitem/U_KL_installatie + subitem/U_KL_gebouw + subitem/U_KL_aansl;
-		attribute<EUR_yr>	I31_U_eig_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio); //split incentive moet nog over besloten worden
-		attribute<EUR_yr>	I32_U_geb_inkoopgas			(Planregio)	:=	(Groengas ? 3d : 1d) * sum(Allocatie/BestaandeUtil/Aardgas/eindgebruik_excl, BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-		attribute<EUR_yr>	I33_U_geb_inkoopwarmte		(Planregio)	:=	subitem/U_MT_rest + subitem/U_MT_bio + subitem/U_MT_geo;
-		attribute<EUR_yr>	I34_U_geb_inkoopElek		(Planregio)	:=	Eindgebruiker/BestaandeUtil/gebouwen/Elektriciteit/Vraag_excl;
-		attribute<EUR_yr>	I35_U_geb_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio);//split incentive moet nog over besloten worden
-		attribute<EUR_yr>	I36_U_geb_energiebelasting	(Planregio)	:=	subitem/U_EH_gas + subitem/U_EH_elek;
+		attribute<EUR>		I32_U_eig_investering		(Planregio)	:=	subitem/U_Ki_aansl + subitem/U_Ki_gebouw + subitem/U_Ki_instal;
+		attribute<EUR>		I33_U_eig_subsidie			(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
+		attribute<EUR_yr>	I34_U_eig_kapitaallast		(Planregio)	:=	subitem/U_KL_installatie + subitem/U_KL_gebouw + subitem/U_KL_aansl;
+		attribute<EUR_yr>	I35_U_eig_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio); //split incentive moet nog over besloten worden
+		attribute<EUR_yr>	I36_U_geb_inkoopgas			(Planregio)	:=	(Groengas ? 3d : 1d) * sum(Allocatie/BestaandeUtil/Aardgas/eindgebruik_excl, BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+		attribute<EUR_yr>	I37_U_geb_inkoopwarmte		(Planregio)	:=	subitem/U_MT_rest + subitem/U_MT_bio + subitem/U_MT_geo;
+		attribute<EUR_yr>	I38_U_geb_inkoopElek		(Planregio)	:=	Eindgebruiker/BestaandeUtil/gebouwen/Elektriciteit/Vraag_excl;
+		attribute<EUR_yr>	I39_U_geb_splitincentive	(Planregio)	:=	const(0.0[Eur_yr], Planregio);//split incentive moet nog over besloten worden
+		attribute<EUR_yr>	I40_U_geb_energiebelasting	(Planregio)	:=	subitem/U_EH_gas + subitem/U_EH_elek;
 				
 		//warmtebedrijf
-		attribute<EUR>		I37_Wbedrijf_investering	(Planregio)	:=	StateNaAllocatie/Stock/Ki_Totaal;
-		attribute<EUR>		I38_Wbedrijf_subsidie		(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
-		attribute<EUR_yr>	I39_Wbedrijf_kapitaallast	(Planregio)	:=	StateNaAllocatie/Flow/Kji_KL;
-		attribute<EUR_yr>	I40_Wbedrijf_inkoopenergie	(Planregio)	:=	(Groengas ? 3d : 1d) * StateNaAllocatie/Flow/Kj_wd_verbruik;
-		attribute<EUR_yr>	I41_Wbedrijf_inkomsten		(Planregio)	:=	StateNaAllocatie/Flow/Oj_totaal;
-		attribute<EUR_yr>	I42_Wbedrijf_lopendekosten	(Planregio)	:=	StateNaAllocatie/Flow/Kj_lopendekosten;
-		attribute<EUR_yr>	I43_Wbedrijf_energiebel		(Planregio)	:=	StateNaAllocatie/Flow/Kj_EH_bijstook;
-		attribute<EUR_yr>	I44_Wbedrijf_resultaat		(Planregio)	:=	StateNaAllocatie/Flow/Kji_netto; //dit moet nog nader gecontroleerd worden
+		attribute<EUR>		I41_Wbedrijf_investering	(Planregio)	:=	StateNaAllocatie/Stock/Ki_Totaal;
+		attribute<EUR>		I42_Wbedrijf_subsidie		(Planregio)	:=	const(0.0[Eur], Planregio); // voor nu geen subsidies opgenomen
+		attribute<EUR_yr>	I43_Wbedrijf_kapitaallast	(Planregio)	:=	StateNaAllocatie/Flow/Kji_KL;
+		attribute<EUR_yr>	I44_Wbedrijf_inkoopenergie	(Planregio)	:=	(Groengas ? 3d : 1d) * StateNaAllocatie/Flow/Kj_wd_verbruik;
+		attribute<EUR_yr>	I45_Wbedrijf_inkomsten		(Planregio)	:=	StateNaAllocatie/Flow/Oj_totaal;
+		attribute<EUR_yr>	I46_Wbedrijf_lopendekosten	(Planregio)	:=	StateNaAllocatie/Flow/Kj_lopendekosten;
+		attribute<EUR_yr>	I47_Wbedrijf_energiebel		(Planregio)	:=	StateNaAllocatie/Flow/Kj_EH_bijstook;
+		attribute<EUR_yr>	I48_Wbedrijf_resultaat		(Planregio)	:=	StateNaAllocatie/Flow/Kji_netto; //dit moet nog nader gecontroleerd worden
 				
 		//maatschappelijk
-		attribute<EUR>		I45_Gnet_verwijderen		(Planregio)	:=	(I09_Vraag_aardgas + I10_Vraag_groengas > 10 [GJ_yr]) ? const(0.0[EUR], Planregio) : const(100.0[EUR],Planregio); // nog niet geimplementeerd
-		attribute<EUR_yr>	I46_Gnet_kapitaallast		(Planregio)	:=	maatschappelijk/net/Aardgas;
-		attribute<EUR_yr>	I47_Gnet_afschrijving		(Planregio)	:=	(I09_Vraag_aardgas + I10_Vraag_groengas > 10 [GJ_yr]) ? const(0.0[EUR_yr], Planregio) : const(100.0[EUR_yr],Planregio); // nog niet geimplementeerd
-		attribute<EUR>		I48_Enet_verzwaren			(Planregio)	:=	const(333.0[EUR], Planregio); // nog niet geimplementeerd
-		attribute<EUR_yr>	I49_Enet_kapitaallast		(Planregio)	:=	maatschappelijk/net/Elektriciteit;
-		attribute<EUR_ton>	I50_Eur_vermeden_CO2		(Planregio)	:=	const(555.0[EUR_ton], Planregio); //hierover moet nog worden besloten
-				
+		attribute<EUR>		I49_Gnet_verwijderen		(Planregio)	:=	(I11_Vraag_aardgas + I12_Vraag_groengas > 10 [GJ_yr]) ? const(0.0[EUR], Planregio) : const(100.0[EUR],Planregio); // nog niet geimplementeerd
+		attribute<EUR>		I51_Gnet_vervangen			(Planregio)	:=	(I11_Vraag_aardgas + I12_Vraag_groengas < 10 [GJ_yr]) ? const(0.0[EUR], Planregio) : const(100.0[EUR],Planregio); // nog niet geimplementeerd
+		attribute<EUR_yr>	I50_Gnet_kapitaallast		(Planregio)	:=	maatschappelijk/net/Aardgas;
+		attribute<EUR>		I52_Enet_verzwaren			(Planregio)	:=	const(333.0[EUR], Planregio); // nog niet geimplementeerd
+		attribute<EUR_yr>	I53_Enet_kapitaallast		(Planregio)	:=	maatschappelijk/net/Elektriciteit;
+		attribute<EUR_ton>	I54_Eur_vermeden_CO2		(Planregio)	:=	makedefined((subitem/Delta_nat_kosten / subitem/Delta_CO2_ton), 0.0[EUR_ton]);
+
 		parameter<bool>	Groengas := true;
 				
 		container subitem
 			{
 			//energieverbruik
-			attribute<GJ_yr>	BW_eWP_warmte (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/eWP,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-			attribute<GJ_yr>	BU_eWP_warmte (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/eWP,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BW_WKO_warmte (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/WKO,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-			attribute<GJ_yr>	BU_WKO_warmte (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/WKO,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BU_aardgas (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/aardgas,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BW_aardgas (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/aardgas,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-			attribute<GJ_yr>	BU_MT_warmte (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/warmteMT,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BW_MT_warmte (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/warmteMT,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-			attribute<GJ_yr>	BU_totaal (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/warmtetotaal,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BW_totaal (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/warmtetotaal,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
-			attribute<GJ_yr>	BU_elek (Planregio) := sum(Allocatie/BestaandeUtil/Metervraag/elektriciteit,              BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
-			attribute<GJ_yr>	BW_elek (Planregio) := sum(Allocatie/BestaandeWoning/Metervraag/elektriciteit,              BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BW_eWP_warmte		(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/eWP,				BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BU_eWP_warmte		(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/eWP, 				BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BW_WKO_warmte		(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/WKO,				BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BU_WKO_warmte		(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/WKO,					BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BU_aardgas			(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/aardgas,				BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BW_aardgas			(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/aardgas,			BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BU_MT_warmte		(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/warmteMT,			BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BW_MT_warmte		(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/warmteMT,			BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BU_totaal			(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/warmtetotaal,		BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BW_totaal			(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/warmtetotaal,		BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			attribute<GJ_yr>	BU_elek				(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/elektriciteit,		BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
+			attribute<GJ_yr>	BW_elek				(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/elektriciteit,		BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
+			
+			attribute<ha>		Oppervlak			(Planregio)		:=	Geography/RegioIndelingen/buurt/Overigen/a_lan_ha, Descr = "landoppervlakte van de buurt";
+			attribute<kg_yr>	Orig_CO2			(Planregio)		:=	StartJaar/AllocExports/PlanRegioResults/Table/CO2_totaal;
+			attribute<kg_yr>	Delta_CO2			(Planregio)		:=	Orig_CO2 - I20_Uitstoot_CO2;
+			attribute<ton_yr>	Delta_CO2_ton		(Planregio)		:=	Delta_CO2 / 1000.0[kg_yr / ton_yr];
+			
+			attribute<EUR_yr>	Orig_nat_kosten		(Planregio)		:=	StartJaar/maatschappelijk/Kmi_totaal - StartJaar/maatschappelijk/Om_comfort;
+			attribute<EUR_yr>	Delta_nat_kosten	(Planregio)		:=	I21_Nationale_kosten - Orig_nat_kosten;
 					
 			//energieverbruik kosten heffing
 			attribute<EUR_yr>	U_EH_gas	(Planregio)	:=	sum(Allocatie/BestaandeUtil/Aardgas/EnergieHeffing,				BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);

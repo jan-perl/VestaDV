@@ -64,6 +64,7 @@ container Units: isHidden = "True"
 	unit<float64> kg_GJ         := kg / GJ, Descr = "Co2 effect van energieproductie";
 	unit<float64> g_GJ          :=  g / GJ, Descr = "andere effect van energieproductie";
 	unit<float64> kg_yr         := kg / yr, Descr = "Co2 effect per jaar";
+	unit<float64> ton_yr        := ton / yr, Descr = "CO2 effect per jaar in tonnen";
 
 	// actor based
 	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
