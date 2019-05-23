@@ -95,11 +95,11 @@ template RestWarmte
 		{
 			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Kj_warmtewaarde : 0[Eur_yr]);
 			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Km_warmtewaarde : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_ow_onderhoud + (GebruikOptie ? lastiter/Assignment/Kj_ow_onderhoud : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := BeginStatus/Flow/Kj_ow_admin     + (GebruikOptie ? lastiter/Assignment/Kj_ow_admin     : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := BeginStatus/Flow/Kj_ow_oh        + (GebruikOptie ? lastiter/Assignment/Kj_ow_oh        : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_adm        (PlanRegio) := BeginStatus/Flow/Kj_ow_adm      + (GebruikOptie ? lastiter/Assignment/Kj_ow_adm       : 0[Eur_yr]);
 
-			attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := BeginStatus/Flow/Kj_pt_onderhoud + (GebruikOptie ? lastiter/Assignment/Kj_pt_onderhoud : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := BeginStatus/Flow/Kj_pt_admin     + (GebruikOptie ? lastiter/Assignment/Kj_pt_admin     : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := BeginStatus/Flow/Kj_pt_oh        + (GebruikOptie ? lastiter/Assignment/Kj_pt_oh        : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := BeginStatus/Flow/Kj_pt_adm       + (GebruikOptie ? lastiter/Assignment/Kj_pt_adm       : 0[Eur_yr]);
 			attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := BeginStatus/Flow/Kj_pt_precario  + (GebruikOptie ? lastiter/Assignment/Kj_pt_precario  : 0[Eur_yr]);
 			attribute<Eur_yr> Oj_SDE          (PlanRegio) := BeginStatus/Flow/Oj_SDE          + (GebruikOptie ? lastiter/Assignment/Oj_SDE          : 0[Eur_yr]);
 		}

@@ -626,33 +626,34 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 				,'AardGas'               ,'True'                   ,'False',  ''
 				,'Elektriciteit'         ,'True'                   ,'False',  ''
 				,'LokaleOpwekking'       ,'True'                   ,'False',  ''
-				,'Gebouw'                ,'True'                   ,'False',  'ge'
+				,'Gebouw'                ,'True'                   ,'False',  ''
 				,'Onderhoud'             ,'True'                   ,'False',  ''
 				,'Admin'                 ,'True'                   ,'False',  ''
 				,'Comfort'               ,'True'                   ,'False',  ''
-				,'InpandigeDistributie'  ,'True'                   ,'False',  'id'
-				,'WijkDistributie'       ,'True'                   ,'False', 'wd'
-				,'PrimairTransport'      ,'True'                   ,'False',  'pt'
+				,'InpandigeDistributie'  ,'True'                   ,'False',  ''
+				,'WijkDistributie'       ,'True'                   ,'False',  ''
+				,'PrimairTransport'      ,'True'                   ,'False',  ''
 				,'Opwekking'             ,'True'                   ,'False',  ''
 				,'WarmteInkoop'          ,'True'                   ,'False',  ''
-				,'InpandigeDistributeur' ,'False'                  ,'False',  ''
-				,'WijkDistributeur'      ,'False'                  ,'False',  ''
-				,'PrimairTransporteur'   ,'False'                  ,'False',  ''
+				,'InpandigeDistributeur' ,'False'                  ,'False',  'id'
+				,'WijkDistributeur'      ,'False'                  ,'False',  'wd'
+				,'PrimairTransporteur'   ,'False'                  ,'False',  'pt'
 				,'Leverancier'           ,'False'                  ,'False',  ''
 				,'KL_p'                  ,'False'                  ,'False',  ''
 				,'KL_e'                  ,'False'                  ,'False',  ''
 				,'EmissieRechten'        ,'True'                   ,'False',  ''
-				,'BTW'                   ,'False'                  ,'True',  ''
-				,'Precario'              ,'False'                  ,'True',  ''
-				,'EnergieHeffing'        ,'False'                  ,'True',  ''
-				,'Subsidie'              ,'False'                  ,'True',  ''
+				,'BTW'                   ,'False'                  ,'True',   ''
+				,'Precario'              ,'False'                  ,'True',   ''
+				,'EnergieHeffing'        ,'False'                  ,'True',   ''
+				,'Subsidie'              ,'False'                  ,'True',   ''
 			];
 		}
-		attribute<.>      id                       := id(.);
-		attribute<string> name                     :=      Elements/values[value(id * nrAttr + 0,Elements)];
-		attribute<bool>   IsMaatschappelijkeKosten := bool(Elements/values[value(id * nrAttr + 1,Elements)]);
-		attribute<bool>   IsOverheid               := bool(Elements/values[value(id * nrAttr + 2,Elements)]);
+		attribute<string> name                     :=      Elements/values[value(id(.) * nrAttr + 0,Elements)];
+		attribute<bool>   IsMaatschappelijkeKosten := bool(Elements/values[value(id(.) * nrAttr + 1,Elements)]);
+		attribute<bool>   IsOverheid               := bool(Elements/values[value(id(.) * nrAttr + 2,Elements)]);
+		attribute<string> GebiedsOptieActorCode    :=      Elements/values[value(id(.) * nrAttr + 3,Elements)];
 	}
+	
 	unit<uint32>  Actor := union_unit(Kostensoort, BebouwingsComponent, BebouwingsComponent, AanbodOptie)
 	{
 		attribute<string> BaseName                 := union_data(., Kostensoort/name, BebouwingsComponent/name, BebouwingsComponent/name,  AanbodOptie/name);
@@ -660,6 +661,17 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> full_name                := replace(name, '/', '_');
 		attribute<bool>   IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
 		attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
+		attribute<string> GebiedsOptieActorCode    := union_data(., Kostensoort/GebiedsOptieActorCode, const('', BebouwingsComponent), const('', BebouwingsComponent), const('ow', AanbodOptie));
+	}
+	unit<uint32> GebiedsOptieActor := subset(Actor/GebiedsOptieActorCode <> '')
+	{
+		attribute<string> name := Actor/name[nr_OrgEntity];
+		attribute<string> code := Actor/GebiedsOptieActorCode[nr_OrgEntity];
+	}
+	unit<uint8> GebiedsOptieActor_uint8 := range(uint8, 0b, uint8(#GebiedsOptieActor))
+	{
+		attribute<string> name := GebiedsOptieActor/name[id(.)[GebiedsOptieActor]];
+		attribute<string> code := GebiedsOptieActor/code[id(.)[GebiedsOptieActor]];
 	}
 
 

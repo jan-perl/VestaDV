@@ -381,12 +381,12 @@ Template LtWarmtenetImpl
 		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd_wijkdist * SpecifiekeInstellingen/Beleid/EIA/wd,					Descr ="investeringssubsidie distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			KL_wd				(BronCluster)	:=	(Ki_wd_wijkdist - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,			Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
-		attribute<Eur_Yr>			Kj_ow_admin			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_admin,										Descr ="administratiekosten opwekking";
-		attribute<Eur_Yr>			Kj_ow_onderhoud		(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
-		attribute<Eur_Yr>			Kj_wd_admin			(BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_admin,							Descr ="administratiekosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_wd_onderhoud		(BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_onderhoud,						Descr ="onderhoudskosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_onderhoud		(BronCluster)	:=	Kj_ow_onderhoud + Kj_wd_onderhoud,										Descr ="onderhoudskosten brongerelateerd";
-		attribute<Eur_Yr>			Kj_admin			(BronCluster)	:=	Kj_ow_admin + Kj_wd_admin,												Descr ="administratiekosten brongerelateerd";
+		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_admin,										Descr ="administratiekosten opwekking";
+		attribute<Eur_Yr>			Kj_ow_oh            (BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
+		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_admin,							Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_wd_oh            (BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_onderhoud,						Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_onderhoud		(BronCluster)	:=	Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
+		attribute<Eur_Yr>			Kj_admin			(BronCluster)	:=	Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
 		
 		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	KL_ow + KL_wd + Kj_onderhoud + Kj_admin + Kj_productie,					Descr ="totale jaarlijkse kosten brongerelateerd";
 		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge - Kj_brongerelateerd,									Descr ="rentabiliteit van aanleg gebiedsoptie";
@@ -431,10 +431,10 @@ Template LtWarmtenetImpl
 		attribute<Eur_yr>		Kj_totaal			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
 		attribute<Eur>			Ki_ow_bron			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);
 		attribute<Eur>			Ki_wd_bron			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_wd_wijkdist);
-		attribute<Eur_yr>		Kj_wd_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_onderhoud);
-		attribute<Eur_yr>		Kj_wd_admin_bron	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_admin);
-		attribute<Eur_yr>		Kj_ow_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_onderhoud);
-		attribute<Eur_yr>		Kj_ow_admin_bron	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_admin);
+		attribute<Eur_yr>		Kj_wd_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_oh);
+		attribute<Eur_yr>		Kj_wd_adm_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_adm);
+		attribute<Eur_yr>		Kj_ow_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_oh);
+		attribute<Eur_yr>		Kj_ow_adm_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_adm);
 		attribute<Eur_yr>		Kj_productie_bron	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_productie);
 		attribute<Eur_yr>		Oi_wd_EIA_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_wd_EIA);
 		attribute<Eur_yr>		Oi_ow_EIA_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_ow_EIA);

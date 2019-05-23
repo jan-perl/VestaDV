@@ -13,7 +13,7 @@
 
 container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 142
+	unit<uint32> mutatieSchema: nrofrows = 136
 	{
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -346,7 +346,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					AF28_BW,
 					''
 
-			,	'projectmanagemente', 'Admin', 'KL_e', // DEBUG, TODO: @@@ Test of de 'e' uit de naam weg kan. N.B.: mogelijke name-collision met voor-voorgaande.
+			,	'projectmanagement', 'Admin', 'KL_e', // DEBUG, TODO: @@@ Test of de 'e' uit de naam weg kan. N.B.: mogelijke name-collision met voor-voorgaande.
 					'StateNaAllocatie/Stock/Ki_ge_pm',
 					AF28_MR,
 					''
@@ -403,11 +403,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 
-			,	'@RO@', 'Onderhoud', 'InpandigeDistributeur', 
-					'StateNaAllocatie/flow/Kj_id_onderhoud *'+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
 		// ===== WijkDistributie kosten
 			,	'@RO@', 'KL_p', 'WijkDistributeur', 
 					'StateNaAllocatie/Stock/Ki_wd * '+ROSEL, 
@@ -434,21 +429,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 
-			,	'@RO@', 'Onderhoud', 'WijkDistributeur', 
-					'StateNaAllocatie/Flow/Kj_wd_onderhoud *'+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Admin', 'WijkDistributeur', 
-					'StateNaAllocatie/Flow/Kj_wd_admin * '+ROSEL, 
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Precario', 'WijkDistributeur', 
-					'StateNaAllocatie/Flow/Kj_wd_precario * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-	
 			,	'@RO@_bijstook', 'AardGas', 'WijkDistributeur', 
 					'StateNaAllocatie/Flow/Km_wd_verbruik * '+ROSEL,
 					'',  // TODO: Niet voor WKO
@@ -486,21 +466,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 
-			,	'@RO@', 'Onderhoud', 'PrimairTransporteur', 
-					'StateNaAllocatie/Flow/Kj_pt_onderhoud * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Admin', 'PrimairTransporteur', 
-					'StateNaAllocatie/Flow/Kj_pt_admin * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Precario', 'PrimairTransporteur', 
-					'StateNaAllocatie/Flow/Kj_pt_precario * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
 		// ===== OPWEKKING
 			,	'@RO@', 'KL_p', '@RO@', 
 					'StateNaAllocatie/Stock/Ki_ow * '+ROSEL, 
@@ -526,17 +491,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'StateNaAllocatie/Flow/Oe_ow_subsidie *'+ROSEL,
 					'',
 					''
-
-			,	'', 'Onderhoud', '@RO@', 
-					'StateNaAllocatie/Flow/Kj_ow_onderhoud * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'', 'Admin', '@RO@', 
-					'StateNaAllocatie/Flow/Kj_ow_admin * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
 			,	'Commodity', 'WarmteInkoop', '@RO@', 
 					'StateNaAllocatie/Flow/Km_ow_verbruik * '+ROSEL,
 					'',  // TODO: Niet voor WKO
@@ -555,6 +509,21 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 //				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'BebouwingsComponenten/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
 				
 
+		// ===== generieke kostenspecificatie voor alle gebiedsoptie actoren
+			,	'@RO@', 'Onderhoud', '@GOAN@', 
+					'StateNaAllocatie/Flow/Kj_@GOAC@_oh * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+
+			,	'@RO@', 'Admin', '@GOAN@', 
+					'StateNaAllocatie/Flow/Kj_@GOAC@_adm * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+			,	'@RO@', 'Precario', '@GOAN@', 
+					'StateNaAllocatie/Flow/Kj_@GOAC@_precario * '+ROSEL,
+					'',  // TODO: Niet voor WKO
+					''
+	
 		// ===== LEVERANCIER
 			,	'Verrekening', 'BestaandeWoning/Eigenaar', 'Leverancier',
 					'StateNaAllocatie/Flow/Kji_ge_Netto', 
@@ -582,7 +551,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					''
 
 			,	'@RO@', 'Admin', 'Leverancier', 
-					'StateNaAllocatie/Flow/Kj_lv_admin * '+ROSEL,
+					'StateNaAllocatie/Flow/Kj_lv_adm * '+ROSEL,
 					'',  // TODO: Niet voor WKO
 					''
 		// ===== WKO
@@ -727,7 +696,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 //					''
 //					
 //			,	'@CO@', 'Admin', 'WijkDistributeur', 
-//					'StateNaAllocatie/@CO@/Kj_wd_admin',
+//					'StateNaAllocatie/@CO@/Kj_wd_adm',
 //					'',
 //					''
 //					
@@ -768,7 +737,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					''
 
 //			,	'', 'Admin', '@CO@', 
-//					'StateNaAllocatie/@CO@/Kj_ow_admin',
+//					'StateNaAllocatie/@CO@/Kj_ow_adm',
 //					'',
 //					''
 //					
@@ -806,7 +775,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 //			,	'@CO@', 'Admin', 'Leverancier', 
-//					'StateNaAllocatie/Flow/Kj_lv_admin * '+ROSEL,
+//					'StateNaAllocatie/Flow/Kj_lv_adm * '+ROSEL,
 //					'',  // TODO: Niet voor WKO
 //					''
 //			
@@ -826,6 +795,7 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 				+ iif(PlanRegioRel == '', '', ' per '+PlanRegioRel);
 	}
 
-	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', Classifications/BtwComponent);
+	container applyGOA := CalculationSchemes/Payments/substitute(mutatieSchema, '@GOAN@', Classifications/GebiedsOptieActor_uint8, '@GOAC@');
+	container applyBTW := CalculationSchemes/Payments/substitute(applyGOA/result, '@BTW@', Classifications/BtwComponent);
 	unit<uint32> mutatie := applyBTW/result;
 }

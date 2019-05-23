@@ -12,6 +12,7 @@ container Payments: FreeData = "False" // DEBUG
 		unit<uint32> src;
 		parameter<string> key;
 		unit<uint8> valueset;
+		parameter<string> key2 := '@@@';
 		// end case parameters
 
 		attribute<bool>   condition   (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
@@ -21,12 +22,13 @@ container Payments: FreeData = "False" // DEBUG
 		{
 			attribute<src>    src_rel       := classify(id(.), firstResult);
 			attribute<string> valueset_name := MakeDefined(valueset/name[value(id(.)-firstResult[src_rel], valueset)], 'xxx');
-			attribute<string> name          := replace(src/name        [src_rel], key, valueset_name);
-			attribute<string> leverancier   := replace(src/leverancier [src_rel], key, valueset_name);
-			attribute<string> afnemer       := replace(src/afnemer     [src_rel], key, valueset_name);
-			attribute<string> Expr          := replace(src/Expr        [src_rel], key, valueset_name);
-			attribute<string> AnnuFactor    := replace(src/AnnuFactor  [src_rel], key, valueset_name);
-			attribute<string> PlanRegioRel  := replace(src/PlanRegioRel[src_rel], key, valueset_name);
+			attribute<string> valueset_code := = (key2=='@@@') ? 'valueset_name' : 'valueset/code[value(id(.)-firstResult[src_rel], valueset)]';
+			attribute<string> name          := replace(src/name        [src_rel], key, valueset_name, key2, valueset_code);
+			attribute<string> leverancier   := replace(src/leverancier [src_rel], key, valueset_name, key2, valueset_code);
+			attribute<string> afnemer       := replace(src/afnemer     [src_rel], key, valueset_name, key2, valueset_code);
+			attribute<string> Expr          := replace(src/Expr        [src_rel], key, valueset_name, key2, valueset_code);
+			attribute<string> AnnuFactor    := replace(src/AnnuFactor  [src_rel], key, valueset_name, key2, valueset_code);
+			attribute<string> PlanRegioRel  := replace(src/PlanRegioRel[src_rel], key, valueset_name, key2, valueset_code);
 		}
 	}
 

@@ -173,15 +173,24 @@ template TussenResultaten
 			
 			container Flow
 			{
-				attribute<Eur_yr> Kj_pt_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
-				attribute<Eur_yr> Kj_pt_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_id_oh        (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_id_adm       (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_id_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+	
+				attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_wd_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
+	
+				attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Kj_pt_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 	
-				attribute<Eur_yr> Kj_ow_onderhoud (PlanRegio) := const(0[Eur_yr], PlanRegio);
-				attribute<Eur_yr> Kj_ow_admin     (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := const(0[Eur_yr], PlanRegio);
+				attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
+				attribute<Eur_yr> Kj_ow_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 			}
 	

@@ -96,5 +96,5 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 
 	// verwijderkosten ten opzicht van de oorspronkelijke investeringskosten
 	parameter<float64> VB_g := 0.5;
-//	parameter<float64> VB_e := 0.5; Not Implemented
+//	parameter<float64> VB_e := 0.5; Not Implemented
 }

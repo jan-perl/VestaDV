@@ -91,8 +91,8 @@ template WijkTempl
 		}
 		container Flow := BeginStatus/Flow
 		{
-			attribute<Eur_yr> Kj_ow_Onderhoud(PlanRegio) := BeginStatus/Flow/Kj_ow_Onderhoud + (GebruikOptie ? Kosten/Kj_Onderhoud    : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_admin    (PlanRegio) := BeginStatus/Flow/Kj_ow_Admin     + (GebruikOptie ? Kosten/Kj_admin        : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_oh       (PlanRegio) := BeginStatus/Flow/Kj_ow_oh        + (GebruikOptie ? Kosten/Kj_Onderhoud    : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_adm      (PlanRegio) := BeginStatus/Flow/Kj_ow_adm       + (GebruikOptie ? Kosten/Kj_admin        : 0[Eur_yr]);
 			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? Kosten/Kj_WarmteWaarde : 0[Eur_yr]);
 			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? Kosten/Km_WarmteWaarde : 0[Eur_yr]);
 			attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + (GebruikOptie ? Vj_Warmte * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel] : 0[Eur_yr]);

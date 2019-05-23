@@ -107,10 +107,10 @@ template KostenBaten
 			attribute<Eur> Ki_ge_pm           (PlanRegio) := bw/ki_ge_pm + nw/Ki_ge_pm;
 
 			attribute<Eur_yr> Kj_wd_base      (PlanRegio) := bw/Kj_wd_base + nw/Kj_wd_base;
-			attribute<Eur_yr> Kj_wd_Admin     (PlanRegio) := Kj_wd_base * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr> Kj_wd_Onderhoud (PlanRegio) := Kj_wd_base - Kj_wd_Admin;
+			attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := Kj_wd_base * Kengetallen/Onderhoud/R_Admin;
+			attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Kj_wd_base - Kj_wd_Adm;
 
-			attribute<Eur_yr> Kj_id_Onderhoud (PlanRegio) := bw/Kj_id_base + nw/Kj_id_base;
+			attribute<Eur_yr> Kj_id_Oh        (PlanRegio) := bw/Kj_id_base + nw/Kj_id_base;
 
 			attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := bw/Kj_hv;
 		}
@@ -392,13 +392,14 @@ template KostenBaten
 		attribute<Eur>    Ki_wd           (PlanRegio) := SecundairNet/Ki_Totaal + Wonen/Ki_wd, Source = "FO v7a F 2";
 
 		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := Wonen/Kj_ge_hv;
-		attribute<Eur_yr> Kj_id_Onderhoud (PlanRegio) := Wonen/Kj_id_Onderhoud;
-		attribute<Eur_yr> Kj_wd_Onderhoud (PlanRegio) := Wonen/Kj_wd_Onderhoud + Utiliteit/Kj_Onderhoud + Glastuinbouw/Kj_Onderhoud + SecundairNet/Kj_Onderhoud;
-		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_wd_Onderhoud + Kj_id_Onderhoud;
+		attribute<Eur_yr> Kj_id_oh        (PlanRegio) := Wonen/Kj_id_oh;
+		attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Wonen/Kj_wd_oh + Utiliteit/Kj_Onderhoud + Glastuinbouw/Kj_Onderhoud + SecundairNet/Kj_Onderhoud;
+		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_wd_oh + Kj_id_oh;
+		
 		attribute<Eur_yr> Kj_Verbruik     (PlanRegio) := Bijstook/Kj_Verbruik;
 		attribute<Eur_yr> Km_Verbruik     (PlanRegio) := Bijstook/Km_Verbruik;
-		attribute<Eur_yr> Kj_lv_Admin     (PlanRegio) := opbrengsten/JaarlijksD/Oj_VastRecht * Kengetallen/Onderhoud/R_lv_Admin;
-		attribute<Eur_yr> Kj_wd_Admin     (PlanRegio) := Wonen/Kj_wd_Admin + Utiliteit/Kj_Admin + Glastuinbouw/Kj_Admin + SecundairNet/Kj_Admin;
+		attribute<Eur_yr> Kj_lv_adm       (PlanRegio) := opbrengsten/JaarlijksD/Oj_VastRecht * Kengetallen/Onderhoud/R_lv_Admin;
+		attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := Wonen/Kj_wd_adm + Utiliteit/Kj_Admin + Glastuinbouw/Kj_Admin + SecundairNet/Kj_Admin;
 
 		attribute<nrAansl>nrAansl_d       (PlanRegio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/nrAansluitingen, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/name))+')';
 		attribute<nrAansl>nrAansl_g       (PlanRegio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/WarmteVraag/alle/nrAansluitingen, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/name))+')';
@@ -411,8 +412,8 @@ template KostenBaten
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
 		attribute<Eur_yr> Kj_Precario     (PlanRegio) := L_infra_d * Kengetallen/Onderhoud/Rj_Precario_pm;
-		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_Verbruik + Kj_wd_Admin + Kj_lv_Admin + Kj_Precario + Kj_ge_hv, Source = "FO v7a F 2";
-		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_Verbruik + Kj_wd_Admin + Kj_lv_Admin;
+		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_Verbruik + Kj_wd_adm + Kj_lv_adm + Kj_Precario + Kj_ge_hv, Source = "FO v7a F 2";
+		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_Verbruik + Kj_wd_adm + Kj_lv_adm ;
 	}
 
 	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Totaal;
@@ -430,15 +431,15 @@ template KostenBaten
 	attribute<Eur>    Oi_id_subsidie      (PlanRegio) := Ki_id_Bruto * SpecifiekeInstellingen/Beleid/EIA/id;
 	attribute<Eur>    Oi_wd_subsidie      (PlanRegio) := Ki_wd_Bruto * SpecifiekeInstellingen/Beleid/EIA/wd;
 	attribute<Eur_yr> Kji_ge_base         (PlanRegio) := (Ki_ge_Bruto - Oi_ge_subsidie) * NCW/bw28/AnnualisationFactor + Kj_ge_hv;
-	attribute<Eur_yr> Kji_id_base         (PlanRegio) := (Ki_id_Bruto - Oi_id_subsidie) * NCW/id28/AnnualisationFactor + KostenD/Kj_id_Onderhoud;
-	attribute<Eur_yr> Kji_wd_base         (PlanRegio) := (Ki_wd_Bruto - Oi_wd_subsidie) * NCW/wd28/AnnualisationFactor + KostenD/Kj_wd_Onderhoud + KostenD/Kj_wd_Admin;
+	attribute<Eur_yr> Kji_id_base         (PlanRegio) := (Ki_id_Bruto - Oi_id_subsidie) * NCW/id28/AnnualisationFactor + KostenD/Kj_id_oh;
+	attribute<Eur_yr> Kji_wd_base         (PlanRegio) := (Ki_wd_Bruto - Oi_wd_subsidie) * NCW/wd28/AnnualisationFactor + KostenD/Kj_wd_oh+ KostenD/Kj_wd_adm;
 	attribute<Eur_yr> Oe_ge_subsidie      (PlanRegio) := Kji_ge_base * SpecifiekeInstellingen/Beleid/EEA/ge;
 	attribute<Eur_yr> Oe_id_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/id;
 	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
 	attribute<Eur_yr> Kji_ge_Netto        (PlanRegio) := Kji_ge_base - Oe_ge_subsidie;
 	attribute<Eur_yr> Kji_id_Netto        (PlanRegio) := Kji_id_base - Oe_id_subsidie;
 	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_Verbruik + KostenD/Kj_Precario - Oe_wd_subsidie - Oji_wd_KL;
-	attribute<Eur_yr> Kji_Netto           (PlanRegio) := Kji_ge_Netto + Kji_id_Netto + Kji_wd_Netto + KostenD/Kj_lv_Admin;
+	attribute<Eur_yr> Kji_Netto           (PlanRegio) := Kji_ge_Netto + Kji_id_Netto + Kji_wd_Netto + KostenD/Kj_lv_adm;
 
 	attribute<Eur_yr> Oji_wd              (PlanRegio) := Oji_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;
 	attribute<Eur_yr> Oji_NettoD          (PlanRegio) := Opbrengsten/JaarlijksD/Oj_Totaal - Kji_Netto;
