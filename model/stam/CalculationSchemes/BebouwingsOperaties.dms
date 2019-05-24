@@ -44,9 +44,12 @@ container BebouwingsOperaties
 		,	DialogData = "Point"
 		{
 			attribute<Geography/rdc_meter> Point := union_data(., Bestaand/Point, Nieuwbouw/Point);
+			attribute<Geography/rdc_meter> geometry := point;
 			attribute<string>              Code  := union_data(., Bestaand/Code,  Nieuwbouw/Code);
 			attribute<String>              Label := union_data(., Bestaand/Label, Nieuwbouw/Label), DialogType = "LabelText";
 			parameter<m> SymbolWorldSize: [50], DialogType = "SymbolWorldSize";
+			
+			attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel := point_in_polygon(point, Invoer/SpecifiekeInstellingen/PlanRegio/geometry), FreeData = "False";
 
 			unit<float64> JoinedUnit := valuesunit(Bestaand/NrJoinedUnits);
 			unit<uint8>  BebouwingsTypeDomein := Bestaand/BebouwingsTypeDomein;
@@ -62,6 +65,8 @@ container BebouwingsOperaties
 			attribute<nrWoningen>                         nrWoonUnits_i      := union_data(., Bestaand/nrWoonUnits_i, Nieuwbouw/nrWoonUnits_i);
 			attribute<float64>                            AandeelWarmteVraag := union_data(., Bestaand/AandeelWarmteVraag, Nieuwbouw/AandeelWarmteVraag);
 			attribute<float64>                            pand_aandeel       := union_data(., Bestaand/pand_aandeel, Nieuwbouw/pand_aandeel);
+			
+			attribute<nrWoningen>                         nrWoonUnits_per_PlanRegio (Invoer/SpecifiekeInstellingen/PlanRegio)     := sum(nrWoonUnits_i, planregio_rel)[nrWoningen];
 
 			container Gebied
 			{

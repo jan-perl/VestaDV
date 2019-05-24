@@ -48,7 +48,7 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 	parameter<Eur_yr_Aansl> Jaarlijks_w_e := Vastrecht_e + PA_e + meterhuur_e + capaciteitstarief_e + administatiekosten_e;
 
 	parameter<m2_Aansl> gem_Aansl_area   := 100[m2_Aansl];
-
+	
 	// sectie Utiliteit
 	parameter<Eur_m2> AansluitTarief_bu_g := 0[Eur_m2], Descr = "aansluittarief bestaande utiliteit gas";
 	parameter<Eur_m2> AansluitTarief_bu_e := 0[Eur_m2], Descr = "aansluittarief bestaande utiliteit electiciteit";

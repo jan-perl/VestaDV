@@ -197,6 +197,7 @@ template TussenResultaten
 			container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, invoer/Energieprijzen);
 		}
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+		container ResultState := =ResultStateName;
 	}
 
 	#include<StateNaAllocatie.dms>
@@ -210,8 +211,14 @@ template TussenResultaten
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
 			)'
-		)
+		), FreeData = "False"
 	{
-		attribute<bool> heeft_gas (PlanRegio) := ='or('+AsItemList(replace('any(@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+		attribute<bool>    heeft_gas                               (PlanRegio) := ='or('+AsItemList(replace('any(@BC@/MeterVraag/Aardgas > 0.0, BebouwingsComponenten/@BC@/PlanRegio_rel)','@BC@', Classifications/WkoComponent/Name))+')';
+		attribute<nrAansl> aant_g_aansl_per_planregio              (PlanRegio) := aant_g_aansl_woning_per_planregio + aant_g_aansl_util_per_planregio + aant_g_aansl_GlTb_per_planregio;
+		attribute<nrAansl> aant_g_aansl_woning_per_planregio       (PlanRegio) := BestaandeWoning/aant_g_aansl_per_planregio + NieuwbouwWoning/aant_g_aansl_per_planregio;
+		attribute<nrAansl> aant_g_aansl_woning_hoogb_per_planregio (PlanRegio) := BestaandeWoning/aant_g_aansl_hoogb_per_planregio + NieuwbouwWoning/aant_g_aansl_hoogb_per_planregio;
+		attribute<nrAansl> aant_g_aansl_woning_laagb_per_planregio (PlanRegio) := BestaandeWoning/aant_g_aansl_laagb_per_planregio + NieuwbouwWoning/aant_g_aansl_laagb_per_planregio;
+		attribute<nrAansl> aant_g_aansl_util_per_planregio         (PlanRegio) := BestaandeUtil/aant_g_aansl_per_planregio + NieuwbouwUtil/aant_g_aansl_per_planregio;
+		attribute<nrAansl> aant_g_aansl_GlTb_per_planregio         (PlanRegio) := BestaandeGlTb/aant_g_aansl_per_planregio + NieuwbouwGlTb/aant_g_aansl_per_planregio;
 	}
 }

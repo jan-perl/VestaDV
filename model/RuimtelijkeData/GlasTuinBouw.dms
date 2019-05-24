@@ -30,6 +30,7 @@ container GlasTuinBouw
 			parameter<m>       SymbolWorldSize: DialogType = "SymbolWorldSize", expr = "value(100, m)";
 			parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
 		}
+		attribute<rdc_meter> geometry := point;
 		attribute<Classifications/GLTB> GLTB_Code;
 		attribute<m2>                   Opp_M2;
 	}

@@ -235,6 +235,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 		attribute<string>                               Label                    := rjoin(import/vbo/nummeraanduiding_id[nr_OrgEntity], import/nummeraanduiding/identificatie, import/nummeraanduiding/adres_key);
 
 		attribute<rdc_meter>                            locatie                  := value(import/vbo/geometry[nr_OrgEntity],rdc_meter);
+		attribute<rdc_meter>                            geometry                 := locatie;
 		attribute<string>                               postcode                 := rjoin(import/vbo/nummeraanduiding_id[nr_OrgEntity], import/nummeraanduiding/identificatie, import/nummeraanduiding/postcode);
 
 		attribute<Units/m2>                             oppervlakte              := import/vbo/oppervlak_filters/utiliteit[nr_OrgEntity];

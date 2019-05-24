@@ -69,6 +69,8 @@ template BCdata
 		attribute<nrAansl>    nrAansluitingen := ResterendFactor * nrAansluitingen_i;
 		attribute<nrWoningen> nrWoonunits     := ResterendFactor * nrWoonUnits_i;
 		attribute<ModelUnit>  nrModelUnits    := ResterendFactor * NrJoinedUnits * EnergieVraagModellen/nrMUperJU[Model_rel];
+		
+		attribute<nrWoningen>   nrWoonUnits_per_PlanRegio (Invoer/SpecifiekeInstellingen/PlanRegio)     := sum(nrWoonunits, planregio_rel)[nrWoningen];
 
 		container AansluitCapaciteit
 		{
