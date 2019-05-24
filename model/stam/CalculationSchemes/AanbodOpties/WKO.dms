@@ -36,13 +36,15 @@ template WKO
 		parameter<Float64> SPF_ind_ww    := SPF_coll_w; // TODO: CHECK
 
 		//Aandeel eigen opwekking
-		parameter<Float64> AEO_ind_A_rv  := 0.0;
+		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 55[Celsius] ? 0.1 : 0.0,				Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
 		parameter<Float64> AEO_ind_B_rv  := T_sec <= 35[Celsius] ? 0.3 : 0.0;
 		parameter<Float64> AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
 		
 		parameter<Float64> AEO_ind_ww := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
 		parameter<Float64> AEO_ind_k  : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
 		parameter<Ratio> 		Leidingverlies		: [0.20],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
 
 		//gelijktijdigheidsfactoren
 		parameter<float64>		GTF_woning_w		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
@@ -61,7 +63,7 @@ template WKO
 		//investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	2000	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
 		parameter<Eur_kW>		Ki_Doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "bron zonder distributiekosten";
 		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 		parameter<EUR_KW> 		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
@@ -70,6 +72,10 @@ template WKO
 		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
 		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
 		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
+		parameter<Eur>			Ki_eWP_B			:= Leercurves/Curve2 * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/Curve2 * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+
 		
 		//		parameter<Eur_Woning> K_wvwc := Leercurves/Curve2 * 2000[Eur_Woning], Descr = "kosten warmtevoorziening collectieve woning (warmte en koude) Notitie Issue 442";
 //		parameter<Eur_Woning> K_wvwa := Leercurves/Curve2 * 4000[Eur_Woning], Descr = "kosten warmtevoorziening appartement        (warmte en koude) Notitie Issue 442, issue 503.";
@@ -121,8 +127,8 @@ template WKO
 
 		attribute<Eur_yr>    Oj_verbruik  := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Oj_verbruik[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<Eur_yr>    AC_Netto     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/AC_Netto  [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
-		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Warmte_sec[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
-		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Koude_sec[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<kW    >    P_Warmte     := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Wsec_netto[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
+		attribute<kW    >    P_Koude      := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/WkoDataComponent/P_Ksec_netto[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 
 		attribute<float64>   n            := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/n     [CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';
 		attribute<float64>   MEAN_x       := ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Gebied/MEAN_x[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')';

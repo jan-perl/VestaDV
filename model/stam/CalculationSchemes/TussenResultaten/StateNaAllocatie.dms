@@ -32,7 +32,7 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 		attribute<Eur_yr> Kji_pt_KL       (PlanRegio) := Stock/Ki_pt * NCW/pt28/AnnualisationFactor;
 		attribute<Eur_yr> Kji_ow_KL       (PlanRegio) := Stock/Ki_ow * NCW/ow28/AnnualisationFactor;
 
-		attribute<Eur_yr> Kj_KL           (PlanRegio) := Kj_ge_KL + Kj_id_KL + Kj_wd_KL + Kj_pt_KL + Kj_ow_KL;
+		attribute<Eur_yr> Kji_KL           (PlanRegio) := Kji_ge_KL + Kji_id_KL + Kji_wd_KL + Kji_pt_KL + Kji_ow_KL;
 
 		attribute<Eur_yr> Kmi_ge_KL       (PlanRegio) := Stock/Ki_ge * NCW/mr28/AnnualisationFactor;
 		attribute<Eur_yr> Kmi_id_KL       (PlanRegio) := Stock/Ki_id * NCW/mr28/AnnualisationFactor;
@@ -56,9 +56,9 @@ container StateNaAllocatie := = 'GebiedsAllocatie/' + GebiedsAllocatie/ResultSta
 		attribute<Eur_yr> Kji_id_Total    (PlanRegio) := Kji_id_KL + Kj_id_oh;
 		attribute<Eur_yr> Kmi_id_Total    (PlanRegio) := Kmi_id_KL + Kj_id_oh;
 		attribute<Eur_yr> Oe_id_subsidie  (PlanRegio) := KostenBaten/Oe_id_subsidie * float64(GebiedsOptie);
-		attribute<Eur_yr> Oj_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
+		attribute<Eur_yr> Oji_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/id28/AnnualisationFactor + Oe_id_subsidie;
 //		attribute<Eur_yr> Om_id_subsidie  (PlanRegio) := Stock/Oi_id_subsidie * NCW/mr28/AnnualisationFactor + Oe_id_subsidie;
-		attribute<Eur_yr> Kji_id_Netto    (PlanRegio) := Kji_id_Total - Oj_id_subsidie;
+		attribute<Eur_yr> Kji_id_Netto    (PlanRegio) := Kji_id_Total - Oji_id_subsidie;
 
 		attribute<Eur_yr>	Kj_wd_oh            (PlanRegio)		:= KostenBaten/KostenD/Kj_wd_oh                                 * float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor onderhoud aan het wijkdistributienet";
 		attribute<Eur_yr>	Kj_wd_adm			(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_adm                                * float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor administratie ten behoeve van het wijkdistributienet";

@@ -45,12 +45,13 @@ template WKOData
 	// kosten excl distributie
 	attribute<GJ_Yr > V_Warmte    (BebouwingsObject) := WkoDataComponent/V_Warmte;
 	attribute<GJ_Yr > V_Koude     (BebouwingsObject) :=	WkoDataComponent/V_Koude,																Descr = "jaarlijkse volumevraag koude";
-	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Warmte_sec, WkoDataComponent/P_Koude_sec);
-	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
-	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id + Ki_LTAS;
+	attribute<Eur   > Ki_A        (BebouwingsObject) := constanten/Ki_Doublet * min_elem(WkoDataComponent/P_Wsec_netto, WkoDataComponent/P_Ksec_netto);
+//	attribute<Eur   > Ki_LTAS     (BebouwingsObject) := BCdata/Sprongen/VerbeterKosten_i/LTAS * RuimtelijkeVraagComponent/nrModelUnits;
+	attribute<Eur   > Ki_C        (BebouwingsObject) := WkoDataComponent/Kosten/Ki_id;
 	attribute<Eur   > Ki_ge_pm    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_pm;
 	attribute<Eur   > Ki_ge_ov    (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge_ov;
 	attribute<Eur   > Ki_ge       (BebouwingsObject) := WkoDataComponent/Kosten/Ki_ge;
+	attribute<Eur   > Ki_totaal   (BebouwingsObject) := Ki_ge + Ki_C + Ki_A;
 //			attribute<Eur_yr> Kj_ge_hv    (BebouwingsObject) := WkoDataComponent/Kosten/Kj_ge_hv;
 	attribute<Eur_yr> Kj_wd_pr    (BebouwingsObject) := WkoDataComponent/BCdata/WarmteVraag/deelnemers/nrAansluitingen * 15[m / nrAansl] * Kengetallen/Onderhoud/Rj_Precario_pm;
 
@@ -58,7 +59,7 @@ template WKOData
 	attribute<Eur_yr> Oj_Aansl    (BebouwingsObject) := Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor);
 	attribute<Eur_yr> Oj_verbruik (BebouwingsObject) := WkoDataComponent/Opbrengsten/Oj_Vastrecht + WkoDataComponent/Opbrengsten/Oj_Warmte + WkoDataComponent/Opbrengsten/Oj_Koude;
 
-	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject); // TODO terugzetten onderhoudskosten
+	attribute<Eur_yr> Kj_ow_o     (BebouwingsObject) := Ki_totaal * 0.025[_yr]; // TODO terugzetten onderhoudskosten
 	attribute<Eur_yr> Kj_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Kj_elek_ow;
 	attribute<Eur_yr> Km_ow_e     (BebouwingsObject) := WkoDataComponent/Kosten/Km_elek_ow;
 	attribute<Eur_yr> KEH_ow_e    (BebouwingsObject) := WkoDataComponent/Kosten/KEH_elek_ow;

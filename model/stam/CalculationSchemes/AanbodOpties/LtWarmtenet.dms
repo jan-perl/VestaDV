@@ -84,12 +84,14 @@ Template LtWarmtenetImpl
 		
 		
 		// Aandeel eigen opwekking
-		parameter<Float64> 		AEO_ind_A_rv  		:= 0.0, 										Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
-		parameter<Float64> 		AEO_ind_B_rv  		:= T_sec <= 35[Celsius] ? 0.3 : 0.0, 			Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
-		parameter<Float64> 		AEO_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0, Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
-		parameter<Float64> 		AEO_ind_ww    		:= T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0, Descr = "Aandeel eigen opwekking, warm tapwater";
-		parameter<Float64> 		AEO_ind_K           : [1.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
+		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 55[Celsius] ? 0.1 : 0.0,				Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
+		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.3 : 0.0,			Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
+		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0, Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
+		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0, Descr = "Aandeel eigen opwekking, warm tapwater";
+		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
 		parameter<Ratio> 		Leidingverlies		: [0.15],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
 		
 		//aansluitwaardes
 		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
@@ -107,15 +109,19 @@ Template LtWarmtenetImpl
 		
 		// investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	2000	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
 		parameter<EUR_KW> 		Ki_uitkoppel		:= Leercurves/Curve2 * 	250 	[EUR / KW],		Descr = "Investeringskosten uitkoppeling bron bij bestaande bron";
 		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/Curve2 * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
-		parameter<EUR>    		Ki_Buffer   		:= Leercurves/Curve2 * 	100000	[EUR], 			Descr = "Investeringskosten aanleg buffervat voor seizoensopslag en dagopslag";
-		parameter<Eur_kW> 		Ki_doublet		 	:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "Investeringskosten realiseren nieuw doublet als nieuwe bron";
+		parameter<EUR>    		Ki_Buffer			:= Leercurves/Curve2 * 	1000	[EUR], 			Descr = "Voorlopige nvesteringskosten per gebouw voor aanleg buffervat voor seizoensopslag en dagopslag";
+		parameter<EUR>    		Ki_Buffer_min		:= Leercurves/Curve2 * 	100000	[EUR],			Descr = "Minimale investering voor warmtebuffer bij de bron";
+		parameter<Eur_kW> 		Ki_doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "Investeringskosten realiseren nieuw doublet als nieuwe bron";
 	
-		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
-		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		parameter<Eur_m2> 		Ki_id_ugroot		:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
+		parameter<Eur_m2> 		Ki_id_uklein		:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		parameter<Eur>			Ki_eWP_B			:= Leercurves/Curve2 * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/Curve2 * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
 		
 		//investeringskosten wijkdistributie
 		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/Curve2 * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
@@ -166,6 +172,7 @@ Template LtWarmtenetImpl
 		attribute<KW>     P_Warmte_secundair := P_Warmte_primair / BronSrc/bron_cap[BronSrc_rel]; // warmte op temperatuur T_bron na eWP
 		
 		attribute<Celsius> T_bron            := BronSrc/T_bron[BronSrc_rel];
+		attribute<UInt32>	Categorie		:=	BronSrc/categorie_rel[BronSrc_rel];
 		
 		attribute<Ratio>   Weight            := P_Warmte_secundair / 1[KW];
 		attribute<Ratio>   Bron_vol_Weighted := BronSrc/Bron_vol[BronSrc_rel] * Weight; // bron_vol maal gewicht tbv gewogen middeling.									
@@ -314,7 +321,9 @@ Template LtWarmtenetImpl
 		attribute<GJ_Yr >	V_Koude_primair		:= ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/V_Koude_primair		[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')', Descr = "jaalijkse volumevraag koude";
 		attribute<kW>		P_sec_primair		:= ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/P_sec_primair		[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')', Descr = "vermogen dat voor rekening van de primaire bron wordt gerekend";
 		attribute<kW>		P_sec_hulp			:= ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/P_sec_hulp			[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')', Descr = "vermogen dat voor rekening van de hulpvoorziening wordt gerekend";
-	}
+		attribute<Eur>		Ki_buffer_gebouw	:= ='union_data(., ' + asItemList('CandidateSets/' + WkoComponent/Name + '/Ki_ow_buffer			[CandidateSets/' + WkoComponent/Name + '/AllowedObjects/nr_OrgEntity]') + ')', Descr = "voorlopige investeringskosten per gebouw voor warmtebuffer";
+
+		}
 
 	
 	//selectie van vraaggebied rondom bron-cluster op basis van afstand tot capaciteit bron volledig gevuld is
@@ -338,6 +347,7 @@ Template LtWarmtenetImpl
 		attribute<GJ_Yr>			V_Koude_primair			:= UnitedCandidates/V_Koude_primair		[nr_OrgEntity];
 		attribute<KW>				P_sec_primair			:= UnitedCandidates/P_sec_primair		[nr_OrgEntity];
 		attribute<KW>				P_sec_hulp				:= UnitedCandidates/P_sec_hulp			[nr_OrgEntity];
+		attribute<Eur>				Ki_buffer_gebouw		:= UnitedCandidates/Ki_buffer_gebouw	[nr_OrgEntity];
 	}
 	
 	//bepaling brongerelateerde kosten
@@ -353,7 +363,8 @@ Template LtWarmtenetImpl
 		attribute<GJ_Yr>			V_Koude_primair		(BronCluster)	:=	sum(Selected/V_Koude_primair,	Selected/BronCluster_rel),				Descr = "totale koudevraag aan de primaire bron van gebouwen in vraaggebied";
 		attribute<KW>				P_sec_primair		(BronCluster)	:=	sum(Selected/P_sec_primair,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de primaire bron van gebouwen in vraaggebied";
 		attribute<KW>				P_sec_hulp			(BronCluster)	:=	sum(Selected/P_sec_hulp,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de hulpvoorziening van gebouwen in vraaggebied";
-
+		attribute<Eur>				Ki_Buffer_gebouw	(BronCluster)	:=	sum(Selected/Ki_Buffer_gebouw,	Selected/BronCluster_rel),				Descr = "voorlopige kosten voor de warmtebuffer per gebouw";
+		
 		container secundairnet
 		{
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
@@ -373,7 +384,7 @@ Template LtWarmtenetImpl
 		
 		//Aanvullende kosten brongerelateerd
 		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/LengthProxy * secundairnet/K_m_brondist,					Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
-		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	const(constanten/Ki_Buffer, BronCluster),								Descr ="investeringskosten buffervat bij primaire bron";
+		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((constanten/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
 		attribute<Eur_Yr>			KL_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
