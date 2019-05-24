@@ -22,7 +22,7 @@ template AllocatieComponent
 
 	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
 
-	container Aandelen
+	container Aandelen := for_each_nedv(Classifications/AanbodOptie/name, 'BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/name+')', BebouwingsObject, float64)
 	{
 		attribute<float64> eWP          (BebouwingsObject) := BCdata/Opwekking/eWP;
 		attribute<float64> mWKK         (BebouwingsObject) := BCdata/Opwekking/mWKK;
@@ -30,12 +30,6 @@ template AllocatieComponent
 		attribute<float64> hWP          (BebouwingsObject) := BCdata/Opwekking/hWP;
 
 		attribute<float64> GebiedsOptie (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(IsDefined(WarmteAllocatieComponent));
-		attribute<float64> RestWarmte   (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/RestWarmte);
-		attribute<float64> GeoThermie   (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/GeoThermie);
-		attribute<float64> WKO          (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WKO);
-		attribute<float64> WijkWKK      (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/WijkWKK);
-		attribute<float64> BioWKK       (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/BioWKK);
-
 		attribute<float64> AardGasExclMicroWKK (BebouwingsObject) :=
 			  BCdata/Aandeel/WarmteVraag * float64(not(IsDefined(WarmteAllocatieComponent)))
 			+ BCdata/Aandeel/NietDeelnemers
@@ -45,15 +39,9 @@ template AllocatieComponent
 		attribute<float64> AllElectric         (BebouwingsObject) := eWP + EWV + WKO;
 	}
 
-	container MeterVraag
+	container MeterVraag := for_each_nedv(Classifications/AanbodOptie/name, 'Aandelen/'+Classifications/AanbodOptie/name+' * BCdata/DragerOpties/Warmte/Warmte', BebouwingsObject, GJ_yr) 
 	{
-		attribute<GJ_yr> RestWarmte    (BebouwingsObject) := Aandelen/RestWarmte * BCdata/DragerOpties/Warmte/Warmte;
-		attribute<GJ_yr> GeoThermie    (BebouwingsObject) := Aandelen/GeoThermie * BCdata/DragerOpties/Warmte/Warmte;
-		attribute<GJ_yr> WKO           (BebouwingsObject) := Aandelen/WKO        * BCdata/DragerOpties/Warmte/Warmte;
-		attribute<GJ_yr> WijkWKK       (BebouwingsObject) := Aandelen/WijkWKK    * BCdata/DragerOpties/Warmte/Warmte;
-		attribute<GJ_yr> BioWKK        (BebouwingsObject) := Aandelen/BioWKK     * BCdata/DragerOpties/Warmte/Warmte;
-
-		attribute<GJ_yr> GebiedsOptie  (BebouwingsObject) := RestWarmte+GeoThermie+WKO+WijkWKK+BioWKK;
+		attribute<GJ_yr> GebiedsOptie  (BebouwingsObject) := ='add('+AsItemList(Classifications/AanbodOptie/name)+')';
 
 		attribute<GJ_yr> AardGas_RV    (BebouwingsObject) := Aandelen/AardGasExclMicroWKK * BCdata/DragerOpties/Ruimteverwarming/AardGas * (1.0 - Aandelen/hWP  *VraagKentallen/hWP/DekkingsGraad); // F85
 		attribute<GJ_yr> AardGas_WW    (BebouwingsObject) := Aandelen/AardGasExclMicroWKK * BCdata/DragerOpties/WarmWater/AardGas;
@@ -74,7 +62,7 @@ template AllocatieComponent
 			  BCdata/DragerOpties/Apparatuur/Elektriciteit // incl aftrek Zon_PV
 			+ CvPomp + Koude + eWP + EWV + hWP 
 			- mWKK
-		,	Descr = "excl elektra voor WKO warmtepomp";
+		,	Descr = "excl elektra voor WKO/LT warmtepomp";
 
 //DEBUG		attribute<GJ_yr> Wko_Koude(BebouwingsObject) := BCdata/DragerOpties/Koude/Elektriciteit * Aandelen/WKO;
 
