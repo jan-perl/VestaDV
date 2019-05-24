@@ -97,6 +97,16 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			parameter<Eur_MSR>     kental_nieuwe_MSR            := 70000[Eur_MSR], Descr = "kostenkengetal plaatsen nieuwe MS-ruimte (RNBs)";
 			parameter<Eur_m>       kental_verzw_LS              := 110[Eur_m], Descr = "kostenkengetal verzwaren LS-net (RNBs)";
 			parameter<kW>          kental_capaciteit_nieuwe_MSR := 630[kw], Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes (RNBs)";
+			
+			parameter<kW>          kental_aansluitwaarde_woning_zonderWP     := 11[kW];
+			parameter<kW>          kental_extra_aansluitwaarde_woning_metWP  := 4[kW];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_zonderWP   := 0.5[Ratio];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_metWP      := 0.5[Ratio];
+			
+			parameter<kW_m2>       kental_aansluitwaarde_util_zonderWP            := 0.05[kW_m2];
+			parameter<kW_m2>       kental_extra_aansluitwaarde_util_metWP         := 0.02[kW_m2];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_util_zonderWP   := 0.5[Ratio];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_util_metWP      := 0.5[Ratio];
 		}
 		
 		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "kentallen"
