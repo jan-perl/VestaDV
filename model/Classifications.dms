@@ -612,7 +612,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 // =========  Classificaties voor montaire units
 
-	unit<uint32> Kostensoort : nrofrows = 26
+	unit<uint32> Kostensoort : nrofrows = 27
 	{
 		parameter<uint32> nrAttr := 4;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -638,6 +638,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 				,'InpandigeDistributeur' ,'False'                  ,'False',  'id'
 				,'WijkDistributeur'      ,'False'                  ,'False',  'wd'
 				,'PrimairTransporteur'   ,'False'                  ,'False',  'pt'
+				,'Opwekker'              ,'False'                  ,'False',  'ow'
 				,'Leverancier'           ,'False'                  ,'False',  ''
 				,'KL_p'                  ,'False'                  ,'False',  ''
 				,'KL_e'                  ,'False'                  ,'False',  ''
@@ -661,7 +662,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> full_name                := replace(name, '/', '_');
 		attribute<bool>   IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
 		attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
-		attribute<string> GebiedsOptieActorCode    := union_data(., Kostensoort/GebiedsOptieActorCode, const('', BebouwingsComponent), const('', BebouwingsComponent), const('ow', AanbodOptie));
+		attribute<string> GebiedsOptieActorCode    := union_data(., Kostensoort/GebiedsOptieActorCode, const('', BebouwingsComponent), const('', BebouwingsComponent), const('', AanbodOptie));
 	}
 	unit<uint32> GebiedsOptieActor := subset(Actor/GebiedsOptieActorCode <> '')
 	{
