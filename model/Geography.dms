@@ -18,7 +18,7 @@ container Geography: Using = "Units", IsHidden = "True"
 	,	Format   = "EPSG:28992"
 	,	IsHidden = "True"
 	{
-		parameter<m> SymbolWorldSize := 2000[m], DialogType = "SymbolWorldSize";
+		// parameter<m> SymbolWorldSize := 2000[m], DialogType = "SymbolWorldSize";
 	}
 	unit<dpoint> rdc_meter     := range(rdc_meter_base, point(300000.0, 0.0), point(625000.0, 280000.0));
 	unit<fpoint> rdc_meter_f32 := gridset(rdc_meter, point(1.0, 1.0), point(0.0, 0.0), fpoint)   , IsHidden = "True";

@@ -47,7 +47,7 @@ container BebouwingsOperaties
 			attribute<Geography/rdc_meter> geometry := point;
 			attribute<string>              Code  := union_data(., Bestaand/Code,  Nieuwbouw/Code);
 			attribute<String>              Label := union_data(., Bestaand/Label, Nieuwbouw/Label), DialogType = "LabelText";
-			parameter<m> SymbolWorldSize: [50], DialogType = "SymbolWorldSize";
+			// parameter<m> SymbolWorldSize: [50], DialogType = "SymbolWorldSize";
 			
 			attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel := point_in_polygon(point, Invoer/SpecifiekeInstellingen/PlanRegio/geometry), FreeData = "False";
 

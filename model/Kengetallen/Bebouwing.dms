@@ -18,6 +18,10 @@ container Bebouwing
 	{
 		container results
 		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_Woning> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_woning_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_H_T  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'A');
@@ -41,6 +45,10 @@ container Bebouwing
 	{
 		container results
 		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_Woning> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_woning_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid,  Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -64,7 +72,12 @@ container Bebouwing
 			,Units/m2
 		)
 	{
-		container results {
+		container results 
+		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_m2> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_util_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -90,6 +103,10 @@ container Bebouwing
 	{
 		container results 
 		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_m2> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_util_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -115,6 +132,10 @@ container Bebouwing
 	{
 		container results
 		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_m2> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_gltb_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');
@@ -138,7 +159,12 @@ container Bebouwing
 			,Units/m2
 		)
 	{
-		container results {
+		container results 
+		{
+			container Aansluitcapaciteit
+			{
+				attribute<kW_m2> Elektriciteit (ModelObject) := const(Invoer/RuimtelijkeData/infra/kentallen/kental_aansluitwaarde_gltb_zonderWP, ModelObject);
+			}
 			container Verbeteringen
 			{
 				container S_X_X  := GebouwTempl(ModelObject, GJ_yr_per_Eenheid, Eur_per_eenheid, Functioneel/Ruimteverwarming, const(0.0[GJ_yr_Per_Eenheid], ModelObject), 'X');

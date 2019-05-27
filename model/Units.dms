@@ -61,6 +61,8 @@ container Units: isHidden = "True"
 	unit<float64> GJ_yr_m2      := GJ_yr / m2;
 	unit<float64> GJ_m3         := GJ / m3;
 	unit<float64> m_kW          := m / kW;
+	unit<float64> kW_MSR        := kW / MSR;
+	
 	
 
 	// effects of energyproduction

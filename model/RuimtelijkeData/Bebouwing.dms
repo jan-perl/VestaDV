@@ -49,8 +49,8 @@ container Bebouwing :=
 
 			attribute<rdc_meter>                point              := BAG/vbo_woonfunctie/geometry
 			{
-				parameter<float64> SymbolSize      := 14.0,  DialogType = "SymbolSize";
-				parameter<m>       SymbolWorldSize := 30[m], DialogType = "SymbolWorldSize";
+				// parameter<float64> SymbolSize      := 14.0,  DialogType = "SymbolSize";
+				// parameter<m>       SymbolWorldSize := 30[m], DialogType = "SymbolWorldSize";
 			}
 
 			container Gebied: IsHidden = "True"

@@ -20,17 +20,44 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 	container MiniStock {
 			attribute<Eur_yr> Om_ComfortT(PlanRegio) := const(0[EUR_Yr], PlanRegio);		
 	}
-	
+		
 	container Geothermie := MiniStock;
 	container BioWKK := MiniStock;
 	container WijkWKK := MiniStock;
 	
-	container Infra_per_buurt := Invoer/RuimtelijkeData/infra/per_buurt
+	container Infra_per_buurt := Invoer/RuimtelijkeData/infra/per_buurt, using = "Invoer/RuimtelijkeData/infra/kentallen"
 	{
-		attribute<nrAansl> aant_g_aansl_util            (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeUtil/nrAansluitingen_i, /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeUtil/buurt_rel);
-		attribute<nrAansl> aant_g_aansl_woning          (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i, /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
-		attribute<nrAansl> aant_g_aansl_woning_hoogb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType == Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
-		attribute<nrAansl> aant_g_aansl_woning_laagb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType != Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
+		attribute<nrAansl>  aant_g_aansl_util            (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeUtil/nrAansluitingen_i, /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeUtil/buurt_rel);
+		attribute<nrAansl>  aant_g_aansl_woning          (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i, /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
+		attribute<nrAansl>  aant_g_aansl_woning_hoogb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType == Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
+		attribute<nrAansl>  aant_g_aansl_woning_laagb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType != Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
+		
+		container kosten
+		{
+			attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verw_g_aansl_laagb (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verw_g_aansl_hoogb (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verw_g_aansl_util  (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verw_g_aansl       (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verw_LD_net        (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verzw_e_aansl      (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verzw_MSR          (PlanRegio)  := const(0[Eur], Planregio);
+			attribute<Eur>                 kosten_verzw_LS           (PlanRegio)  := const(0[Eur], Planregio);
+
+			container cumulatief
+			{
+				attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verw_g_aansl_laagb (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verw_g_aansl_hoogb (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verw_g_aansl_util  (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verw_g_aansl       (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verw_LD_net        (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verzw_e_aansl      (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verzw_MSR          (PlanRegio)  := const(0[Eur], Planregio);
+				attribute<Eur>                 kosten_verzw_LS           (PlanRegio)  := const(0[Eur], Planregio);
+			}
+		}
+	
 	}
 	
 	container Stock

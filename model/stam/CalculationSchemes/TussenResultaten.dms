@@ -201,6 +201,7 @@ template TussenResultaten
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort
+				,'+quote(Classifications/BebouwingsComponent/Name)+'
 			)'
 		), FreeData = "False"
 	{
@@ -211,5 +212,7 @@ template TussenResultaten
 		attribute<nrAansl> aant_g_aansl_woning_laagb_per_planregio (PlanRegio) := BestaandeWoning/aant_g_aansl_laagb_per_planregio + NieuwbouwWoning/aant_g_aansl_laagb_per_planregio;
 		attribute<nrAansl> aant_g_aansl_util_per_planregio         (PlanRegio) := BestaandeUtil/aant_g_aansl_per_planregio + NieuwbouwUtil/aant_g_aansl_per_planregio;
 		attribute<nrAansl> aant_g_aansl_GlTb_per_planregio         (PlanRegio) := BestaandeGlTb/aant_g_aansl_per_planregio + NieuwbouwGlTb/aant_g_aansl_per_planregio;
+		
+		attribute<bool>    GrondroeringInPlanRegio                 (PlanRegio) := ='or('+AsItemList(replace('Allocatie/@BC@/GrondroeringInPlanRegio','@BC@', Classifications/BebouwingsComponent/Name))+')';
 	}
 }
