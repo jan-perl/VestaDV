@@ -39,11 +39,11 @@ template LtData
 	attribute<GJ_Yr>		V_Warmte_hulp		(BebouwingsObject)	:=	WkoDataComponent/V_Wsec_netto * constanten/AandeelHulpVolume,							Descr = "jaalijkse volumevraag warmte";
 	attribute<GJ_Yr>		V_Koude_hulp		(BebouwingsObject)	:=	WkoDataComponent/V_Ksec_netto * constanten/AandeelHulpVolume,							Descr = "jaarlijkse volumevraag koude";
 	
-	attribute<GJ_Yr>		V_elek_ind			(BebouwingsObject)	:=	WkoDataComponent/V_elek_ind,															Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
-	attribute<GJ_Yr>		V_elek_ow			(BebouwingsObject)	:=	WkoDataComponent/V_elek_ow,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
+	attribute<GJ_Yr>		V_elek_id			(BebouwingsObject)	:=	WkoDataComponent/V_elek_id,																Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
+	attribute<GJ_Yr>		V_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/V_elek_wd,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
 	
 	//Uitstoot en verbruik
-	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_Elek_ind + V_Elek_ow,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
+	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_Elek_id + V_Elek_wd,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
 	attribute<GJ_yr>		GJw					(BebouwingsObject)	:=	V_warmte - GJe,																			Descr = "warmte geleverd uit gebiedsoptie";
 	attribute<KG_yr>		CO2					(BebouwingsObject)	:=	Prijzen/Elektriciteit/CO2_GJ * GJe,														Descr = "co2-uitstoot door elektriciteitsverbruik gebiedsoptie";
 	//attribute<Eur_yr>		Kj_productie		(BebouwingsObject)	:=	V_Warmte_primair * constanten/K_GJ_bron,												Descr = "meerkosten van warmteproductie in primaire bron";
@@ -75,15 +75,15 @@ template LtData
 	attribute<Eur_yr>		KL_ow				(BebouwingsObject)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten bronzijde opwekking";
 	
 	//Elektriciteitskosten
-	attribute<Eur_yr>		Kj_elek_id_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_ind,													Descr = "eindgebruikerskosten elektriciteit individueel: component energieheffing";
-	attribute<Eur_yr>		Kj_elek_id_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_ind,													Descr = "eindgebruikerskosten elektriciteit individueel: component CO2 heffing";
-	attribute<Eur_yr>		Kj_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_ind,													Descr = "eindgebruikerskosten elektriciteit individueel, totaal exclusief btw";
-	attribute<Eur_yr>		Km_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_ind,													Descr = "maatschappelijke kosten elektriciteit individueel";
+	attribute<Eur_yr>		Kj_elek_id_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_id,													Descr = "eindgebruikerskosten elektriciteit individueel: component energieheffing";
+	attribute<Eur_yr>		Kj_elek_id_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_id,													Descr = "eindgebruikerskosten elektriciteit individueel: component CO2 heffing";
+	attribute<Eur_yr>		Kj_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_id,														Descr = "eindgebruikerskosten elektriciteit individueel, totaal exclusief btw";
+	attribute<Eur_yr>		Km_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_id,														Descr = "maatschappelijke kosten elektriciteit individueel";
 	
-	attribute<Eur_yr>		Kj_elek_wd_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_ow,													Descr = "eindgebruikerskosten elektriciteit collectief: component energieheffing";
-	attribute<Eur_yr>		Kj_elek_wd_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_ow,													Descr = "eindgebruikerskosten elektriciteit collectief: component CO2 heffing";
-	attribute<Eur_yr>		Kj_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_ow,														Descr = "eindgebruikerskosten elektriciteit collectief, totaal exclusief btw";
-	attribute<Eur_yr>		Km_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_ow,														Descr = "maatschappelijke kosten elektriciteit collectief";
+	attribute<Eur_yr>		Kj_elek_wd_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_wd,													Descr = "eindgebruikerskosten elektriciteit collectief: component energieheffing";
+	attribute<Eur_yr>		Kj_elek_wd_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_wd,													Descr = "eindgebruikerskosten elektriciteit collectief: component CO2 heffing";
+	attribute<Eur_yr>		Kj_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_wd,														Descr = "eindgebruikerskosten elektriciteit collectief, totaal exclusief btw";
+	attribute<Eur_yr>		Km_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_wd,														Descr = "maatschappelijke kosten elektriciteit collectief";
 
 	//Onderhoud en administratie, gebouwgerelateerd
 	attribute<Eur_yr>		Kj_ow_oh_uitkoppel  (BebouwingsObject)	:=	Ki_ow_Uitkoppel * constanten/OenM/R_ow_onderhoud,										Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
