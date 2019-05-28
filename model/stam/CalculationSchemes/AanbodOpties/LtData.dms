@@ -39,83 +39,80 @@ template LtData
 	attribute<GJ_Yr>		V_Warmte_hulp		(BebouwingsObject)	:=	WkoDataComponent/V_Wsec_netto * constanten/AandeelHulpVolume,							Descr = "jaalijkse volumevraag warmte";
 	attribute<GJ_Yr>		V_Koude_hulp		(BebouwingsObject)	:=	WkoDataComponent/V_Ksec_netto * constanten/AandeelHulpVolume,							Descr = "jaarlijkse volumevraag koude";
 	
-	attribute<GJ_Yr>		V_elek_id			(BebouwingsObject)	:=	WkoDataComponent/V_elek_id,																Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
-	attribute<GJ_Yr>		V_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/V_elek_wd,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
+	attribute<GJ_Yr>		V_id_elek			(BebouwingsObject)	:=	WkoDataComponent/V_id_Elek,															Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
+	attribute<GJ_Yr>		V_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/V_wd_Elek,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
 	
 	//Uitstoot en verbruik
-	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_Elek_id + V_Elek_wd,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
+	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_id_elek + V_wd_elek,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
 	attribute<GJ_yr>		GJw					(BebouwingsObject)	:=	V_warmte - GJe,																			Descr = "warmte geleverd uit gebiedsoptie";
 	attribute<KG_yr>		CO2					(BebouwingsObject)	:=	Prijzen/Elektriciteit/CO2_GJ * GJe,														Descr = "co2-uitstoot door elektriciteitsverbruik gebiedsoptie";
-	//attribute<Eur_yr>		Kj_productie		(BebouwingsObject)	:=	V_Warmte_primair * constanten/K_GJ_bron,												Descr = "meerkosten van warmteproductie in primaire bron";
-	
 	
 	//Investeringskosten vergoedingen gebouweigenaar
 	attribute<Eur>			Ki_ge_pm			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_ge_pm,														Descr = "investeringskosten vergoeding gebouweigenaar projectmanagement";
 	attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_ge_ov,														Descr = "investeringskosten vergoeding gebouweigenaar ongerief";
 	attribute<Eur>			Ki_ge				(BebouwingsObject)	:=	Ki_ge_ov + Ki_ge_pm,																	Descr = "investeringskosten vergoeding gebouweigenaar";
 	attribute<Eur>			Oi_ge_EIA			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Oi_ge_EIA,														Descr = "investeringssubsidie vergoeding gebouweigenaar ongerief";
-	attribute<Eur_yr>		KL_ge				(BebouwingsObject)	:=	(Ki_ge_pm + Ki_ge_ov - Oi_ge_EIA) * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor),	Descr = "geannualiseerde investeringskosten vergoedingen gebouweigenaar";
+	attribute<Eur_yr>		Kji_ge				(BebouwingsObject)	:=	(Ki_ge_pm + Ki_ge_ov - Oi_ge_EIA) * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor),	Descr = "geannualiseerde investeringskosten vergoedingen gebouweigenaar";
 	
 	//Investeringskosten inpandige distributie
 	attribute<Eur>			Ki_id				(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_id,															Descr = "investeringskosten inpandige distributie";
 	attribute<Eur>			Oi_id_EIA			(BebouwingsObject)	:=	Ki_id * SpecifiekeInstellingen/Beleid/EIA/id,											Descr = "investeringssubsidie inpandige distributie";
-	attribute<Eur_yr>		KL_id				(BebouwingsObject)	:=	(Ki_id - Oi_id_EIA) * BCdata/NcwRefs/_30/AnnualisationFactor,							Descr = "geannualiseerde investeringskosten inpandige distributie";
+	attribute<Eur_yr>		Kji_id				(BebouwingsObject)	:=	(Ki_id - Oi_id_EIA) * BCdata/NcwRefs/_30/AnnualisationFactor,							Descr = "geannualiseerde investeringskosten inpandige distributie";
 	
 	//Investeringskosten wijkdistributie gebouwgerelateerd
-	attribute<Eur>			Ki_wd				(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_wd,															Descr = "investeringskosten wijkdistributie gebouwgerelateerd";
+	attribute<Eur>			Ki_wd_gebouw		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_wd,															Descr = "investeringskosten wijkdistributie gebouwgerelateerd";
+	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * constanten/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
+	attribute<Eur>			Ki_wd				(BebouwingsObject)	:=	Ki_wd_gebouw + Ki_wd_eWP;
 	attribute<Eur>			Oi_wd_EIA			(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
-	attribute<Eur_yr>		KL_wd				(BebouwingsObject)	:=	(Ki_wd - Oi_wd_EIA) * NCW/wd28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten wijkdistributie";
+	attribute<Eur_yr>		Kji_wd				(BebouwingsObject)	:=	(Ki_wd - Oi_wd_EIA) * NCW/wd28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten wijkdistributie";
 	
 	//Investeringskosten opwekking gebouwgerelateerd
 	attribute<Eur>			Ki_ow_Uitkoppel		(BebouwingsObject)	:=	P_sec_primair * constanten/Ki_uitkoppel,												Descr = "investeringskosten voor het uitkoppelen van de primaire bron";
-	attribute<Eur>			Ki_ow_eWP_col		(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * constanten/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
 	attribute<Eur>			Ki_ow_buffer		(BebouwingsObject)	:=	const(constanten/Ki_buffer,	BebouwingsObject),											Descr = "voorlopige inschatting van investeringskosten voor warmtebuffer";
-	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Ki_ow_Uitkoppel + Ki_ow_eWP_col +Ki_ow_buffer,											Descr = "investeringskosten opwekking gebouwgerelateerd";
+	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Ki_ow_Uitkoppel + Ki_ow_buffer,													Descr = "investeringskosten opwekking gebouwgerelateerd";
 	attribute<Eur>			Oi_ow_EIA			(BebouwingsObject)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,											Descr = "investeringssubsidie opwekking gebouwgerelateerd";
-	attribute<Eur_yr>		KL_ow				(BebouwingsObject)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten bronzijde opwekking";
+	attribute<Eur_yr>		Kji_ow				(BebouwingsObject)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten bronzijde opwekking";
 	
 	//Elektriciteitskosten
-	attribute<Eur_yr>		Kj_elek_id_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_id,													Descr = "eindgebruikerskosten elektriciteit individueel: component energieheffing";
-	attribute<Eur_yr>		Kj_elek_id_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_id,													Descr = "eindgebruikerskosten elektriciteit individueel: component CO2 heffing";
-	attribute<Eur_yr>		Kj_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_id,														Descr = "eindgebruikerskosten elektriciteit individueel, totaal exclusief btw";
-	attribute<Eur_yr>		Km_elek_id			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_id,														Descr = "maatschappelijke kosten elektriciteit individueel";
+	attribute<Eur_yr>		Kj_id_elek_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_id_elek_EH,													Descr = "eindgebruikerskosten elektriciteit individueel: component energieheffing";
+	attribute<Eur_yr>		Kj_id_elek_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_id_elek_CO2,													Descr = "eindgebruikerskosten elektriciteit individueel: component CO2 heffing";
+	attribute<Eur_yr>		Kj_id_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_id_elek,													Descr = "eindgebruikerskosten elektriciteit individueel, totaal exclusief btw";
+	attribute<Eur_yr>		Km_id_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_id_elek,													Descr = "maatschappelijke kosten elektriciteit individueel";
 	
-	attribute<Eur_yr>		Kj_elek_wd_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KEH_elek_wd,													Descr = "eindgebruikerskosten elektriciteit collectief: component energieheffing";
-	attribute<Eur_yr>		Kj_elek_wd_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/KCO2_elek_wd,													Descr = "eindgebruikerskosten elektriciteit collectief: component CO2 heffing";
-	attribute<Eur_yr>		Kj_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_elek_wd,														Descr = "eindgebruikerskosten elektriciteit collectief, totaal exclusief btw";
-	attribute<Eur_yr>		Km_elek_wd			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_elek_wd,														Descr = "maatschappelijke kosten elektriciteit collectief";
+	attribute<Eur_yr>		Kj_wd_elek_EH		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_wd_elek_EH,													Descr = "eindgebruikerskosten elektriciteit collectief: component energieheffing";
+	attribute<Eur_yr>		Kj_wd_elek_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_wd_elek_CO2,													Descr = "eindgebruikerskosten elektriciteit collectief: component CO2 heffing";
+	attribute<Eur_yr>		Kj_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_wd_elek,														Descr = "eindgebruikerskosten elektriciteit collectief, totaal exclusief btw";
+	attribute<Eur_yr>		Km_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_wd_elek,														Descr = "maatschappelijke kosten elektriciteit collectief";
 
-	//Onderhoud en administratie, gebouwgerelateerd
-	attribute<Eur_yr>		Kj_ow_oh_uitkoppel  (BebouwingsObject)	:=	Ki_ow_Uitkoppel * constanten/OenM/R_ow_onderhoud,										Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
-	attribute<Eur_yr>		Kj_wd_oh_ewp        (BebouwingsObject)	:=	Ki_ow_eWP_col * constanten/OenM/R_wpColl_onderhoud,										Descr = "jaarlijkse onderhoudskosten collectieve warmtepomp";
-	attribute<Eur_yr>		Kj_wd_oh			(BebouwingsObject)	:=	Ki_wd * constanten/OenM/R_wd_onderhoud +Kj_wd_oh_ewp,									Descr = "jaarlijkse onderhoudskosten wijkdistributie";
-	attribute<Eur_yr>		Kj_id_oh  			(BebouwingsObject)	:=	Ki_id * constanten/OenM/R_id_onderhoud,													Descr = "jaarlijkse onderhoudskosten inpandige distributie";
-	attribute<Eur_yr>		Kj_ow_oh			(BebouwingsObject)	:=	Kj_ow_oh_uitkoppel,																		Descr = "jaarlijkse onderhoudskosten opwekking";
-	attribute<Eur_yr>		Kj_onderhoud		(BebouwingsObject)	:=	Kj_id_oh + Kj_wd_oh + Kj_ow_oh, 	 													Descr = "jaarlijkse onderhoudskosten totaal";
+	//Onderhoud en administratie
+	attribute<Eur_yr>		Kj_wd_oh_ewp		(BebouwingsObject)	:=	Ki_wd_eWP * constanten/OenM/R_wpColl_onderhoud,										Descr = "jaarlijkse onderhoudskosten collectieve warmtepomp";
+	attribute<Eur_yr>		Kj_wd_oh			(BebouwingsObject)	:=	Kj_wd_oh_ewp + (Ki_wd * constanten/OenM/R_wd_onderhoud),													Descr = "jaarlijkse onderhoudskosten wijkdistributie";
+	attribute<Eur_yr>		Kj_id_oh			(BebouwingsObject)	:=	Ki_id * constanten/OenM/R_id_onderhoud,													Descr = "jaarlijkse onderhoudskosten inpandige distributie";
+	attribute<Eur_yr>		Kj_ow_oh			(BebouwingsObject)	:=	Ki_ow_Uitkoppel * constanten/OenM/R_ow_onderhoud,										Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+	attribute<Eur_yr>		Kj_oh				(BebouwingsObject)	:=	Kj_id_oh + Kj_wd_oh + Kj_ow_oh,													Descr = "jaarlijkse onderhoudskosten totaal";
 	
-	attribute<Eur_yr>		Kj_ow_adm_uitkoppel (BebouwingsObject)	:=	Ki_ow_Uitkoppel * constanten/OenM/R_ow_admin,											Descr = "jaarlijkse administratiekosten uitkoppeling primaire bron";
-	attribute<Eur_yr>		Kj_wd_adm_ewp   	(BebouwingsObject)	:=	Ki_ow_eWP_col * constanten/OenM/R_wpColl_admin,											Descr = "jaarlijkse administratiekosten collectieve warmtepomp";
+	attribute<Eur_yr>		Kj_wd_adm_ewp		(BebouwingsObject)	:=	Ki_wd_eWP * constanten/OenM/R_wpColl_admin,											Descr = "jaarlijkse administratiekosten collectieve warmtepomp";
+	attribute<Eur_yr>		Kj_wd_adm			(BebouwingsObject)	:=	Kj_wd_adm_ewp + (Ki_wd * constanten/OenM/R_wd_admin),														Descr = "jaarlijkse administratiekosten wijkdistributie";
 	attribute<Eur_yr>		Kj_id_adm			(BebouwingsObject)	:=	Ki_id * constanten/OenM/R_id_admin,														Descr = "jaarlijkse administratiekosten inpandige distributie";
-	attribute<Eur_yr>		Kj_wd_adm			(BebouwingsObject)	:=	Ki_wd * constanten/OenM/R_wd_admin + Kj_wd_adm_ewp,										Descr = "jaarlijkse administratiekosten wijkdistributie";
-	attribute<Eur_yr>		Kj_ow_adm			(BebouwingsObject)	:=	Kj_ow_adm_uitkoppel,																		Descr = "jaarlijkse administratiekosten opwekking";
-	attribute<Eur_yr>		Kj_administratie	(BebouwingsObject)	:=	Kj_id_adm + Kj_wd_adm + Kj_ow_adm,														Descr = "jaarlijkse administratiekosten totaal";
+	attribute<Eur_yr>		Kj_ow_adm			(BebouwingsObject)	:=	Ki_ow * constanten/OenM/R_ow_admin,												Descr = "jaarlijkse administratiekosten uitkoppeling primaire bron";
+	attribute<Eur_yr>		Kj_adm				(BebouwingsObject)	:=	Kj_id_adm + Kj_wd_adm + Kj_ow_adm,												Descr = "jaarlijkse administratiekosten totaal";
 	
 	//Opbrengsten
 	attribute<Eur>			Oi_Aansl			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oi_Aansl,													Descr = "initiele opbrengsten uit aansluitbijdrage";
 	attribute<Eur_yr>		Oj_verbruik			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oj_Warmte + WkoDataComponent/Opbrengsten/Oj_Koude,			Descr = "jaarlijkse opbrengsten uit levering";
 	attribute<Eur_yr>		Oj_vastrecht		(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oj_Vastrecht,												Descr = "jaarlijkse opbrengsten uit vastrecht";
-	attribute<Eur_yr>		KL_Aansl			(BebouwingsObject)	:=	Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor),				Descr = "geannualiseerde aansluitbijdrage";
+	attribute<Eur_yr>		Oji_Aansl			(BebouwingsObject)	:=	Oi_Aansl * (NCW/id28/AnnualisationFactor * NCW/id28/StartDiscountFactor),				Descr = "geannualiseerde aansluitbijdrage";
 	attribute<Eur_yr>		Om_comfort			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Om_comfort,												Descr = "maatschappelijke opbrengsten door koudelevering";
 	attribute<Eur_yr>		Oj_SDE				(BebouwingsObject)	:=	GJw [Gj_yr] * SpecifiekeInstellingen/Beleid/EEA/SDE_LT [Eur_Gj],						Descr = "jaarlijkse opbrengsten uit SDE op lage temperatuur warmte";		
 	
 	//Netto contributiemarge
-	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	KL_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE,											Descr = "totale jaarlijkse opbrengsten";
-	attribute<Eur_yr>		KL_totaal			(BebouwingsObject)	:=	KL_id + KL_wd + KL_ow + KL_ge,															Descr = "totale jaarlijkse kapitaallasten";
-	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_elek_id + Kj_elek_wd + Kj_onderhoud + Kj_administratie,								Descr = "totale jaarlijkse kapitaallasten";
-//	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_productie + Kj_elek_id + Kj_elek_ow + Kj_onderhoud + Kj_administratie,				Descr = "totale jaarlijkse kapitaallasten";
-	attribute<Eur_yr>		Contributiemarge	(BebouwingsObject)	:=	Oj_totaal - KL_totaal - Kj_totaal,														Descr = "Netto contributiemarge per object";																																		
+	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE,											Descr = "totale jaarlijkse opbrengsten";
+	attribute<Eur_yr>		Kji_totaal			(BebouwingsObject)	:=	Kji_id + Kji_wd + Kji_ow + Kji_ge,															Descr = "totale jaarlijkse kapitaallasten";
+	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_id_elek + Kj_wd_elek + Kj_oh + Kj_adm,										Descr = "totale jaarlijkse kapitaallasten";
+
+	attribute<Eur_yr>		Contributiemarge	(BebouwingsObject)	:=	Oj_totaal - Kji_totaal - Kj_totaal,														Descr = "Netto contributiemarge per object";																																		
 	
-	//selectie van geschikte kandidaten uit alle bebouwingsobjecten op basis van contributiemarge (obv gebouwgerelateerde costen) en geselecteerde criteria en
+	//selectie van geschikte kandidaten uit alle bebouwingsobjecten op basis van rentabiliteit en geselecteerde criteria
 	attribute<bool>		RentabiliteitsAfweging	(BebouwingsObject)	:=	Contributiemarge > 0[Eur_yr],															Descr = "heeft dit bebouwingsobject individueel een positieve aansluitmarge, ja of nee";
 	attribute<bool>		MarginaleAfweging		(BebouwingsObject)	:=	geschikt && RentabiliteitsAfweging,														Descr = "is zowel de aansluitmarge positief als het minimale schillabel aanwezig, ja of nee";
 	attribute<bool>		WasAllocated			(BebouwingsObject)	:=	IsDefined(BeginStatusComponent/WarmteAllocatie) 
