@@ -26,9 +26,9 @@ container GlasTuinBouw
 			StorageName     = "%sourceDataProjDir%/vraag/glastuinbouw/gltb_180219.shp",
 			StorageReadOnly = "True"
 		{
-			parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";
-			parameter<m>       SymbolWorldSize: DialogType = "SymbolWorldSize", expr = "value(100, m)";
-			parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
+			// parameter<Float64> SymbolSize:      DialogType = "SymbolSize",      expr = "Float64(16)";
+			// parameter<m>       SymbolWorldSize: DialogType = "SymbolWorldSize", expr = "value(100, m)";
+			// parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
 		}
 		attribute<rdc_meter> geometry := point;
 		attribute<Classifications/GLTB> GLTB_Code;

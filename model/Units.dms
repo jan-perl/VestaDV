@@ -63,6 +63,7 @@ container Units: isHidden = "True"
 	unit<float64> m_kW          := m / kW;
 	unit<float64> GJ_yr_ha      := GJ_yr / ha;
 	
+	
 
 	// effects of energyproduction
 	unit<float64> kg_GJ         := kg / GJ, Descr = "Co2 effect van energieproductie";
@@ -88,6 +89,7 @@ container Units: isHidden = "True"
 	unit<float64> Amp_Groep     := A / nrGroep;
 	
 	unit<float64> MSR           := BaseUnit('Middenspanningsruimte', float64);
+	unit<float64> kW_MSR        := kW / MSR;
 
 
 	// financial

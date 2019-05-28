@@ -96,17 +96,23 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			parameter<Eur_Aansl>   kental_verzw_e_aansl         := 227[Eur_Aansl], Descr = "kostenkengetal verzwaren aansluiting naar 3x25 (RNBs)";
 			parameter<Eur_MSR>     kental_nieuwe_MSR            := 70000[Eur_MSR], Descr = "kostenkengetal plaatsen nieuwe MS-ruimte (RNBs)";
 			parameter<Eur_m>       kental_verzw_LS              := 110[Eur_m], Descr = "kostenkengetal verzwaren LS-net (RNBs)";
-			parameter<kW>          kental_capaciteit_nieuwe_MSR := 630[kw], Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes (RNBs)";
+			parameter<kW_MSR>      kental_capaciteit_nieuwe_MSR := 630[kW_MSR], Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes (RNBs)";
 			
-			parameter<kW>          kental_aansluitwaarde_woning_zonderWP     := 11[kW];
-			parameter<kW>          kental_extra_aansluitwaarde_woning_metWP  := 4[kW];
+			parameter<kW_Woning>   kental_aansluitwaarde_woning_zonderWP            := 11[kW_Woning];
+			parameter<kW_Woning>   kental_aansluitwaarde_woning_metWP               := 15[kW_Woning];
 			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_zonderWP   := 0.5[Ratio];
 			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_metWP      := 0.5[Ratio];
 			
-			parameter<kW_m2>       kental_aansluitwaarde_util_zonderWP            := 0.05[kW_m2];
-			parameter<kW_m2>       kental_extra_aansluitwaarde_util_metWP         := 0.02[kW_m2];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_zonderWP   := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_metWP      := 0.5[Ratio];
+			parameter<kW_m2>       kental_aansluitwaarde_util_zonderWP              := 0.05[kW_m2];
+			parameter<kW_m2>       kental_aansluitwaarde_util_metWP                 := 0.07[kW_m2];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_util_zonderWP     := 0.5[Ratio];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_util_metWP        := 0.5[Ratio];
+			
+			//TO DO: check
+			parameter<kW_m2>       kental_aansluitwaarde_gltb_zonderWP              := 0.05[kW_m2];
+			parameter<kW_m2>       kental_aansluitwaarde_gltb_metWP                 := 0.07[kW_m2];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_zonderWP     := 0.5[Ratio];
+			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_metWP        := 0.5[Ratio];
 		}
 		
 		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "kentallen"
@@ -121,8 +127,8 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<nrAansl>             aant_won_elec               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aant_won_elec)[nrAansl]               , Descr = "aantal aansluitingen per buurt dat all-electric of LT-warmte wordt (PBL)";
 			attribute<Ratio>               fractie_3x25_aansl          := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/fractie_3x25_aansl)[Ratio]            , Descr = "aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is (RNBs)";
 			attribute<kw>                  capaciteit_buurt            := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/capaciteit_buurt)[kw]                 , Descr = "huidige opgestelde capaciteit aan MS-ruimtes (RNBs)";
-			attribute<m>                   lengte_LS_buurt             := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LS_buurt)[m]                   , Descr = "totale lengte van het LS-net per buurt (RNBs)";
-			attribute<kw>                  vermogensvraag_huidig       := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/vermogensvraag_huidig)[kw]            , Descr = "huidige vermogensvraag per buurt (PBL of wanneer mogelijk RNBs)";
+			attribute<m>                   lengte_LS_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LS_buurt)[m]                   , Descr = "totale lengte van het LS-net per buurt (RNBs)";
+			// attribute<kw>                  vermogensvraag_huidig       := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/vermogensvraag_huidig)[kw]            , Descr = "huidige vermogensvraag per buurt (PBL of wanneer mogelijk RNBs)";
 		}
 	}
 	

@@ -98,10 +98,8 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<Eur_yr>	Kji_Netto			(PlanRegio)		:= Kji_Total - Oji_subsidie,																	Descr = "jaarlijkse netto eindgebruikerskosten";
 	}
 	
-	container Infra_per_buurt := /BeginSituatie/Infra_per_buurt, using = "Invoer/RuimtelijkeData/infra/kentallen"
+	container Infra_per_buurt : using = "Invoer/RuimtelijkeData/infra/kentallen"
 	{
-		attribute<nrWoningen>        aant_woning_bestaand              (PlanRegio)    := BebouwingsComponenten/BestaandeWoning/RuimtelijkeVraagComponent/nrWoonUnits_per_PlanRegio;
-		attribute<nrWoningen>        aant_woning_nieuwbouw             (PlanRegio)    := BebouwingsComponenten/NieuwbouwWoning/union/result/nrWoonUnits_per_PlanRegio;
 		attribute<nrAansl>           aant_g_aansl                      (PlanRegio)    := Allocatie/aant_g_aansl_per_planregio;
 		attribute<nrAansl>           aant_g_aansl_woning               (PlanRegio)    := Allocatie/aant_g_aansl_woning_per_planregio;
 		attribute<nrAansl>           aant_g_aansl_woning_hoogb         (PlanRegio)    := Allocatie/aant_g_aansl_woning_hoogb_per_planregio;
@@ -115,41 +113,49 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<Ratio>             fractie_laagb_gasloos             (PlanRegio)    := aant_g_aansl_woning_laagb_gasloos / aant_g_aansl_woning_gasloos;
 		attribute<Ratio>             fractie_hoogb_gasloos             (PlanRegio)    := aant_g_aansl_woning_hoogb_gasloos / aant_g_aansl_woning_gasloos;
 		
-		//TO DO: 
-//		attribute<m>                 lengte_grogel_LD_net              (PlanRegio)    := IF WARMTENET IN BUURT --> vervangen ;
-//		attribute<m>                 lengte_LD_net                     (PlanRegio)    := aant_g_aansl == 0[nrAansl] ? 0[m] : BeginSituatie/Infra_per_buurt/lengte_LD_net;
+		attribute<m>                 lengte_grogel_LD_net              (PlanRegio)    := Allocatie/GrondroeringInPlanRegio ? 0[m] : StateVoorAllocatie/Infra_per_buurt/lengte_grogel_LD_net;
+		attribute<m>                 lengte_LD_net                     (PlanRegio)    := aant_g_aansl == 0[nrAansl] ? 0[m] : StateVoorAllocatie/Infra_per_buurt/lengte_LD_net;
+		attribute<m>                 lengte_LS_net                     (PlanRegio)    := StateVoorAllocatie/Infra_per_buurt/lengte_LS_net;
 		
-		//TO DO: maar warmetenet? /TussenResultaten/R1_2020/Allocatie/BestaandeWoning/Aandelen/AllElectric
-		//TO Do ook voor utiliteit
-		//To Do: als utiliteit > 100 kw, dan doet ie niet mee
-		attribute<nrAansl>           aant_won_elec                     (PlanRegio)    := (aant_woning_nieuwbouw + aant_woning_bestaand) * 1[nrAansl / nrWoningen] - aant_g_aansl_woning;
+		attribute<nrAansl>           aant_won_elec                     (PlanRegio)    := Allocatie/BestaandeWoning/AllElec_Aansl_inPlanRegio + Allocatie/NieuwbouwWoning/AllElec_Aansl_inPlanRegio;
+		attribute<nrAansl>           aant_util_elec                    (PlanRegio)    := Allocatie/BestaandeUtil/AllElec_Aansl_inPlanRegio + Allocatie/NieuwbouwUtil/AllElec_Aansl_inPlanRegio;
+		attribute<Ratio>             fractie_3x25_aansl                (PlanRegio)    := StateVoorAllocatie/Infra_per_buurt/fractie_3x25_aansl;
+		attribute<kW>                vermogensvraag_woningen     (PlanRegio)    := (kental_aansluitwaarde_woning_zonderWP * Allocatie/BestaandeWoning/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_woning_zonderWP) 
+																							+ (kental_aansluitwaarde_woning_metWP * Allocatie/NieuwbouwWoning/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_woning_metWP);
+		attribute<kW>                vermogensvraag_util         (PlanRegio)    := (kental_aansluitwaarde_util_zonderWP * Allocatie/BestaandeUtil/ModelUnits_zonder_WP_inPlanRegio  * kental_gelijktijdigheidsfactor_util_zonderWP) 
+																							+ (kental_aansluitwaarde_util_metWP * Allocatie/NieuwbouwUtil/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_util_metWP);
+		attribute<kW>                vermogensvraag_gltb         (PlanRegio)    := (kental_aansluitwaarde_gltb_zonderWP * Allocatie/BestaandeGlTb/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_gltb_zonderWP) 
+																							+ (kental_aansluitwaarde_gltb_metWP * Allocatie/NieuwbouwGlTb/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_gltb_metWP);
 		
-		//TO DO: dit is gas en moet elek zijn. en nog maal gelijktijdigheid
-		//TO Do ook voor utiliteit
-		attribute<kW>                vermogensvraag_nieuw_woningen     (PlanRegio)    := (kental_aansluitwaarde_woning_zonderWP * AANTAL_WONING_ZONDER_WP) * kental_gelijktijdigheidsfactor_zonderWP + (kental_extra_aansluitwaarde_woning_metWP * AANTAL_WONING_MET_WP) * kental_gelijktijdigheidsfactor_metWP;
+		attribute<MSR>               aant_nieuwe_MSR                   (PlanRegio)    := (max_elem((vermogensvraag_woningen + vermogensvraag_util - StateVoorAllocatie/Infra_per_buurt/capaciteit_buurt), 0[kW]) / kental_capaciteit_nieuwe_MSR) ;
+		attribute<kW>                capaciteit_buurt                  (PlanRegio)    := StateVoorAllocatie/Infra_per_buurt/capaciteit_buurt + (aant_nieuwe_MSR * kental_capaciteit_nieuwe_MSR);
 		
-		//TO DO negatieve waarden eruit
-		//TO DO capaciteit_buurt dynamisch maken
-		attribute<MSR>               aant_nieuwe_MSR                   (PlanRegio)    := ((vermogensvraag_nieuw_woningen + VRAAG_UTILITEIT - capaciteit_buurt) / kental_capaciteit_nieuwe_MSR) * 1[MSR];
-		attribute<kW>                nieuwe_capaciteit_buurt           (PlanRegio)    := capaciteit_buurt + aant_nieuwe_MSR * kental_capaciteit_nieuwe_MSR;
-		
-		//TO DO: vermogensvraag_huidig moet dynamisch worden.
-		attribute<m_kW>              relatieve_belasting_LS            (PlanRegio)    := lengte_LS_buurt / vermogensvraag_huidig;
+		attribute<m_kW>              relatieve_belasting_LS            (PlanRegio)    := lengte_LS_net / vermogensvraag_woningen;
 		
 		container Kosten : using = "Invoer/RuimtelijkeData/infra/kentallen"
 		{
-			attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := kental_verv_LD_net * lengte_grogel_LD_net;
+			attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := kental_verv_LD_net * (Allocatie/GrondroeringInPlanRegio ? StateVoorAllocatie/Infra_per_buurt/lengte_grogel_LD_net : 0[m]);
 			attribute<Eur>                 kosten_verw_g_aansl_laagb (PlanRegio)  := kental_verw_g_aansl_laagb * (aant_g_aansl - aant_g_aansl_util) * fractie_laagb_gasloos;
 			attribute<Eur>                 kosten_verw_g_aansl_hoogb (PlanRegio)  := kental_verw_g_aansl_hoogb * (aant_g_aansl - aant_g_aansl_util) * fractie_hoogb_gasloos;
 			attribute<Eur>                 kosten_verw_g_aansl_util  (PlanRegio)  := kental_verw_g_aansl_util  * aant_g_aansl_util_gasloos;
 			attribute<Eur>                 kosten_verw_g_aansl       (PlanRegio)  := kosten_verw_g_aansl_laagb + kosten_verw_g_aansl_hoogb + kosten_verw_g_aansl_util;
-			
-			//TO Do verschil verwijderen
-			attribute<Eur>                 kosten_verw_LD_net        (PlanRegio)  := kental_verw_LD_net * VERSCHIL(lengte_LD_net);
-			
+			attribute<Eur>                 kosten_verw_LD_net        (PlanRegio)  := kental_verw_LD_net * (StateVoorAllocatie/Infra_per_buurt/lengte_LD_net - lengte_LD_net);
 			attribute<Eur>                 kosten_verzw_e_aansl      (PlanRegio)  := kental_verzw_e_aansl * aant_won_elec * (1d - fractie_3x25_aansl);
 			attribute<Eur>                 kosten_verzw_MSR          (PlanRegio)  := kental_nieuwe_MSR * aant_nieuwe_MSR;
-			attribute<Eur>                 kosten_verzw_LS           (PlanRegio)  := kental_verzw_LS * relatieve_belasting_LS * (vermogensvraag_nieuw_woningen - capaciteit_buurt);
+			attribute<Eur>                 kosten_verzw_LS           (PlanRegio)  := kental_verzw_LS * relatieve_belasting_LS * max_elem((vermogensvraag_woningen - StateVoorAllocatie/Infra_per_buurt/capaciteit_buurt), 0[kW]);
+			
+			container cumulatief
+			{
+				attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/kosten/cumulatief/kosten_verv_LD_net + kosten/kosten_verv_LD_net;
+				attribute<Eur>                 kosten_verw_g_aansl_laagb (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verw_g_aansl_laagb + kosten/kosten_verw_g_aansl_laagb;
+				attribute<Eur>                 kosten_verw_g_aansl_hoogb (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verw_g_aansl_hoogb + kosten/kosten_verw_g_aansl_hoogb;
+				attribute<Eur>                 kosten_verw_g_aansl_util  (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verw_g_aansl_util + kosten/kosten_verw_g_aansl_util;
+				attribute<Eur>                 kosten_verw_g_aansl       (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verw_g_aansl + kosten/kosten_verw_g_aansl;
+				attribute<Eur>                 kosten_verw_LD_net        (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verw_LD_net + kosten/kosten_verw_LD_net;
+				attribute<Eur>                 kosten_verzw_e_aansl      (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verzw_e_aansl + kosten/kosten_verzw_e_aansl;
+				attribute<Eur>                 kosten_verzw_MSR          (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verzw_MSR + kosten/kosten_verzw_MSR;
+				attribute<Eur>                 kosten_verzw_LS           (PlanRegio)  := StateVoorAllocatie/Infra_per_buurt/Kosten/cumulatief/kosten_verzw_LS + kosten/kosten_verzw_LS;
+			}
 		}
 	}
 }

@@ -58,7 +58,7 @@ container NieuwbouwWoningOperaties
 			attribute<string> Code     := Label;
 			attribute<String> TypeName := ='union_data(., ' + asItemList('const(' + Quote(WoningType/Name) + ',bron/' + WoningType/Name + '/BebouwingsObject)') + ')';
 			attribute<String> Label    := TypeName+String(BouwJaar)+String(Point), DialogType = "LabelText";
-			parameter<m>      SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
+			// parameter<m>      SymbolWorldSize: [ 50 ], DialogType = "SymbolWorldSize";
 
 			unit<uint8> BebouwingsTypeDomein := WoningType;
 

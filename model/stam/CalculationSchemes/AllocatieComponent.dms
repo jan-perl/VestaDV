@@ -13,19 +13,27 @@ template AllocatieComponent
 	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject);
 	attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject);
 	attribute<Eur_yr>                      Om_Comfort      (BebouwingsObject);
+	parameter<string>                      BebouwingsComponent_name;
 	// end case parameters
 
-	container    RuimtelijkeVraagComponent := BCdata/RuimtelijkeVraagComponent;
-	container    VraagKentallen            := BCdata/VraagKentallen;
-	unit<uint32> BebouwingsObject          := BCdata/BebouwingsObject;
-	unit<uint32> PlanRegio                 := Invoer/SpecifiekeInstellingen/PlanRegio;
+	container                                         RuimtelijkeVraagComponent                           := BCdata/RuimtelijkeVraagComponent;
+	container                                         VraagKentallen                                      := BCdata/VraagKentallen;
+	unit<uint32>                                      BebouwingsObject                                    := BCdata/BebouwingsObject;
+	unit<uint32>                                      PlanRegio                                           := Invoer/SpecifiekeInstellingen/PlanRegio;
+	unit<float64>                                     ModelUnit                                           := BCdata/ModelUnit;
+	attribute<Classifications/WoningtypeBestaand>     BebouwingsType                   (BebouwingsObject) := BebouwingsObject/BebouwingsType;
+	attribute<PlanRegio>                              PlanRegio_BebouwingsObject_rel   (BebouwingsObject) := point_in_polygon(BebouwingsObject/geometry, PlanRegio/Geometry);
 	
-	attribute<Classifications/WoningtypeBestaand>     BebouwingsType (BebouwingsObject)     := BebouwingsObject/BebouwingsType;
-
-	attribute<PlanRegio> PlanRegio_BebouwingsObject_rel (BebouwingsObject) := point_in_polygon(BebouwingsObject/geometry, PlanRegio/Geometry);
-
-	attribute<Classifications/AanbodOptie> WarmteAllocatieComponent (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
-
+	attribute<Classifications/AanbodOptie>            WarmteAllocatieComponent         (BebouwingsObject) := MakeDefined(WarmteAllocatie, PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
+	attribute<bool>                                   VeroorzaaktGrondroering          (BebouwingsObject) := IsDefined(WarmteAllocatieComponent);
+	attribute<bool>                                   GrondroeringInPlanRegio          (PlanRegio)        := sum(VeroorzaaktGrondroering ? 1 : 0, PlanRegio_BebouwingsObject_rel) > 0;
+ 
+	attribute<nrAansl>                                AllElec_Aansl_inPlanRegio        (PlanRegio)        := sum(Aansl_capaciteit < 100[kw] ? Aandelen/AllElectric[uint32] : 0, PlanRegio_BebouwingsObject_rel)[nrAansl];
+	attribute<kW>                                     Aansl_capaciteit                 (BebouwingsObject) := BCdata/RuimtelijkeVraagComponent/AansluitCapaciteit/Elektriciteit;
+	
+	attribute<ModelUnit>                              ModelUnits_met_WP_inPlanRegio    (PlanRegio)        := sum(Aandelen/eWP[uint32], PlanRegio_BebouwingsObject_rel)[ModelUnit] + sum(Aandelen/hWP[uint32], PlanRegio_BebouwingsObject_rel)[ModelUnit];
+	attribute<ModelUnit>                              ModelUnits_zonder_WP_inPlanRegio (PlanRegio)        := sum(BCdata/RuimtelijkeVraagComponent/nrModelUnits, PlanRegio_BebouwingsObject_rel)[ModelUnit] - ModelUnits_met_WP_inPlanRegio;
+	
 	container Aandelen := for_each_nedv(Classifications/AanbodOptie/name, 'BCdata/Aandeel/WarmteVraag * float64(WarmteAllocatieComponent == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/name+')', BebouwingsObject, float64)
 	{
 		attribute<float64> eWP          (BebouwingsObject) := BCdata/Opwekking/eWP;
