@@ -120,44 +120,33 @@ template Resultaten
 		// *** Investeringen zijn niet over 30 jaar genomen maar over de voor de betreffende aanbodtechnologie geldende gebruiksperiode en tegen het voor de EP geldende rentevoet
 		container impl: IsHidden = "True"
 		{
-			attribute<String> FlowExpr (Classifications/AanbodOptie) := union_data(Classifications/AanbodOptie,
-				'(GebiedsAllocatie/RestWarmte/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte)',
-				'(GebiedsAllocatie/GeoThermie/BeginStatus/KostenBaten/Oj_wd - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/GeoThermie)',
-				'(GebiedsAllocatie/WijkWKK/BeginStatus/KostenBaten/Oj_wd    - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/WijkWKK)',
-				'(GebiedsAllocatie/BioWKK/BeginStatus/KostenBaten/Oj_wd     - StateNaAllocatie/Flow/Kj_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/BioWKK)',
-				'StateNaAllocatie/WKO/Oj_totaal - StateNaAllocatie/WKO/Kj_Netto'
-			);
+			attribute<String> FlowExpr (Classifications/AanbodOptie) := 
+				replace(
+					Classifications/AanbodOptie/IsPlanRegioOptie
+					? '(GebiedsAllocatie/@RO@/BeginStatus/KostenBaten/Oji_wd_KL - StateNaAllocatie/Flow/Kji_ow_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)'
+					: 'StateNaAllocatie/@RO@/Oj_totaal - StateNaAllocatie/@RO@/Kj_Netto'
+				,	'@RO@', Classifications/AanbodOptie/Name);			
 
 			attribute<String> StockExpr(Classifications/AanbodOptie) :=
 				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
 		}
 
-		container CashFlow := for_each_nedv(Voorkeuren/WarmteOpties/Name
-			,	impl/FlowExpr[Voorkeuren/WarmteOpties/AanbodOptie]
-			,	PlanRegio, Eur_yr) // overrule the following defaults
+		container CashFlow := for_each_nedv(Classifications/AanbodOptie/Name
+			,	IsDefined(invert(Voorkeuren/WarmteOpties/AanbodOptie)) ? impl/FlowExpr : 'const(0[Eur_yr], PlanRegio)'
+			,	PlanRegio, Eur_yr)
 		{
-			attribute<Eur_yr> RestWarmte (PlanRegio):= const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> GeoThermie (PlanRegio):= const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> WijkWKK    (PlanRegio):= const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> WKO        (PlanRegio):= const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> BioWKK     (PlanRegio):= const(0[Eur_yr], PlanRegio);
-			attribute<Eur_yr> Kj_Totaal  (PlanRegio):= RestWarmte + GeoThermie + WijkWKK + WKO + BioWKK;
+			attribute<Eur_yr> Kj_Totaal  (PlanRegio) := ='add('+AsItemList(Classifications/AanbodOptie/Name)+')';
 		}
 
 		attribute<Eur_yr> Kj_Totaal (PlanRegio):= CashFlow/Kj_Totaal;
 
-		container Stock := for_each_nedv(Voorkeuren/WarmteOpties/Name
-			,	impl/StockExpr[Voorkeuren/WarmteOpties/AanbodOptie]
-			,	PlanRegio, Eur) // overrule the following defaults
+		container Stock := for_each_nedv(Classifications/AanbodOptie/Name
+			,	IsDefined(invert(Voorkeuren/WarmteOpties/AanbodOptie)) ? impl/StockExpr : 'const(0[Eur], PlanRegio)'
+			,	PlanRegio, Eur)
 		{
-			attribute<Eur> RestWarmte (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> GeoThermie (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> WijkWKK    (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> WKO        (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> BioWKK     (PlanRegio) := const(0[Eur], PlanRegio);
-			attribute<Eur> Ki_Totaal  (PlanRegio) := RestWarmte + GeoThermie + WijkWKK + WKO + BioWKK;
+			attribute<Eur> Ki_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/AanbodOptie/Name)+')';
 		}
-		attribute<Eur> Ki_Totaal      (PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
+		attribute<Eur> Ki_Totaal(PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
 	}
 
 	container netwerken
