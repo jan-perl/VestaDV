@@ -387,20 +387,24 @@ Template LtWarmtenetImpl
 		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((constanten/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
-		attribute<Eur_Yr>			KL_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
-		attribute<Eur>				Ki_wd_wijkdist		(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
-		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd_wijkdist * SpecifiekeInstellingen/Beleid/EIA/wd,					Descr ="investeringssubsidie distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			KL_wd				(BronCluster)	:=	(Ki_wd_wijkdist - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,			Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
+		attribute<Eur_Yr>			Kji_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur>				Ki_wd				(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
+		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kji_wd				(BronCluster)	:=	(Ki_wd - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_ow_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
 		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_admin,										Descr ="administratiekosten opwekking";
-		attribute<Eur_Yr>			Kj_ow_oh            (BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
-		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_admin,							Descr ="administratiekosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_wd_oh            (BronCluster)	:=	Ki_wd_wijkdist * constanten/OenM/R_wd_onderhoud,						Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_ow_oh			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
+		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Ki_wd * constanten/OenM/R_wd_admin,										Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_wd_oh			(BronCluster)	:=	Ki_wd * constanten/OenM/R_wd_onderhoud,									Descr ="onderhoudskosten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_onderhoud		(BronCluster)	:=	Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
 		attribute<Eur_Yr>			Kj_admin			(BronCluster)	:=	Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
 		
-		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	KL_ow + KL_wd + Kj_onderhoud + Kj_admin + Kj_productie,					Descr ="totale jaarlijkse kosten brongerelateerd";
-		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge - Kj_brongerelateerd,									Descr ="rentabiliteit van aanleg gebiedsoptie";
+		attribute<Eur_Yr>			Oj_wd_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
+		attribute<Eur_Yr>			Oj_ow_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
+		attribute<Eur_Yr>			Oj_EEA				(BronCluster)	:=	Oj_wd_EEA + Oj_ow_EEA;
+		
+		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	Kji_ow + Kji_wd + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
+		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
 		
 		attribute<bool>				Afweging			(BronCluster)	:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";
 	}
@@ -436,19 +440,23 @@ Template LtWarmtenetImpl
 
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
-		attribute<string>		Label				:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<RendabelCluster>	RendabelCluster_rel		:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_relNow')+')';
-		attribute<BronCluster>	Cluster_rel			:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
-		attribute<Eur_yr>		Kj_totaal			:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
-		attribute<Eur>			Ki_ow_bron			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);
-		attribute<Eur>			Ki_wd_bron			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_wd_wijkdist);
-		attribute<Eur_yr>		Kj_wd_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_oh);
-		attribute<Eur_yr>		Kj_wd_adm_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_adm);
-		attribute<Eur_yr>		Kj_ow_oh_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_oh);
-		attribute<Eur_yr>		Kj_ow_adm_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_adm);
-		attribute<Eur_yr>		Kj_productie_bron	:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_productie);
-		attribute<Eur_yr>		Oi_wd_EIA_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_wd_EIA);
-		attribute<Eur_yr>		Oi_ow_EIA_bron		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_ow_EIA);
+		attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
+		attribute<RendabelCluster>	RendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_relNow')+')';
+		attribute<BronCluster>	Cluster_rel				:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
+		attribute<Eur_yr>		Kj_totaal				:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
+		attribute<Eur>			Ki_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);
+		attribute<Eur>			Ki_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_wd);
+		attribute<Eur_yr>		Kji_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kji_ow);
+		attribute<Eur_yr>		Kji_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kji_wd);
+		attribute<Eur_yr>		Kj_wd_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_oh);
+		attribute<Eur_yr>		Kj_wd_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_adm);
+		attribute<Eur_yr>		Kj_ow_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_oh);
+		attribute<Eur_yr>		Kj_ow_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_adm);
+		attribute<Eur_yr>		Kj_ow_productie			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_productie);
+		attribute<Eur>			Oi_wd_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_wd_EIA);
+		attribute<Eur>			Oi_ow_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_ow_EIA);
+		attribute<Eur_yr>		Oj_wd_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_wd_EEA);
+		attribute<Eur_yr>		Oj_ow_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_ow_EEA);
 	}
 
 	
@@ -530,85 +538,92 @@ Template LtWarmtenetImpl
 			container		Om_comfort		:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Om_comfort' , '@W@', LT_Component/Name), PlanRegio, Eur_yr);
 			
 			// recalculated stock
-			attribute<Eur>		Ki_ge_pm	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_pm	')+')';
-			attribute<Eur>		Ki_ge_ov	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_ov	')+')';
-			
+			attribute<Eur>		Ki_ge_pm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_pm	')+')';
+			attribute<Eur>		Ki_ge_ov		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_ov	')+')';		
 			
 			// recalculated Flow
-			attribute<Eur_yr>	Kj_wd_pr	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_wd_pr	')+')';
-			attribute<Eur_yr>	Km_ow_e		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Km_ow_e	')+')';
-			attribute<Eur_yr>	Kj_ow_e		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_ow_e	')+')';
-			attribute<Eur_yr>	KEH_ow_e	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KEH_ow_e	')+')';
-			attribute<Eur_yr>	Kj_ge		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_ge		')+')';
-
-			//onderhoudskosten
-			attribute<Eur_yr>	Kj_ow_oh	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_ow_oh		')+')';
-			attribute<Eur_yr>	Kj_id_oh	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_id_oh		')+')';
-			attribute<Eur_yr>	Kj_wd_oh	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_wd_oh		')+')';
-			//administratiekosten
-			attribute<Eur_yr>	Kj_ow_adm	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_ow_adm	')+')';
-			attribute<Eur_yr>	Kj_id_adm	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_id_adm	')+')';
-			attribute<Eur_yr>	Kj_wd_adm	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_wd_adm	')+')';
+			attribute<Eur_yr>	Km_wd_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Km_wd_elek	')+')';
+			attribute<Eur_yr>	Kj_wd_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_wd_elek	')+')';
+			attribute<Eur_yr>	Kj_wd_elek_EH	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_wd_elek_EH	')+')';
+			attribute<Eur_yr>	Km_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Km_id_elek	')+')';
+			attribute<Eur_yr>	Kj_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_id_elek	')+')';
+			attribute<Eur_yr>	Kj_id_elek_EH	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kj_id_elek_EH	')+')';
 			
-			attribute<Eur_yr>	Kj_ow_o		(PlanRegio)		:= Kj_ow_oh + Kj_id_oh + Kj_wd_oh + Kj_ow_adm + Kj_id_adm + Kj_wd_adm;
+			//onderhoudskosten
+			attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_ow_oh		')+')';
+			attribute<Eur_yr>	Kj_id_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_id_oh		')+')';
+			attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_wd_oh		')+')';
+			//administratiekosten
+			attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_ow_adm	')+')';
+			attribute<Eur_yr>	Kj_id_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_id_adm	')+')';
+			attribute<Eur_yr>	Kj_wd_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_wd_adm	')+')';
+			
+			attribute<Eur_yr>	Kj_adm_oh		(PlanRegio)		:=	Kj_ow_oh + Kj_id_oh + Kj_wd_oh + Kj_ow_adm + Kj_id_adm + Kj_wd_adm;
+			
+			//productiekosten
+			attribute<Eur_yr>	Kj_ow_productie	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Kj_ow_productie	')+')';
 			
 			//cumulatieve investering in opwekking en wijkdistributie
-			attribute<Eur>		Ki_ow		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_ow + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ow		')+')', Descr = "investering opwekker, gebouwzijde en brongerelateerd";
-			attribute<Eur>		Ki_wd		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_wd + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_wd		')+')', Descr = "investering wijkdistributeur, gebouwzijde en brongerelateerd";
-			attribute<Eur>		Ki_id		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_id + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id		')+')';
-			attribute<Eur>		Ki_ge		(PlanRegio)		:= ='PrevLtWarmtenet/Ki_ge + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge		')+')';
-			//kapitaallasten op investeringen
-			attribute<Eur_yr>	Kji_ge_Bruto(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge')+')';
-			attribute<Eur_yr>	Kji_id_Bruto(PlanRegio)		:= ='Kj_id_oh + Kj_id_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id	')+')';
-			attribute<Eur_yr>	Kji_wd_Bruto(PlanRegio)		:= ='Kj_wd_oh + Kj_wd_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge	')+')';
-			attribute<Eur_yr>	Kji_ow_Bruto(PlanRegio)		:= ='Kj_ow_oh + Kj_ow_adm + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow	')+')';
+			attribute<Eur>		Ki_ow			(PlanRegio)		:=	='PrevLtWarmtenet/Ki_ow + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ow		')+')', Descr = "investering opwekker, gebouwzijde en brongerelateerd";
+			attribute<Eur>		Ki_wd			(PlanRegio)		:=	='PrevLtWarmtenet/Ki_wd + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_wd		')+')', Descr = "investering wijkdistributeur, gebouwzijde en brongerelateerd";
+			attribute<Eur>		Ki_id			(PlanRegio)		:=	='PrevLtWarmtenet/Ki_id + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id		')+')';
+			attribute<Eur>		Ki_ge			(PlanRegio)		:=	='PrevLtWarmtenet/Ki_ge + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge		')+')';
+			
+			//bruto kosten per actor (investeringssubsidies al verwerkt)
+			attribute<Eur_yr>	Kji_ge_Bruto	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kji_ge')+')';
+			attribute<Eur_yr>	Kji_id_Bruto	(PlanRegio)		:=	='Kj_id_oh + Kj_id_adm + Kj_id_elek + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kji_id	')+')';
+			attribute<Eur_yr>	Kji_wd_Bruto	(PlanRegio)		:=	='Kj_wd_oh + Kj_wd_adm + Kj_wd_elek + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kji_ge	')+')';
+			attribute<Eur_yr>	Kji_ow_Bruto	(PlanRegio)		:=	='Kj_ow_oh + Kj_ow_adm + Kj_ow_productie + add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Kji_ow	')+')';
+			
 			//subsidies op investeringen
-			attribute<Eur>		Si_ow		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
-			attribute<Eur>		Si_wd		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';
-			attribute<Eur>		Si_id		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_id_EIA		')+')';
-			attribute<Eur>		Si_ge		(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ge_EIA		')+')';
-			attribute<Eur>		Si_T		(PlanRegio)		:= Si_ow + Si_wd + Si_id + Si_ge,	Descr = "totale initiele subsidie";
-								
-			attribute<Eur>		Ki_Totaal	(PlanRegio)		:= Ki_id + Ki_ge + Ki_ow + Ki_wd,	Descr = "totale initiele investering";
-			attribute<Eur_yr>	Kmi_Totaal	(PlanRegio)		:= Km_ow_e + Kj_ow_o + NCW/mr28/AnnualisationFactor * Ki_Totaal - Om_ComfortT;
+			attribute<Eur>		Si_ow			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
+			attribute<Eur>		Si_wd			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';
+			attribute<Eur>		Si_id			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_id_EIA		')+')';
+			attribute<Eur>		Si_ge			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ge_EIA		')+')';
+			attribute<Eur>		Si_T			(PlanRegio)		:=	Si_ow + Si_wd + Si_id + Si_ge,	Descr = "totale initiele subsidie";
+			
+			//maatschappelijke kosten
+			attribute<Eur_yr>	Om_ComfortT		(PlanRegio)		:=	='add('+AsItemList('Om_Comfort/'+LT_Component/Name)+')';
+			attribute<Eur>		Ki_Totaal		(PlanRegio)		:=	Ki_id + Ki_ge + Ki_ow + Ki_wd,	Descr = "totale initiele investering";
+			attribute<Eur_yr>	Kmi_Totaal		(PlanRegio)		:=	Kj_adm_oh + Kj_ow_productie + Km_id_elek + Km_wd_elek + NCW/mr28/AnnualisationFactor * Ki_Totaal - Om_ComfortT;
 
 			//netto investeringskosten
-			attribute<Eur>		Ki_ow_Netto	(PlanRegio)		:= Ki_ow - Si_ow,	Descr = "netto investering opwekking na aftrek investeringssubsidie";
-			attribute<Eur>		Ki_wd_Netto	(PlanRegio)		:= Ki_wd - Si_wd,	Descr = "netto investering wijkdistributie na aftrek investeringssubsidie";
-			attribute<Eur>		Ki_id_Netto	(PlanRegio)		:= Ki_id - Si_id,	Descr = "netto investering inpandig na aftrek investeringssubsidie";
-			attribute<Eur>		Ki_ge_Netto	(PlanRegio)		:= Ki_ge - Si_ge,	Descr = "netto investering eigenaarvergoedingen na aftrek investeringssubsidie";
+			attribute<Eur>		Ki_ow_Netto		(PlanRegio)		:=	Ki_ow - Si_ow,	Descr = "netto investering opwekking na aftrek investeringssubsidie";
+			attribute<Eur>		Ki_wd_Netto		(PlanRegio)		:=	Ki_wd - Si_wd,	Descr = "netto investering wijkdistributie na aftrek investeringssubsidie";
+			attribute<Eur>		Ki_id_Netto		(PlanRegio)		:=	Ki_id - Si_id,	Descr = "netto investering inpandig na aftrek investeringssubsidie";
+			attribute<Eur>		Ki_ge_Netto		(PlanRegio)		:=	Ki_ge - Si_ge,	Descr = "netto investering eigenaarvergoedingen na aftrek investeringssubsidie";
 
-			attribute<Eur_yr>	Sj			(PlanRegio)		:= Si_ow * NCW/ow28/AnnualisationFactor + Si_wd * NCW/wd28/AnnualisationFactor + Si_id * NCW/id28/AnnualisationFactor + Si_ge * NCW/bw28/AnnualisationFactor;
-			attribute<Eur_yr>	Sm			(PlanRegio)		:= Si_T * NCW/mr28/AnnualisationFactor;
-
-			//exploitatiesubsidies
-			attribute<Eur_yr>	SDE			(PlanRegio)		:= GJw_Totaal * SpecifiekeInstellingen/Beleid/EEA/SDE_LT;
-			attribute<Eur_yr>	Se_ow		(PlanRegio)		:= Ki_ow_Netto * NCW/ow28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/LT + SDE;
-			attribute<Eur_yr>	Se_wd		(PlanRegio)		:= Ki_wd_Netto * NCW/wd28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/wd;
-			attribute<Eur_yr>	Se_id		(PlanRegio)		:= Ki_id_Netto * NCW/id28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/id;
-			attribute<Eur_yr>	Se_ge		(PlanRegio)		:= Ki_ge_Netto * NCW/bw28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/ge;
-			attribute<Eur_yr>	Se			(PlanRegio)		:= Sj + Se_ow + Se_wd + Se_id + Se_ge;
-			attribute<Eur_yr>	Sme			(PlanRegio)		:= Sm + Se_ow + Se_wd + Se_id + Se_ge;
-
-			//netto kapitaallasten na aftrek subsidies
-			attribute<Eur_yr>	Kji_ge_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ge		')+')',		Descr = "";
-			attribute<Eur_yr>	Kji_id_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_id		')+')',		Descr = "";
-			attribute<Eur_yr>	Kji_wd_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_wd		')+')',		Descr = "";
-			attribute<Eur_yr>	Kji_ow_netto	(PlanRegio)		:= ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/KL_ow		')+')',		Descr = "";
-			attribute<Eur_yr>	Kji_netto	(PlanRegio)		:= Kji_ge_netto + Kji_id_netto + Kji_wd_netto + Kji_ow_netto;
+			// geannualiseerde subsidies
+			attribute<Eur_yr>	Sj				(PlanRegio)		:=	Si_ow * NCW/ow28/AnnualisationFactor + Si_wd * NCW/wd28/AnnualisationFactor + Si_id * NCW/id28/AnnualisationFactor + Si_ge * NCW/bw28/AnnualisationFactor;
+			attribute<Eur_yr>	Sm				(PlanRegio)		:=	Si_T * NCW/mr28/AnnualisationFactor;
 			
-			attribute<Eur>		Oi_AanslT	(PlanRegio)		:= ='add('+AsItemList('Oi_Aansl/'+LT_Component/Name)+')';
-			attribute<Eur_yr>	Oj_VerbrT	(PlanRegio)		:= ='add('+AsItemList('Oj_Verbruik/'+LT_Component/Name)+')';
-			attribute<Eur_yr>	Oj_VastrT	(PlanRegio)		:= ='add('+AsItemList('Oj_Vastrecht/'+LT_Component/Name)+')';
-			attribute<Eur_yr>	Om_ComfortT	(PlanRegio)		:= ='add('+AsItemList('Om_Comfort/'+LT_Component/Name)+')';
-			attribute<Eur_yr>	Oji_totaal	(PlanRegio)		:= Oj_VerbrT + Oj_VastrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+			//exploitatiesubsidies
+			attribute<Eur_yr>	SDE			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_SDE		')+')';
+			attribute<Eur_yr>	Se_ow		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_ow_EEA	')+')';
+			attribute<Eur_yr>	Se_wd		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_wd_EEA	')+')';
+			attribute<Eur_yr>	Se_id		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_id_EEA	')+')';
+			attribute<Eur_yr>	Se			(PlanRegio)		:=	Sj + Se_ow + Se_wd + Se_id;
+			attribute<Eur_yr>	Sme			(PlanRegio)		:=	Sm + Se_ow + Se_wd + Se_id;
 
-			// CO2: geen bijstook nodig, want verwarming per eWP met LTAS; wel CO2 voor elektriciteit voor collectieve warmtepomp
-			attribute<Eur_yr> KCO2_ow_e   (PlanRegio) := ='add('+AsItemList('ObjectResults/'+LT_Component/Name+'/PR/KCO2_ow_e')+')';
-			attribute<KG_yr>  CO2         (PlanRegio) := GJe_Totaal * prijzen/Elektriciteit/CO2_GJ;
+			//netto totale kosten na aftrek subsidies
+			attribute<Eur_yr>	Kji_ge_netto	(PlanRegio)		:=	Kji_ge_Bruto,					Descr = "";
+			attribute<Eur_yr>	Kji_id_netto	(PlanRegio)		:=	Kji_id_Bruto - Se_id,			Descr = "";
+			attribute<Eur_yr>	Kji_wd_netto	(PlanRegio)		:=	Kji_wd_Bruto - Se_wd,			Descr = "";
+			attribute<Eur_yr>	Kji_ow_netto	(PlanRegio)		:=	Kji_ow_Bruto - Se_ow - SDE,		Descr = "";
+			
+			attribute<Eur>		Oi_AanslT		(PlanRegio)		:=	='add('+AsItemList('Oi_Aansl/'+LT_Component/Name)+')';
+			attribute<Eur_yr>	Oj_VerbrT		(PlanRegio)		:=	='add('+AsItemList('Oj_Verbruik/'+LT_Component/Name)+')';
+			attribute<Eur_yr>	Oj_VastrT		(PlanRegio)		:=	='add('+AsItemList('Oj_Vastrecht/'+LT_Component/Name)+')';
 
-			attribute<GJ_yr>  GJe_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/GJe')+')';
-			attribute<GJ_yr>  GJw_Totaal  (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/GJw')+')';
+			attribute<Eur_yr>	Kj_elek_EH		(PlanRegio)		:=	Kj_wd_elek_EH + Kj_id_elek_EH;
+			attribute<KG_yr>	CO2				(PlanRegio)		:=	GJe_Totaal * prijzen/Elektriciteit/CO2_GJ;
+
+			attribute<GJ_yr>	GJe_Totaal		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/GJe')+')';
+			attribute<GJ_yr>	GJw_Totaal		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/GJw')+')';
+			
+			attribute<Eur_yr>	Oji_totaal		(PlanRegio)		:=	Oj_VerbrT + Oj_VastrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+			attribute<Eur_yr>	Kji_netto		(PlanRegio)		:=	Kji_ge_netto + Kji_id_netto + Kji_wd_netto + Kji_ow_netto;
+			attribute<Eur_yr>	Resultaat		(Planregio)		:=	Oji_totaal - Kji_netto;
 		}
 		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen);
 	}

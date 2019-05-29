@@ -42,109 +42,143 @@ template LtResults
 	attribute<bool>    HasThis        (BebouwingsObject) := StartThis || WasThis;
 
 	//volumevraag voor nieuwe allocatie
-	attribute<GJ_yr>   V_Warmte       (BebouwingsObject) := WkoData/WkoDataComponent/V_Warmte		* float64(StartThis); // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_Koude        (BebouwingsObject) := WkoData/WkoDataComponent/V_Koude		* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_ElekW        (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekW_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_ElekK        (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekK_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_Elek         (BebouwingsObject) := V_ElekW + V_ElekK;
+	attribute<GJ_yr>	V_Warmte		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_Warmte					* float64(StartThis);
+	attribute<GJ_yr>	V_Koude			(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_Koude					* float64(StartThis);
+	attribute<GJ_yr>	V_id_W_elek		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_W_elek				* float64(StartThis);
+	attribute<GJ_yr>	V_id_K_elek		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_K_elek				* float64(StartThis);
+	attribute<GJ_yr>	V_id_elek		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_elek					* float64(StartThis);
 	
 	//volumevraag na nieuwe allocatie
-	attribute<GJ_yr>   V_WarmteC      (BebouwingsObject) := WkoData/WkoDataComponent/V_Warmte		* float64(StartThis); // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_KoudeC       (BebouwingsObject) := WkoData/WkoDataComponent/V_Koude		* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_ElekWC       (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekW_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_ElekKC       (BebouwingsObject) := WkoData/WkoDataComponent/V_ElekK_ind	* float64(StartThis), Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>   V_ElekC        (BebouwingsObject) := V_ElekWC + V_ElekKC;
+	attribute<GJ_yr>	V_WarmteC		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_Warmte					* float64(StartThis);
+	attribute<GJ_yr>	V_KoudeC		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_Koude					* float64(StartThis);
+	attribute<GJ_yr>	V_id_W_elekC	(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_W_elek				* float64(StartThis);
+	attribute<GJ_yr>	V_id_K_elekC	(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_K_elek				* float64(StartThis);
+	attribute<GJ_yr>	V_id_elekC		(BebouwingsObject)	:=	WkoData/WkoDataComponent/V_id_elek					* float64(StartThis);
 
-	attribute<kW>      P_Warmte       (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(StartThis);
+	attribute<kW>		P_Warmte		(BebouwingsObject)	:=	BCdata/WarmteVraag/deelnemers/AansluitCapaciteit	* float64(StartThis);
 
 	container BC
 	{
-		attribute<Eur>		Ki_ow_bron			(BebouwingsObject)	:=	AllObjects/Ki_ow_bron			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
-		attribute<Eur>		Ki_wd_bron			(BebouwingsObject)	:=	AllObjects/Ki_wd_bron			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		//gebiedgerelateerde kosten voor opwekker
+		attribute<Eur>		Ki_ow_gebied		(BebouwingsObject)	:=	AllObjects/Ki_ow_gebied			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_ow_oh_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kji_ow_gebied		(BebouwingsObject)	:=	AllObjects/Kji_ow_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_ow_adm_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_productie		(BebouwingsObject)	:=	AllObjects/Kj_ow_productie		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Oi_ow_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_ow_EIA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Oj_ow_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
 		
-		attribute<Eur_yr>	Kj_wd_oh_bron		(BebouwingsObject)	:=	AllObjects/Kj_wd_oh_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_wd_adm_bron		(BebouwingsObject)	:=	AllObjects/Kj_wd_adm_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_ow_oh_bron		(BebouwingsObject)	:=	AllObjects/Kj_ow_oh_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_ow_adm_bron		(BebouwingsObject)	:=	AllObjects/Kj_ow_adm_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_productie_bron	(BebouwingsObject)	:=	AllObjects/Kj_productie_bron	[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Oi_wd_EIA_bron		(BebouwingsObject)	:=	AllObjects/Oi_wd_EIA_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Oi_ow_EIA_bron		(BebouwingsObject)	:=	AllObjects/Oi_ow_EIA_bron		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		//gebiedgerelateerde kosten voor wijkdistributeur
+		attribute<Eur>		Ki_wd_gebied		(BebouwingsObject)	:=	AllObjects/Ki_wd_gebied			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kji_wd_gebied		(BebouwingsObject)	:=	AllObjects/Kji_wd_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_wd_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_wd_oh_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_wd_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_wd_adm_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Oi_wd_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_wd_EIA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Oj_wd_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+
 	}
 
 	container PR
 	{
-		attribute<Eur>		Ki_ow_bron			(PlanRegio)			:=	sum(BC/Ki_ow_bron,									BCdata/PlanRegio_rel);
-		attribute<Eur>		Ki_wd_bron			(PlanRegio)			:=	sum(BC/Ki_wd_bron,									BCdata/PlanRegio_rel);
+		//investeringskosten
+		attribute<Eur>		Ki_ow_gebied		(PlanRegio)			:=	sum(BC/Ki_ow_gebied,								BCdata/PlanRegio_rel);
+		attribute<Eur>		Ki_wd_gebied		(PlanRegio)			:=	sum(BC/Ki_wd_gebied,								BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_ow_gebouw		(PlanRegio)			:=	sum(WkoData/Ki_ow			* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_wd_gebouw		(PlanRegio)			:=	sum(WkoData/Ki_wd			* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur>		Ki_ow				(PlanRegio)			:=	Ki_ow_bron + Ki_ow_gebouw;
-		attribute<Eur>		Ki_wd				(PlanRegio)			:=	Ki_wd_bron + Ki_wd_gebouw;
 		
+		attribute<Eur>		Ki_ow				(PlanRegio)			:=	Ki_ow_gebied + Ki_ow_gebouw;
+		attribute<Eur>		Ki_wd				(PlanRegio)			:=	Ki_wd_gebied + Ki_wd_gebouw;
+		attribute<Eur>		Ki_ge				(PlanRegio)			:=	sum(WkoData/Ki_ge			* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_id				(PlanRegio)			:=	sum(WkoData/Ki_id			* float64(HasThis),		BCdata/PlanRegio_rel);
+		
 		attribute<Eur>		Ki_ge_pm			(PlanRegio)			:=	sum(WkoData/Ki_ge_pm		* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur>		Ki_ge_ov			(PlanRegio)			:=	sum(WkoData/Ki_ge_ov		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur>		Ki_ge				(PlanRegio)			:=	sum(WkoData/Ki_ge			* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_ge_hv			(PlanRegio)			:=	const(0[Eur_yr], PlanRegio);
 
-		attribute<Eur>		Oi_Aansl			(PlanRegio)			:=	sum(WkoData/Oi_Aansl		* float64(StartThis),	BCdata/PlanRegio_rel); // accumulate
+		//opbrengsten
+		attribute<Eur>		Oi_Aansl			(PlanRegio)			:=	sum(WkoData/Oi_Aansl		* float64(StartThis),	BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Oj_verbruik			(PlanRegio)			:=	sum(WkoData/Oj_verbruik		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Oj_Vastrecht		(PlanRegio)			:=	sum(WkoData/Oj_Vastrecht	* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_vastrecht		(PlanRegio)			:=	sum(WkoData/Oj_Vastrecht	* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Om_comfort			(PlanRegio)			:=	sum(WkoData/Om_comfort		* float64(HasThis),		BCdata/PlanRegio_rel);
+		
+		//investeringssubsidies
+		attribute<Eur>		Oi_wd_EIA_gebouw	(PlanRegio)			:=	sum(WkoData/Oi_wd_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur>		Oi_ow_EIA_gebouw	(PlanRegio)			:=	sum(WkoData/Oi_ow_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur>		Oi_wd_EIA_gebied	(PlanRegio)			:=	sum(BC/Oi_wd_EIA_gebied,							BCdata/PlanRegio_rel);
+		attribute<Eur>		Oi_ow_EIA_gebied	(PlanRegio)			:=	sum(BC/Oi_ow_EIA_gebied,							BCdata/PlanRegio_rel);
 		
 		attribute<Eur>		Oi_ge_EIA			(PlanRegio)			:=	sum(WkoData/Oi_ge_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
 		attribute<Eur>		Oi_id_EIA			(PlanRegio)			:=	sum(WkoData/Oi_id_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
-		attribute<Eur>		Oi_wd_EIA			(PlanRegio)			:=	sum(WkoData/Oi_wd_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
-		attribute<Eur>		Oi_ow_EIA			(PlanRegio)			:=	sum(WkoData/Oi_ow_EIA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur>		Oi_wd_EIA			(PlanRegio)			:=	Oi_wd_EIA_gebied + Oi_wd_EIA_gebouw;
+		attribute<Eur>		Oi_ow_EIA			(PlanRegio)			:=	Oi_ow_EIA_gebied + Oi_ow_EIA_gebouw;
 
-		attribute<Eur_yr>	KL_ge				(PlanRegio)			:=	sum(WkoData/KL_ge			* float64(StartThis),	BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KL_id				(PlanRegio)			:=	sum(WkoData/KL_id			* float64(StartThis),	BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KL_wd				(PlanRegio)			:=	sum(WkoData/KL_wd			* float64(StartThis),	BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KL_ow				(PlanRegio)			:=	sum(WkoData/KL_ow			* float64(StartThis),	BCdata/PlanRegio_rel);
+		//exploitatiesubsidies
+		attribute<Eur_yr>	Oj_wd_EEA_gebouw	(PlanRegio)			:=	sum(WkoData/Oj_wd_EEA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_ow_EEA_gebouw	(PlanRegio)			:=	sum(WkoData/Oj_ow_EEA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_wd_EEA_gebied	(PlanRegio)			:=	sum(BC/Oj_wd_EEA_gebied,							BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_ow_EEA_gebied	(PlanRegio)			:=	sum(BC/Oj_ow_EEA_gebied,							BCdata/PlanRegio_rel);
 		
-		attribute<Eur_yr>	Kj_ge				(PlanRegio)			:=	sum(WkoData/KL_ge			* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_wd_pr			(PlanRegio)			:=	const(0[Eur_yr], PlanRegio);
+		attribute<Eur_yr>	Oj_id_EEA			(PlanRegio)			:=	sum(WkoData/Oj_id_EEA		* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_wd_EEA			(PlanRegio)			:=	Oj_wd_EEA_gebied + Oj_wd_EEA_gebouw;
+		attribute<Eur_yr>	Oj_ow_EEA			(PlanRegio)			:=	Oj_ow_EEA_gebied + Oj_ow_EEA_gebouw;
+		attribute<Eur_yr>	Oj_SDE				(PlanRegio)			:=	sum(WkoData/Oj_SDE			* float64(StartThis),	BCdata/PlanRegio_rel);
 		
-		attribute<Eur_yr>	Km_elek_ind			(PlanRegio)			:=	sum(WkoData/Km_elek_id		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Km_elek_col			(PlanRegio)			:=	sum(WkoData/Km_elek_wd		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Km_ow_e				(PlanRegio)			:=	Km_elek_ind + Km_elek_col;
-		attribute<Eur_yr>	Kj_elek_ind			(PlanRegio)			:=	sum(WkoData/Kj_elek_id		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_elek_col			(PlanRegio)			:=	sum(WkoData/Kj_elek_wd		* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_ow_e				(PlanRegio)			:=	Kj_elek_ind + Kj_elek_col;
+		//geannualiseerde investeringskosten
+		attribute<Eur_yr>	Kji_wd_gebouw		(PlanRegio)			:=	sum(WkoData/Kji_wd			* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kji_ow_gebouw		(PlanRegio)			:=	sum(WkoData/Kji_ow			* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kji_wd_gebied		(PlanRegio)			:=	sum(BC/Kji_wd_gebied,								BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kji_ow_gebied		(PlanRegio)			:=	sum(BC/Kji_ow_gebied,								BCdata/PlanRegio_rel);
 		
-		attribute<Eur_yr>	Kj_ow_oh_uitkoppel	(PlanRegio)			:=	sum(WkoData/Kj_ow_oh_uitkoppel* float64(HasThis),	BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_wp_oh_ewp		(PlanRegio)			:=	sum(WkoData/Kj_wd_oh_ewp      * float64(HasThis),	BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_ow_oh_bron		(PlanRegio)			:=	sum(BC/Kj_ow_oh_bron,								BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_ow_o				(PlanRegio)			:=  Kj_ow_oh_uitkoppel+ Kj_wp_oh_ewp + Kj_ow_oh_bron;
+		attribute<Eur_yr>	Kji_ge				(PlanRegio)			:=	sum(WkoData/Kji_ge			* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kji_id				(PlanRegio)			:=	sum(WkoData/Kji_id			* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kji_wd				(PlanRegio)			:=	Kji_wd_gebouw + Kji_wd_gebied;
+		attribute<Eur_yr>	Kji_ow				(PlanRegio)			:=	Kji_ow_gebouw + Kji_ow_gebied;
 		
-		attribute<Eur_yr>	KEH_ow_id			(PlanRegio)			:=	sum(WkoData/Kj_elek_id_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KEH_ow_wd			(PlanRegio)			:=	sum(WkoData/Kj_elek_wd_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KEH_ow_e			(PlanRegio)			:=	KEH_ow_id + KEH_ow_wd;
+		//kosten elektriciteit
+		attribute<Eur_yr>	Km_id_elek			(PlanRegio)			:=	sum(WkoData/Km_id_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Km_wd_elek			(PlanRegio)			:=	sum(WkoData/Km_wd_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Km_elek				(PlanRegio)			:=	Km_id_elek + Km_wd_elek;
 		
-		attribute<Eur_yr>	KCO2_id				(PlanRegio)			:=	sum(WkoData/Kj_elek_id_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KCO2_wd				(PlanRegio)			:=	sum(WkoData/Kj_elek_wd_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	KCO2_ow_e			(PlanRegio)			:=	KCO2_id + KCO2_wd;
+		attribute<Eur_yr>	Kj_id_elek			(PlanRegio)			:=	sum(WkoData/Kj_id_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_wd_elek			(PlanRegio)			:=	sum(WkoData/Kj_wd_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_elek				(PlanRegio)			:=	Kj_wd_elek + Kj_id_elek;
 		
+		attribute<Eur_yr>	Kj_id_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_wd_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_elek_EH			(PlanRegio)			:=	Kj_id_elek_EH + Kj_wd_elek_EH;
+		
+		attribute<Eur_yr>	Kj_id_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_wd_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Kj_elek_CO2			(PlanRegio)			:=	Kj_id_elek_CO2 + Kj_wd_elek_CO2;
+	
+		container OenM
+		{
+			//productiekosten
+			attribute<Eur_yr>	Kj_ow_productie		(PlanRegio)		:=	sum(BC/Kj_ow_productie,								BCdata/PlanRegio_rel);
+			
+			//onderhoudskosten
+			attribute<Eur_yr>	Kj_wd_oh_gebouw		(PlanRegio)		:=	sum(WkoData/Kj_wd_oh		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_oh_gebouw		(PlanRegio)		:=	sum(WkoData/Kj_ow_oh		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_oh_gebied		(PlanRegio)		:=	sum(BC/Kj_wd_oh_gebied,								BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_oh_gebied		(PlanRegio)		:=	sum(BC/Kj_ow_oh_gebied,								BCdata/PlanRegio_rel);
+			
+			attribute<Eur_yr>	Kj_wd_oh			(PlanRegio)		:=	Kj_wd_oh_gebouw + Kj_wd_oh_gebied;
+			attribute<Eur_yr>	Kj_ow_oh			(PlanRegio)		:=	Kj_ow_oh_gebouw + Kj_ow_oh_gebied;
+			attribute<Eur_yr>	Kj_id_oh			(PlanRegio)		:=	sum(WkoData/Kj_id_oh		* float64(HasThis),		BCdata/PlanRegio_rel);
+			
+			//administratiekosten
+			attribute<Eur_yr>	Kj_wd_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_wd_adm		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_ow_adm		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_adm_gebied	(PlanRegio)		:=	sum(BC/Kj_wd_adm_gebied,							BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_adm_gebied	(PlanRegio)		:=	sum(BC/Kj_ow_adm_gebied,							BCdata/PlanRegio_rel);
+			
+			attribute<Eur_yr>	Kj_wd_adm			(PlanRegio)		:=	Kj_wd_adm_gebouw + Kj_wd_adm_gebied;
+			attribute<Eur_yr>	Kj_ow_adm			(PlanRegio)		:=	Kj_ow_adm_gebouw + Kj_ow_adm_gebied;
+			attribute<Eur_yr>	Kj_id_adm			(PlanRegio)		:=	sum(WkoData/Kj_id_adm		* float64(HasThis),		BCdata/PlanRegio_rel);
+		}
+		//verbruik en uitstoot
 		attribute<KG_yr>	CO2					(PlanRegio)			:=	sum(WkoData/CO2				* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<GJ_yr>	GJe					(PlanRegio)			:=	sum(WkoData/GJe				* float64(HasThis),		BCdata/PlanRegio_rel);
 		attribute<GJ_yr>	GJw					(PlanRegio)			:=	sum(WkoData/GJw				* float64(HasThis),		BCdata/PlanRegio_rel);
-		
-		container OenM
-		{
-			attribute<Eur_yr>	Kj_ow_oh_bron		(PlanRegio)			:=	sum(BC/Kj_ow_oh_bron,										BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_uitkoppel_oh		(PlanRegio)			:=	sum(WkoData/Kj_ow_oh_uitkoppel		* float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_oh            (PlanRegio)			:=	Kj_ow_oh_bron + Kj_uitkoppel_oh;
-			attribute<Eur_yr>	Kj_id_oh            (PlanRegio)			:=	sum(WkoData/Kj_id_oh                * float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_oh_ewp		(PlanRegio)			:=	sum(WkoData/Kj_wd_oh_ewp			* float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_oh_bron		(PlanRegio)			:=	sum(BC/Kj_wd_oh_bron,										BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_oh_gebouw		(PlanRegio)			:=	sum(WkoData/Kj_wd_oh                * float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_oh			(PlanRegio)			:=	Kj_wd_oh_bron + Kj_wd_oh_gebouw +Kj_wd_oh_ewp;
-			attribute<Eur_yr>	Kj_ow_adm_bron	    (PlanRegio)			:=	sum(BC/Kj_ow_adm_bron,	     								BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_adm_uitkoppel (PlanRegio)			:=	sum(WkoData/Kj_ow_adm_uitkoppel		* float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_ewp_adm   	(PlanRegio)			:=	sum(WkoData/Kj_wd_adm_ewp	        * float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_adm			(PlanRegio)			:=	Kj_ow_adm_bron + Kj_ow_adm_uitkoppel;
-			attribute<Eur_yr>	Kj_id_adm			(PlanRegio)			:=	sum(WkoData/Kj_id_adm               * float64(HasThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_wd_adm			(PlanRegio)			:=	sum(WkoData/Kj_wd_adm               * float64(HasThis),		BCdata/PlanRegio_rel);
-		}
 	}
 
 	container Result := BCdata

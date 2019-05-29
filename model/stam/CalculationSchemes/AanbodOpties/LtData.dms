@@ -97,6 +97,12 @@ template LtData
 	attribute<Eur_yr>		Kj_ow_adm			(BebouwingsObject)	:=	Ki_ow * constanten/OenM/R_ow_admin,												Descr = "jaarlijkse administratiekosten uitkoppeling primaire bron";
 	attribute<Eur_yr>		Kj_adm				(BebouwingsObject)	:=	Kj_id_adm + Kj_wd_adm + Kj_ow_adm,												Descr = "jaarlijkse administratiekosten totaal";
 	
+	//Exploitatiesubsidies
+	attribute<Eur_yr>		Oj_wd_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
+	attribute<Eur_yr>		Oj_id_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/id * (Kj_id_adm + Kj_id_oh);
+	attribute<Eur_yr>		Oj_ow_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/LT * (Kj_ow_adm + Kj_ow_oh);
+	attribute<Eur_yr>		Oj_EEA				(BebouwingsObject)	:=	Oj_wd_EEA + Oj_id_EEA + Oj_ow_EEA;
+	
 	//Opbrengsten
 	attribute<Eur>			Oi_Aansl			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oi_Aansl,													Descr = "initiele opbrengsten uit aansluitbijdrage";
 	attribute<Eur_yr>		Oj_verbruik			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Oj_Warmte + WkoDataComponent/Opbrengsten/Oj_Koude,			Descr = "jaarlijkse opbrengsten uit levering";
@@ -106,7 +112,7 @@ template LtData
 	attribute<Eur_yr>		Oj_SDE				(BebouwingsObject)	:=	GJw [Gj_yr] * SpecifiekeInstellingen/Beleid/EEA/SDE_LT [Eur_Gj],						Descr = "jaarlijkse opbrengsten uit SDE op lage temperatuur warmte";		
 	
 	//Netto contributiemarge
-	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE,											Descr = "totale jaarlijkse opbrengsten";
+	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE + Oj_EEA,									Descr = "totale jaarlijkse opbrengsten";
 	attribute<Eur_yr>		Kji_totaal			(BebouwingsObject)	:=	Kji_id + Kji_wd + Kji_ow + Kji_ge,															Descr = "totale jaarlijkse kapitaallasten";
 	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_id_elek + Kj_wd_elek + Kj_oh + Kj_adm,										Descr = "totale jaarlijkse kapitaallasten";
 
