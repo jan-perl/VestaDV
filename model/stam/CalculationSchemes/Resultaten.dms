@@ -455,7 +455,7 @@ template Resultaten
 			attribute<GJ_yr>	BU_elek				(Planregio)		:=	sum(Allocatie/BestaandeUtil/Metervraag/elektriciteit,		BebouwingsComponenten/BestaandeUtil/PlanRegio_rel);
 			attribute<GJ_yr>	BW_elek				(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/elektriciteit,		BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
 			
-			attribute<ha>		Oppervlak			(Planregio)		:=	Geography/RegioIndelingen/buurt/Overigen/a_lan_ha, Descr = "landoppervlakte van de buurt";
+			attribute<ha>		Oppervlak			(Planregio)		:=	GebiedsAllocatie/Initieel/KostenBaten/KostenD/SecundairNet/opp_land / 100[km2 / ha], Descr = "landoppervlakte van de buurt";
 			attribute<kg_yr>	Orig_CO2			(Planregio)		:=	StartJaar/AllocExports/PlanRegioResults/Table/CO2_totaal;
 			attribute<kg_yr>	Delta_CO2			(Planregio)		:=	Orig_CO2 - hoofdindicatoren/I20_Uitstoot_CO2;
 			attribute<ton_yr>	Delta_CO2_ton		(Planregio)		:=	Delta_CO2 / 1000.0[kg_yr / ton_yr];
