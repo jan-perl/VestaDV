@@ -19,13 +19,13 @@ container WarmteBronnen
 	{
 		// inlezen bestand voor bekende puntbronnen geschikt voor warmtelevering
 		unit<uint32> bron
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_puntbronnen.dbf"
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_MT_puntbronnen.dbf"
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "P"
 		,	Source          = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_metadata_puntbronnen.txt"
 		{
-			attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_puntbronnen.shp", StorageReadOnly = "True";
+			attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_MT_puntbronnen.shp", StorageReadOnly = "True";
 			attribute<string>    Naam;
 
 			attribute<string>                Type;
