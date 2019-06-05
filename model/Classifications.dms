@@ -558,8 +558,20 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<uint8> code := ModelValue * uint8(#EnergieLabel) + ObservedValue;
 	}
 
-// =========  Classificaties overig
-	unit<uint8> AanbodOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
+// =========  Classificaties overig	
+	unit<uint8> GebouwOptie : nrofrows = 6
+	{
+		attribute<string> Name:
+		[
+			'gas'
+			'HR'
+			'mWKK'
+			'eWP'
+			'HWP'
+			'EWV'
+		];
+	}
+	unit<uint8> GebiedsOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -597,6 +609,11 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<uint32> PenColor := Color, DialogType = "PenColor";
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
+	}
+	unit<uint8> AanbodOptie := GebiedsOptie; // Synoniem; TODO RENAME naar GebiedsOptie
+	unit<uint8> WarmteOptie := union_unit(GebouwOptie, GebiedsOptie)
+	{
+		
 	}
 
 	unit<uint8> PlanRegioOptie := subset(AanbodOptie/IsPlanRegioOptie) 

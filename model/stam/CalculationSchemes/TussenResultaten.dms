@@ -192,9 +192,7 @@ template TussenResultaten
 				attribute<Eur_yr> Kc_ow_verbruik  (PlanRegio) := const(0[Eur_yr], PlanRegio); // CO2 emission right
 				attribute<Eur_yr> Kj_ow_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
-			}
-	
-			container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, invoer/Energieprijzen);
+			}	
 		}
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
 		container ResultState := =ResultStateName;

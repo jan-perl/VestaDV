@@ -13,8 +13,8 @@ template WKO
 	parameter<units/yr_uint16> ZichtJaar;
 	// end case parameters
 	
-	container KostenBaten           := BeginStatus/KostenBaten;
-	container BebouwingsComponenten := KostenBaten/BebouwingsComponenten;
+	container BebouwingsComponenten := BeginStatus/Bebouwing;
+	container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, Energieprijzen);
 
 	unit<uint8>  WkoComponent       := Classifications/WkoComponent;
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -105,32 +105,32 @@ template WKO
 	container BestaandeWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/BestaandeWoning, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
+			KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/bw,
+			KostenBaten/KostenD/Wonen/bw,
 			constanten/KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/NieuwbouwWoning, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
+			KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/nw,
+			KostenBaten/KostenD/Wonen/nw,
 			constanten/KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
+			KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
 			constanten/KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
+			KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
 			constanten/KoudeBeschikbaar
 		);
 	
@@ -301,8 +301,15 @@ template WKO
 			attribute<KG_yr>	CO2				(PlanRegio)	:=	GJe_Totaal * prijzen/Elektriciteit/CO2_GJ;
 			attribute<GJ_yr>	GJe_Totaal		(PlanRegio)	:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJe')+')';
 			attribute<GJ_yr>	GJw_Totaal		(PlanRegio)	:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/GJw')+')';
+			
+			// TODO: de volgende waarden zijn uit BeginSituatie verplaatst
+			//		attribute<Eur_yr> Kj_ge     (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: nergens gebruikt
+					attribute<Eur_yr> Kj_wd_pr  (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden
+					attribute<Eur_yr> Km_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden
+			//		attribute<Eur_yr> Kj_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: nergens gebruikt
+			//		attribute<Eur_yr> KEH_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden, tijdeljk uitgezet in accounting
+			//		attribute<Eur_yr> KCO2_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden, tijdeljk uitgezet in accounting
+					attribute<Eur_yr> Kj_ow_o   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden					
 		}
-
-		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen);
 	}
 }

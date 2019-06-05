@@ -16,7 +16,7 @@ template GeoThermie
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 	container TypeInfo     := Kengetallen/WarmteBronnen/GeoThermie/TypeInfo;
 
-	container KostenBaten := BeginStatus/KostenBaten;
+	container KostenBaten := CalculationSchemes/KostenBaten(BeginStatus/Bebouwing, invoer/Energieprijzen);
 
 	parameter<kg_GJ> CO2_GJb := 0[kg_GJ];
 	parameter<g_GJ>  NOx_GJb := 0[g_GJ];

@@ -13,7 +13,7 @@
 
 container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 136
+	unit<uint32> mutatieSchema: nrofrows = 134
 	{
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -746,15 +746,15 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 
-			,	'CO2@CO@', 'EmissieRechten', 'Elektriciteit', 
-					'StateNaAllocatie/@CO@/KCO2_ow_e', 
-					'',
-					''
+//			,	'CO2@CO@', 'EmissieRechten', 'Elektriciteit', // TODO: CO2 is nu opgesplitst in wd en id voor LT; heffing niet berekend; default werd gebruikt die op 0 stond.
+//					'StateNaAllocatie/@CO@/KCO2_ow_e', 
+//					'',
+//					''
 
-			,	'Opwekking', 'EnergieHeffing', '@CO@', 
-					'StateNaAllocatie/@CO@/KEH_ow_e', 
-					'',
-					''
+//			,	'Opwekking', 'EnergieHeffing', '@CO@', 
+//					'StateNaAllocatie/@CO@/KEH_ow_e', // TODO: is nu opgesplits in Kj_wd_elek_EH en Kj_id_elek_EH voor LT; default werd gebruikt die op 0 stond.
+//					'',
+//					''
 
 		// ===== WKO LEVERANCIER
 			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',

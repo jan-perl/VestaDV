@@ -49,9 +49,9 @@ Template LtWarmtenetImpl
 	
 	parameter<string> AanbodOptie_name := 'LT'+string(T_ow)+'_'+string(T_sec);
 	parameter<Classifications/AanbodOptie> AanbodOptie_rel := ='Classifications/AanbodOptie/V/'+AanbodOptie_name;
-		
-	container KostenBaten           := BeginStatus/KostenBaten;
-	container BebouwingsComponenten := KostenBaten/BebouwingsComponenten;
+	
+	container BebouwingsComponenten := BeginStatus/Bebouwing;
+	container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, invoer/Energieprijzen);
 
 	unit<uint8>  WkoComponent       := Classifications/WkoComponent;
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -268,32 +268,32 @@ Template LtWarmtenetImpl
 	container BestaandeWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/BestaandeWoning, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
+			KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/bw,
+			KostenBaten/KostenD/Wonen/bw,
 			constanten/KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
 		WKOWoningData(
 			BebouwingsComponenten/NieuwbouwWoning, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
+			KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-			BeginStatus/KostenBaten/KostenD/Wonen/nw,
+			KostenBaten/KostenD/Wonen/nw,
 			constanten/KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
+			KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
 			constanten/KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
-			BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
+			KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
 			constanten/KoudeBeschikbaar
 		);
 	
@@ -602,8 +602,9 @@ Template LtWarmtenetImpl
 			attribute<Eur_yr>	Se_ow		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_ow_EEA	')+')';
 			attribute<Eur_yr>	Se_wd		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_wd_EEA	')+')';
 			attribute<Eur_yr>	Se_id		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oj_id_EEA	')+')';
-			attribute<Eur_yr>	Se			(PlanRegio)		:=	Sj + Se_ow + Se_wd + Se_id;
-			attribute<Eur_yr>	Sme			(PlanRegio)		:=	Sm + Se_ow + Se_wd + Se_id;
+			attribute<Eur_yr>   Se_ge       (PlanRegio)     := Ki_ge_Netto * NCW/bw28/AnnualisationFactor * SpecifiekeInstellingen/Beleid/EEA/ge; // MTA: Overgenomen uit WKO, TODO: check met Folckert
+			attribute<Eur_yr>	Se			(PlanRegio)		:=	Sj + Se_ow + Se_wd + Se_id + Se_ge;
+			attribute<Eur_yr>	Sme			(PlanRegio)		:=	Sm + Se_ow + Se_wd + Se_id + Se_ge;
 
 			//netto totale kosten na aftrek subsidies
 			attribute<Eur_yr>	Kji_ge_netto	(PlanRegio)		:=	Kji_ge_Bruto,					Descr = "";
@@ -624,7 +625,16 @@ Template LtWarmtenetImpl
 			attribute<Eur_yr>	Oji_totaal		(PlanRegio)		:=	Oj_VerbrT + Oj_VastrT + Oi_AanslT * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 			attribute<Eur_yr>	Kji_netto		(PlanRegio)		:=	Kji_ge_netto + Kji_id_netto + Kji_wd_netto + Kji_ow_netto;
 			attribute<Eur_yr>	Resultaat		(Planregio)		:=	Oji_totaal - Kji_netto;
+			
+			// TODO: de volgende waarden zijn uit BeginSituatie verplaatst
+			//		attribute<Eur_yr> Kj_ge     (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: nergens gebruikt
+					attribute<Eur_yr> Kj_wd_pr  (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden
+					attribute<Eur_yr> Km_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden
+			//		attribute<Eur_yr> Kj_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: nergens gebruikt
+			//		attribute<Eur_yr> KEH_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden, tijdeljk uitgezet in accounting
+			//		attribute<Eur_yr> KCO2_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden, tijdeljk uitgezet in accounting
+					attribute<Eur_yr> Kj_ow_o   (PlanRegio) := const(0[Eur_yr], PlanRegio); // TODO: default nergens overridden					
+						
 		}
-		container KostenBaten := CalculationSchemes/KostenBaten(Bebouwing, Energieprijzen);
 	}
 }

@@ -84,19 +84,6 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		container	Oj_Vastrecht	:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
 		container	Om_comfort		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
 
-		attribute<Eur_yr> Kj_ge     (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> Kj_wd_pr  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> Km_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> Kj_ow_e   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> KEH_ow_e  (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> KCO2_ow_e (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<Eur_yr> Kj_ow_o   (PlanRegio) := const(0[Eur_yr], PlanRegio);
-
-		attribute<Eur_yr> Se        (PlanRegio) := const(0[Eur_yr], PlanRegio);
-		attribute<GJ_yr> GJw_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
-		attribute<GJ_yr> GJe_totaal (PlanRegio) := const(0[GJ_yr], PlanRegio);
-		attribute<KG_yr> CO2        (PlanRegio) := const(0[KG_yr], PlanRegio);
-		
 		unit<uint32> Cluster: NrOfRows = 0 // TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
 		{
 			attribute<Eur>       Ki_A  := const(0[Eur], .);
