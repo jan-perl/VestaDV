@@ -126,7 +126,7 @@ template WKOData
 	//selectie van geschikte kandidaten uit alle bebouwingsobjecten op basis van rentabiliteit en geselecteerde criteria
 	attribute<bool>		RentabiliteitsAfweging	(BebouwingsObject)	:=	Contributiemarge > 0[Eur_yr],															Descr = "heeft dit bebouwingsobject individueel een positieve aansluitmarge, ja of nee";
 	attribute<bool> MarginaleAfweging(BebouwingsObject) := geschikt && RentabiliteitsAfweging;
-	attribute<bool> WasAllocated     (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie) || IsDefined(BeginStatus/PlanRegioWarmteAllocatie[BCdata/PlanRegio_rel]);
+	attribute<bool> WasAllocated     (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie);
 	attribute<bool> Toegestaan       (BebouwingsObject) := MarginaleAfweging && !WasAllocated; // TODO: rename WKO -> LT
 
 	unit<uint32> AllowedObjects := Subset(Toegestaan)

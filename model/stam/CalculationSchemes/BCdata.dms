@@ -37,18 +37,15 @@ template BCdata
 
 	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BebouwingsObjectZonderNieuwbouw)' : '..';
 
-	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BebouwingsObjectZonderNieuwbouw'
-	{
-		attribute<Geography/RegioIndelingen/buurt> buurt_rel (BebouwingsObject) := point_in_polygon(point, Geography/RegioIndelingen/buurt/geometry), FreeData = "False";
-	}
-
+	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BebouwingsObjectZonderNieuwbouw';
 	unit<uint32>  PrevObject           := StartingStateComponent/BebouwingsObject;
 	unit<uint8>   BebouwingsTypeDomein := BebouwingsObject/BebouwingsTypeDomein;
 	unit<uint32>  ModelObject          := EnergieVraagModellen/ModelObject;
 	unit<float64> ModelUnit            := EnergieVraagModellen/ModelUnit;
 	unit<uint32>  WkoCluster           := StateVoorAllocatie/Wko/Cluster;
 
-	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
+	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := 	='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
+
 
 	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);

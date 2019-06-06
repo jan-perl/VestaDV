@@ -13,7 +13,7 @@ container Rapportage
 	template EindgebruikerComponent
 	{
 		// begin case parameters
-		container AllocatieComponent;
+		container AllocatieResultatenComponent;
 		container NCW15;
 		container NCW30;
 		container NCW50;
@@ -24,8 +24,8 @@ container Rapportage
 		container PlanRegioKaartComponent;
 		// end case parameters
 
-		container BCdata                    := AllocatieComponent/BCdata;
-		container RuimtelijkeVraagComponent := AllocatieComponent/RuimtelijkeVraagComponent;
+		container BCdata                    := AllocatieResultatenComponent/BCdata;
+		container RuimtelijkeVraagComponent := AllocatieResultatenComponent/RuimtelijkeVraagComponent;
 		unit<uint32> BebouwingsObject       := BCdata/BebouwingsObject;
 
 		parameter<Ratio> BTW_Factor         := BCdata/BTW_Factor;
@@ -37,10 +37,10 @@ container Rapportage
 		{
 			container Elektriciteit
 			{
-				attribute<Eur_yr> Verbruik       (PlanRegio) := sum(AllocatieComponent/Elektriciteit/eindgebruik_excl, BCdata/PlanRegio_rel);
-				attribute<Eur_yr> netwerk        (PlanRegio) := sum(AllocatieComponent/Elektriciteit/netwerk,          BCdata/PlanRegio_rel);
-				attribute<Eur_yr> EnergieHeffing (PlanRegio) := sum(AllocatieComponent/Elektriciteit/EnergieHeffing,   BCdata/PlanRegio_rel);
-				attribute<Eur_yr> CO2Heffing     (PlanRegio) := sum(AllocatieComponent/Elektriciteit/CO2Heffing,       BCdata/PlanRegio_rel);
+				attribute<Eur_yr> Verbruik       (PlanRegio) := sum(AllocatieResultatenComponent/Elektriciteit/eindgebruik_excl, BCdata/PlanRegio_rel);
+				attribute<Eur_yr> netwerk        (PlanRegio) := sum(AllocatieResultatenComponent/Elektriciteit/netwerk,          BCdata/PlanRegio_rel);
+				attribute<Eur_yr> EnergieHeffing (PlanRegio) := sum(AllocatieResultatenComponent/Elektriciteit/EnergieHeffing,   BCdata/PlanRegio_rel);
+				attribute<Eur_yr> CO2Heffing     (PlanRegio) := sum(AllocatieResultatenComponent/Elektriciteit/CO2Heffing,       BCdata/PlanRegio_rel);
 
 				attribute<Eur_yr> VastRecht      (PlanRegio) := Oj_VastRecht_e;
 				attribute<Eur_yr> Aansl_j        (PlanRegio) := Oi_Aansluit_e * Ncw50/AnnualisationFactor;
@@ -52,10 +52,10 @@ container Rapportage
 
 			container AardGas
 			{
-				attribute<Eur_yr> Verbruik       (PlanRegio) := sum(AllocatieComponent/AardGas/eindgebruik_excl, BCdata/PlanRegio_rel);
-				attribute<Eur_yr> netwerk        (PlanRegio) := sum(AllocatieComponent/AardGas/netwerk,          BCdata/PlanRegio_rel);
-				attribute<Eur_yr> EnergieHeffing (PlanRegio) := sum(AllocatieComponent/AardGas/EnergieHeffing,   BCdata/PlanRegio_rel);
-				attribute<Eur_yr> CO2Heffing     (PlanRegio) := sum(AllocatieComponent/AardGas/CO2Heffing,       BCdata/PlanRegio_rel);
+				attribute<Eur_yr> Verbruik       (PlanRegio) := sum(AllocatieResultatenComponent/AardGas/eindgebruik_excl, BCdata/PlanRegio_rel);
+				attribute<Eur_yr> netwerk        (PlanRegio) := sum(AllocatieResultatenComponent/AardGas/netwerk,          BCdata/PlanRegio_rel);
+				attribute<Eur_yr> EnergieHeffing (PlanRegio) := sum(AllocatieResultatenComponent/AardGas/EnergieHeffing,   BCdata/PlanRegio_rel);
+				attribute<Eur_yr> CO2Heffing     (PlanRegio) := sum(AllocatieResultatenComponent/AardGas/CO2Heffing,       BCdata/PlanRegio_rel);
 
 				attribute<Eur_yr> VastRecht      (PlanRegio) := Oj_VastRecht_g;
 				attribute<Eur_yr> Aansl_j        (PlanRegio) := Oi_Aansluit_g  * Ncw50/AnnualisationFactor;
@@ -65,22 +65,22 @@ container Rapportage
 				attribute<Eur_yr> Vraag_m        (PlanRegio) := Verbruik + VastRecht + Aansl_m - EnergieHeffing;
 			}
 
-			container RestWarmte := GebiedsOptie(Classifications/AanbodOptie/V/RestWarmte, BebouwingsObject, PlanRegio, BCData, AllocatieComponent/Aandelen/RestWarmte);
-			container GeoThermie := GebiedsOptie(Classifications/AanbodOptie/V/GeoThermie, BebouwingsObject, PlanRegio, BCData, AllocatieComponent/Aandelen/GeoThermie);
-			container WijkWKK    := GebiedsOptie(Classifications/AanbodOptie/V/WijkWKK   , BebouwingsObject, PlanRegio, BCData, AllocatieComponent/Aandelen/WijkWKK);
-			container BioWKK     := GebiedsOptie(Classifications/AanbodOptie/V/BioWKK    , BebouwingsObject, PlanRegio, BCData, AllocatieComponent/Aandelen/BioWKK);
+			container RestWarmte := GebiedsOptie(Classifications/AanbodOptie/V/RestWarmte, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/RestWarmte);
+			container GeoThermie := GebiedsOptie(Classifications/AanbodOptie/V/GeoThermie, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/GeoThermie);
+			container WijkWKK    := GebiedsOptie(Classifications/AanbodOptie/V/WijkWKK   , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/WijkWKK);
+			container BioWKK     := GebiedsOptie(Classifications/AanbodOptie/V/BioWKK    , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/BioWKK);
 
 			container WKO
 			{
 				parameter<bool> Active : = rjoin(BCdata/BCname,  Classifications/BebouwingsComponent/Name, Classifications/BebouwingsComponent/KanWKO);
 
-				attribute<Ratio> Aandeel (BebouwingsObject) := AllocatieComponent/Aandelen/WKO;
+				attribute<Ratio> Aandeel (BebouwingsObject) := AllocatieResultatenComponent/Aandelen/WKO;
 
 				// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
 
 				attribute<Eur_yr> Warmte     (PlanRegio) := =Active ? 'sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-				attribute<Eur_yr> Koude      (PlanRegio) := =Active ? 'sum(AllocatieComponent/KoudeAllocatie                  * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
-				attribute<Eur_yr> Om_Comfort (PlanRegio) := =Active ? 'sum(AllocatieComponent/Om_Comfort                      * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
+				attribute<Eur_yr> Koude      (PlanRegio) := =Active ? 'sum(AllocatieResultatenComponent/KoudeAllocatie                  * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
+				attribute<Eur_yr> Om_Comfort (PlanRegio) := =Active ? 'sum(AllocatieResultatenComponent/Om_Comfort                      * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
 
 				attribute<Eur_yr> Verbruik   (PlanRegio) := =Active ? 'Warmte + Koude' : 'const(0[Eur_yr], PlanRegio)';
 				attribute<Eur_yr> VastRecht  (PlanRegio) := =Active ? 'sum(BCdata/Opbrengsten/VastRechtBijdrageD              * Aandeel, BCdata/PlanRegio_rel)' : 'const(0[Eur_yr], PlanRegio)';
@@ -156,7 +156,7 @@ container Rapportage
 		attribute<Ratio> Aandeel (BebouwingsObject);
 		// end case parameters
 
-		attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
+		attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/PlanRegio_rel';
 
 		attribute<Eur_yr> Verbruik   (PlanRegio) := sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj * Aandeel, PlanRegio_rel);
 		attribute<Eur_yr> VastRecht  (PlanRegio) := sum(BCdata/Opbrengsten/VastRechtBijdrageD                     * Aandeel, PlanRegio_rel);

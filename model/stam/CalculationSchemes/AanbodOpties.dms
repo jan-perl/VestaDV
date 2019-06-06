@@ -157,4 +157,18 @@ container AanbodOpties
 			container Lt30_70 := LtWarmtenet;
 		}
 	}
+	template PlanregioOptieResultaat {
+		container BebouwingsComponent;
+		parameter<Classifications/AanbodOptie> Optie;
+		attribute<Bool> GebruikOptie(PlanRegio);
+		
+		unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
+		
+		unit<uint32> BebouwingsObject := BebouwingsComponent/BebouwingsObject;
+		container result := BebouwingsComponent
+		{
+			attribute<Classifications/GebiedsOptie> WarmteAllocatie(BebouwingsObject) := MakeDefined(BebouwingsComponent/WarmteAllocatie, GebruikOptie[BebouwingsComponent/PlanRegio_rel] ? Optie : value(0/0, Classifications/GebiedsOptie));
+		}
+		
+	}
 }

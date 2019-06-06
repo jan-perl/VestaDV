@@ -11,7 +11,7 @@ container Maatschappelijk: Source = "FO v7a C6"
 		attribute<String> BronExpr(Classifications/AanbodOptie) :=
 				+replace(
 					Classifications/AanbodOptie/IsPlanregioOptie
-					? 'StateNaAllocatie/Flow/Kmi_Total * float64(StateNaAllocatie/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/@RO@)'
+					? 'StateNaAllocatie/Flow/Kmi_Total * float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/@RO@)'
 					: 'StateNaAllocatie/@RO@/Kmi_Totaal'
 				, '@RO@', Classifications/AanbodOptie/Name);
 	}

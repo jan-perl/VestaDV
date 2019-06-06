@@ -21,9 +21,10 @@ template LegeBebouwingsComponent
 		attribute<JoinedUnit>                         NrJoinedUnits      := const(0[JoinedUnit], .);
 
 		attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := const(0[Geography/RegioIndelingen/blok500m], .);
-		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := const(0[Geography/RegioIndelingen/blok1km],  .);
-		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := const(0[Geography/RegioIndelingen/blok2km],  .);
-
+		attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := const(0[Geography/RegioIndelingen/blok1km ], .);
+		attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := const(0[Geography/RegioIndelingen/blok2km ], .);
+		attribute<Geography/RegioIndelingen/buurt>    buurt_rel          := const(0[Geography/RegioIndelingen/buurt   ], .);
+		
 		attribute<uint8>                              ModelObjectKey     := const(0b, .);
 		attribute<BebouwingsTypeDomein>               BebouwingsType     := const(0b, .);
 		attribute<Classifications/BouwJaar>           BouwJaar           := const(Classifications/BouwJaar/V/Onbekend, .);

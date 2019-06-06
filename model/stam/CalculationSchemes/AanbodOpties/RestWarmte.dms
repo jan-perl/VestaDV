@@ -33,7 +33,7 @@ template RestWarmte
 		attribute<MW>               MWth_used       (BronConnections) := sum(KostenBaten/CapaciteitsVraagD * float64(GebruikRestwarmte) , CurrBron);
 		attribute<MW>               MWth_capaciteit (BronConnections) := Bronnen/MWth_max  - MWth_used;
 	}
-	attribute<Bool> HasWarmteVraag (PlanRegio) := not(IsDefined(BeginStatus/PlanRegioWarmteAllocatie));
+	attribute<Bool> HasWarmteVraag (PlanRegio) := not(IsDefined(BeginStatus/PlanRegioWarmteAllocatie_REMOVE));
 
 	parameter<uint32> NrIterations := Voorkeuren/NewRestWarmte ? 25 : 1;
 
@@ -56,8 +56,8 @@ template RestWarmte
 	attribute<Bool> RentabiliteitsAfweging(PlanRegio) := GebruikBron[LastState/CurrBron] && LastState/GebruikRestWarmte
 	,	IntegrityCheck = "not(any(LastIter/ExtraGebruikRestWarmte))"; // @@@ Increase NrIterations is this fails.
 	
-	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie); // een optie (deze of andere) was al in gebruik
-	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
+	attribute<Bool> OldGebruik           (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie_REMOVE); // een optie (deze of andere) was al in gebruik
+	attribute<Bool> GebruiktOptie        (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/Restwarmte;   // deze optie was al in gebruik;
 	attribute<Bool> NewGebruik           (PlanRegio) := RentabiliteitsAfweging && not(OldGebruik);
 	attribute<Bool> GebruikOptieAfweging (PlanRegio) := NewGebruik || GebruiktOptie;
 	attribute<Bool> GebruikOptie         (PlanRegio) := = Voorkeuren/OldRestwarmte
@@ -145,12 +145,12 @@ template RestWarmte
 				parameter<int16>  PenWidth := 2s        , DialogType = "PenWidth";
 			}
 		}
-		attribute<bool>                        WasAllocated             (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie == Classifications/AanbodOptie/V/RestWarmte;
+		attribute<bool>                        WasAllocated             (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/RestWarmte;
 		attribute<bool>                        Alloc_OK                 (PlanRegio) := GebruikRestWarmteMetBron || !WasAllocated; // it never stops.
-		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := 
+		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := 
 			GebruikRestWarmteMetBron
 				? Classifications/AanbodOptie/V/RestWarmte
-				: BeginStatus/PlanRegioWarmteAllocatie
+				: BeginStatus/PlanRegioWarmteAllocatie_REMOVE
 		,	IntegrityCheck = "Alloc_OK";
 	}
 }

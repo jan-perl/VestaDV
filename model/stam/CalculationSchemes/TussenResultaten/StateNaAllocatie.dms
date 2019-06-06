@@ -8,8 +8,10 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 {
 	container KostenBaten := CalculationSchemes/KostenBaten(GebiedsAllocatie/ResultState/Bebouwing, invoer/Energieprijzen);
 	
-	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(PlanRegioWarmteAllocatie);
-	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/PlanRegioWarmteAllocatie));
+	attribute<bool>    GebiedsOptie  (PlanRegio) := IsDefined(PlanRegioWarmteAllocatie_REMOVE);
+	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/PlanRegioWarmteAllocatie_REMOVE));
+	
+//  HET VOLGENDE IS ALLEEN VAN TOEPASSING VOOR PLANREGIO OPTIES
 	container Stock := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Stock'
 	{
 		// gebiedsmaatregelen

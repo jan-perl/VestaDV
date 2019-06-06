@@ -7,7 +7,7 @@ container AllocExports: = Units, isHidden = "True" //DEBUG
 		Unit<UInt32>  table := Invoer/SpecifiekeInstellingen/PlanRegio
 		{
 			attribute<string> BU_CODE                                       := Geography/RegioIndelingen/buurt/BU_CODE;
-			attribute<Classifications/AanbodOptie> AanbodOptie              := StateNaAllocatie/PlanRegioWarmteAllocatie;
+			attribute<Classifications/AanbodOptie> AanbodOptie              := StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE;
 
 			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := CO2/gebouwen/AardGas/totaal;
 			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := CO2/gebouwen/Elektriciteit/totaal;

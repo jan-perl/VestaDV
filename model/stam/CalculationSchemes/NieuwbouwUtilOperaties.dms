@@ -14,7 +14,7 @@ container NieuwbouwUtilOperaties
 		parameter<units/yr_uint16> zichtjaar;
 		// einde case parameters
 
-		unit<uint32> results := Subset(att > 0i && IsDefined(Geography/rdc_grids/m100/PlanRegio_Rel))
+		unit<uint32> results := Subset(att > 0i && IsDefined(Geography/rdc_grids/m100/buurt_Rel))
 		,	DialogType = "map"
 		,	DialogData = "Point"
 		{
@@ -25,6 +25,7 @@ container NieuwbouwUtilOperaties
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity];
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := Geography/rdc_grids/m100/blok1km_rel [nr_OrgEntity];
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := Geography/rdc_grids/m100/blok2km_rel [nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/buurt>    buurt_rel          := Geography/rdc_grids/m100/buurt_rel   [nr_OrgEntity];
 			attribute<Classifications/UtilTypeNieuwbouw>  BebouwingsType     := const(rlookup(utiliteit_lbl, Classifications/UtilTypeNieuwbouw/label), .);
 			attribute<Classifications/BouwJaar>           Bouwjaar           := const(classify(value(zichtjaar, Units/Yr) - 0.5[units/yr], classifications/bouwjaar/ClassBreak), .);
 			attribute<float64>                            AandeelWarmteVraag := const(1.0, .); // alle util Nieuwbouw is geschikt voor WarmteOpties
@@ -66,6 +67,7 @@ container NieuwbouwUtilOperaties
 			attribute<RegioIndelingen/blok500m> blok500m_rel       := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/blok500m_rel') + ')';
 			attribute<RegioIndelingen/blok1km>  blok1km_rel        := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/blok1km_rel') + ')';
 			attribute<RegioIndelingen/blok2km>  blok2km_rel        := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/blok2km_rel') + ')';
+			attribute<RegioIndelingen/buurt>    buurt_rel          := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/buurt_rel'  ) + ')';
 
 			attribute<BebouwingsTypeDomein>     BebouwingsType     := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/BebouwingsType') + ')';
 			attribute<Classifications/BouwJaar> BouwjaarOrg        := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/Bouwjaar') + ')';

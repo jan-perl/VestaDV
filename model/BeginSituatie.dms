@@ -22,8 +22,8 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 	}
 		
 	container Geothermie := MiniStock;
-	container BioWKK := MiniStock;
-	container WijkWKK := MiniStock;
+	container BioWKK     := MiniStock;
+	container WijkWKK    := MiniStock;
 	
 	container Infra_per_buurt := Invoer/RuimtelijkeData/infra/per_buurt, using = "Invoer/RuimtelijkeData/infra/kentallen"
 	{
@@ -132,8 +132,6 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		}
 	}
 	
-	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie (PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
-
 	container RestWarmte := MiniStock
 	{
 		attribute<CumulatedArcSet> CumulatedArcSet_rel (PlanRegio) := invert(CumulatedArcSet/planregio_rel);
@@ -212,4 +210,5 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 				union_data(union_unit(CumulatedArcSet, CumulatedArcSet), id(CumulatedArcSet), id(CumulatedArcSet))
 			);
 	}
+	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
 }

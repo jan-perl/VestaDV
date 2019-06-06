@@ -200,11 +200,11 @@ template TussenResultaten
 
 	#include<StateNaAllocatie.dms>
 
+	// TODO: RENAME Allocatie -> AllocatieResultaten
 	container Allocatie :=
 		for_each_ne(Classifications/BebouwingsComponent/Name,
-			'AllocatieComponent(
+			'AllocatieResultatenComponent(
 				BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'
-				,StateNaAllocatie/PlanRegioWarmteAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/WarmteAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/KoudeAllocatie
 				,StateNaAllocatie/Bebouwing/'+Classifications/BebouwingsComponent/Name+'/Om_Comfort

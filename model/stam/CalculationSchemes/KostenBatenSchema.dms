@@ -21,14 +21,14 @@ template KostenBaten
 
 	container WarmteVraag
 	{
-		attribute<Units/GJ_yr> deelnemers (PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/Verbruik/deelnemers')+')';
+		attribute<Units/GJ_yr> deelnemers(PlanRegio) := ='add('+AsItemList('PlanRegioKaarten/'+Classifications/BebouwingsComponent/Name+'/Verbruik/deelnemers')+')';
 	}
 
 	container Opbrengsten
 	{
 		container EenmaligD := for_each_nedv(
 			 Classifications/BebouwingsComponent/Name
-			,replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/@BC@/WarmteAllocatie      ))), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
+			,replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Not(IsDefined(BebouwingsComponenten/@BC@/WarmteAllocatie))), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
 			,PlanRegio
 			,Eur
 			)
@@ -448,4 +448,3 @@ template KostenBaten
 	attribute<GJ_yr>  Vj_WarmtePrimairD   (PlanRegio) := KostenD/Vj_WarmtePrimair;
 	attribute<KG_yr>  CO2_BijstookD       (PlanRegio) := Prijzen/AardGas/CO2_GJ * KostenD/Bijstook/Vj_Bijstook;
 }
-
