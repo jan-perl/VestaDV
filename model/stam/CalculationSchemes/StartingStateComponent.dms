@@ -17,7 +17,7 @@ template StartingStateComponent
 	
 	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
 	attribute<ModelObject>                 Model_rel       (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
-	attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := const((0 / 0)[Classifications/AanbodOptie], BebouwingsObject);
+	attribute<Classifications/WarmteOptie> WarmteAllocatie (BebouwingsObject) := const(Classifications/WarmteOptie/V/gas, BebouwingsObject);
 	attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 	attribute<Eur_yr>                      Om_Comfort      (BebouwingsObject) := const(0[Eur_yr], BebouwingsObject);
 	attribute<WkoCluster>                  WkoCluster_rel  (BebouwingsObject) := const((0 / 0)[WkoCluster], BebouwingsObject);

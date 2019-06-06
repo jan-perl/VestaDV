@@ -49,7 +49,7 @@ template BCdata
 
 	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
 	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
-	attribute<Classifications/AanbodOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
+	attribute<Classifications/WarmteOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
 	attribute<Eur_yr>                      KoudeAllocatie    (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
 	attribute<Eur_yr>                      Om_Comfort        (BebouwingsObject) := MakeDefined(StartingStateComponent/Om_Comfort[StartingState_rel], 0[Eur_yr]);
 	attribute<WkoCluster>                  WkoCluster_rel    (BebouwingsObject) := StartingStateComponent/WkoCluster_rel[StartingState_rel];
@@ -337,7 +337,7 @@ template BCdata
 		attribute<Ratio>    IndividueleOpwekking (BebouwingsObject) := Electric_mWKK + Opwekking/hWP, IntegrityCheck = "this <= 1.0";
 		attribute<float64>  WarmteVraag          (BebouwingsObject) := min_elem(RuimtelijkeVraagComponent/AandeelWarmteVraag, 1.0 - IndividueleOpwekking);
 		attribute<float64>  NietDeelnemers       (BebouwingsObject) := 1.0 - WarmteVraag;
-		attribute<float64>  Gas                  (BebouwingsObject) := 1.0 - max_elem(float64(IsDefined(WarmteAllocatie)), Electric);
+		attribute<float64>  Gas                  (BebouwingsObject) := 1.0 - max_elem(float64(Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie]), Electric);
 	}
 	
 	container WarmteVraag

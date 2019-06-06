@@ -190,7 +190,7 @@ template WKO
 	container ObjectResults :=
 		for_each_ne(WkoComponent/Name, 
 			'WkoResults('
-				'UnitedCandidates, Selected, CandidateSets/'+WkoComponent/Name+',Classifications/AanbodOptie/V/WKO,'
+				'UnitedCandidates, Selected, CandidateSets/'+WkoComponent/Name+',Classifications/WarmteOptie/V/WKO,'
 				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
 			')'

@@ -16,7 +16,7 @@ template AllocExportsBebouwingsComponent
 		attribute<string>  id              := code;
 		attribute<nrAansl> nrAansluitingen := RuimtelijkeVraagComponent/nrAansluitingen;
 
-		attribute<Classifications/AanbodOptie> AanbodOptie : = AllocatieResultatenComponent/WarmteAllocatie;
+		attribute<Classifications/WarmteOptie> WarmteOptie : = AllocatieResultatenComponent/WarmteAllocatie;
 
 		attribute<GJ_yr> MV_RW                        := AllocatieResultatenComponent/MeterVraag/RestWarmte;
 		attribute<GJ_yr> MV_GT                        := AllocatieResultatenComponent/MeterVraag/GeoThermie;

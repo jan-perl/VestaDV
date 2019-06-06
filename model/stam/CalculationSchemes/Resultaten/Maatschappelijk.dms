@@ -8,12 +8,12 @@ container Maatschappelijk: Source = "FO v7a C6"
 {
 	container impl: IsHidden = "true"
 	{
-		attribute<String> BronExpr(Classifications/AanbodOptie) :=
+		attribute<String> BronExpr(Classifications/GebiedsOptie) :=
 				+replace(
-					Classifications/AanbodOptie/IsPlanregioOptie
+					Classifications/GebiedsOptie/IsPlanregioOptie
 					? 'StateNaAllocatie/Flow/Kmi_Total * float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/@RO@)'
 					: 'StateNaAllocatie/@RO@/Kmi_Totaal'
-				, '@RO@', Classifications/AanbodOptie/Name);
+				, '@RO@', Classifications/GebiedsOptie/Name);
 	}
 
 	container gebouwen

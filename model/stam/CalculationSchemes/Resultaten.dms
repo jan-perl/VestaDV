@@ -56,11 +56,11 @@ template Resultaten
 		}
 		container impl: IsHidden = "True"
 		{
-			attribute<String> BronExpr (Classifications/AanbodOptie) := 		 
-				replace(Classifications/AanbodOptie/IsPlanRegioOptie 
+			attribute<String> BronExpr (Classifications/GebiedsOptie) := 		 
+				replace(Classifications/GebiedsOptie/IsPlanRegioOptie 
 					? 'StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
 					: 'StateNaAllocatie/@AO@/CO2', 
-				'@AO@', Classifications/AanbodOptie/name
+				'@AO@', Classifications/GebiedsOptie/name
 				);
 		}
 

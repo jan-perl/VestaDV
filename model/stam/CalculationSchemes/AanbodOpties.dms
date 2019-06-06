@@ -39,7 +39,7 @@ container AanbodOpties
 		parameter<g_GJ>  VOS_GJb := 420[g_GJ];
 		parameter<g_GJ>  TS_GJb  :=   0[g_GJ];
 
-		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/AanbodOptie/V/WijkWKK, '', 400[PJ_yr]), isHidden = "True";
+		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/WijkWKK/TypeInfo, Classifications/GebiedsOptie/V/WijkWKK, '', 400[PJ_yr]), isHidden = "True";
 		container Results := Impl/Results;
 		unit<uint32> PlanRegio := .../PlanRegio;
 		attribute<kg_yr> CO2(PlanRegio) := impl/CO2;
@@ -61,7 +61,7 @@ container AanbodOpties
 		parameter<g_GJ>  VOS_GJb :=  0[g_GJ];
 		parameter<g_GJ>  TS_GJb  :=  2[g_GJ];
 
-		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/AanbodOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]), isHidden = "True";
+		container Impl    := WijkTempl(BeginStatus, AanbodKentallen, EnergiePrijzen, Jaar, Kengetallen/WarmteBronnen/BioWKK/TypeInfo, Classifications/GebiedsOptie/V/BioWKK, 'BioWKK_Start', 100[PJ_yr]), isHidden = "True";
 		container Results := Impl/Results;
 		unit<uint32> PlanRegio := .../PlanRegio;
 		attribute<kg_yr> CO2(PlanRegio) := impl/CO2;
@@ -159,7 +159,7 @@ container AanbodOpties
 	}
 	template PlanregioOptieResultaat {
 		container BebouwingsComponent;
-		parameter<Classifications/AanbodOptie> Optie;
+		parameter<Classifications/GebiedsOptie> Optie;
 		attribute<Bool> GebruikOptie(PlanRegio);
 		
 		unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
@@ -167,7 +167,10 @@ container AanbodOpties
 		unit<uint32> BebouwingsObject := BebouwingsComponent/BebouwingsObject;
 		container result := BebouwingsComponent
 		{
-			attribute<Classifications/GebiedsOptie> WarmteAllocatie(BebouwingsObject) := MakeDefined(BebouwingsComponent/WarmteAllocatie, GebruikOptie[BebouwingsComponent/PlanRegio_rel] ? Optie : value(0/0, Classifications/GebiedsOptie));
+			attribute<Classifications/WarmteOptie> WarmteAllocatie(BebouwingsObject) := 
+				Classifications/WarmteOptie/kanGebiedsOptie[BebouwingsComponent/WarmteAllocatie] && GebruikOptie[BebouwingsComponent/PlanRegio_rel]
+				? Classifications/GebiedsOptie/WarmteOptie_rel[Optie]
+				: BebouwingsComponent/WarmteAllocatie;
 		}
 		
 	}

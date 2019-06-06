@@ -47,8 +47,8 @@ Template LtWarmtenetImpl
 	
 	parameter<bool> CollectieveWP := (T_ow < T_sec);
 	
-	parameter<string> AanbodOptie_name := 'LT'+string(T_ow)+'_'+string(T_sec);
-	parameter<Classifications/AanbodOptie> AanbodOptie_rel := ='Classifications/AanbodOptie/V/'+AanbodOptie_name;
+	parameter<string> GebiedsOptie_name := 'LT'+string(T_ow)+'_'+string(T_sec);
+	parameter<Classifications/WarmteOptie> WarmteOptie_rel := ='Classifications/WarmteOptie/V/'+GebiedsOptie_name;
 	
 	container BebouwingsComponenten := BeginStatus/Bebouwing;
 	container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, invoer/Energieprijzen);
@@ -463,7 +463,7 @@ Template LtWarmtenetImpl
 	container ObjectResults :=
 		for_each_ne(WkoComponent/Name, 
 			'LtResults('
-				'UnitedCandidates, RendabelCluster, CandidateSets/'+WkoComponent/Name+',Classifications/AanbodOptie/V/'+AanbodOptie_name+',' 
+				'UnitedCandidates, RendabelCluster, CandidateSets/'+WkoComponent/Name+',Classifications/WarmteOptie/V/'+GebiedsOptie_name+',' 
 				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
 			')'
@@ -496,7 +496,7 @@ Template LtWarmtenetImpl
 					
 					attribute<rdc_meter> Point := mean(center_bound(Feature/Geometry), Feature/Cluster_rel);
 										
-					attribute<Classifications/AanbodOptie> AanbodOptie_rel := union_data(., PrevClusterSet/AanbodOptie_rel, const(impl/AanbodOptie_rel, RendabelCluster));
+					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevClusterSet/WarmteOptie_rel, const(impl/WarmteOptie_rel, RendabelCluster));
 					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevClusterSet/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster));
 					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevClusterSet/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), RendabelCluster));
 					
@@ -506,7 +506,7 @@ Template LtWarmtenetImpl
 						attribute<rdc_meter> Geometry(arc) := union_data(., PrevClusterSet/Feature/Geometry, RendabelCluster/Feature/Geometry);
 						attribute<..> Cluster_rel := value(union_data(., PrevClusterSet/Feature/Cluster_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
 											
-						attribute<Classifications/AanbodOptie> AanbodOptie_rel := CumulativeClusterSet/AanbodOptie_rel[Cluster_rel];
+						attribute<Classifications/WarmteOptie> WarmteOptie_rel := CumulativeClusterSet/WarmteOptie_rel[Cluster_rel];
 						attribute<Classifications/Rekenstap  > Rekenstap_rel   := CumulativeClusterSet/Rekenstap_rel  [Cluster_rel];
 						attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := CumulativeClusterSet/ZichtJaar_rel  [Cluster_rel];
 					}
@@ -520,7 +520,7 @@ Template LtWarmtenetImpl
 					
 //					attribute<..> Cluster_rel := value(union_data(., PrevNetwork/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
 										
-					attribute<Classifications/AanbodOptie> AanbodOptie_rel := union_data(., PrevNetwork/AanbodOptie_rel, const(impl/AanbodOptie_rel, RendabelCluster/Network));
+					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevNetwork/WarmteOptie_rel, const(impl/WarmteOptie_rel, RendabelCluster/Network));
 					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevNetwork/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster/Network));
 					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevNetwork/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), RendabelCluster/Network));
 				}

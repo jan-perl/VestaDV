@@ -65,10 +65,10 @@ container Rapportage
 				attribute<Eur_yr> Vraag_m        (PlanRegio) := Verbruik + VastRecht + Aansl_m - EnergieHeffing;
 			}
 
-			container RestWarmte := GebiedsOptie(Classifications/AanbodOptie/V/RestWarmte, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/RestWarmte);
-			container GeoThermie := GebiedsOptie(Classifications/AanbodOptie/V/GeoThermie, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/GeoThermie);
-			container WijkWKK    := GebiedsOptie(Classifications/AanbodOptie/V/WijkWKK   , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/WijkWKK);
-			container BioWKK     := GebiedsOptie(Classifications/AanbodOptie/V/BioWKK    , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/BioWKK);
+			container RestWarmte := GebiedsOptie(Classifications/GebiedsOptie/V/RestWarmte, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/RestWarmte);
+			container GeoThermie := GebiedsOptie(Classifications/GebiedsOptie/V/GeoThermie, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/GeoThermie);
+			container WijkWKK    := GebiedsOptie(Classifications/GebiedsOptie/V/WijkWKK   , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/WijkWKK);
+			container BioWKK     := GebiedsOptie(Classifications/GebiedsOptie/V/BioWKK    , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/BioWKK);
 
 			container WKO
 			{

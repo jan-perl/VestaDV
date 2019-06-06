@@ -84,7 +84,7 @@ container CalculationSchemes: Using = "Units;Geography"
 		// end case parameters
 
 		unit<uint32>                           BebouwingsObject                  := BCdata/BebouwingsObject;
-		attribute<Classifications/AanbodOptie> WarmteAllocatie(BebouwingsObject) := BCdata/WarmteAllocatie;
+		attribute<Classifications/WarmteOptie> WarmteAllocatie(BebouwingsObject) := BCdata/WarmteAllocatie;
 		unit<uint32>                           PlanRegio                         := Invoer/SpecifiekeInstellingen/PlanRegio;
 
 		parameter<Eur_GJ> WarmtePrijs := BCdata/Warmtewet/WarmtePrijs;
@@ -93,7 +93,7 @@ container CalculationSchemes: Using = "Units;Geography"
 		{
 			unit<float64>        ModelUnit := BCdata/EnergieVraagModellen/ModelUnit;
 			attribute<PlanRegio> PlanRegio_rel          (BebouwingsObject) := BCdata/PlanRegio_rel;
-			attribute<float64>   BeschikbaarheidsFactor (BebouwingsObject) := float64(!IsDefined(WarmteAllocatie)); // per PlanRegio moet toch per keuze worden gecheckt  * float64(!IsDefined(PlanRegioWarmteAllocatie[PlanRegio_rel]));
+			attribute<float64>   BeschikbaarheidsFactor (BebouwingsObject) := float64(Classifications/WarmteOptie/kanGebiedsOptie[WarmteAllocatie]);
 		}
 
 		attribute<nrAansl>        nrAanslWarmteDeelnemers      (PlanRegio) := sum(impl/BeschikbaarheidsFactor * BCdata/WarmteVraag/deelnemers/nrAansluitingen,    impl/PlanRegio_rel);

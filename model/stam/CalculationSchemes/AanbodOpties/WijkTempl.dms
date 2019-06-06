@@ -12,7 +12,7 @@ template WijkTempl
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> Jaar;
 	container TypeInfo;
-	parameter<Classifications/AanbodOptie> Optie;
+	parameter<Classifications/GebiedsOptie> Optie;
 	parameter<string> StartJaarAttr;
 	parameter<PJ_yr> MaxTotalDemand;
 	// end case parameters
@@ -81,7 +81,7 @@ template WijkTempl
 	{
 		container Factoren := TypeInfo/RekenType/Factoren;
 		
-		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := ../GebruikOptie ? Optie : BeginStatus/PlanRegioWarmteAllocatie_REMOVE;
+		attribute<Classifications/GebiedsOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := ../GebruikOptie ? Optie : BeginStatus/PlanRegioWarmteAllocatie_REMOVE;
 		
 		// TODO: Ook toepassen in andere Planregio Opties: Geothermie, Restwarmte
 		container BebouwingMutatie :=

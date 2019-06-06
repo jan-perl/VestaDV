@@ -10,7 +10,7 @@ template WKOResults
 	unit<uint32> UnitedCandidates;
 	unit<uint32> Cluster;
 	container WkoData;
-	parameter<Classifications/AanbodOptie> AanbodOptie_rel;
+	parameter<Classifications/WarmteOptie> WarmteOptie_rel;
 	
 	parameter<uint32> NrPrevAllowedObjects;
 	parameter<uint32> NrPrevAllObjects;
@@ -38,7 +38,7 @@ template WKOResults
 	attribute<Cluster> Cluster_Rel    (BebouwingsObject) := MakeDefined(Cluster_RelNow, BCdata/WkoCluster_rel);
 	attribute<bool>    HadWarmte      (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie);
 	attribute<bool>    StartThis      (BebouwingsObject) := IsDefined(Cluster_RelNow), IntegrityCheck = "not(and(HadWarmte, IsDefined(Cluster_RelNow)))";
-	attribute<bool>    WasThis        (BebouwingsObject) := (BeginStatusComponent/WarmteAllocatie == AanbodOptie_rel);
+	attribute<bool>    WasThis        (BebouwingsObject) := (BeginStatusComponent/WarmteAllocatie == WarmteOptie_rel);
 	attribute<bool>    HasThis        (BebouwingsObject) := StartThis || WasThis;
 
 	//volumevraag voor nieuwe allocatie
@@ -107,7 +107,7 @@ template WKOResults
 	{
 		unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
 
-		attribute<Classifications/AanbodOptie> WarmteAllocatie (BebouwingsObject) := StartThis ? AanbodOptie_rel                         : BeginStatusComponent/WarmteAllocatie;
+		attribute<Classifications/WarmteOptie> WarmteAllocatie (BebouwingsObject) := StartThis ? WarmteOptie_rel                         : BeginStatusComponent/WarmteAllocatie;
 		attribute<Eur_yr>                      KoudeAllocatie  (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Oj_Koude   : BeginStatusComponent/KoudeAllocatie;
 		attribute<Eur_yr>                      Om_comfort      (BebouwingsObject) := StartThis ? WkoDataComponent/Opbrengsten/Om_comfort : BeginStatusComponent/Om_comfort;
 		attribute<Cluster>                     WkoCluster_rel  (BebouwingsObject) := Cluster_rel;

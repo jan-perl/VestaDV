@@ -98,7 +98,7 @@ template GeoThermie
 	attribute<bool> RentabiliteitsAfweging (PlanRegio) := Oj_Afweging > 0[Eur_yr];
 
 	attribute<bool> OldGebruik             (PlanRegio) := IsDefined(BeginStatus/PlanRegioWarmteAllocatie_REMOVE);                                  // een optie (deze of andere) was al in gebruik
-	attribute<bool> GebruiktOptie          (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/Geothermie; // deze optie was al in gebruik;
+	attribute<bool> GebruiktOptie          (PlanRegio) := BeginStatus/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/Geothermie; // deze optie was al in gebruik;
 	attribute<bool> NewGebruik             (PlanRegio) := RentabiliteitsAfweging && bron/InContour && not(OldGebruik);
 	attribute<bool> GebruikOptie           (PlanRegio) := NewGebruik || GebruiktOptie;
 
@@ -116,9 +116,9 @@ template GeoThermie
 			parameter<float64> Elektriciteit := 1.0 / 30.0;
 		}
 
-		attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) :=
+		attribute<Classifications/GebiedsOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) :=
 			../GebruikOptie
-				? Classifications/AanbodOptie/V/GeoThermie
+				? Classifications/GebiedsOptie/V/GeoThermie
 				: BeginStatus/PlanRegioWarmteAllocatie_REMOVE;
 
 		container Stock := BeginStatus/Stock

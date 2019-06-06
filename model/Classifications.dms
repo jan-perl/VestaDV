@@ -559,17 +559,10 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig	
-	unit<uint8> GebouwOptie : nrofrows = 6
+	unit<uint8> GebouwOptie : nrofrows = 5
 	{
-		attribute<string> Name:
-		[
-			'gas'
-			'HR'
-			'mWKK'
-			'eWP'
-			'HWP'
-			'EWV'
-		];
+		attribute<string> Name:            [ 'gas', /*'HR', */ 'mWKK', 'eWP', 'HWP', 'EWV' ];
+		attribute<bool>   kanGebiedsOptie: [ true,  /* true,*/  false,  false, false, false ];
 	}
 	unit<uint8> GebiedsOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
@@ -587,6 +580,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,'Lt30_50'
 			,'Lt30_70'
 		];
+		attribute<WarmteOptie> WarmteOptie_rel := rlookup(name, WarmteOptie/name);
 
 		attribute<string> code             := string(id(.));
 		attribute<bool>   IsPlanRegioOptie : [ true, true, true, true, false, false, false, false, false, false, false]; //, false ];
@@ -611,21 +605,25 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 	unit<uint8> AanbodOptie := GebiedsOptie; // Synoniem; TODO RENAME naar GebiedsOptie
-	unit<uint8> WarmteOptie := union_unit(GebouwOptie, GebiedsOptie)
+	unit<uint8> WarmteOptie := range(uint8, 0b, uint8(#GebouwOptie + #GebiedsOptie))
 	{
+		attribute<string> name := union_data(., GebouwOptie/name, GebiedsOptie/name);
+		attribute<bool> isGebiedsOptie := union_data(., const(false, GebouwOptie), const(true, GebiedsOptie));
+		attribute<bool> kanGebiedsOptie := union_data(., GebouwOptie/kanGebiedsOptie, const(false, GebiedsOptie));
 		
+		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
-	unit<uint8> PlanRegioOptie := subset(AanbodOptie/IsPlanRegioOptie) 
+	unit<uint8> PlanRegioOptie := subset(GebiedsOptie/IsPlanRegioOptie) 
 	{
-		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
-		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
+		attribute<string> code := GebiedsOptie/code[nr_OrgEntity];
+		attribute<string> name := GebiedsOptie/name[nr_OrgEntity];
 	}
 
-	unit<uint8> ClusterOptie := subset(!AanbodOptie/IsPlanRegioOptie) 
+	unit<uint8> ClusterOptie := subset(!GebiedsOptie/IsPlanRegioOptie) 
 	{
-		attribute<string> code := AanbodOptie/code[nr_OrgEntity];
-		attribute<string> name := AanbodOptie/name[nr_OrgEntity];
+		attribute<string> code := GebiedsOptie/code[nr_OrgEntity];
+		attribute<string> name := GebiedsOptie/name[nr_OrgEntity];
 	}
 // =========  Classificaties voor montaire units
 
@@ -672,14 +670,14 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> GebiedsOptieActorCode    :=      Elements/values[value(id(.) * nrAttr + 3,Elements)];
 	}
 	
-	unit<uint32>  Actor := union_unit(Kostensoort, BebouwingsComponent, BebouwingsComponent, AanbodOptie)
+	unit<uint32>  Actor := union_unit(Kostensoort, BebouwingsComponent, BebouwingsComponent, GebiedsOptie)
 	{
-		attribute<string> BaseName                 := union_data(., Kostensoort/name, BebouwingsComponent/name, BebouwingsComponent/name,  AanbodOptie/name);
-		attribute<string> Name                     := union_data(., Kostensoort/name, BebouwingsComponent/name + '/Eigenaar', BebouwingsComponent/name + '/Gebruiker', AanbodOptie/name);
+		attribute<string> BaseName                 := union_data(., Kostensoort/name, BebouwingsComponent/name, BebouwingsComponent/name,  GebiedsOptie/name);
+		attribute<string> Name                     := union_data(., Kostensoort/name, BebouwingsComponent/name + '/Eigenaar', BebouwingsComponent/name + '/Gebruiker', GebiedsOptie/name);
 		attribute<string> full_name                := replace(name, '/', '_');
-		attribute<bool>   IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
-		attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, AanbodOptie));
-		attribute<string> GebiedsOptieActorCode    := union_data(., Kostensoort/GebiedsOptieActorCode, const('', BebouwingsComponent), const('', BebouwingsComponent), const('', AanbodOptie));
+		attribute<bool>   IsMaatschappelijkeKosten := union_data(., Kostensoort/IsMaatschappelijkeKosten, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, GebiedsOptie));
+		attribute<bool>   IsOverheid               := union_data(., Kostensoort/IsOverheid, const(false, BebouwingsComponent), const(false, BebouwingsComponent), const(false, GebiedsOptie));
+		attribute<string> GebiedsOptieActorCode    := union_data(., Kostensoort/GebiedsOptieActorCode, const('', BebouwingsComponent), const('', BebouwingsComponent), const('', GebiedsOptie));
 	}
 	unit<uint32> GebiedsOptieActor := subset(Actor/GebiedsOptieActorCode <> '')
 	{

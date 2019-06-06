@@ -33,8 +33,8 @@ template KostenWoningen
 	attribute<Eur_yr_Aansl> Kj_hv_w   (WoonObject) := =IsNieuwbouw ? 'const(0[Eur_yr_Aansl], WoonObject)' : '(IsMeergezins ? Schuiven/VerketelingMax : 1.0) * 160[Eur_yr_Aansl] * Schuiven/HuurVerlagingBijGebiedsOptie';// ?????
 	attribute<Eur_yr>       Kj_hv_o   (WoonObject) := =IsNieuwbouw ? 'const(0[Eur_yr      ], WoonObject)' : 'Kj_hv_w* NrDeelnemers';
 
-	attribute<nrAansl> NrDeelnemers   (WoonObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen    * float64(!IsDefined(BCdata/WarmteAllocatie));
-	attribute<kW>      Capaciteit     (WoonObject) := BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(!IsDefined(BCdata/WarmteAllocatie));
+	attribute<nrAansl> NrDeelnemers   (WoonObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen    * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
+	attribute<kW>      Capaciteit     (WoonObject) := BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
 
 	attribute<Eur>     Ki_ge_bruto    (WoonObject) := Ki_ge_ov_o + Ki_ge_pm_o - Oi_vermeden_gasketel * NrDeelnemers;
 	attribute<Eur>     Oi_ge_subsidie (WoonObject) := Ki_ge_ov_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding + Ki_ge_pm_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement;

@@ -121,7 +121,7 @@ template LtData
 	//selectie van geschikte kandidaten uit alle bebouwingsobjecten op basis van rentabiliteit en geselecteerde criteria
 	attribute<bool>		RentabiliteitsAfweging	(BebouwingsObject)	:=	Contributiemarge > 0[Eur_yr],															Descr = "heeft dit bebouwingsobject individueel een positieve aansluitmarge, ja of nee";
 	attribute<bool>		MarginaleAfweging		(BebouwingsObject)	:=	geschikt && RentabiliteitsAfweging,														Descr = "is zowel de aansluitmarge positief als het minimale schillabel aanwezig, ja of nee";
-	attribute<bool>		WasAllocated			(BebouwingsObject)	:=	IsDefined(BeginStatusComponent/WarmteAllocatie),							            Descr = "is het gebouw al eerder aangesloten op een andere verwarmingsoptie, ja of nee";
+	attribute<bool>		WasAllocated			(BebouwingsObject)	:=	not(Classifications/WarmteOptie/kanGebiedsOptie[BeginStatusComponent/WarmteAllocatie]),	Descr = "is het gebouw al eerder aangesloten op een andere verwarmingsoptie, ja of nee";
 	attribute<bool>		Toegestaan				(BebouwingsObject)	:=	MarginaleAfweging && !WasAllocated,														Descr = "selectie op alle bebouwingsobjecten dioe voldoen aan de gestelde criteria";
 	unit<uint32>		AllowedObjects								:=	Subset(Toegestaan)
 	{
