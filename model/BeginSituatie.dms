@@ -32,6 +32,12 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		attribute<nrAansl>  aant_g_aansl_woning_hoogb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType == Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
 		attribute<nrAansl>  aant_g_aansl_woning_laagb    (PlanRegio)    := sum(Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/BebouwingsType != Classifications/WoningtypeBestaand/V/meergezinspand_hoog ? Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/nrAansluitingen_i : 0[nrAansl], /Invoer/RuimtelijkeData/Bebouwing/impl/BestaandeWoning/buurt_rel);
 		
+		attribute<kW>       capaciteit_buurt             (PlanRegio)    := vermogensvraag_woningen + vermogensvraag_util + vermogensvraag_gltb;
+
+		attribute<kW>       vermogensvraag_woningen      (PlanRegio)    := /TussenResultaten/StartJaar/StateNaAllocatie/Infra_per_buurt/vermogensvraag_woningen;
+		attribute<kW>       vermogensvraag_util          (PlanRegio)    := /TussenResultaten/StartJaar/StateNaAllocatie/Infra_per_buurt/vermogensvraag_util;
+		attribute<kW>       vermogensvraag_gltb          (PlanRegio)    := /TussenResultaten/StartJaar/StateNaAllocatie/Infra_per_buurt/vermogensvraag_gltb;
+		
 		container kosten
 		{
 			attribute<Eur>                 kosten_verv_LD_net        (PlanRegio)  := const(0[Eur], Planregio);

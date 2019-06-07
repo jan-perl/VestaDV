@@ -121,13 +121,17 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		{
 			attribute<Geography/rdc_meter> geometry (poly)             := /Geography/RegioIndelingen/buurt/Geometry;
 			attribute<string>              BU_CODE                     := /Geography/RegioIndelingen/buurt/BU_CODE;
-			attribute<nrAansl>             aant_g_aansl                := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aantal_g_aansl)[nrAansl]              , Descr = "aantal gasaansluitingen per buurt (RNBs)";
-			attribute<m>                   lengte_grogel_LD_net        := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_grogel_LD_net)[m]              , Descr = "lengte grondroeringsgevoelige LD-gasleidingen per buurt (RNBs)";
-			attribute<m>                   lengte_LD_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LD_net)[m]                     , Descr = "lengte LD-gasnet per buurt (RNBs)";
-			attribute<nrAansl>             aant_won_elec               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aant_won_elec)[nrAansl]               , Descr = "aantal aansluitingen per buurt dat all-electric of LT-warmte wordt (PBL)";
-			attribute<Ratio>               fractie_3x25_aansl          := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/fractie_3x25_aansl)[Ratio]            , Descr = "aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is (RNBs)";
-			attribute<kw>                  capaciteit_buurt            := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/capaciteit_buurt)[kw]                 , Descr = "huidige opgestelde capaciteit aan MS-ruimtes (RNBs)";
-			attribute<m>                   lengte_LS_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LS_buurt)[m]                   , Descr = "totale lengte van het LS-net per buurt (RNBs)";
+			// attribute<nrAansl>             aant_g_aansl                := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aantal_g_aansl)[nrAansl]              , Descr = "aantal gasaansluitingen per buurt (RNBs)";
+			// attribute<m>                   lengte_grogel_LD_net        := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_grogel_LD_net)[m]              , Descr = "lengte grondroeringsgevoelige LD-gasleidingen per buurt (RNBs)";
+			attribute<m>                   lengte_grogel_LD_net        := const(0[m],.);
+			// attribute<m>                   lengte_LD_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LD_net)[m]                     , Descr = "lengte LD-gasnet per buurt (RNBs)";
+			attribute<m>                   lengte_LD_net               := /TussenResultaten/StartJaar/GebiedsAllocatie/Initieel/KostenBaten/KostenD/L_infra_g;
+			// attribute<nrAansl>             aant_won_elec               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aant_won_elec)[nrAansl]               , Descr = "aantal aansluitingen per buurt dat all-electric of LT-warmte wordt (PBL)";
+			// attribute<Ratio>               fractie_3x25_aansl          := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/fractie_3x25_aansl)[Ratio]            , Descr = "aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is (RNBs)";
+			attribute<Ratio>               fractie_3x25_aansl          :=  const(0[Ratio],.);
+			// attribute<kw>                  capaciteit_buurt            := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/capaciteit_buurt)[kw]                 , Descr = "huidige opgestelde capaciteit aan MS-ruimtes (RNBs)";
+			// attribute<m>                   lengte_LS_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LS_buurt)[m]                   , Descr = "totale lengte van het LS-net per buurt (RNBs)";
+			attribute<m>                   lengte_LS_net               := /TussenResultaten/StartJaar/GebiedsAllocatie/Initieel/KostenBaten/KostenD/L_infra_e;
 			// attribute<kw>                  vermogensvraag_huidig       := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/vermogensvraag_huidig)[kw]            , Descr = "huidige vermogensvraag per buurt (PBL of wanneer mogelijk RNBs)";
 		}
 	}
