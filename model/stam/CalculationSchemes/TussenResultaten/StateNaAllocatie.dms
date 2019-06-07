@@ -120,11 +120,11 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<nrAansl>           aant_won_elec                     (PlanRegio)    := Allocatie/BestaandeWoning/AllElec_Aansl_inPlanRegio + Allocatie/NieuwbouwWoning/AllElec_Aansl_inPlanRegio;
 		attribute<nrAansl>           aant_util_elec                    (PlanRegio)    := Allocatie/BestaandeUtil/AllElec_Aansl_inPlanRegio + Allocatie/NieuwbouwUtil/AllElec_Aansl_inPlanRegio;
 		attribute<Ratio>             fractie_3x25_aansl                (PlanRegio)    := StateVoorAllocatie/Infra_per_buurt/fractie_3x25_aansl;
-		attribute<kW>                vermogensvraag_woningen     (PlanRegio)    := (kental_aansluitwaarde_woning_zonderWP * Allocatie/BestaandeWoning/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_woning_zonderWP) 
+		attribute<kW>                vermogensvraag_woningen           (PlanRegio)    := (kental_aansluitwaarde_woning_zonderWP * Allocatie/BestaandeWoning/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_woning_zonderWP) 
 																							+ (kental_aansluitwaarde_woning_metWP * Allocatie/NieuwbouwWoning/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_woning_metWP);
-		attribute<kW>                vermogensvraag_util         (PlanRegio)    := (kental_aansluitwaarde_util_zonderWP * Allocatie/BestaandeUtil/ModelUnits_zonder_WP_inPlanRegio  * kental_gelijktijdigheidsfactor_util_zonderWP) 
+		attribute<kW>                vermogensvraag_util               (PlanRegio)    := (kental_aansluitwaarde_util_zonderWP * Allocatie/BestaandeUtil/ModelUnits_zonder_WP_inPlanRegio  * kental_gelijktijdigheidsfactor_util_zonderWP) 
 																							+ (kental_aansluitwaarde_util_metWP * Allocatie/NieuwbouwUtil/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_util_metWP);
-		attribute<kW>                vermogensvraag_gltb         (PlanRegio)    := (kental_aansluitwaarde_gltb_zonderWP * Allocatie/BestaandeGlTb/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_gltb_zonderWP) 
+		attribute<kW>                vermogensvraag_gltb               (PlanRegio)    := (kental_aansluitwaarde_gltb_zonderWP * Allocatie/BestaandeGlTb/ModelUnits_zonder_WP_inPlanRegio * kental_gelijktijdigheidsfactor_gltb_zonderWP) 
 																							+ (kental_aansluitwaarde_gltb_metWP * Allocatie/NieuwbouwGlTb/ModelUnits_met_WP_inPlanRegio * kental_gelijktijdigheidsfactor_gltb_metWP);
 		
 		attribute<MSR>               aant_nieuwe_MSR                   (PlanRegio)    := (max_elem((vermogensvraag_woningen + vermogensvraag_util - StateVoorAllocatie/Infra_per_buurt/capaciteit_buurt), 0[kW]) / kental_capaciteit_nieuwe_MSR) ;
