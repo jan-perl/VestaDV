@@ -471,6 +471,15 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	{
 		attribute<string> Name  : ['eWP', 'EWV', 'Aplus', 'LabelB', 'LabelC', 'LabelD', 'LabelE', 'LabelF', 'LabelG'];
 		attribute<string> Label : DialogType = "LabelText",  ['eWP', 'EWV', 'A+', 'B', 'C', 'D', 'E', 'F', 'G'];
+		
+		attribute<WarmteOptie> WarmteOptie_rel := union_data(., 
+			WarmteOptie/V/eWP, WarmteOptie/V/eWV, 
+			WarmteOptie/V/HR,  WarmteOptie/V/HR,
+			WarmteOptie/V/gas, WarmteOptie/V/gas,
+			WarmteOptie/V/gas, WarmteOptie/V/gas,
+			WarmteOptie/V/gas
+		);
+		
 		attribute<uint32> Color : DialogType = "BrushColor",
 		[
 			 rgb(000,255,255)
@@ -559,10 +568,10 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig	
-	unit<uint8> GebouwOptie : nrofrows = 5
+	unit<uint8> GebouwOptie : nrofrows = 6
 	{
-		attribute<string> Name:            [ 'gas', /*'HR', */ 'mWKK', 'eWP', 'HWP', 'EWV' ];
-		attribute<bool>   kanGebiedsOptie: [ true,  /* true,*/  false,  false, false, false ];
+		attribute<string> Name:            [ 'gas', 'HR', 'mWKK', 'eWP', 'HWP', 'EWV' ];
+		attribute<bool>   kanGebiedsOptie: [ true,  true, false,  false, false, false ];
 	}
 	unit<uint8> GebiedsOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{

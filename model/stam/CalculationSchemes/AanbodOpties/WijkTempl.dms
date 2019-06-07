@@ -83,7 +83,6 @@ template WijkTempl
 		
 		attribute<Classifications/GebiedsOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := ../GebruikOptie ? Optie : BeginStatus/PlanRegioWarmteAllocatie_REMOVE;
 		
-		// TODO: Ook toepassen in andere Planregio Opties: Geothermie, Restwarmte
 		container BebouwingMutatie :=
 			for_each_ne(Classifications/BebouwingsComponent/Name
 				, 'PlanRegioOptieResultaat(BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name+', Optie, .../GebruiktOptie)'

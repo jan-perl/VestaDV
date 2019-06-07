@@ -47,12 +47,12 @@ template BCdata
 	attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := 	='BebouwingsObject/'+Invoer/SpecifiekeInstellingen/PlanRegioNaam+'_rel';
 
 
-	attribute<ModelObject>                 Model_rel         (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
-	attribute<PrevObject>                  StartingState_rel (BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
-	attribute<Classifications/WarmteOptie> WarmteAllocatie   (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
-	attribute<Eur_yr>                      KoudeAllocatie    (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
-	attribute<Eur_yr>                      Om_Comfort        (BebouwingsObject) := MakeDefined(StartingStateComponent/Om_Comfort[StartingState_rel], 0[Eur_yr]);
-	attribute<WkoCluster>                  WkoCluster_rel    (BebouwingsObject) := StartingStateComponent/WkoCluster_rel[StartingState_rel];
+	attribute<ModelObject>                 Model_rel        (BebouwingsObject) := rlookup(BebouwingsObject/ModelObjectKey, EnergieVraagModellen/ModelObjectKey);
+	attribute<PrevObject>                  StartingState_rel(BebouwingsObject) := rlookup(BebouwingsObject/code, PrevObject/code);
+	attribute<Classifications/WarmteOptie> WarmteAllocatie  (BebouwingsObject) := StartingStateComponent/WarmteAllocatie[StartingState_rel];
+	attribute<Eur_yr>                      KoudeAllocatie   (BebouwingsObject) := MakeDefined(StartingStateComponent/KoudeAllocatie[StartingState_rel], 0[Eur_yr]);
+	attribute<Eur_yr>                      Om_Comfort       (BebouwingsObject) := MakeDefined(StartingStateComponent/Om_Comfort[StartingState_rel], 0[Eur_yr]);
+	attribute<WkoCluster>                  WkoCluster_rel   (BebouwingsObject) := StartingStateComponent/WkoCluster_rel[StartingState_rel];	
 
 	unit<uint32> RuimtelijkeVraagComponent := BebouwingsObject
 	{

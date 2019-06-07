@@ -81,6 +81,15 @@ template RestWarmte
 
 	container Results := BeginStatus, IntegrityCheck = "P_Bron <= Bronnen/MWTh_Max * float64(3.00)"
 	{
+		container BebouwingMutatie :=
+			for_each_ne(Classifications/BebouwingsComponent/Name
+				, 'PlanRegioOptieResultaat(BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name+', Classifications/GebiedsOptie/V/RestWarmte, .../GebruiktOptie)'
+			);
+		container Bebouwing :=
+			for_each_ne(Classifications/BebouwingsComponent/Name
+				, 'BebouwingMutatie/'+Classifications/BebouwingsComponent/Name+'/result'
+			);
+				
 		container Factoren
 		{
 			parameter<float64> Aardgas       := 0.0; // TODO
@@ -96,7 +105,7 @@ template RestWarmte
 			attribute<Eur_yr> Kj_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Kj_warmtewaarde : 0[Eur_yr]);
 			attribute<Eur_yr> Km_ow_verbruik  (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? lastiter/Assignment/Km_warmtewaarde : 0[Eur_yr]);
 			attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := BeginStatus/Flow/Kj_ow_oh        + (GebruikOptie ? lastiter/Assignment/Kj_ow_oh        : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_adm        (PlanRegio) := BeginStatus/Flow/Kj_ow_adm      + (GebruikOptie ? lastiter/Assignment/Kj_ow_adm       : 0[Eur_yr]);
+			attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := BeginStatus/Flow/Kj_ow_adm       + (GebruikOptie ? lastiter/Assignment/Kj_ow_adm       : 0[Eur_yr]);
 
 			attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := BeginStatus/Flow/Kj_pt_oh        + (GebruikOptie ? lastiter/Assignment/Kj_pt_oh        : 0[Eur_yr]);
 			attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := BeginStatus/Flow/Kj_pt_adm       + (GebruikOptie ? lastiter/Assignment/Kj_pt_adm       : 0[Eur_yr]);

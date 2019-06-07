@@ -106,6 +106,15 @@ template GeoThermie
 	
 	container Results := BeginStatus
 	{
+		container BebouwingMutatie :=
+			for_each_ne(Classifications/BebouwingsComponent/Name
+				, 'PlanRegioOptieResultaat(BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name+', Classifications/GebiedsOptie/V/GeoThermie, .../GebruiktOptie)'
+			);
+		container Bebouwing :=
+			for_each_ne(Classifications/BebouwingsComponent/Name
+				, 'BebouwingMutatie/'+Classifications/BebouwingsComponent/Name+'/result'
+			);
+				
 		container Factoren
 		{
 			parameter<float64> Aardgas       := 0.0;
