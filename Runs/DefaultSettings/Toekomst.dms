@@ -55,7 +55,7 @@ container Toekomst := Basis, using = "Units"
 
 	container Voorkeuren := Basis/Voorkeuren
 	{
-		container GebiedsdOpties
+		container GebiedsOpties
 		{
 			parameter<UInt32> Aantal: [ 11 ]; // @USERINPUT
 			
