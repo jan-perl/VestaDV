@@ -210,5 +210,5 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 				union_data(union_unit(CumulatedArcSet, CumulatedArcSet), id(CumulatedArcSet), id(CumulatedArcSet))
 			);
 	}
-	attribute<Classifications/AanbodOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/AanbodOptie/V/RestWarmte : value(0 / 0, Classifications/AanbodOptie);
+	attribute<Classifications/GebiedsOptie> PlanRegioWarmteAllocatie_REMOVE (PlanRegio) := Restwarmte/GebruikRestWarmte ? Classifications/GebiedsOptie/V/RestWarmte : value(0 / 0, Classifications/GebiedsOptie);
 }

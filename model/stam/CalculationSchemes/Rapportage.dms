@@ -149,7 +149,7 @@ container Rapportage
 	{
 		// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
 		// begin case parameters
-		parameter<Classifications/AanbodOptie> Optie;
+		parameter<Classifications/GebiedsOptie> Optie;
 		unit<uint32> BebouwingsObject;
 		unit<uint32> PlanRegio;
 		container BCdata;

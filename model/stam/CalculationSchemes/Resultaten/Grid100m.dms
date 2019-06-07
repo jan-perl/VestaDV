@@ -8,7 +8,7 @@ container Grid100m :=
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/Naar100mgrid(
 				Allocatie/'+Classifications/BebouwingsComponent/name+
-				', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/AanbodOptie/V/WKO, Voorkeuren/WarmteOpties/AanbodOptie))
+				', '+(Classifications/BebouwingsComponent/KanWKO && IsDefined(rlookup(Classifications/GebiedsOptie/V/WKO, Voorkeuren/ActieveGebiedsOptie/GebiedsOptie_rel))
 					? Quote('GebiedsAllocatie/WKO/ObjectResults/'+Classifications/BebouwingsComponent/name) 
 					: Quote(''))+
 			')'

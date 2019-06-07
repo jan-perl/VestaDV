@@ -28,38 +28,38 @@ template TussenResultaten
 
 	container Voorkeuren := SpecifiekeInstellingen/Voorkeuren
 	{
-		unit<uint8> WarmteOpties_Org := range(uint8, 0b, uint8(AanbodOpties/Aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
+		unit<uint8> ActieveGebiedsOptie_Org := range(uint8, 0b, uint8(GebiedsOpties/aantal)) // te kiezen keten van: { GeoTermie, RestWarmte, ... } LET OP: laatste cijfer moet gelijk zijn aan aantal regels onder 'union_data('
 		{
 			attribute<string> Name := SchemaName;
 
-			attribute<Classifications/AanbodOptie> AanbodOptie := =AanbodOpties/Aantal > 0 
-				? 'union_data(.'+AsList(',AanbodOpties/Optie'+string(id(.) + 1b), '')+')' 
-				: 'const((0b / 0b)[Classifications/AanbodOptie], .)';
-			attribute<string> SchemaName := Classifications/AanbodOptie/Name[AanbodOptie];
-			attribute<string> code       := Classifications/AanbodOptie/Code[AanbodOptie];
+			attribute<Classifications/GebiedsOptie> GebiedsOptie_rel := =GebiedsOpties/Aantal > 0 
+				? 'union_data(.'+AsList(',GebiedsOpties/Optie'+string(id(.) + 1b), '')+')' 
+				: 'const((0b / 0b)[Classifications/GebiedsOptie], .)';
+			attribute<string> SchemaName := Classifications/GebiedsOptie/Name[GebiedsOptie_rel];
+			attribute<string> code       := Classifications/GebiedsOptie/Code[GebiedsOptie_rel];
 		}
-		unit<uint8> WarmteOpties_Ext: = union_unit_uint8(range(UInt8,0b, 1b), WarmteOpties_Org) // {  RestWarmte, ... } 
+		unit<uint8> ActieveGebiedsOptie_Ext: = union_unit_uint8(range(UInt8,0b, 1b), ActieveGebiedsOptie_Org) // {  RestWarmte, ... } 
 		{
 			attribute<string> Name: = SchemaName;
 
-			attribute<Classifications/AanbodOptie> AanbodOptie := union_data(., Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie);
-			attribute<string>                      SchemaName  := union_data(., 'RestWarmte', WarmteOpties_Org/SchemaName);
-			attribute<string>                      code        := union_data(., '0', WarmteOpties_Org/code);
+			attribute<Classifications/GebiedsOptie> GebiedsOptie_rel := union_data(., Classifications/GebiedsOptie/V/RestWarmte, ActieveGebiedsOptie_Org/GebiedsOptie_rel);
+			attribute<string>                       SchemaName       := union_data(., 'RestWarmte', ActieveGebiedsOptie_Org/SchemaName);
+			attribute<string>                       code             := union_data(., '0', ActieveGebiedsOptie_Org/code);
 		}
 
-		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/AanbodOptie/V/RestWarmte, WarmteOpties_Org/AanbodOptie)); // is nieuwe allocatie toegestaan
+		parameter<bool> NewRestWarmte := IsDefined(rlookup(Classifications/GebiedsOptie/V/RestWarmte, ActieveGebiedsOptie_Org/GebiedsOptie_rel)); // is nieuwe allocatie toegestaan
 		parameter<bool> OldRestWarmte := =NewRestWarmte ? 'false':'StateVoorAllocatie/RestWarmte/CumulatedArcSet/HasArcs'; // moet er toch restwarmte aan?
 
-		unit<uint8> WarmteOpties     := =OldRestWarmte ? 'WarmteOpties_Ext' : 'WarmteOpties_Org';
-		unit<uint8> PlanRegioOptie   := subset(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie))
+		unit<uint8> ActieveGebiedsOptie := =OldRestWarmte ? 'ActieveGebiedsOptie_Ext' : 'ActieveGebiedsOptie_Org';
+		unit<uint8> PlanRegioOptie      := subset(lookup(ActieveGebiedsOptie/GebiedsOptie_rel, Classifications/GebiedsOptie/IsPlanRegioOptie))
 		{
-			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
-			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
+			attribute<string> name := ActieveGebiedsOptie/name[nr_OrgEntity];
+			attribute<string> code := ActieveGebiedsOptie/code[nr_OrgEntity];
 		}
-		unit<uint8> ClusterOptie := subset(not(lookup(WarmteOpties/AanbodOptie, Classifications/AanbodOptie/IsPlanRegioOptie)))
+		unit<uint8> ClusterOptie := subset(not(lookup(ActieveGebiedsOptie/GebiedsOptie_rel, Classifications/GebiedsOptie/IsPlanRegioOptie)))
 		{
-			attribute<string> name := WarmteOpties/name[nr_OrgEntity];
-			attribute<string> code := WarmteOpties/code[nr_OrgEntity];
+			attribute<string> name := ActieveGebiedsOptie/name[nr_OrgEntity];
+			attribute<string> code := ActieveGebiedsOptie/code[nr_OrgEntity];
 		}
 	}
 	container Schuiven
@@ -159,10 +159,10 @@ template TussenResultaten
 
 	container GebiedsAllocatie :=
 		for_each_ne(
-			Voorkeuren/WarmteOpties/Name,
-			'CalculationSchemes/AanbodOpties/'+Voorkeuren/WarmteOpties/SchemaName+'(
-				'+MakeDefined(Voorkeuren/WarmteOpties/Name[ID(Voorkeuren/WarmteOpties)-1b]+'/Results', 'Initieel')+',
-				AanbodKentallen/'+Voorkeuren/WarmteOpties/SchemaName+', 
+			Voorkeuren/ActieveGebiedsOptie/Name,
+			'CalculationSchemes/AanbodOpties/'+Voorkeuren/ActieveGebiedsOptie/SchemaName+'(
+				'+MakeDefined(Voorkeuren/ActieveGebiedsOptie/Name[ID(Voorkeuren/ActieveGebiedsOptie)-1b]+'/Results', 'Initieel')+',
+				AanbodKentallen/'+Voorkeuren/ActieveGebiedsOptie/SchemaName+', 
 				EnergiePrijzen, ZichtJaar_jaar
 			)'
 		)
@@ -194,7 +194,7 @@ template TussenResultaten
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 			}	
 		}
-		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/WarmteOpties/Name)+'/Results', 'Initieel');
+		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/ActieveGebiedsOptie/Name)+'/Results', 'Initieel');
 		container ResultState := =ResultStateName;
 	}
 

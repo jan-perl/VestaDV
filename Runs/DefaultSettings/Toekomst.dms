@@ -55,31 +55,31 @@ container Toekomst := Basis, using = "Units"
 
 	container Voorkeuren := Basis/Voorkeuren
 	{
-		container AanbodOpties
+		container GebiedsdOpties
 		{
 			parameter<UInt32> Aantal: [ 11 ]; // @USERINPUT
 			
-			parameter<Classifications/AanbodOptie> Optie1 := Classifications/AanbodOptie/V/Lt30_70;
-			parameter<Classifications/AanbodOptie> Optie2 := Classifications/AanbodOptie/V/Lt30_50;
-			parameter<Classifications/AanbodOptie> Optie3 := Classifications/AanbodOptie/V/Lt30_30;
-			parameter<Classifications/AanbodOptie> Optie4 := Classifications/AanbodOptie/V/Lt15_70;
-			parameter<Classifications/AanbodOptie> Optie5 := Classifications/AanbodOptie/V/Lt15_50;
-			parameter<Classifications/AanbodOptie> Optie6 := Classifications/AanbodOptie/V/Lt15_30;
-			parameter<Classifications/AanbodOptie> Optie7 := Classifications/AanbodOptie/V/WKO;
-			parameter<Classifications/AanbodOptie> Optie8 := Classifications/AanbodOptie/V/BioWKK;
-			parameter<Classifications/AanbodOptie> Optie9 := Classifications/AanbodOptie/V/WijkWKK;
-			parameter<Classifications/AanbodOptie> Optie10 := Classifications/AanbodOptie/V/Geothermie;
-			parameter<Classifications/AanbodOptie> Optie11 := Classifications/AanbodOptie/V/Restwarmte;
+			parameter<Classifications/GebiedsOptie> Optie1 := Classifications/GebiedsOptie/V/Lt30_70;
+			parameter<Classifications/GebiedsOptie> Optie2 := Classifications/GebiedsOptie/V/Lt30_50;
+			parameter<Classifications/GebiedsOptie> Optie3 := Classifications/GebiedsOptie/V/Lt30_30;
+			parameter<Classifications/GebiedsOptie> Optie4 := Classifications/GebiedsOptie/V/Lt15_70;
+			parameter<Classifications/GebiedsOptie> Optie5 := Classifications/GebiedsOptie/V/Lt15_50;
+			parameter<Classifications/GebiedsOptie> Optie6 := Classifications/GebiedsOptie/V/Lt15_30;
+			parameter<Classifications/GebiedsOptie> Optie7 := Classifications/GebiedsOptie/V/WKO;
+			parameter<Classifications/GebiedsOptie> Optie8 := Classifications/GebiedsOptie/V/BioWKK;
+			parameter<Classifications/GebiedsOptie> Optie9 := Classifications/GebiedsOptie/V/WijkWKK;
+			parameter<Classifications/GebiedsOptie> Optie10 := Classifications/GebiedsOptie/V/Geothermie;
+			parameter<Classifications/GebiedsOptie> Optie11 := Classifications/GebiedsOptie/V/Restwarmte;
 /*	
 			parameter<UInt32> Aantal: [ 7 ]; // @USERINPUT
 			
-			parameter<Classifications/AanbodOptie> Optie1 := Classifications/AanbodOptie/V/GeoThermie;
-			parameter<Classifications/AanbodOptie> Optie2 := Classifications/AanbodOptie/V/RestWarmte;
-			parameter<Classifications/AanbodOptie> Optie3 := Classifications/AanbodOptie/V/BioWKK;
-			parameter<Classifications/AanbodOptie> Optie4 := Classifications/AanbodOptie/V/WijkWKK;
-			parameter<Classifications/AanbodOptie> Optie5 := Classifications/AanbodOptie/V/WKO;
-			parameter<Classifications/AanbodOptie> Optie6:= Classifications/AanbodOptie/V/LtWarmtenetMetCollectieveWP;
-			parameter<Classifications/AanbodOptie> Optie7:= Classifications/AanbodOptie/V/LtWarmtenetMetIndividueleWP;
+			parameter<Classifications/GebiedsOptie> Optie1 := Classifications/GebiedsOptie/V/GeoThermie;
+			parameter<Classifications/GebiedsOptie> Optie2 := Classifications/GebiedsOptie/V/RestWarmte;
+			parameter<Classifications/GebiedsOptie> Optie3 := Classifications/GebiedsOptie/V/BioWKK;
+			parameter<Classifications/GebiedsOptie> Optie4 := Classifications/GebiedsOptie/V/WijkWKK;
+			parameter<Classifications/GebiedsOptie> Optie5 := Classifications/GebiedsOptie/V/WKO;
+			parameter<Classifications/GebiedsOptie> Optie6:= Classifications/GebiedsOptie/V/LtWarmtenetMetCollectieveWP;
+			parameter<Classifications/GebiedsOptie> Optie7:= Classifications/GebiedsOptie/V/LtWarmtenetMetIndividueleWP;
 */	
 		}
 	}

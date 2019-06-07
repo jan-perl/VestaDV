@@ -58,15 +58,15 @@ template Resultaten
 		{
 			attribute<String> BronExpr (Classifications/GebiedsOptie) := 		 
 				replace(Classifications/GebiedsOptie/IsPlanRegioOptie 
-					? 'StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
+					? 'StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
 					: 'StateNaAllocatie/@AO@/CO2', 
 				'@AO@', Classifications/GebiedsOptie/name
 				);
 		}
 
-		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/WarmteOpties/Name, impl/BronExpr[Voorkeuren/WarmteOpties/AanbodOptie], PlanRegio, KG_yr)
+		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/ActieveGebiedsOptie/Name, impl/BronExpr[Voorkeuren/ActieveGebiedsOptie/GebiedsOptie_rel], PlanRegio, KG_yr)
 		{
-			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/WarmteOpties=0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/WarmteOpties/Name)+')');
+			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/ActieveGebiedsOptie == 0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/ActieveGebiedsOptie/Name)+')');
 		}
 
 		attribute<KG_yr> Totaal(PlanRegio) := Gebouwen/Totaal + CentraleWarmteBronnen/Totaal;
@@ -120,31 +120,31 @@ template Resultaten
 		// *** Investeringen zijn niet over 30 jaar genomen maar over de voor de betreffende aanbodtechnologie geldende gebruiksperiode en tegen het voor de EP geldende rentevoet
 		container impl: IsHidden = "True"
 		{
-			attribute<String> FlowExpr (Classifications/AanbodOptie) := 
+			attribute<String> FlowExpr (Classifications/GebiedsOptie) := 
 				replace(
-					Classifications/AanbodOptie/IsPlanRegioOptie
-					? '(GebiedsAllocatie/@RO@/BeginStatus/KostenBaten/Oji_wd_KL - StateNaAllocatie/Flow/Kji_ow_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/@RO@)'
+					Classifications/GebiedsOptie/IsPlanRegioOptie
+					? '(GebiedsAllocatie/@RO@/BeginStatus/KostenBaten/Oji_wd_KL - StateNaAllocatie/Flow/Kji_ow_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@RO@)'
 					: 'StateNaAllocatie/@RO@/Oj_totaal - StateNaAllocatie/@RO@/Kj_Netto'
-				,	'@RO@', Classifications/AanbodOptie/Name);			
+				,	'@RO@', Classifications/GebiedsOptie/Name);			
 
-			attribute<String> StockExpr(Classifications/AanbodOptie) :=
-				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/AanbodOptie/V/'+Classifications/AanbodOptie/Name+')';
+			attribute<String> StockExpr(Classifications/GebiedsOptie) :=
+				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/'+Classifications/GebiedsOptie/Name+')';
 		}
 
-		container CashFlow := for_each_nedv(Classifications/AanbodOptie/Name
-			,	IsDefined(invert(Voorkeuren/WarmteOpties/AanbodOptie)) ? impl/FlowExpr : 'const(0[Eur_yr], PlanRegio)'
+		container CashFlow := for_each_nedv(Classifications/GebiedsOptie/Name
+			,	IsDefined(invert(Voorkeuren/ActieveGebiedsOptie/GebiedsOptie_rel)) ? impl/FlowExpr : 'const(0[Eur_yr], PlanRegio)'
 			,	PlanRegio, Eur_yr)
 		{
-			attribute<Eur_yr> Kj_Totaal  (PlanRegio) := ='add('+AsItemList(Classifications/AanbodOptie/Name)+')';
+			attribute<Eur_yr> Kj_Totaal  (PlanRegio) := ='add('+AsItemList(Classifications/GebiedsOptie/Name)+')';
 		}
 
 		attribute<Eur_yr> Kj_Totaal (PlanRegio):= CashFlow/Kj_Totaal;
 
-		container Stock := for_each_nedv(Classifications/AanbodOptie/Name
-			,	IsDefined(invert(Voorkeuren/WarmteOpties/AanbodOptie)) ? impl/StockExpr : 'const(0[Eur], PlanRegio)'
+		container Stock := for_each_nedv(Classifications/GebiedsOptie/Name
+			,	IsDefined(invert(Voorkeuren/ActieveGebiedsOptie/GebiedsOptie_rel)) ? impl/StockExpr : 'const(0[Eur], PlanRegio)'
 			,	PlanRegio, Eur)
 		{
-			attribute<Eur> Ki_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/AanbodOptie/Name)+')';
+			attribute<Eur> Ki_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/GebiedsOptie/Name)+')';
 		}
 		attribute<Eur> Ki_Totaal(PlanRegio) := Stock/Ki_Totaal; // totale investeringen zonder aftrek van de te ontvangen aansluitbijdrage.
 	}
