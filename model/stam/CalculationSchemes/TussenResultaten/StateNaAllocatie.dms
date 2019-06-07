@@ -102,6 +102,19 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<Eur_yr>	Kji_Netto			(PlanRegio)		:= Kji_Total - Oji_subsidie,																	Descr = "jaarlijkse netto eindgebruikerskosten";
 	}
 	
+	container nrAansluitinging := for_each_nedv(Classifications/WarmteOptie/Name, 
+		replace(
+			'add('+
+				AsItemList(
+					replace('sum(Bebouwing/@BC@/nrAansluitinging * Float64(Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOpties/V/@WO@), PlanRegio_rel)'
+					, '@BC@', Classifications/BebouwingsComponent/name)
+				)
+			+')'
+		,	'@WO@', Classifications/WarmteOptie/Name
+		)
+	,	Planregio, nrAansl
+	);
+	
 	container Infra_per_buurt : using = "Invoer/RuimtelijkeData/infra/kentallen"
 	{
 		attribute<nrAansl>           aant_g_aansl                      (PlanRegio)    := Allocatie/aant_g_aansl_per_planregio;
