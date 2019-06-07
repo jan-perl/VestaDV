@@ -36,7 +36,7 @@ template WKOResults
 	
 	attribute<Cluster> Cluster_RelNow (BebouwingsObject) := AllowedObjects/Cluster_rel[invert(AllowedObjects/nr_OrgEntity)];
 	attribute<Cluster> Cluster_Rel    (BebouwingsObject) := MakeDefined(Cluster_RelNow, BCdata/WkoCluster_rel);
-	attribute<bool>    HadWarmte      (BebouwingsObject) := IsDefined(BeginStatusComponent/WarmteAllocatie);
+	attribute<bool>    HadWarmte      (BebouwingsObject) := not(Classifications/WarmteOptie/kanGebiedsOptie[BeginStatusComponent/WarmteAllocatie]);
 	attribute<bool>    StartThis      (BebouwingsObject) := IsDefined(Cluster_RelNow), IntegrityCheck = "not(and(HadWarmte, IsDefined(Cluster_RelNow)))";
 	attribute<bool>    WasThis        (BebouwingsObject) := (BeginStatusComponent/WarmteAllocatie == WarmteOptie_rel);
 	attribute<bool>    HasThis        (BebouwingsObject) := StartThis || WasThis;

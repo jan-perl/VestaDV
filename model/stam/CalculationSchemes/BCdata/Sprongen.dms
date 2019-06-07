@@ -308,7 +308,7 @@ container Sprongen
 		,bool)
 	{
 		attribute<bool> eWP (BebouwingsObject) := (OpwekkingsOpties/org_capaciteit/hWP == 0[Ratio]) && (OpwekkingsOpties/org_capaciteit/mWKK == 0[Ratio]) 
-			&& not(Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie]);
+			&& not(Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie_org]);
 		attribute<bool> EWV (BebouwingsObject) := eWP;
 	}
 
