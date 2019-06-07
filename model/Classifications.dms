@@ -474,7 +474,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		
 		attribute<WarmteOptie> WarmteOptie_rel := union_data(., 
 			WarmteOptie/V/eWP, WarmteOptie/V/eWV, 
-			WarmteOptie/V/HR,  WarmteOptie/V/HR,
+			WarmteOptie/V/gas, WarmteOptie/V/gas,
 			WarmteOptie/V/gas, WarmteOptie/V/gas,
 			WarmteOptie/V/gas, WarmteOptie/V/gas,
 			WarmteOptie/V/gas
@@ -568,10 +568,10 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig	
-	unit<uint8> GebouwOptie : nrofrows = 6
+	unit<uint8> GebouwOptie : nrofrows = 5
 	{
-		attribute<string> Name:            [ 'gas', 'HR', 'mWKK', 'eWP', 'HWP', 'EWV' ];
-		attribute<bool>   kanGebiedsOptie: [ true,  true, false,  false, false, false ];
+		attribute<string> Name:            [ 'gas', 'mWKK', 'eWP', 'HWP', 'EWV' ];
+		attribute<bool>   kanGebiedsOptie: [ true,   false,  false, false, false ];
 	}
 	unit<uint8> GebiedsOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
