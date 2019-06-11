@@ -170,7 +170,7 @@ template TussenResultaten
 		container Initieel := StateVoorAllocatie
 		{
 			container Bebouwing     := BebouwingsComponenten;
-			
+/* REMOVE			
 			container Flow
 			{
 				attribute<Eur_yr> Kj_id_oh        (PlanRegio) := const(0[Eur_yr], PlanRegio);
@@ -193,6 +193,7 @@ template TussenResultaten
 				attribute<Eur_yr> Kj_ow_precario  (PlanRegio) := const(0[Eur_yr], PlanRegio);
 				attribute<Eur_yr> Oj_SDE          (PlanRegio) := const(0[Eur_yr], PlanRegio); // allocated SDE
 			}	
+*/			
 		}
 		parameter<string> ResultStateName := MakeDefined(last(Voorkeuren/ActieveGebiedsOptie/Name)+'/Results', 'Initieel');
 		container ResultState := =ResultStateName;
