@@ -28,7 +28,7 @@ template KostenBaten
 	{
 		container EenmaligD := for_each_nedv(
 			 Classifications/BebouwingsComponent/Name
-			,replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/@BC@/WarmteAllocatie])), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
+			,replace('sum(BebouwingsComponenten/@BC@/Opbrengsten/AansluitBijdrageD * float64(Classifications/WarmteOptie/kanGebiedsOptie[BebouwingsComponenten/@BC@/WarmteAllocatie]), BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/Name)
 			,PlanRegio
 			,Eur
 			)

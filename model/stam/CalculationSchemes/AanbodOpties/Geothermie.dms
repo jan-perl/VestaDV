@@ -140,7 +140,7 @@ template GeoThermie
 					
 					attribute<Eur_yr> Kmi_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_ov : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_pm : 0[Eur_yr];
-					attribute<Eur_yr> Om_comfort      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Om_ge_comfort   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
 					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/ge28/AnnualisationFactor : 0[Eur_yr];
 					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
@@ -150,9 +150,13 @@ template GeoThermie
 					attribute<Eur_yr> Kj_id_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_gas_EH    (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_gas_CO2   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_id_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
 					attribute<Eur_yr> Kj_id_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_id_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
 					attribute<Eur_yr> Kj_id_oh        (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_id_oh : 0[Eur_yr];
 					attribute<Eur_yr> Kj_id_adm       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
@@ -188,7 +192,6 @@ template GeoThermie
 					
 					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
 					attribute<Eur_yr> Oj_wd_EEA      (PlanRegio) := NewGebruik ? (Kj_wd_oh + Kj_wd_adm + Kj_wd_gas + Kj_wd_Elek) * SpecifiekeInstellingen/Beleid/EEA/wd : 0[Eur_yr];						
-											
 					attribute<Eur_yr> Oj_wd_SDE       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 				}
 				container pt {				
@@ -226,14 +229,17 @@ template GeoThermie
 					attribute<Eur_yr> Omi_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
 					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
-					attribute<Eur_yr> Oj_ow_EEA      (PlanRegio) := NewGebruik
+					attribute<Eur_yr> Oj_ow_EEA       (PlanRegio) := NewGebruik
 						? (Kj_ow_oh + Kj_ow_adm + Kj_ow_gas + Kj_ow_Elek + Kj_ow_productie) * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel], 0.0) 
 						: 0[Eur_yr];						
 						
-					attribute<Eur_yr> Oj_ow_SDE   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Oj_ow_SDE       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 				}
 				container lv
 				{
+					attribute<Eur_yr> Oji_lv_Aansl    (PlanRegio) := Stock/Oi_lv_Aansl * NCW/ow28/AnnualisationFactor;
+					attribute<Eur_yr> Omi_lv_Aansl    (PlanRegio) := Stock/Oi_lv_Aansl * NCW/mr28/AnnualisationFactor;
+					
 					attribute<Eur_yr> Oj_lv_verbruik  (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/JaarlijksD/Warmtevraag  : 0[Eur_yr];
 					attribute<Eur_yr> Oj_lv_vastrecht (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/JaarlijksD/Oj_vastrecht : 0[Eur_yr];
 					attribute<Eur_yr> Oj_lv_SDE       (PlanRegio) := NewGebruik ? kosten/Oj_SDE    : 0[Eur_yr];
@@ -242,6 +248,8 @@ template GeoThermie
 
 			container Stock
 			{				
+				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/EenmaligD/Oi_Totaal : 0[Eur];
+				
 				attribute<Eur> Ki_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_ov : 0[Eur];
 				attribute<Eur> Ki_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_pm : 0[Eur];
 				attribute<Eur> Oi_ge_EIA      (PlanRegio) := NewGebruik ? KostenBaten/Oi_ge_subsidie: 0[Eur];
