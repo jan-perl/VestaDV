@@ -675,22 +675,6 @@ Template LtWarmtenetImpl
 				attribute<KG_yr>	CO2_id_elek		(PlanRegio)		:=	verbruik/V_id_elek * prijzen/Elektriciteit/CO2_GJ;
 				attribute<KG_yr>	CO2_wd_elek		(PlanRegio)		:=	verbruik/V_wd_elek * prijzen/Elektriciteit/CO2_GJ;
 				attribute<KG_yr>	CO2_ow_elek		(PlanRegio)		:=	verbruik/V_ow_elek * prijzen/Elektriciteit/CO2_GJ;
-				
-				attribute<KG_yr>	Nox_id			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	Nox_wd			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	Nox_ow			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				
-				attribute<KG_yr>	SO2_id			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	SO2_wd			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	SO2_ow			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				
-				attribute<KG_yr>	VOS_id			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	VOS_wd			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	VOS_ow			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				
-				attribute<KG_yr>	TS_id			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	TS_wd			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
-				attribute<KG_yr>	TS_ow			(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen luchtverontreiniging bij LT netten
 			}
 		}
 	}

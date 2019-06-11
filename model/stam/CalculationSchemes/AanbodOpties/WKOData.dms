@@ -54,7 +54,7 @@ template WKOData
 	
 	attribute<GJ_Yr>		V_id_elek			(BebouwingsObject)	:=	WkoDataComponent/V_id_Elek,																Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
 	attribute<GJ_Yr>		V_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/V_wd_Elek,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
-		
+	attribute<GJ_yr>		V_wd_verlies		(BebouwingsObject)	:=	WkoDataComponent/V_wd_verlies;
 	//Uitstoot en verbruik
 	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_id_elek + V_wd_elek,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
 	attribute<GJ_yr>		GJw					(BebouwingsObject)	:=	WkoDataComponent/V_WKO,																	Descr = "warmte geleverd uit gebiedsoptie";
@@ -116,8 +116,13 @@ template WKOData
 	attribute<Eur_yr>		Om_comfort			(BebouwingsObject)	:=	WkoDataComponent/Opbrengsten/Om_comfort,												Descr = "maatschappelijke opbrengsten door koudelevering";
 	attribute<Eur_yr>		Oj_SDE				(BebouwingsObject)	:=	GJw [Gj_yr] * SpecifiekeInstellingen/Beleid/EEA/SDE_WKO [Eur_Gj],						Descr = "jaarlijkse opbrengsten uit SDE op lage temperatuur warmte";		
 	
+	attribute<Eur_yr>		Oj_wd_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
+	attribute<Eur_yr>		Oj_id_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/id * (Kj_id_adm + Kj_id_oh);
+	attribute<Eur_yr>		Oj_ow_EEA			(BebouwingsObject)	:=	SpecifiekeInstellingen/Beleid/EEA/WKO * (Kj_ow_adm + Kj_ow_oh);
+	attribute<Eur_yr>		Oj_EEA				(BebouwingsObject)	:=	Oj_wd_EEA + Oj_id_EEA + Oj_ow_EEA;
+	
 	//Netto contributiemarge
-	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE,										Descr = "totale jaarlijkse opbrengsten";
+	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE + Oj_EEA,										Descr = "totale jaarlijkse opbrengsten";
 	attribute<Eur_yr>		Kji_totaal			(BebouwingsObject)	:=	Kji_id + Kji_wd + Kji_ow + Kji_ge,														Descr = "totale jaarlijkse kapitaallasten";
 	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_id_elek + Kj_wd_elek + Kj_oh + Kj_adm,												Descr = "totale jaarlijkse kapitaallasten";
 	
