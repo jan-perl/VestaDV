@@ -177,7 +177,9 @@ template Resultaten
 
 			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra    * Kengetallen/Infra/Kj_g_m;
 			attribute<Eur_yr> onderhoud       (Planregio) := L_infra_nu * Kengetallen/Infra/Ko_g_m;
-			attribute<Eur_yr> verwijderkosten (Planregio) := float64(verwijderd) * L_infra_org * Kengetallen/Infra/Kj_g_m * (Kengetallen/Infra/VB_g + 1.0);
+			attribute<Eur_yr> vervangen       (Planregio) := (kosten/kosten_verv_LD_net) * NCW/mr50/AnnualisationFactor;
+			attribute<Eur_yr> verwijderen     (Planregio) := (kosten/kosten_verw_g_aansl + kosten/kosten_verw_LD_net) * NCW/mr50/AnnualisationFactor;
+			attribute<Eur_yr> verwijderkosten (Planregio) := verwijderen + vervangen;
 			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + verwijderkosten + onderhoud;
 			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
 		}
@@ -194,7 +196,7 @@ template Resultaten
 
 			attribute<Eur_yr> kapitaallasten  (Planregio) := L_infra * Kengetallen/Infra/Kj_e_m;
 			attribute<Eur_yr> onderhoud       (Planregio) := L_infra * Kengetallen/Infra/Ko_e_m;
-			attribute<Eur_yr> netverzwaring   (Planregio) := kapitaallasten * R_all_electric;
+			attribute<Eur_yr> netverzwaring   (Planregio) := (kosten/kosten_verzw_e_aansl + kosten/kosten_verzw_MSR + kosten/kosten_verzw_LS) * NCW/mr50/AnnualisationFactor;
 			attribute<Eur_yr> Kj_totaal       (Planregio) := kapitaallasten + netverzwaring + onderhoud;
 			attribute<Eur_yr> Kj_netto        (Planregio) := Kj_totaal - Oj_totaal - Aansl_m;
 		}
