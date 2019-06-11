@@ -75,6 +75,7 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016"
 	parameter<MEur_yr> K_g     := Kj_g + Ko_g      , Descr = "jaarlijkse kosten gas";          // K_g_m
 	parameter<MEur_yr> K_e     := Kj_e + Ko_e      , Descr = "jaarlijkse kosten electiciteit"; // K_e_m
 
+	//TODO: koppelen met bestaande data wanneer netbeheerdersdata beschikbaar is
 	// parameter<m> L_g_calculate := sum(TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_g), Descr = "lengte gasnetwerk";
 	parameter<m> L_g := 177121407[m];
 	// parameter<m> L_e_calculate := sum(TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_e), Descr = "lengte electiciteitnetwerk";
