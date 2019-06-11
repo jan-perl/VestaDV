@@ -47,6 +47,9 @@ template WKOUtilData
 	attribute<GJ_yr>	V_Koude_sec		(BebouwingsObject)	:= V_Koude - V_id_Koude,					Descr = "Aandeel van de eigen volumevraag naar koude uit het secundaire net";
 	attribute<GJ_yr>	V_Wsec_netto	(BebouwingsObject)	:= V_Warmte_sec / (1d - constanten/Leidingverlies),		Descr ="Warmte te leveren aan het secundaire net met verrekening leidingverlies";
 	attribute<GJ_yr>	V_Ksec_netto	(BebouwingsObject)	:= V_Koude_sec / (1d - constanten/Leidingverlies),		Descr ="Koude te leveren aan het secundaire net met verrekening leidingverlies";
+	attribute<GJ_yr>	V_wd_verlies	(BebouwingsObject)	:= (V_warmte_sec - V_Wsec_netto) + (V_koude_sec - V_Ksec_netto);
+
+	
 	
 	//Gelijktijdige capaciteitsvraag aan het secundaire net
 	attribute<kW>		P_Warmte_sec	(BebouwingsObject)	:= constanten/GTF_util_w * constanten/ASW_wu * Lu;
