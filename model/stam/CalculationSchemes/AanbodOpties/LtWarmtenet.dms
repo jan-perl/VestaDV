@@ -481,9 +481,6 @@ Template LtWarmtenetImpl
 					: 'BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name
 			);
 			
-		container Stock := BeginStatus/Stock;
-		container Flow  := BeginStatus/Flow;
-		
 		container LtWarmte := BeginStatus/LtWarmte
 		{
 			unit<uint32> bron := BeginStatus/LtWarmte/bron {

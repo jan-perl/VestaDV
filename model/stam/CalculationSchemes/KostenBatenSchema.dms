@@ -386,13 +386,9 @@ template KostenBaten
 			attribute<Eur_yr>	Kj_EH_verbruik	(PlanRegio)		:= prijzen/Aardgas/Bijstook/KGJ_EnergieHeffing * Vj_Bijstook,	Descr = "energiebelasting betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_verbruik";
 		}
 
-//REMOVE		attribute<Eur>    Ki_ge_ov        (PlanRegio) := Wonen/Ki_ge_ov;
-//REMOVE		attribute<Eur>    Ki_ge_pm        (PlanRegio) := Wonen/Ki_ge_pm;
-
 		attribute<Eur>    Ki_id           (PlanRegio) := Wonen/Ki_id + Utiliteit/Ki_Totaal + Glastuinbouw/Ki_Totaal, Source = "FO v7a F 2";
 		attribute<Eur>    Ki_wd           (PlanRegio) := SecundairNet/Ki_Totaal + Wonen/Ki_wd, Source = "FO v7a F 2";
 
-//REMOVE		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := Wonen/Kj_ge_hv;
 		attribute<Eur_yr> Kj_id_oh        (PlanRegio) := Wonen/Kj_id_oh;
 		attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Wonen/Kj_wd_oh + Utiliteit/Kj_Onderhoud + Glastuinbouw/Kj_Onderhoud + SecundairNet/Kj_Onderhoud;
 		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_wd_oh + Kj_id_oh;
