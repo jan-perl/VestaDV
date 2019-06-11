@@ -566,7 +566,7 @@ Template LtWarmtenetImpl
 					attribute<Eur_yr>	Kmi_ge_ov		(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * stock/ki_ge_ov;
 					attribute<Eur_yr>	Oji_ge_EIA		(PlanRegio)		:=	stock/Oi_ge_EIA * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 					attribute<Eur_yr>	Omi_ge_EIA		(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * stock/Oi_ge_EIA;
-					attribute<Eur_yr>	Om_ge_comfort	(PlanRegio)		:=	='add('+AsItemList('../Om_Comfort/'+LT_Component/Name)+')';				
+					attribute<Eur_yr>	Om_ge_comfort	(PlanRegio)		:=	='add('+AsItemList('.../Om_Comfort/'+LT_Component/Name)+')';				
 				}
 				
 				container id
