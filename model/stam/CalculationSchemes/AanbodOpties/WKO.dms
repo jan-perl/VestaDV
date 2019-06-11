@@ -328,7 +328,7 @@ template WKO
 				attribute<Eur_yr>	Omi_lv_aansl	(PlanRegio)		:=	stock/Oi_lv_aansl * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor);	
 				attribute<Eur_yr>	Oj_lv_vastrecht	(PlanRegio)		:=	='add('+AsItemList('Oj_Vastrecht/'+WkoComponent/Name)+')';
 				attribute<Eur_yr>	Oj_lv_verbruik	(PlanRegio)		:=	='add('+AsItemList('Oj_Verbruik/'+WkoComponent/Name)+')';
-				attribute<Eur_yr>	Om_comfort		(PlanRegio)		:=	='add('+AsItemList('../Om_Comfort/'+WkoComponent/Name)+')';
+				attribute<Eur_yr>	Om_ge_comfort	(PlanRegio)		:=	='add('+AsItemList('../Om_Comfort/'+WkoComponent/Name)+')';
 			}
 			
 			container Verbruik
