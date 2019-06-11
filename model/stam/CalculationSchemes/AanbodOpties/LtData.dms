@@ -42,6 +42,9 @@ template LtData
 	attribute<GJ_Yr>		V_id_elek			(BebouwingsObject)	:=	WkoDataComponent/V_id_Elek,															Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
 	attribute<GJ_Yr>		V_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/V_wd_Elek,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
 	
+	attribute<GJ_yr>		V_wd_verlies		(BebouwingsObject)	:= WkoDataComponent/V_wd_verlies;
+
+	
 	//Uitstoot en verbruik
 	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_id_elek + V_wd_elek,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
 	attribute<GJ_yr>		GJw					(BebouwingsObject)	:=	V_warmte - GJe,																			Descr = "warmte geleverd uit gebiedsoptie";
@@ -53,6 +56,8 @@ template LtData
 	attribute<Eur>			Ki_ge				(BebouwingsObject)	:=	Ki_ge_ov + Ki_ge_pm,																	Descr = "investeringskosten vergoeding gebouweigenaar";
 	attribute<Eur>			Oi_ge_EIA			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Oi_ge_EIA,														Descr = "investeringssubsidie vergoeding gebouweigenaar ongerief";
 	attribute<Eur_yr>		Kji_ge				(BebouwingsObject)	:=	(Ki_ge_pm + Ki_ge_ov - Oi_ge_EIA) * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor),	Descr = "geannualiseerde investeringskosten vergoedingen gebouweigenaar";
+	attribute<Eur_yr>		Kji_ge_pm			(BebouwingsObject)	:=	Ki_ge_pm * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+	attribute<Eur_yr>		Kji_ge_ov			(BebouwingsObject)	:=	Ki_ge_ov * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 	
 	//Investeringskosten inpandige distributie
 	attribute<Eur>			Ki_id				(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_id,															Descr = "investeringskosten inpandige distributie";
