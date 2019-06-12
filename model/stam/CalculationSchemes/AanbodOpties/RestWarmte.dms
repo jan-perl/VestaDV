@@ -115,8 +115,8 @@ template RestWarmte
 					attribute<Eur_yr> Kmi_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_pm : 0[Eur_yr];
 					attribute<Eur_yr> Om_ge_comfort   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
-					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/ge28/AnnualisationFactor : 0[Eur_yr];
-					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/bw28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/bw28/AnnualisationFactor : 0[Eur_yr];
 				}
 				
 				container id {
@@ -175,10 +175,10 @@ template RestWarmte
 					attribute<Eur_yr> Kji_pt          (PlanRegio) := NewGebruik ? lastiter/Assignment/Kji_pt : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_pt          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
-					attribute<Eur_yr> Oji_pt_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_pt_EIA * NCW/ow28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Oji_pt_EIA      (PlanRegio) := NewGebruik ? lastIter/Assignment/Oji_pt_EIA : 0[Eur_yr];
 					attribute<Eur_yr> Omi_pt_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_pt_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
-					attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := NewGebruik  ? (Kj_pt_oh + Kj_pt_adm) * SpecifiekeInstellingen/Beleid/EEA/pt : 0[Eur_yr];						
+					attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := NewGebruik  ? lastIter/Assignment/Oj_pt_EEA : 0[Eur_yr];						
 				}
 				container ow {
 				// TODO: gebruik koppelfactoren 
@@ -200,7 +200,7 @@ template RestWarmte
 					attribute<Eur_yr> Kji_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Kji_ow : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
-					attribute<Eur_yr> Oji_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/ow28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Oji_ow_EIA      (PlanRegio) := NewGebruik ? lastIter/Assignment/Oji_ow_EIA : 0[Eur_yr];
 					attribute<Eur_yr> Omi_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
 					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
@@ -221,18 +221,25 @@ template RestWarmte
 				}
 			}
 
-			container Stock //:= BeginStatus/Stock
+			container Stock
 			{
-				attribute<Eur> Ki_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_ow : 0[Eur];
-				attribute<Eur> Ki_wd          (PlanRegio) := NewGebruik ? KostenBaten/Ki_wd_Bruto : 0[Eur];
-				attribute<Eur> Ki_id          (PlanRegio) := NewGebruik ? KostenBaten/Ki_id_Bruto : 0[Eur];
+				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/EenmaligD/Oi_Totaal : 0[Eur];
+				
 				attribute<Eur> Ki_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_ov : 0[Eur];
 				attribute<Eur> Ki_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_pm : 0[Eur];
+				attribute<Eur> Oi_ge_EIA      (PlanRegio) := NewGebruik ? KostenBaten/Oi_ge_subsidie: 0[Eur];
 				
-				attribute<Eur> Oi_ow_EIA      (PlanRegio) := (NewGebruik ? MakeDefined(lastiter/Assignment/Ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0[Eur]) : 0[Eur]);
-
-				attribute<Eur> Ki_pt          (PlanRegio) := BeginStatus/Stock/Ki_pt          + (NewGebruik ? lastiter/Assignment/ki_pt : 0[Eur]);
-				attribute<Eur> Oi_pt_subsidie (PlanRegio) := BeginStatus/Stock/Oi_pt_subsidie + (NewGebruik ? lastiter/Assignment/ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt : 0[Eur]);
+				attribute<Eur> Ki_id          (PlanRegio) := NewGebruik ? KostenBaten/Ki_id_Bruto : 0[Eur];
+				attribute<Eur> Oi_id_EIA      (PlanRegio) := NewGebruik ? KostenBaten/Ki_id_Bruto * SpecifiekeInstellingen/Beleid/EIA/id : 0[Eur];
+				
+				attribute<Eur> Ki_wd          (PlanRegio) := NewGebruik ? KostenBaten/Ki_wd_Bruto : 0[Eur];
+				attribute<Eur> Oi_wd_EIA      (PlanRegio) := NewGebruik ? KostenBaten/Ki_wd_Bruto * SpecifiekeInstellingen/Beleid/EIA/wd : 0[Eur];
+				
+				attribute<Eur> Ki_pt          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt : 0[Eur];
+				attribute<Eur> Oi_pt_EIA      (PlanRegio) := NewGebruik ? lastiter/Assignment/Oi_pt_EIA : 0[Eur];
+				
+				attribute<Eur> Ki_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_ow : 0[Eur];
+				attribute<Eur> Oi_ow_EIA      (PlanRegio) := NewGebruik ? lastiter/Assignment/Oi_ow_EIA : 0[Eur];
 			}
 			
 			container Verbruik
