@@ -66,16 +66,15 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 
 		attribute<Eur_yr>	Kj_wd_oh            (PlanRegio)		:= KostenBaten/KostenD/Kj_wd_oh                                 * float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor onderhoud aan het wijkdistributienet";
 		attribute<Eur_yr>	Kj_wd_adm			(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_adm                                * float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor administratie ten behoeve van het wijkdistributienet";
-		attribute<Eur_yr>	Kj_wd_precario		(PlanRegio)		:= KostenBaten/KostenD/Kj_Precario								* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) voor precario in het wijkdistributienet (wordt niet gebruikt op dit moment)";
-		attribute<Eur_yr>	Kj_wd_verbruik		(PlanRegio)		:= KostenBaten/KostenD/Kj_Verbruik								* float64(GebiedsOptie),		Descr = "jaarlijkse eindgebruikerskosten van de planregio (buurt)voor de inkoop van aardgas voor bijstook in hulpketels";
-		attribute<Eur_yr>	Km_wd_verbruik		(PlanRegio)		:= KostenBaten/KostenD/Km_Verbruik								* float64(GebiedsOptie),		Descr = "jaarlijkse maatschappelijke kosten van de planregio (buurt) voor de inkoop van aardgas voor bijstook in hulpketels";
-		attribute<Eur_yr>	Kj_EH_bijstook		(PlanRegio)		:= KostenBaten/KostenD/Bijstook/Kj_EH_verbruik					* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) aan energiebelasting op de inkoop van aardgas voor bijstook in hulpketels, als onderdeel van Kj_wd_verbruik";
+		attribute<Eur_yr>	Kj_wd_verbruik		(PlanRegio)		:= KostenBaten/KostenD/Kj_wd_gas								* float64(GebiedsOptie),		Descr = "jaarlijkse eindgebruikerskosten van de planregio (buurt)voor de inkoop van aardgas voor bijstook in hulpketels";
+		attribute<Eur_yr>	Km_wd_verbruik		(PlanRegio)		:= KostenBaten/KostenD/Km_wd_gas								* float64(GebiedsOptie),		Descr = "jaarlijkse maatschappelijke kosten van de planregio (buurt) voor de inkoop van aardgas voor bijstook in hulpketels";
+		attribute<Eur_yr>	Kj_EH_bijstook		(PlanRegio)		:= KostenBaten/KostenD/Bijstook/Kj_wd_gas_EH					* float64(GebiedsOptie),		Descr = "jaarlijkse kosten van de planregio (buurt) aan energiebelasting op de inkoop van aardgas voor bijstook in hulpketels, als onderdeel van Kj_wd_verbruik";
 
 		attribute<Eur_yr>	Oe_wd_subsidie		(PlanRegio)		:= KostenBaten/Oe_wd_subsidie									* float64(GebiedsOptie),		Descr = "jaarlijkse opbrengsten voor wijkdistributie uit exploitatiesubsidies";
 		attribute<Eur_yr>	Oj_totaal			(PlanRegio)		:= KostenBaten/Opbrengsten/JaarlijksD/Oj_Totaal					* float64(GebiedsOptie),		Descr = "totale jaarlijkse opbrengsten uit warmtelevering aan deze planregio (buurt)";
 
-		attribute<Eur_yr>	Kji_wd_Total	    (PlanRegio)		:= Kji_wd_KL + Kj_wd_oh + Kj_wd_adm + Kj_wd_precario + Kj_wd_verbruik,					Descr = "totale jaarlijkse eindgebruikerskosten voor wijkdistributie inclusief kapitaallasten";
-		attribute<Eur_yr>	Kmi_wd_Total		(PlanRegio)		:= Kmi_wd_KL + Kj_wd_oh + Kj_wd_adm + Km_wd_verbruik,									Descr = "totale jaarlijkse maatschappelijke kosten voor wijkdistributie inslusief kapitaallasten";
+		attribute<Eur_yr>	Kji_wd_Total	    (PlanRegio)		:= Kji_wd_KL + Kj_wd_oh + Kj_wd_adm + Kj_wd_verbruik,		                                    Descr = "totale jaarlijkse eindgebruikerskosten voor wijkdistributie inclusief kapitaallasten";
+		attribute<Eur_yr>	Kmi_wd_Total		(PlanRegio)		:= Kmi_wd_KL + Kj_wd_oh + Kj_wd_adm + Km_wd_verbruik,                                           Descr = "totale jaarlijkse maatschappelijke kosten voor wijkdistributie inslusief kapitaallasten";
 		attribute<Eur_yr>	Oji_wd_subsidie		(PlanRegio)		:= Stock/Oi_wd_subsidie * NCW/wd28/AnnualisationFactor + Oe_wd_subsidie,						Descr = "geannualiseerde jaarlijkse opbrengsten uit investeringssubsidies voor wijkdistributie";
 		attribute<Eur_yr>	Kji_wd_Netto		(PlanRegio)		:= Kji_wd_Total - Oji_wd_subsidie,																Descr = "jaarlijkse nettokosten voor wijkdistributie na verrekening van subsidies";
 

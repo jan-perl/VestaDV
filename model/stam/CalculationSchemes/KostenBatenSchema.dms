@@ -327,7 +327,7 @@ template KostenBaten
 
 			attribute<Eur_yr>  Kj_Onderhoud                      (PlanRegio) := bestaand/Kj_Onderhoud + nieuw/Kj_Onderhoud + Kj_WarmteMeter_Onderhoud;
 			attribute<Eur_yr>  Kj_Admin                          (PlanRegio) := (Kj_Onderhoud + Kj_CO2Installatie_FictiefOnderhoud) * Kengetallen/Onderhoud/R_Admin;
-			attribute<Eur_yr>  Kj_Verbruik                       (PlanRegio) := Kj_CO2Installatie;
+			attribute<Eur_yr>  Kj_Verbruik                       (PlanRegio) := Kj_CO2Installatie; // TODO: gecoordineerd verwijderen, dit wordt nergens gebruikt.
 		}
 
 		container SecundairNet
@@ -376,14 +376,15 @@ template KostenBaten
 
 		container Bijstook
 		{
-			parameter<ratio>	eff_piekketel					:= 0.925[ratio],												Descr = "kengetal voor de efficientie van energieomzetting in aardgasgestookte hulpketels", Source = "nketel: FO, Tabel bij F 35";
+			parameter<ratio>	eff_piekketel			 := 0.925[ratio],												Descr = "kengetal voor de efficientie van energieomzetting in aardgasgestookte hulpketels", Source = "nketel: FO, Tabel bij F 35";
 			
-			attribute<GJ_yr>	Vj_Vraag		(PlanRegio)		:= Vj_Warmte - Vj_WarmtePrimair,								Descr = "volumevraag naar warmte die jaarlijks wordt geleverd uit de hulpketel";
-			attribute<GJ_yr>	Vj_Bijstook		(PlanRegio)		:= Vj_Vraag / eff_piekketel,									Descr = "volumevraag naar warmte uit hulpketel na correctie voor efficientiefactor", Source = "FO v7a F 35";
-			attribute<GJ_yr>	Vj_Verlies		(PlanRegio)		:= Vj_Bijstook - Vj_Vraag,										Descr = "gedeelte van de benodigde energie in de hulpketel dat verloren gaat in de omzetting naar warmte";
-			attribute<Eur_yr>	Kj_Verbruik		(PlanRegio)		:= AardGasPrijs * Vj_Bijstook,									Descr = "eindgebruikerskosten voor inkoop aardgas voor bijstook ik hulpketels";
-			attribute<Eur_yr>	Km_Verbruik		(PlanRegio)		:= AardGasPrijs_m * Vj_Bijstook,								Descr = "maatschappelijke kosten voor inkoop aardgas voor bijstook in hulpketels";
-			attribute<Eur_yr>	Kj_EH_verbruik	(PlanRegio)		:= prijzen/Aardgas/Bijstook/KGJ_EnergieHeffing * Vj_Bijstook,	Descr = "energiebelasting betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_verbruik";
+			attribute<GJ_yr>	Vj_Vraag     (PlanRegio) := Vj_Warmte - Vj_WarmtePrimair,								Descr = "volumevraag naar warmte die jaarlijks wordt geleverd uit de hulpketel";
+			attribute<GJ_yr>	Vj_Bijstook	 (PlanRegio) := Vj_Vraag / eff_piekketel,									Descr = "volumevraag naar warmte uit hulpketel na correctie voor efficientiefactor", Source = "FO v7a F 35";
+			attribute<GJ_yr>	Vj_Verlies	 (PlanRegio) := Vj_Bijstook - Vj_Vraag,										Descr = "gedeelte van de benodigde energie in de hulpketel dat verloren gaat in de omzetting naar warmte";
+			attribute<Eur_yr>	Kj_wd_gas    (PlanRegio) := AardGasPrijs * Vj_Bijstook,									Descr = "eindgebruikerskosten voor inkoop aardgas voor bijstook ik hulpketels";
+			attribute<Eur_yr>	Km_wd_gas    (PlanRegio) := AardGasPrijs_m * Vj_Bijstook,								Descr = "maatschappelijke kosten voor inkoop aardgas voor bijstook in hulpketels";
+			attribute<Eur_yr>	Kj_wd_gas_EH (PlanRegio) := prijzen/Aardgas/Bijstook/KGJ_EnergieHeffing * Vj_Bijstook,	Descr = "energiebelasting betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_wd_gas";
+			attribute<Eur_yr>	Kj_wd_gas_CO2(PlanRegio) := prijzen/Aardgas/Bijstook/KGJ_Co2            * Vj_Bijstook,	Descr = "CO2 heffing betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_wd_gas";
 		}
 
 		attribute<Eur>    Ki_id           (PlanRegio) := Wonen/Ki_id + Utiliteit/Ki_Totaal + Glastuinbouw/Ki_Totaal, Source = "FO v7a F 2";
@@ -393,8 +394,8 @@ template KostenBaten
 		attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Wonen/Kj_wd_oh + Utiliteit/Kj_Onderhoud + Glastuinbouw/Kj_Onderhoud + SecundairNet/Kj_Onderhoud;
 		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_wd_oh + Kj_id_oh;
 		
-		attribute<Eur_yr> Kj_Verbruik     (PlanRegio) := Bijstook/Kj_Verbruik;
-		attribute<Eur_yr> Km_Verbruik     (PlanRegio) := Bijstook/Km_Verbruik;
+		attribute<Eur_yr> Kj_wd_gas       (PlanRegio) := Bijstook/Kj_wd_gas;
+		attribute<Eur_yr> Km_wd_gas       (PlanRegio) := Bijstook/Km_wd_gas;
 		attribute<Eur_yr> Kj_lv_adm       (PlanRegio) := opbrengsten/JaarlijksD/Oj_VastRecht * Kengetallen/Onderhoud/R_lv_Admin;
 		attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := Wonen/Kj_wd_adm + Utiliteit/Kj_Admin + Glastuinbouw/Kj_Admin + SecundairNet/Kj_Admin;
 
@@ -408,8 +409,8 @@ template KostenBaten
 		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(Allocatie/heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
-		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_Verbruik + Kj_wd_adm + Kj_lv_adm + Kj_ge_hv, Source = "FO v7a F 2";
-		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_Verbruik + Kj_wd_adm + Kj_lv_adm ;
+		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_wd_gas + Kj_wd_adm + Kj_lv_adm + Kj_ge_hv, Source = "FO v7a F 2";
+		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_wd_gas + Kj_wd_adm + Kj_lv_adm ;
 	}
 
 	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Totaal;
@@ -450,7 +451,7 @@ template KostenBaten
 	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
 	attribute<Eur_yr> Kji_ge_Netto        (PlanRegio) := Kji_ge_base - Oe_ge_subsidie;
 	attribute<Eur_yr> Kji_id_Netto        (PlanRegio) := Kji_id_base - Oe_id_subsidie;
-	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_Verbruik - Oe_wd_subsidie - Oji_wd_KL;
+	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_wd_gas - Oe_wd_subsidie - Oji_wd_KL;
 	attribute<Eur_yr> Kji_Netto           (PlanRegio) := Kji_ge_Netto + Kji_id_Netto + Kji_wd_Netto + KostenD/Kj_lv_adm;
 
 	attribute<Eur_yr> Oji_wd              (PlanRegio) := Oji_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;

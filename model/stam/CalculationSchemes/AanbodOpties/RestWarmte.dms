@@ -145,19 +145,18 @@ template RestWarmte
 				}
 				
 				container wd {
-					// TODO: Bijstook
-					attribute<Eur_yr> Kj_wd_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_gas_EH    (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_gas_CO2   (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Km_wd_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_wd_gas       (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Bijstook/Kj_wd_gas    : 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_gas_EH    (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Bijstook/Kj_wd_gas_EH : 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_gas_CO2   (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Bijstook/Kj_wd_gas_CO2: 0[Eur_yr];
+					attribute<Eur_yr> Km_wd_gas       (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Bijstook/Km_wd_gas    : 0[Eur_yr];
 					
 					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
-					attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_wd_oh        : 0[Eur_yr];
-					attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_wd_adm       : 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_wd_oh  : 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_wd_adm : 0[Eur_yr];
 					attribute<Eur_yr> Kji_wd          (PlanRegio) := NewGebruik ? KostenBaten/Kji_wd : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_wd          (PlanRegio) := NewGebruik ? KostenBaten/Kmi_wd : 0[Eur_yr];
 					
