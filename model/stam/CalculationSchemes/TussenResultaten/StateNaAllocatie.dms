@@ -46,9 +46,9 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 
 		attribute<Eur_yr> Kmi_KL          (PlanRegio) := Kmi_ge_KL + Kmi_id_KL + Kmi_wd_KL + Kmi_pt_KL + Kmi_ow_KL;
 
-		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := KostenBaten/KostenD/Kj_ge_hv * float64(GebiedsOptie);
+		attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := KostenBaten/Kj_ge_hv * float64(GebiedsOptie);
 
-		attribute<Eur_yr> Kj_id_oh        (PlanRegio) := KostenBaten/KostenD/Kj_id_oh * float64(GebiedsOptie);
+		attribute<Eur_yr> Kj_id_oh        (PlanRegio) := KostenBaten/Kj_id_oh * float64(GebiedsOptie);
 
 		attribute<Eur_yr> Kji_ge_Total    (PlanRegio) := Kji_ge_KL + Kj_ge_hv;
 		attribute<Eur_yr> Kmi_ge_Total    (PlanRegio) := Kmi_ge_KL + Kj_ge_hv;

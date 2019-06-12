@@ -92,19 +92,21 @@ template WijkTempl
 				, 'BebouwingMutatie/'+Classifications/BebouwingsComponent/Name+'/result'
 			);
 				
-		container Stock //:= BeginStatus/Stock
-		{
-			attribute<Eur> Ki_ow         (PlanRegio) := BeginStatus/Stock/Ki_ow          + (NewGebruik ? Kosten/Ki_Totaal : 0[Eur]);
-			attribute<Eur> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + (NewGebruik ? Kosten/Oi_EIA    : 0[Eur]);
-			attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + (NewGebruik ? Kosten/Ki_Netto * SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel] : 0[Eur]);
-		}
-		container Flow //:= BeginStatus/Flow
-		{
-			attribute<Eur_yr> Kj_ow_oh       (PlanRegio) := BeginStatus/Flow/Kj_ow_oh        + (GebruikOptie ? Kosten/Kj_Onderhoud    : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_adm      (PlanRegio) := BeginStatus/Flow/Kj_ow_adm       + (GebruikOptie ? Kosten/Kj_admin        : 0[Eur_yr]);
-			attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? Kosten/Kj_WarmteWaarde : 0[Eur_yr]);
-			attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? Kosten/Km_WarmteWaarde : 0[Eur_yr]);
-			attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + (GebruikOptie ? Vj_Warmte * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel] : 0[Eur_yr]);
+		container WijkResults {
+			container Stock
+			{
+				attribute<Eur> Ki_ow         (PlanRegio) := BeginStatus/Stock/Ki_ow          + (NewGebruik ? Kosten/Ki_Totaal : 0[Eur]);
+				attribute<Eur> Oi_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oi_ow_subsidie + (NewGebruik ? Kosten/Oi_EIA    : 0[Eur]);
+				attribute<Eur> Oe_ow_subsidie(PlanRegio) := BeginStatus/Stock/Oe_ow_subsidie + (NewGebruik ? Kosten/Ki_Netto * SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel] : 0[Eur]);
+			}
+			container Flow
+			{
+				attribute<Eur_yr> Kj_ow_oh       (PlanRegio) := BeginStatus/Flow/Kj_ow_oh        + (GebruikOptie ? Kosten/Kj_Onderhoud    : 0[Eur_yr]);
+				attribute<Eur_yr> Kj_ow_adm      (PlanRegio) := BeginStatus/Flow/Kj_ow_adm       + (GebruikOptie ? Kosten/Kj_admin        : 0[Eur_yr]);
+				attribute<Eur_yr> Kj_ow_verbruik (PlanRegio) := BeginStatus/Flow/Kj_ow_verbruik  + (GebruikOptie ? Kosten/Kj_WarmteWaarde : 0[Eur_yr]);
+				attribute<Eur_yr> Km_ow_verbruik (PlanRegio) := BeginStatus/Flow/Km_ow_verbruik  + (GebruikOptie ? Kosten/Km_WarmteWaarde : 0[Eur_yr]);
+				attribute<Eur_yr> Oj_SDE         (PlanRegio) := BeginStatus/Flow/Oj_SDE          + (GebruikOptie ? Vj_Warmte * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel] : 0[Eur_yr]);
+			}
 		}
 	}
 }

@@ -107,29 +107,41 @@ template RestWarmte
 			container Flow //:= BeginStatus/Flow
 			{
 				container ge {
-					attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := NewGebruik ? KostenBaten/Kj_ge_hv : 0[Eur_yr];
+					attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := NewGebruik ? KostenBaten/Kj_ge_hv  : 0[Eur_yr];
 					attribute<Eur_yr> Kji_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Kji_ge_ov : 0[Eur_yr];
-					attribute<Eur_yr> Kji_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kji_ge_pm: 0[Eur_yr];
+					attribute<Eur_yr> Kji_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kji_ge_pm : 0[Eur_yr];
 					
 					attribute<Eur_yr> Kmi_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_ov : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_pm : 0[Eur_yr];
-					attribute<Eur_yr> Om_comfort      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Om_ge_comfort   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
+					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/ge28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 				}
 				
 				container id {
 					attribute<Eur_yr> Kj_id_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_gas_EH    (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_gas_CO2   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_id_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
 					attribute<Eur_yr> Kj_id_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Kj_id_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_id_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
 					attribute<Eur_yr> Kj_id_oh        (PlanRegio) := NewGebruik ? KostenBaten/KostenD/Kj_id_oh : 0[Eur_yr];
 					attribute<Eur_yr> Kj_id_adm       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
 					attribute<Eur_yr> Kji_id          (PlanRegio) := NewGebruik ? KostenBaten/Kji_id : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_id          (PlanRegio) := NewGebruik ? KostenBaten/Kmi_id : 0[Eur_yr];
 					
-					attribute<Eur_yr> Oj_id_SDE   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Oji_id_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_id_EIA * NCW/id28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_id_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_id_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					
+					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
+					attribute<Eur_yr> Oj_id_SDE       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Oj_id_EEA       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 				}
 				
 				container wd {
@@ -149,7 +161,12 @@ template RestWarmte
 					attribute<Eur_yr> Kji_wd          (PlanRegio) := NewGebruik ? KostenBaten/Kji_wd : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_wd          (PlanRegio) := NewGebruik ? KostenBaten/Kmi_wd : 0[Eur_yr];
 					
+					attribute<Eur_yr> Oji_wd_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_wd_EIA * NCW/wd28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_wd_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_wd_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					
+					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
 					attribute<Eur_yr> Oj_wd_SDE       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Oj_wd_EEA       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 				}
 				container pt {
 					attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_pt_oh        : 0[Eur_yr];
@@ -157,19 +174,37 @@ template RestWarmte
 					
 					attribute<Eur_yr> Kji_pt          (PlanRegio) := NewGebruik ? lastiter/Assignment/Kji_pt : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_pt          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					
+					attribute<Eur_yr> Oji_pt_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_pt_EIA * NCW/ow28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_pt_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_pt_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					
+					attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := NewGebruik  ? (Kj_pt_oh + Kj_pt_adm) * SpecifiekeInstellingen/Beleid/EEA/pt : 0[Eur_yr];						
 				}
 				container ow {
+				// TODO: gebruik koppelfactoren 
+					attribute<Eur_yr> Kj_ow_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_gas_EH    (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_gas_CO2   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_ow_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
+				// TODO: gebruik koppelfactoren 
+					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_ow_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					
+					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_warmtewaarde : 0[Eur_yr];
+					
 					attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_ow_oh        : 0[Eur_yr];
 					attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_ow_adm       : 0[Eur_yr];
-					attribute<Eur_yr> Kj_ow_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio); // TODO: gebruik koppelfactoren 
-					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio); // TODO: gebruik koppelfactoren 
-					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_warmtewaarde : 0[Eur_yr];
 					
 					attribute<Eur_yr> Kji_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Kji_ow : 0[Eur_yr];
 					attribute<Eur_yr> Kmi_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
+					attribute<Eur_yr> Oji_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/ow28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Omi_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					
 					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
-					attribute<Eur_yr> Oj_ow_EEA      (PlanRegio) := NewGebruik
+					attribute<Eur_yr> Oj_ow_EEA       (PlanRegio) := NewGebruik
 						? (Kj_ow_oh + Kj_ow_adm + Kj_ow_gas + Kj_ow_Elek + Kj_ow_productie) * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[Bronnen/TypeInfoList_rel[lastState/CurrBron]], 0.0) 
 						: 0[Eur_yr];
 						
@@ -177,6 +212,9 @@ template RestWarmte
 				}
 				container lv
 				{
+					attribute<Eur_yr> Oji_lv_Aansl    (PlanRegio) := Stock/Oi_lv_Aansl * NCW/ow28/AnnualisationFactor;
+					attribute<Eur_yr> Omi_lv_Aansl    (PlanRegio) := Stock/Oi_lv_Aansl * NCW/mr28/AnnualisationFactor;
+					
 					attribute<Eur_yr> Oj_lv_verbruik  (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/JaarlijksD/Warmtevraag  : 0[Eur_yr];
 					attribute<Eur_yr> Oj_lv_vastrecht (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/JaarlijksD/Oj_vastrecht : 0[Eur_yr];
 					attribute<Eur_yr> Oj_lv_SDE       (PlanRegio) := NewGebruik ? lastiter/Assignment/Oj_SDE  : 0[Eur_yr];
