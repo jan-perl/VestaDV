@@ -384,7 +384,7 @@ template KostenBaten
 			attribute<Eur_yr>	Kj_wd_gas    (PlanRegio) := AardGasPrijs * Vj_Bijstook,									Descr = "eindgebruikerskosten voor inkoop aardgas voor bijstook ik hulpketels";
 			attribute<Eur_yr>	Km_wd_gas    (PlanRegio) := AardGasPrijs_m * Vj_Bijstook,								Descr = "maatschappelijke kosten voor inkoop aardgas voor bijstook in hulpketels";
 			attribute<Eur_yr>	Kj_wd_gas_EH (PlanRegio) := prijzen/Aardgas/Bijstook/KGJ_EnergieHeffing * Vj_Bijstook,	Descr = "energiebelasting betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_wd_gas";
-			attribute<Eur_yr>	Kj_wd_gas_CO2(PlanRegio) := prijzen/Aardgas/Bijstook/KGJ_Co2            * Vj_Bijstook,	Descr = "CO2 heffing betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_wd_gas";
+			attribute<Eur_yr>	Kj_wd_gas_CO2(PlanRegio) := prijzen/Aardgas/Bijstook/KGJ_CO2Heffing     * Vj_Bijstook,  Descr = "CO2 heffing betaald over inkoop aardgas voor bijstook in hulpketels door eindgebruikers, als onderdeel van Kj_wd_gas";
 		}
 
 		attribute<Eur>    Ki_id           (PlanRegio) := Wonen/Ki_id + Utiliteit/Ki_Totaal + Glastuinbouw/Ki_Totaal, Source = "FO v7a F 2";

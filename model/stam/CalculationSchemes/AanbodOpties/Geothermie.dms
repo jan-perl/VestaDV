@@ -89,7 +89,6 @@ template GeoThermie
 	attribute<Eur_yr> Oji_Netto            (PlanRegio) := KostenBaten/Oji_NettoD  - Kosten/Kj_Totaal; // Rentabiliteit: jaarlijkse opbrengst
 	attribute<kg_yr>  CO2_Primair          (PlanRegio) := const(0[kg_yr], PlanRegio);
 	attribute<kg_yr>  CO2                  (PlanRegio) := KostenBaten/CO2_BijstookD + CO2_Primair;
-	attribute<Eur_yr> Ke_Totaal            (PlanRegio) := const(0[Eur_yr], PlanRegio);
 	attribute<GJ_yr>  GJe_Totaal           (PlanRegio) := const(0[GJ_yr], PlanRegio);
 	attribute<KG_yr>  CO2_e                (PlanRegio) := const(0[KG_yr], PlanRegio);
 	attribute<Eur_yr> Oj_Afweging          (PlanRegio) := 

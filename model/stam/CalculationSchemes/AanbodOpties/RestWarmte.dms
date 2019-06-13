@@ -75,7 +75,6 @@ template RestWarmte
 	attribute<G_GJ>   TS_GJb             (PlanRegio) := Bronnen/TS_GJ [LastIter/NextState/CurrBron];
 	attribute<KG_yr>  CO2_Primair        (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * MakeDefined(CO2_GJb, 0[KG_GJ]);
 	attribute<KG_yr>  CO2                (PlanRegio) := KostenBaten/CO2_BijstookD + CO2_Primair;
-	attribute<Eur_yr> Ke_Totaal          (PlanRegio) := const(0[Eur_yr], PlanRegio);
 	attribute<GJ_yr>  GJe_Totaal         (PlanRegio) := const(0[GJ_yr], PlanRegio);
 //	attribute<KG_yr>  CO2_e              (PlanRegio) := const(0[KG_yr], PlanRegio);
 
@@ -197,7 +196,7 @@ template RestWarmte
 					attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := NewGebruik ? lastiter/Assignment/Kj_ow_adm       : 0[Eur_yr];
 					
 					attribute<Eur_yr> Kji_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Kji_ow : 0[Eur_yr];
-					attribute<Eur_yr> Kmi_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_pt * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Kmi_ow          (PlanRegio) := NewGebruik ? lastiter/Assignment/Ki_ow * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 					
 					attribute<Eur_yr> Oji_ow_EIA      (PlanRegio) := NewGebruik ? lastIter/Assignment/Oji_ow_EIA : 0[Eur_yr];
 					attribute<Eur_yr> Omi_ow_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ow_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
