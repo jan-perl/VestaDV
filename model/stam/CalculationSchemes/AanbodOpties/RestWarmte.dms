@@ -256,7 +256,6 @@ template RestWarmte
 				
 				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	NewGebruik ? KostenBaten/KostenD/Vj_Warmte : 0[GJ_Yr];
 				attribute<Gj_yr>	V_koude			(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen koude bij RW.
-//REMOVE		attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	
 			}
 			
 			container Uitstoot

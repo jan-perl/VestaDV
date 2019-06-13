@@ -141,7 +141,7 @@ template GeoThermie
 					attribute<Eur_yr> Kmi_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Kmi_ge_pm : 0[Eur_yr];
 					attribute<Eur_yr> Om_ge_comfort   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
-					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/ge28/AnnualisationFactor : 0[Eur_yr];
+					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/bw28/AnnualisationFactor : 0[Eur_yr];
 					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := NewGebruik ? Stock/Oi_ge_EIA * NCW/mr28/AnnualisationFactor : 0[Eur_yr];
 				}
 				

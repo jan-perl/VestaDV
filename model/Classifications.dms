@@ -697,8 +697,49 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> name := GebiedsOptieActor/name[id(.)[GebiedsOptieActor]];
 		attribute<string> code := GebiedsOptieActor/code[id(.)[GebiedsOptieActor]];
 	}
-
-
+	unit<uint8> GebiedsOptie_Flow : nrofrows = 69
+	{
+		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
+			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
+			'Kj_id_oh', 'Kj_id_adm', 'Kji_id', 'Kmi_id', 'Oji_id_EIA', 'Omi_id_EIA', 'Oj_id_SDE', 'Oj_id_EEA',
+			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
+			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_SDE', 'Oj_wd_EEA',
+			'Kj_pt_oh', 'Kj_pt_adm', 'Kji_pt', 'Kmi_pt', 'Oji_pt_EIA', 'Omi_pt_EIA', 'Oj_pt_EEA',
+			'Kj_ow_gas', 'Km_ow_gas', 'Kj_ow_gas_EH', 'Kj_ow_gas_CO2', 'Kj_ow_elek', 'Km_ow_elek', 'Kj_ow_elek_EH', 'Kj_ow_elek_CO2', 
+			'Kj_ow_productie', 
+			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow', 'Oji_ow_EIA', 'Omi_ow_EIA', 'Oj_ow_EEA', 'Oj_ow_SDE',
+			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik', 'Oj_lv_vastrecht', 'Oj_lv_SDE'
+			];
+		attribute<string> actor_code: [
+			'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 
+			'id', 'id', 'id', 'id', 'id', 'id', 'id', 'id', 
+			'id', 'id', 'id', 'id', 'id', 'id', 'id', 'id', 
+			'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 
+			'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 
+			'pt', 'pt', 'pt', 'pt', 'pt', 'pt', 'pt', 'ow', 
+			'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 
+			'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 
+			'lv', 'lv', 'lv', 'lv', 'lv'
+		];
+		attribute<string> full_name := actor_code + '/' + name;
+		
+	}
+	unit<uint8> GebiedsOptie_Stock : nrofrows = 12
+	{
+		attribute<string> name: [ 'Oi_lv_Aansl', 'Ki_ge_ov', 'Ki_ge_pm', 'Oi_ge_EIA', 'Ki_id', 'Oi_id_EIA', 'Ki_wd', 'Oi_wd_EIA', 'Ki_pt', 'Oi_pt_EIA', 'Ki_ow', 'Oi_ow_EIA' ];
+		attribute<string> actor_code: [ 'lv', 'ge', 'ge', 'ge', 'id', 'id', 'wd', 'wd', 'pt', 'pt', 'ow', 'ow'];
+	}
+	unit<uint8> GebiedsOptie_Verbruik: nrofrows = 11
+	{
+		attribute<string> name: [  'V_id_gas', 'V_wd_gas', 'V_ow_gas', 'V_id_elek', 'V_wd_elek', 'V_ow_elek', 'V_id_verlies', 'V_wd_verlies', 'V_pt_verlies', 'V_warmte', 'V_koude'];
+		attribute<string> actor_code: [ 'id', 'wd', 'ow', 'id', 'wd', 'ow', 'id', 'wd', 'pt', '', ''];		
+	}
+		
+	unit<uint8> GebiedsOptie_Uitstoot: nrofrows = 6
+	{
+		attribute<string> name: [  'CO2_id_gas', 'CO2_wd_gas', 'CO2_ow_gas', 'CO2_id_elek', 'CO2_wd_elek', 'CO2_ow_elek' ];
+		attribute<string> actor_code: [ 'id', 'wd', 'ow', 'id', 'wd', 'ow'];
+	}
 
 // =========  Classificaties voor montaire units
 	unit<uint8> Eur_M2_15K: nrofrows = 15
