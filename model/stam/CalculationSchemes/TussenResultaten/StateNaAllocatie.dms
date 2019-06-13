@@ -12,6 +12,9 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 	attribute<bool>    NewGebruik    (PlanRegio) := GebiedsOptie && not(IsDefined(StateVoorAllocatie/PlanRegioWarmteAllocatie_REMOVE));
 	
 //  HET VOLGENDE IS ALLEEN VAN TOEPASSING VOOR PLANREGIO OPTIES
+	container Cumulaties_Calc := for_each_ne(Classifications/GebiedsOptie/Name, replace('CalculationSchemes/AanbodOpties/GebiedsAllocatieResultaat_optellen(StateVoorAllocatie/Cumulaties/@GO@, ../@GO@)', '@GO@',  Classifications/GebiedsOptie/Name));
+	container Cumulaties := for_each_ne(Classifications/GebiedsOptie/Name, replace('Cumulaties_Calc/@GO@/results', '@GO@',  Classifications/GebiedsOptie/Name));
+/* REMOVE	
 	container Stock := ='GebiedsAllocatie/' + GebiedsAllocatie/ResultStateName + '/Stock'
 	{
 		// gebiedsmaatregelen
@@ -100,7 +103,7 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<Eur_yr>	Oji_subsidie		(PlanRegio)		:= Oji_id_subsidie + Oji_wd_subsidie + Oji_pt_subsidie + Oji_ow_subsidie,						Descr = "eindverbruiker-geannualiseerde jaarlijkse opbrengsten uit subsidie";
 		attribute<Eur_yr>	Kji_Netto			(PlanRegio)		:= Kji_Total - Oji_subsidie,																	Descr = "jaarlijkse netto eindgebruikerskosten";
 	}
-	
+*/	
 	container nrAansluitinging := for_each_nedv(Classifications/WarmteOptie/Name, 
 		replace(
 			'add('+

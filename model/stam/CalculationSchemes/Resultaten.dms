@@ -161,7 +161,7 @@ template Resultaten
 
 		container aardgas
 		{
-			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/Allocatie/heeft_gas; // false voor bestaande restwarmte
+			attribute<bool>   had_gas         (Planregio) := /TussenResultaten/StartJaar/AllocatieResultaten/heeft_gas; // false voor bestaande restwarmte
 			attribute<bool>   verwijderd      (Planregio) := had_gas && !heeft_gas; // alleen true als hele planregio gasloos is geworden
 
 			// inkomsten

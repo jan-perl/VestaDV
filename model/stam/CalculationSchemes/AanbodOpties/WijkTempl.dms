@@ -163,15 +163,15 @@ template WijkTempl
 					attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 				}
 				container ow {
-					attribute<Eur_yr> Kj_ow_gas       (PlanRegio) := Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD * last(prijzen/AardGas/Staffel/KGJ_eindgebruik_excl);
-					attribute<Eur_yr> Km_ow_gas       (PlanRegio) := Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD * last(prijzen/AardGas/Staffel/KGJ_maatschappelijk ); 
-					attribute<Eur_yr> Kj_ow_gas_EH    (PlanRegio) := Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD * last(prijzen/AardGas/Staffel/KGJ_EnergieHeffing  ); // TODO: CHECK dat dit echt betaalt moet worden; was nog niet in Vesta 3.3
-					attribute<Eur_yr> Kj_ow_gas_CO2   (PlanRegio) := Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD * last(prijzen/AardGas/Staffel/KGJ_CO2Heffing      ); // TODO: CHECK dat dit echt betaalt moet worden; was nog niet in Vesta 3.3
+					attribute<Eur_yr> Kj_ow_gas       (PlanRegio) := Verbruik/V_ow_gas * last(prijzen/AardGas/Staffel/KGJ_eindgebruik_excl);
+					attribute<Eur_yr> Km_ow_gas       (PlanRegio) := Verbruik/V_ow_gas * last(prijzen/AardGas/Staffel/KGJ_maatschappelijk ); 
+					attribute<Eur_yr> Kj_ow_gas_EH    (PlanRegio) := Verbruik/V_ow_gas * last(prijzen/AardGas/Staffel/KGJ_EnergieHeffing  ); // TODO: CHECK dat dit echt betaalt moet worden; was nog niet in Vesta 3.3
+					attribute<Eur_yr> Kj_ow_gas_CO2   (PlanRegio) := Verbruik/V_ow_gas * last(prijzen/AardGas/Staffel/KGJ_CO2Heffing      ); // TODO: CHECK dat dit echt betaalt moet worden; was nog niet in Vesta 3.3
 					
-					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := Float64(NewGebruik) * TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD * last(prijzen/Elektriciteit/Staffel/KGJ_Commodity);
+					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := Verbruik/V_ow_elek * last(prijzen/Elektriciteit/Staffel/KGJ_Commodity);
 					attribute<Eur_yr> Km_ow_elek      (PlanRegio) := kj_ow_elek;
-					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio); // wordt betaald door de consument, niet door de procucent.
+					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) :=  Verbruik/V_ow_elek * last(prijzen/Elektriciteit/Staffel/KGJ_CO2Heffing); // TODO: CHECK dat dit echt ontvangen mag worden; zou toch wel redelijk zijn; was nog niet in Vesta 3.3
 					
 					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := NewGebruik ? Kosten/Kj_ow_warmtewaarde : 0[Eur_yr];
 					
@@ -225,11 +225,11 @@ template WijkTempl
 			{
 				attribute<Gj_yr>	V_id_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				attribute<Gj_yr>	V_wd_gas		(PlanRegio)		:=	KostenBaten/KostenD/Bijstook/Vj_Bijstook;
-				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
+				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
-				attribute<Gj_yr>	V_ow_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen elektriciteitsverbruik bij LT bronnen TODO: controle met FO
+				attribute<Gj_yr>	V_ow_elek		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // niet specifiek benoemd, alles in WD, TODO: specifiek maken
 				attribute<Gj_yr>	V_wd_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);

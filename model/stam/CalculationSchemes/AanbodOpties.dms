@@ -179,4 +179,176 @@ container AanbodOpties
 		}
 		
 	}
+	
+	template GebiedsAllocatieResultaat_optellen {
+		container Cumulator;
+		container Increment;
+		
+		unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
+		container results {
+			container Flow
+			{
+				container ge {
+					attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := Cumulator/Flow/ge/Kj_ge_hv + Increment/Flow/ge/Kj_ge_hv;
+					attribute<Eur_yr> Kji_ge_ov       (PlanRegio) := Cumulator/Flow/ge/Kji_ge_ov + Increment/Flow/ge/Kji_ge_ov;
+					attribute<Eur_yr> Kji_ge_pm       (PlanRegio) := Cumulator/Flow/ge/Kji_ge_pm + Increment/Flow/ge/Kji_ge_pm;
+					
+					attribute<Eur_yr> Kmi_ge_ov       (PlanRegio) := Cumulator/Flow/ge/Kmi_ge_ov + Increment/Flow/ge/Kmi_ge_ov;
+					attribute<Eur_yr> Kmi_ge_pm       (PlanRegio) := Cumulator/Flow/ge/Kmi_ge_pm + Increment/Flow/ge/Kmi_ge_pm;
+					attribute<Eur_yr> Om_ge_comfort   (PlanRegio) := Cumulator/Flow/ge/Om_ge_comfort + Increment/Flow/ge/Om_ge_comfort;
+					
+					attribute<Eur_yr> Oji_ge_EIA      (PlanRegio) := Cumulator/Flow/ge/Oji_ge_EIA + Increment/Flow/ge/Oji_ge_EIA;
+					attribute<Eur_yr> Omi_ge_EIA      (PlanRegio) := Cumulator/Flow/ge/Omi_ge_EIA + Increment/Flow/ge/Omi_ge_EIA;
+				}
+				
+				container id {
+					attribute<Eur_yr> Kj_id_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_id_gas_EH    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_id_gas_CO2   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_id_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_id_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_id_elek_EH   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_id_elek_CO2  (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_id_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_id_oh        (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_id_adm       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kji_id          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kmi_id          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oji_id_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Omi_id_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
+					attribute<Eur_yr> Oj_id_SDE       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Oj_id_EEA       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				}
+				
+				container wd {
+					attribute<Eur_yr> Kj_wd_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_wd_gas_EH    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_wd_gas_CO2   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_wd_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kji_wd          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kmi_wd          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oji_wd_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Omi_wd_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
+					attribute<Eur_yr> Oj_wd_SDE       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Oj_wd_EEA       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				}
+				container pt {
+					attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kji_pt          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kmi_pt          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oji_pt_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Omi_pt_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				}
+				container ow {
+					attribute<Eur_yr> Kj_ow_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_ow_gas       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_ow_gas_EH    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_ow_gas_CO2   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Km_ow_elek      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Kji_ow          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Kmi_ow          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oji_ow_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Omi_ow_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					/// TODO: ook aanpassen in rentabiliteitsafwegingen 
+					attribute<Eur_yr> Oj_ow_EEA       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+						
+					attribute<Eur_yr> Oj_ow_SDE   (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				}
+				container lv
+				{
+					attribute<Eur_yr> Oji_lv_Aansl    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Omi_lv_Aansl    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					
+					attribute<Eur_yr> Oj_lv_verbruik  (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Oj_lv_vastrecht (PlanRegio) := Cumulator/xxx + Increment/xxx;
+					attribute<Eur_yr> Oj_lv_SDE       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				}
+			}
+
+			container Stock
+			{
+				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Eur> Ki_ge_ov       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Ki_ge_pm       (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Oi_ge_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Eur> Ki_id          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Oi_id_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Eur> Ki_wd          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Oi_wd_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Eur> Ki_pt          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Oi_pt_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Eur> Ki_ow          (PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Eur> Oi_ow_EIA      (PlanRegio) := Cumulator/xxx + Increment/xxx;
+			}
+			
+			container Verbruik
+			{
+				attribute<Gj_yr>	V_id_gas	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_wd_gas	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_ow_gas	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Gj_yr>	V_id_elek	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_wd_elek	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_ow_elek	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Gj_yr>	V_id_verlies(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_wd_verlies(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_pt_verlies(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				
+				attribute<Gj_yr>	V_warmte	(PlanRegio) := Cumulator/xxx + Increment/xxx;
+				attribute<Gj_yr>	V_koude		(PlanRegio) := Cumulator/xxx + Increment/xxx;
+			}
+			
+			container Uitstoot
+			{
+				attribute<KG_yr> CO2_id_gas (PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+				attribute<KG_yr> CO2_wd_gas (PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+				attribute<KG_yr> CO2_ow_gas (PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+				
+				attribute<KG_yr> CO2_id_elek(PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+				attribute<KG_yr> CO2_wd_elek(PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+				attribute<KG_yr> CO2_ow_elek(PlanRegio) :=	Cumulator/xxx + Increment/xxx;
+			}
+		}
+	}
+	
 }

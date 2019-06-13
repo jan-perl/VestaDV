@@ -101,9 +101,9 @@ template RestWarmte
 		
 		attribute<bool> GebruikRestWarmteMetBron (PlanRegio) := GebruikOptie;
 		
-		container RestWarmte := MiniStock, FreeData = "False"
+		container RestWarmte: FreeData = "False"
 		{
-			container Flow //:= BeginStatus/Flow
+			container Flow
 			{
 				container ge {
 					attribute<Eur_yr> Kj_ge_hv        (PlanRegio) := NewGebruik ? KostenBaten/Kj_ge_hv  : 0[Eur_yr];
@@ -243,7 +243,7 @@ template RestWarmte
 			container Verbruik
 			{
 				attribute<Gj_yr>	V_id_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
-				attribute<Gj_yr>	V_wd_gas		(PlanRegio)		:=	KostenBaten/KostenD/Bijstook/Vj_Bijstook;
+				attribute<Gj_yr>	V_wd_gas		(PlanRegio)		:=	NewGebruik ? KostenBaten/KostenD/Bijstook/Vj_Bijstook : 0[GJ_Yr];
 				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
@@ -254,7 +254,7 @@ template RestWarmte
 				attribute<Gj_yr>	V_wd_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				attribute<Gj_yr>	V_pt_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen primair transport bij LT netten
 				
-				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	KostenBaten/KostenD/Vj_Warmte;
+				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	NewGebruik ? KostenBaten/KostenD/Vj_Warmte : 0[GJ_Yr];
 				attribute<Gj_yr>	V_koude			(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen koude bij RW.
 //REMOVE		attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	
 			}
@@ -263,7 +263,7 @@ template RestWarmte
 			{
 				attribute<KG_yr>	CO2_id_gas		(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen gasverbruik bij LT netten
 				attribute<KG_yr>	CO2_wd_gas		(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen gasverbruik bij LT netten
-				attribute<KG_yr>	CO2_ow_gas		(PlanRegio)		:=	KostenBaten/Vj_WarmtePrimairD * MakeDefined(CO2_GJb, 0[KG_GJ]);
+				attribute<KG_yr>	CO2_ow_gas		(PlanRegio)		:=	NewGebruik ? KostenBaten/Vj_WarmtePrimairD * MakeDefined(CO2_GJb, 0[KG_GJ]) : 0[KG_yr];
 				
 				attribute<KG_yr>	CO2_id_elek		(PlanRegio)		:=	Verbruik/V_id_elek * prijzen/Elektriciteit/CO2_GJ;
 				attribute<KG_yr>	CO2_wd_elek		(PlanRegio)		:=	Verbruik/V_wd_elek * prijzen/Elektriciteit/CO2_GJ;
