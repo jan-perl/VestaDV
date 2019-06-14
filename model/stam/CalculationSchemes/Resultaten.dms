@@ -22,7 +22,7 @@ template Resultaten
 	container StateNaAllocatie      := TussenResultaten/StateNaAllocatie;
 	container Voorkeuren            := TussenResultaten/Voorkeuren;
 
-	container Allocatie             := TussenResultaten/Allocatie;
+	container Allocatie             := TussenResultaten/AllocatieResultaten;
 	parameter<Classifications/zichtjaar> ZichtJaar_rel  := rlookup(ZichtJaarName, Classifications/zichtjaar/name);
 	parameter<units/yr_uint16>           ZichtJaar_jaar := Classifications/zichtjaar/jaar[zichtjaar_rel];
 
@@ -151,7 +151,7 @@ template Resultaten
 
 	container netwerken
 	{
-		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/Allocatie/heeft_gas;
+		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/AllocatieResultaten/heeft_gas;
 
 		attribute<nrWoningen> nrWoonUnits     (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
 		attribute<nrWoningen> nrAllElectric   (Planregio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/BebouwingsObject/nrWoonUnits_i * Allocatie/@BC@/Aandelen/AllElectric, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@',Classifications/BebouwingsComponent/name) )+')';
