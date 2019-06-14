@@ -40,7 +40,7 @@ template Resultaten
 
 	container CO2: Source = "FO v7a C5"
 	{
-		container gebouwen
+		container Gebouwen
 		{
 			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/CO2/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, KG_yr)
 			{
@@ -54,41 +54,57 @@ template Resultaten
 
 			attribute<KG_yr> Totaal(PlanRegio) := Elektriciteit/Totaal + AardGas/Totaal;
 		}
-		container impl: IsHidden = "True"
+
+		container gebiedsopties
 		{
-			attribute<String> BronExpr (Classifications/GebiedsOptie) := 		 
-				replace(Classifications/GebiedsOptie/IsPlanRegioOptie 
-					? 'StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@AO@ ? GebiedsAllocatie/@AO@/CO2   : 0.0[KG_yr]'
-					: 'StateNaAllocatie/@AO@/CO2', 
-				'@AO@', Classifications/GebiedsOptie/name
-				);
+			attribute<KG_yr>	CO2_id_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_id_gas;
+			attribute<KG_yr>	CO2_wd_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_wd_gas;
+			attribute<KG_yr>	CO2_ow_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_ow_gas;
+			attribute<KG_yr>	CO2_id_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_id_elek;
+			attribute<KG_yr>	CO2_wd_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_wd_elek;
+			attribute<KG_yr>	CO2_ow_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Uitstoot/CO2_ow_elek;
+			
+			attribute<KG_yr>	totaal			(PlanRegio)	:=	CO2_id_gas  + CO2_wd_gas  + CO2_ow_gas  +
+																CO2_id_elek + CO2_wd_elek + CO2_ow_elek;
 		}
 
-		container CentraleWarmteBronnen := for_each_nedv(Voorkeuren/ActieveGebiedsOptie/Name, impl/BronExpr[Voorkeuren/ActieveGebiedsOptie/GebiedsOptie_rel], PlanRegio, KG_yr)
-		{
-			attribute<KG_yr> Totaal(PlanRegio) := =iif(#Voorkeuren/ActieveGebiedsOptie == 0, 'const(0, PlanRegio, KG_yr)', 'add('+AsItemList(Voorkeuren/ActieveGebiedsOptie/Name)+')');
-		}
-
-		attribute<KG_yr> Totaal(PlanRegio) := Gebouwen/Totaal + CentraleWarmteBronnen/Totaal;
+		attribute<KG_yr> Totaal(PlanRegio) := Gebouwen/Totaal + Gebiedsopties/Totaal;
 	}
 
-	container Metervraag: Source = "Rapportagebehoefte cijfers per buurt --> Geodan 15 maart 2018"
+	container Metervraag
 	{
-		container gebouwen
+		container Gebouwen
 		{
-			container GebiedsOptie := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/GebiedsOptie, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			container WarmteKoudeLevering
+			{
+				attribute<GJ_yr>	V_koude		(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_Koude;
+				attribute<GJ_yr>	V_warmte	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_Warmte;
+			}
+			
+			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/Metervraag/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
 				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
 
-			container Elektriciteit := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/Elektriciteit, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+			container Gas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/Metervraag/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
 			{
 				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 			}
-
-			container AardGas := for_each_nedv(Classifications/BebouwingsComponent/Name, 'sum(Allocatie/'+Classifications/BebouwingsComponent/Name+'/MeterVraag/AardGas, BebouwingsComponenten/'+Classifications/BebouwingsComponent/Name+'/PlanRegio_rel)', PlanRegio, GJ_yr)
+		}
+		
+		container Gebiedsopties
+		{
+			container Elektriciteit
 			{
-				attribute<GJ_yr> Totaal (PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+				attribute<GJ_yr>	V_id_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_id_elek;
+				attribute<GJ_yr>	V_wd_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_wd_elek;
+				attribute<GJ_yr>	V_ow_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_ow_elek;
+			}
+			container Gas
+			{
+				attribute<GJ_yr>	V_id_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_id_gas;
+				attribute<GJ_yr>	V_wd_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_wd_gas;
+				attribute<GJ_yr>	V_ow_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_ow_gas;
 			}
 		}
 	}
