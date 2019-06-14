@@ -17,7 +17,10 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 			: 'StateVoorAllocatie/Cumulaties/@GO@'
 		, '@GO@', Classifications/GebiedsOptie/name)
 	);
-	container Totaal := CalculationSchemes/AanbodOpties/GebiedsAllocatieResultaat_verzamelen(Cumulaties, Voorkeuren/ActieveGebiedsOptie);
+	container Totaal := = #Voorkeuren/ActieveGebiedsOptie > 0
+		? 'CalculationSchemes/AanbodOpties/GebiedsAllocatieResultaat_verzamelen(Cumulaties, Voorkeuren/ActieveGebiedsOptie)'
+		: 'BeginSituatie/LegeGebiedsOptie'
+		;
 	
 	container nrAansluitinging := for_each_nedv(Classifications/WarmteOptie/Name, 
 		replace(
