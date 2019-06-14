@@ -136,7 +136,7 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		unit<uint32> WarmteBronnen := RuimtelijkeData/WarmteBronnen/RestWarmte/bron;
 		
 		// inlezen bestaande warmtenetten met indicatie van huidige bron en doorkoppelingen
-		unit<uint32> linkset: StorageName = "%SourceDataProjDir%/infra/20190119_CBS_bestaande_warmtenetten_2019.csv"
+		unit<uint32> linkset: StorageName = "%SourceDataProjDir%/infra/20190614_CBS_bestaande_warmtenetten_2019.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		,	url             = "%SourceDataProjDir%/infra/20190118_update_bestaande_warmtenetten_FvdM.txt"
