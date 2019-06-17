@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-container EnergieProducent
+container EnergieProducent: isHidden = "true"
 	{
 		container impl: IsHidden = "True"
 		{

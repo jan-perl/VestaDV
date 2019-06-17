@@ -7,26 +7,25 @@
 template Resultaten
 {
 	// begin case parameters
-	parameter<String> RekenstapName;
-	parameter<String> ZichtjaarName;
+	parameter<String> RekenstapName:	isHidden = "true";
+	parameter<String> ZichtjaarName:	isHidden = "true";
 	// optional case parameter
 
-	container TussenResultaten := ='/TussenResultaten/' + RekenstapName;
-	unit<uint32> PlanRegio     := Invoer/SpecifiekeInstellingen/PlanRegio;
+	container TussenResultaten := ='/TussenResultaten/' + RekenstapName				, isHidden = "true";
+	unit<uint32> PlanRegio     := Invoer/SpecifiekeInstellingen/PlanRegio			, isHidden = "true";
+	container Prijzen               := TussenResultaten/Prijzen						, isHidden = "true";
+	container BebouwingsComponenten := TussenResultaten/BebouwingsComponenten		, isHidden = "true";
+	container NCW                   := TussenResultaten/NCW							, isHidden = "true";
+	container GebiedsAllocatie      := TussenResultaten/GebiedsAllocatie			, isHidden = "true";
+	container StateVoorAllocatie    := TussenResultaten/StateVoorAllocatie			, isHidden = "true";
+	container StateNaAllocatie      := TussenResultaten/StateNaAllocatie			, isHidden = "true";
+	container Voorkeuren            := TussenResultaten/Voorkeuren					, isHidden = "true";
 
-	container Prijzen               := TussenResultaten/Prijzen;
-	container BebouwingsComponenten := TussenResultaten/BebouwingsComponenten;
-	container NCW                   := TussenResultaten/NCW;
-	container GebiedsAllocatie      := TussenResultaten/GebiedsAllocatie;
-	container StateVoorAllocatie    := TussenResultaten/StateVoorAllocatie;
-	container StateNaAllocatie      := TussenResultaten/StateNaAllocatie;
-	container Voorkeuren            := TussenResultaten/Voorkeuren;
+	container Allocatie             := TussenResultaten/AllocatieResultaten			, isHidden = "true";
+	parameter<Classifications/zichtjaar> ZichtJaar_rel  := rlookup(ZichtJaarName, Classifications/zichtjaar/name)	, isHidden = "true";
+	parameter<units/yr_uint16>           ZichtJaar_jaar := Classifications/zichtjaar/jaar[zichtjaar_rel]			, isHidden = "true";
 
-	container Allocatie             := TussenResultaten/AllocatieResultaten;
-	parameter<Classifications/zichtjaar> ZichtJaar_rel  := rlookup(ZichtJaarName, Classifications/zichtjaar/name);
-	parameter<units/yr_uint16>           ZichtJaar_jaar := Classifications/zichtjaar/jaar[zichtjaar_rel];
-
-	container Generate: isHidden = "True"
+	container Generate: isHidden = "false"
 	{
 		parameter<String> All := 'Ready',
 			ExplicitSuppliers =
@@ -76,7 +75,7 @@ template Resultaten
 				,	'@NC@', Classifications/BebouwingsComponent/NcwRefBase
 				)
 			)
-		,	Source = "FO v7a C6";
+		,	Source = "FO v7a C6", isHidden = "true";
 	
 	#include <Maatschappelijk.dms>
 	#include <EnergyResults.dms>
