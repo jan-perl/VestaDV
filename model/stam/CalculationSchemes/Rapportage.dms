@@ -64,12 +64,38 @@ container Rapportage
 				attribute<Eur_yr> Vraag_excl     (PlanRegio) := Verbruik + VastRecht + Aansl_j;
 				attribute<Eur_yr> Vraag_m        (PlanRegio) := Verbruik + VastRecht + Aansl_m - EnergieHeffing;
 			}
-
+			
 			container RestWarmte := GebiedsOptie(Classifications/GebiedsOptie/V/RestWarmte, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/RestWarmte);
 			container GeoThermie := GebiedsOptie(Classifications/GebiedsOptie/V/GeoThermie, BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/GeoThermie);
 			container WijkWKK    := GebiedsOptie(Classifications/GebiedsOptie/V/WijkWKK   , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/WijkWKK);
 			container BioWKK     := GebiedsOptie(Classifications/GebiedsOptie/V/BioWKK    , BebouwingsObject, PlanRegio, BCData, AllocatieResultatenComponent/Aandelen/BioWKK);
 
+			
+			template GebiedsOptie
+			{
+				// begin case parameters
+				parameter<Classifications/GebiedsOptie> Optie;
+				unit<uint32> BebouwingsObject;
+				unit<uint32> PlanRegio;
+				container BCdata;
+				attribute<Ratio> Aandeel (BebouwingsObject);
+				// end case parameters
+		
+				attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := BCdata/PlanRegio_rel;
+		
+				attribute<Eur_yr> Verbruik   (PlanRegio) := sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj * Aandeel, PlanRegio_rel);
+				attribute<Eur_yr> VastRecht  (PlanRegio) := sum(BCdata/Opbrengsten/VastRechtBijdrageD                     * Aandeel, PlanRegio_rel);
+		
+				attribute<Eur>    Oi_AanslD  (PlanRegio) := sum(BCdata/Opbrengsten/AansluitBijdrageD                      * Aandeel, PlanRegio_rel);
+				attribute<Eur_yr> Aansl_j    (PlanRegio) := Oi_AanslD * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor;
+				attribute<Eur_yr> Aansl_m    (PlanRegio) := Oi_AanslD * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor;
+		
+				attribute<Eur_yr> Vraag_excl (PlanRegio) : = Verbruik + VastRecht + Aansl_j;
+				attribute<Eur_yr> Vraag_m    (PlanRegio) : = Verbruik + VastRecht + Aansl_m;
+				
+				
+			}
+			// TODO ook container voor andere LT opties
 			container WKO
 			{
 				parameter<bool> Active : = rjoin(BCdata/BCname,  Classifications/BebouwingsComponent/Name, Classifications/BebouwingsComponent/KanWKO);
@@ -143,30 +169,6 @@ container Rapportage
 			BTW_Factor * (Kw_Totaal_excl + Kj_Onderh_excl + Kj_Admin_excl) +
 			(BTW_Factor_gv -BTW_Factor) * gebouwen/Kw_GebouwVerbetering_excl
 			- Oj_Subsidie;
-	}
-
-	template GebiedsOptie
-	{
-		// *** Vastrecht en aansluitbijdrage voor Deelnemers wordt nu ook meegenomen itt FO C6
-		// begin case parameters
-		parameter<Classifications/GebiedsOptie> Optie;
-		unit<uint32> BebouwingsObject;
-		unit<uint32> PlanRegio;
-		container BCdata;
-		attribute<Ratio> Aandeel (BebouwingsObject);
-		// end case parameters
-
-		attribute<Invoer/SpecifiekeInstellingen/PlanRegio> PlanRegio_rel (BebouwingsObject) := ='BebouwingsObject/PlanRegio_rel';
-
-		attribute<Eur_yr> Verbruik   (PlanRegio) := sum(PlanRegioKaartComponent/WarmteVraag/deelnemers_obj * Aandeel, PlanRegio_rel);
-		attribute<Eur_yr> VastRecht  (PlanRegio) := sum(BCdata/Opbrengsten/VastRechtBijdrageD                     * Aandeel, PlanRegio_rel);
-
-		attribute<Eur>    Oi_AanslD  (PlanRegio) := sum(BCdata/Opbrengsten/AansluitBijdrageD                      * Aandeel, PlanRegio_rel);
-		attribute<Eur_yr> Aansl_j    (PlanRegio) := Oi_AanslD * BCdata/NcwRefs/_28/StartDiscountFactor * BCdata/NcwRefs/_28/AnnualisationFactor;
-		attribute<Eur_yr> Aansl_m    (PlanRegio) := Oi_AanslD * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor;
-
-		attribute<Eur_yr> Vraag_excl (PlanRegio) : = Verbruik + VastRecht + Aansl_j;
-		attribute<Eur_yr> Vraag_m    (PlanRegio) : = Verbruik + VastRecht + Aansl_m;
 	}
 
 	template WriteTableWithMetricToCSV

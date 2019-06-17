@@ -134,18 +134,62 @@ template Resultaten
 
 	container EnergieProducent
 	{
-		// *** Investeringen zijn niet over 30 jaar genomen maar over de voor de betreffende aanbodtechnologie geldende gebruiksperiode en tegen het voor de EP geldende rentevoet
 		container impl: IsHidden = "True"
 		{
-			attribute<String> FlowExpr (Classifications/GebiedsOptie) := 
+			attribute<String> FlowExpr (Classifications/GebiedsOptie)	:= 
 				replace(
-					Classifications/GebiedsOptie/IsPlanRegioOptie
-					? '(GebiedsAllocatie/@RO@/BeginStatus/KostenBaten/Oji_wd_KL - StateNaAllocatie/Flow/Kji_ow_Netto) * float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@RO@)'
-					: 'StateNaAllocatie/@RO@/Oj_totaal - StateNaAllocatie/@RO@/Kj_Netto'
-				,	'@RO@', Classifications/GebiedsOptie/Name);			
+					'	
+						  StateNaAllocatie/Cumulaties/@RO@/Flow/ge/Kj_ge_hv
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/lv/Oj_lv_verbruik
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/lv/Oj_lv_vastrecht
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/lv/Oj_lv_SDE
+					
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/id/Kj_id_gas
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/id/Kj_id_elek
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/id/Kj_id_oh
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/id/Kj_id_adm
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/id/Oj_id_SDE
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/id/Oj_id_EEA
+						
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Kj_wd_gas
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Kj_wd_elek
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Kj_wd_oh
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Kj_wd_adm
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Oj_wd_SDE
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/wd/Oj_wd_EEA
+						
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/pt/Kj_pt_oh
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/pt/Kj_pt_adm
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/pt/Oj_pt_EEA
+						
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Kj_ow_gas
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Kj_ow_elek
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Kj_ow_oh
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Kj_ow_adm
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Oj_ow_SDE
+						- StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Oj_ow_EEA
+						+ StateNaAllocatie/Cumulaties/@RO@/Flow/ow/Kj_ow_productie
+						
+					',	'@RO@', Classifications/GebiedsOptie/Name);		
 
-			attribute<String> StockExpr(Classifications/GebiedsOptie) :=
-				'StateNaAllocatie/Stock/Ki_Totaal* float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/'+Classifications/GebiedsOptie/Name+')';
+			attribute<String> StockExpr(Classifications/GebiedsOptie)	:=
+				replace(
+					'	
+						  StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_id			
+						+ StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_wd
+						+ StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_pt
+						+ StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_ow
+						+ StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_ge_pm
+						+ StateNaAllocatie/Cumulaties/@RO@/Stock/Ki_ge_ov
+						
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_lv_aansl
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_ge_EIA
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_id_EIA
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_wd_EIA
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_pt_EIA
+						- StateNaAllocatie/Cumulaties/@RO@/Stock/Oi_ow_EIA
+						
+					',	'@RO@', Classifications/GebiedsOptie/Name);
 		}
 
 		container CashFlow := for_each_nedv(Classifications/GebiedsOptie/Name

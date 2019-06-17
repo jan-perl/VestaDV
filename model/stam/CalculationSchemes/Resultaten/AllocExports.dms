@@ -34,8 +34,8 @@ container AllocExports: = Units, isHidden = "True" //DEBUG
 			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
 			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/Metervraag/gebouwen/GebiedsOptie/totaal;
-			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/Metervraag/gebouwen/Aardgas/totaal;
+			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/Metervraag/gebouwen/WarmteKoudelevering/V_warmte;
+			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/Metervraag/gebouwen/Gas/totaal;
 			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
