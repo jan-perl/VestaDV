@@ -13,7 +13,7 @@
 
 container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 134
+	unit<uint32> mutatieSchema: nrofrows = 133
 	{
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -336,26 +336,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Eigenaar kosten
-			,	'projectmanagement', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/Stock/Ki_ge_pm',
-					AF28_BW,
-					''
-
-			,	'ongeriefsvergoeding', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/Stock/Ki_ge_ov',
-					AF28_BW,
-					''
-
-			,	'projectmanagement', 'Admin', 'KL_e', // DEBUG, TODO: @@@ Test of de 'e' uit de naam weg kan. N.B.: mogelijke name-collision met voor-voorgaande.
-					'StateNaAllocatie/Stock/Ki_ge_pm',
-					AF28_MR,
-					''
-
-			,	'ongeriefsvergoeding', 'Comfort', 'KL_e',
-					'StateNaAllocatie/Stock/Ki_ge_ov',
-					AF28_MR, 
-					''
-
 			,	'EIA', 'BestaandeWoning/Eigenaar', 'KL_e',
 					'StateNaAllocatie/Stock/Oi_ge_subsidie',
 					AF28_BW,
@@ -368,12 +348,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 			,	'EEA', 'BestaandeWoning/Eigenaar', 'Subsidie',
 					'StateNaAllocatie/Flow/Oe_ge_subsidie',
-					'',
-					''
-
-		// ===== huuurkorting
-			,	'HuurVerlaging', 'Comfort', 'BestaandeWoning/Eigenaar', 
-					'StateNaAllocatie/Flow/Kj_ge_hv',
 					'',
 					''
 
@@ -587,10 +561,10 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'', 
 					''
 
-			,	'Koude_@CO@', '@WKOC@/Gebruiker', 'Comfort',
-					'StateNaAllocatie/@CO@/Om_comfort/@WKOC@', // Vastrecht, warmte, en koude
-					'', 
-					''
+//			,	'Koude_@CO@', '@WKOC@/Gebruiker', 'Comfort',
+//					'StateNaAllocatie/@CO@/Om_comfort/@WKOC@', // Vastrecht, warmte, en koude
+//					'', 
+//					''
 		// ===== WKO Eigenaar kosten
  			,	'projectmanagement_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'StateNaAllocatie/@CO@/Ki_ge_pm', 
@@ -627,12 +601,6 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'',
 					''
 //
-		// ===== WKO huuurkorting
-// 			,	'HuurVerlaging_@CO@', 'Comfort', 'BestaandeWoning/Eigenaar', 
-// 					'StateNaAllocatie/@CO@/Kj_ge_hv',
-// 					'',
-// 					''
-
 		// ===== WKO Inpandige Distributie kosten
 			,	'@CO@', 'KL_p', 'InpandigeDistributeur', 
 					'StateNaAllocatie/@CO@/Ki_id', 

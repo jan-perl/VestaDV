@@ -721,13 +721,38 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 
 			'lv', 'lv', 'lv', 'lv', 'lv'
 		];
+		attribute<string> descr: ['Huurverlaging_@CO@', 'ongeriefsvergoeding_E@CO@', 'projectmanagement_E@CO@', 'ongeriefsvergoeding_M@CO@', 'projectmanagement_M@CO@', 'Koude_@CO@', 'Oji_ge_EIA', 'Omi_ge_EIA',
+			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
+			'Kj_id_oh', 'Kj_id_adm', '@CO@', '@CO@', '@RO@_EIA', '@RO@_id_EIA', '@RO@_id_SDE', '@RO@_EEA',
+			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
+			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_SDE', 'Oj_wd_EEA',
+			'Kj_pt_oh', 'Kj_pt_adm', 'Kji_pt', 'Kmi_pt', 'Oji_pt_EIA', 'Omi_pt_EIA', 'Oj_pt_EEA',
+			'Kj_ow_gas', 'Km_ow_gas', 'Kj_ow_gas_EH', 'Kj_ow_gas_CO2', 'Kj_ow_elek', 'Km_ow_elek', 'Kj_ow_elek_EH', 'Kj_ow_elek_CO2', 
+			'Kj_ow_productie', 
+			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow', 'Oji_ow_EIA', 'Omi_ow_EIA', 'Oj_ow_EEA', 'Oj_ow_SDE',
+			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik', 'Oj_lv_vastrecht', 'Oj_lv_SDE'
+			];
 		attribute<string> full_name := actor_code + '/' + name;
-		
+		attribute<string> leverancier : [
+			'Comfort', 'KL_e', 'KL_e', 'Comfort', 'Admin', '@WKOC@/Gebruiker', 'BestaandeWoning/Eigenaar', 'KL_e'
+		,	'Onderhoud', 'Admin', 'KL_p', 'InpandigeDistributie', 'InpandigeDistributeur', 'KL_p', 'xxx (SDE)',  'InpandigeDistributeur'
+		];
+		attribute<string> afnemer : [
+			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort', 'KL_e', 'Subsidie'
+			'InpandigeDistributeur', 'InpandigeDistributeur', 'InpandigeDistributeur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
+		];
 	}
 	unit<uint8> GebiedsOptie_Stock : nrofrows = 12
 	{
 		attribute<string> name: [ 'Oi_lv_Aansl', 'Ki_ge_ov', 'Ki_ge_pm', 'Oi_ge_EIA', 'Ki_id', 'Oi_id_EIA', 'Ki_wd', 'Oi_wd_EIA', 'Ki_pt', 'Oi_pt_EIA', 'Ki_ow', 'Oi_ow_EIA' ];
 		attribute<string> actor_code: [ 'lv', 'ge', 'ge', 'ge', 'id', 'id', 'wd', 'wd', 'pt', 'pt', 'ow', 'ow'];
+		
+		attribute<string> leverancier : [
+			'xxx', 'ongeriefsvergoeding', 'KL_e', 'KL_e'
+		];
+		attribute<string> afnemer : [
+			'xxx',	'KL_e', 'KL_e'
+		];
 	}
 	unit<uint8> GebiedsOptie_Verbruik: nrofrows = 11
 	{
