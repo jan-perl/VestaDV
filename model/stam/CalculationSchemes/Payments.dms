@@ -112,7 +112,7 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<string> name          := union_data(., src/name        , Accounting2Subset/name);
 				attribute<string> leverancier   := union_data(., src/leverancier , Accounting2Subset/leverancier);
 				attribute<string> afnemer       := union_data(., src/afnemer     , Accounting2Subset/afnemer);
-				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+Accounting2Subset/full_name);
+				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+Accounting2Subset/full_name);
 				attribute<string> PlanRegioRel  := union_data(., src/PlanRegioRel, const('', Accounting2Subset));
 			}
 			

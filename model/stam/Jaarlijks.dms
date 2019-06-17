@@ -283,43 +283,43 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 
 		// ===== LEVERANCIER
 			,	'Vegoeding@RO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/ge], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/ge], 
 					''
 
 			,	'Verrekening@RO@', 'Leverancier', 'BestaandeWoning/Eigenaar',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/ge], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/ge], 
 					''
 
 			,	'Vegoeding@RO@', 'InpandigeDistributeur', 'Leverancier',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/id], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/id], 
 					''
 
 			,	'Verrekening@RO@', 'Leverancier', 'InpandigeDistributeur',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/id], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/id], 
 					''
 
 			,	'Vergoeding@RO@', 'WijkDistributeur', 'Leverancier',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/wd], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/wd], 
 					''
 
 			,	'Verrekening@RO@', 'Leverancier', 'WijkDistributeur',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/wd], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/wd], 
 					''
 
 			,	'Vergoeding@RO@', 'PrimairTransport', 'Leverancier',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/pt], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 
 			,	'Verrekening@RO@', 'Leverancier', 'PrimairTransport',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/pt], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 
 			,	'Vergoeding', '@RO@', 'Leverancier',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/ow], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/ow], 
 					''
 
 			,	'Verrekening', 'Leverancier', '@RO@',
-					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/ow], 
+					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/ow], 
 					''
 			);
 		}
@@ -336,7 +336,6 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 				+ iif(PlanRegioRel == '', '', ' per '+PlanRegioRel);
 	}
 
-	container applyGOA := CalculationSchemes/Payments/substitute(mutatieSchema, '@GOAN@', Classifications/GebiedsOptieActor_uint8, '@GOAC@');
-	container applyBTW := CalculationSchemes/Payments/substitute(applyGOA/result, '@BTW@', Classifications/BtwComponent);
+	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', Classifications/BtwComponent);
 	unit<uint32> mutatie := applyBTW/result;
 }

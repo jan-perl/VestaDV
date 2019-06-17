@@ -695,12 +695,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		
 		container V := for_each_nedv(code, string(id(.))+'[..]', void, .);
 	}
-	unit<uint8> GebiedsOptieActor_uint8 := range(uint8, 0b, uint8(#GebiedsOptieActor))
-	{
-		attribute<string> name := GebiedsOptieActor/name[id(.)[GebiedsOptieActor]];
-		attribute<string> code := GebiedsOptieActor/code[id(.)[GebiedsOptieActor]];
-	}
-	unit<uint8> GebiedsOptie_Flow : nrofrows = 70
+	unit<uint8> GebiedsOptie_Jaarlijks : nrofrows = 70
 	{
 		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Bji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
@@ -728,8 +723,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<bool> is_Kj := left(name, 2) == 'Kj';
 		attribute<bool> is_Oj := left(name, 2) == 'Oj';
 		
-		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
-		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+full_name: '' ,GebiedsOptieActor_rel)+')';
 		
 		attribute<string> descr: [
 			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA_@RO@', 'Omi_ge_EIA_@RO@',
@@ -770,7 +765,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		];
 		
 	}
-	unit<uint8> GebiedsOptie_Stock : nrofrows = 12
+	unit<uint8> GebiedsOptie_Eenmalig : nrofrows = 12
 	{
 		attribute<string> name: [ 
 			'Oi_lv_Aansl', 'Ki_ge_ov', 'Ki_ge_pm', 'Oi_ge_EIA', 

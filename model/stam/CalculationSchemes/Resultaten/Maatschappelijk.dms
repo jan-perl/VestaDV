@@ -81,18 +81,18 @@ container Maatschappelijk: Source = "FO v7a C6", isHidden = "true"
 		attribute<Eur_yr>	Km_id_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Km_id_gas;
 		attribute<Eur_yr>	Km_id_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Km_id_elek;
 		attribute<Eur_yr>	Kj_id_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Kj_id_oh;
-		attribute<Eur_yr>	Kj_id_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Kj_id_adm;
-		attribute<Eur_yr>	Km_ow_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Km_ow_gas;
-		attribute<Eur_yr>	Km_ow_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Km_ow_elek;
-		attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Kj_ow_oh;
-		attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Kj_ow_adm;
-		attribute<Eur_yr>	Kj_ow_productie	(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Kj_ow_productie;
-		attribute<Eur_yr>	Km_wd_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/wd/Km_wd_gas;
-		attribute<Eur_yr>	Km_wd_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/wd/Km_wd_elek;
-		attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/wd/Kj_wd_oh;
-		attribute<Eur_yr>	Kj_wd_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/wd/Kj_wd_adm;
-		attribute<Eur_yr>	Kj_pt_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/pt/Kj_pt_oh;
-		attribute<Eur_yr>	Kj_pt_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/pt/Kj_pt_adm;
+		attribute<Eur_yr>	Kj_id_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_adm;
+		attribute<Eur_yr>	Km_ow_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Km_ow_gas;
+		attribute<Eur_yr>	Km_ow_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Km_ow_elek;
+		attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_oh;
+		attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_adm;
+		attribute<Eur_yr>	Kj_ow_productie	(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_productie;
+		attribute<Eur_yr>	Km_wd_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/wd/Km_wd_gas;
+		attribute<Eur_yr>	Km_wd_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/wd/Km_wd_elek;
+		attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_oh;
+		attribute<Eur_yr>	Kj_wd_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_adm;
+		attribute<Eur_yr>	Kj_pt_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/pt/Kj_pt_oh;
+		attribute<Eur_yr>	Kj_pt_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/pt/Kj_pt_adm;
 		attribute<Eur_yr>	totaal			(PlanRegio)	:=	Km_id_gas + Km_id_elek + Kj_id_oh + Kj_id_adm +
 															Km_ow_gas + Km_ow_elek + Kj_ow_oh + Kj_ow_adm + Kj_ow_productie +
 															Km_wd_gas + Km_wd_elek + Kj_wd_oh + Kj_wd_adm +
@@ -101,13 +101,13 @@ container Maatschappelijk: Source = "FO v7a C6", isHidden = "true"
 	
 	container Gebiedopties_Kmi
 	{
-		attribute<Eur_yr>	Kmi_ge_pm		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ge/Kmi_ge_pm,	Descr = "maatschappelijke kosten investering projectmanagement";
-		attribute<Eur_yr>	Kmi_ge_ov		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ge/Kmi_ge_ov,	Descr = "maatschappelijke kosten investering ongeriefsvergoedingen";
-		attribute<Eur_yr>	Kmi_id			(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Kmi_id,		Descr = "maatschappelijke kosten investering inpandige distributie";
-		attribute<Eur_yr>	Kmi_pt			(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/pt/Kmi_pt,		Descr = "maatschappelijke kosten investering primair transport";
-		attribute<Eur_yr>	Kmi_ow			(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ow/Kmi_ow,		Descr = "maatschappelijke kosten investering opwekking";
+		attribute<Eur_yr>	Kmi_ge_pm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ge/Kmi_ge_pm, Descr = "maatschappelijke kosten investering projectmanagement";
+		attribute<Eur_yr>	Kmi_ge_ov		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ge/Kmi_ge_ov, Descr = "maatschappelijke kosten investering ongeriefsvergoedingen";
+		attribute<Eur_yr>	Kmi_id			(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Kmi_id,    Descr = "maatschappelijke kosten investering inpandige distributie";
+		attribute<Eur_yr>	Kmi_pt			(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/pt/Kmi_pt,    Descr = "maatschappelijke kosten investering primair transport";
+		attribute<Eur_yr>	Kmi_ow			(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Kmi_ow,    Descr = "maatschappelijke kosten investering opwekking";
 		attribute<Eur_yr>	totaal			(PlanRegio)	:=	Kmi_ge_pm + Kmi_ge_ov + Kmi_id + Kmi_pt + Kmi_ow;
 	}
-	attribute<Eur_yr>	Om_Comfort			(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ge/Om_ge_comfort;
+	attribute<Eur_yr>	Om_Comfort			(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ge/Om_ge_comfort;
 	attribute<Eur_yr>	Kmi_Totaal			(PlanRegio)	:=	net/Kj_gasnet_netto + net/Kj_eleknet_netto + gebouwen/Kmi_Totaal + LokaleEnergieProductie/Kmi_Totaal + Gebiedopties_Km/totaal + Gebiedopties_Kmi/totaal;
 }
