@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
 container AllocExports: = Units, isHidden = "True" //DEBUG
 {
 	container PlanRegioResults
@@ -9,10 +15,10 @@ container AllocExports: = Units, isHidden = "True" //DEBUG
 			attribute<string> BU_CODE                                       := Geography/RegioIndelingen/buurt/BU_CODE;
 			attribute<Classifications/GebiedsOptie> GebiedsOptie            := StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE;
 
-			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := CO2/gebouwen/AardGas/totaal;
-			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := CO2/gebouwen/Elektriciteit/totaal;
-			attribute<units/kg_yr> CO2_gebouwen_totaal                      := CO2/gebouwen/totaal;
-			attribute<units/kg_yr> CO2_totaal                               := CO2/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := EnergyResults/CO2/gebouwen/AardGas/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := EnergyResults/CO2/gebouwen/Elektriciteit/totaal;
+			attribute<units/kg_yr> CO2_gebouwen_totaal                      := EnergyResults/CO2/gebouwen/totaal;
+			attribute<units/kg_yr> CO2_totaal                               := EnergyResults/CO2/totaal;
 			attribute<units/Eur_yr> netverzwaring                           := netwerken/Elektriciteit/Kji_verzwaren;
 
 			attribute<units/kW>      Woning_CapaciteitWarmteDeelnemers      := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteDeelnemers;
@@ -34,9 +40,9 @@ container AllocExports: = Units, isHidden = "True" //DEBUG
 			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
 			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
 
-			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/Metervraag/gebouwen/WarmteKoudelevering/V_warmte;
-			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/Metervraag/gebouwen/Gas/totaal;
-			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/EnergyResults/Metervraag/gebouwen/WarmteKoudelevering/V_warmte;
+			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/EnergyResults/Metervraag/gebouwen/Gas/totaal;
+			attribute<units/GJ_yr> Elektriciteit_totaal                     := /Resultaten/StartJaar/EnergyResults/Metervraag/gebouwen/Elektriciteit/totaal;
 		}
 
 		container export := Rapportage/WriteTableToCSV(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
