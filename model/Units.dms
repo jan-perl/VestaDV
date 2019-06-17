@@ -62,7 +62,7 @@ container Units: isHidden = "True"
 	unit<float64> GJ_m3         := GJ / m3;
 	unit<float64> m_kW          := m / kW;
 	unit<float64> GJ_yr_ha      := GJ_yr / ha;
-	
+	unit<float64> GJ_yr_WEQ     := GJ_yr / nrWoningen;
 	
 
 	// effects of energyproduction
@@ -70,7 +70,8 @@ container Units: isHidden = "True"
 	unit<float64> g_GJ          :=  g / GJ, Descr = "andere effect van energieproductie";
 	unit<float64> kg_yr         := kg / yr, Descr = "Co2 effect per jaar";
 	unit<float64> ton_yr        := ton / yr, Descr = "CO2 effect per jaar in tonnen";
-
+	unit<float64> kg_yr_WEQ     := kg_yr / nrWoningen;
+	
 	// actor based
 	unit<float64> nrWoningen    := BaseUnit('Woning', float64);
 	unit<float64> nrUtil        := BaseUnit('Utiliteitsobjecten', float64);
@@ -90,6 +91,8 @@ container Units: isHidden = "True"
 	
 	unit<float64> MSR           := BaseUnit('Middenspanningsruimte', float64);
 	unit<float64> kW_MSR        := kW / MSR;
+	
+	unit<float64> WEQ           := BaseUnit('Woningequivalent', float64);
 
 
 	// financial
@@ -114,6 +117,8 @@ container Units: isHidden = "True"
 	unit<float64> Eur_Aansl     := Eur / nrAansl;
 	unit<float64> Eur_yr_Aansl  := Eur / yr / nrAansl;
 	unit<float64> Eur_MSR       := Eur / MSR;
+	unit<float64> Eur_yr_WEQ    := Eur_yr / nrWoningen;
+
 	
 
 	// no metric
