@@ -13,7 +13,7 @@ container AllocExports: = Units, isHidden = "True" //DEBUG
 			attribute<units/kg_yr> CO2_gebouwen_Elektriciteit_totaal        := CO2/gebouwen/Elektriciteit/totaal;
 			attribute<units/kg_yr> CO2_gebouwen_totaal                      := CO2/gebouwen/totaal;
 			attribute<units/kg_yr> CO2_totaal                               := CO2/totaal;
-			attribute<units/Eur_yr> netverzwaring                           := netwerken/Elektriciteit/netverzwaring;
+			attribute<units/Eur_yr> netverzwaring                           := netwerken/Elektriciteit/Kji_verzwaren;
 
 			attribute<units/kW>      Woning_CapaciteitWarmteDeelnemers      := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteDeelnemers;
 			attribute<units/nrAansl> Woning_nrAanslWarmteDeelnemers         := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers;
