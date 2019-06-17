@@ -13,7 +13,7 @@
 
 container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 63
+	unit<uint32> mutatieSchema: nrofrows = 68
 	{
 		parameter<uint32> nrAttr := 5;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -235,17 +235,50 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					PRR
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
-					'StateNaAllocatie/@RO@/Flow/lv/Omi_lv_Aansl * '+VAT_F,
-					''
+			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BC@/Opbrengsten/AansluitBijdrageD' +
+					'* ((1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0)) ' +
+					'* BebouwingsComponenten/@BC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@BC@/NcwRefs/_28/AnnualisationFactor)', 
+					PRR
 
-		// ===== vergoedingen van vastrecht en warmte aan leveranciers
-			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'BebouwingsComponenten/@BTW@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
+			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
+					'Float64(StateNaAllocatie/Bebouwing/@BTW@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BTW@/Opbrengsten/AansluitBijdrageD * ' +
+					'('+VAT_F + ' * NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor)',
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
+			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)'
+					'* StateNaAllocatie/Bebouwing/@BC@/Opbrengsten/AansluitBijdrageD '+
+					'* (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor)', 
+					PRR
+
+			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)'+
+					'* StateNaAllocatie/Bebouwing/@BC@/Opbrengsten/AansluitBijdrageD '+
+					'* (NCW/ow28/StartDiscountFactor * NCW/ow28/AnnualisationFactor)', 
+					PRR
+
+		// ===== vergoedingen van vastrecht en warmte aan leveranciers
+			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BC@/Opbrengsten/VastrechtBijdrageD', 
+					PRR
+
+			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
+					'Float64(StateNaAllocatie/Bebouwing/@BTW@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BTW@/Opbrengsten/VastrechtBijdrageD * '+VAT_F,
+					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
+
+			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BC@/WarmteVraag/deelnemers/Verbruik * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
+					PRR
+
 			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'BebouwingsComponenten/@BTW@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
+					'Float64(StateNaAllocatie/Bebouwing/@BTW@/WarmteAllocatie == Classifications/WarmteOptie/V/@RO@)' +
+					'* StateNaAllocatie/Bebouwing/@BTW@/WarmteVraag/deelnemers/Verbruik * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== LEVERANCIER

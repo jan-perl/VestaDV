@@ -103,7 +103,7 @@ container Payments: FreeData = "False" // DEBUG
 			
 			unit<uint8> Accounting2Subset := subset(Accounting2/leverancier != '')
 			{
-				attribute<string> name          := Accounting2/name       [nr_OrgEntity];
+				attribute<string> name          := Accounting2/descr      [nr_OrgEntity];
 				attribute<string> leverancier   := Accounting2/leverancier[nr_OrgEntity];
 				attribute<string> afnemer       := Accounting2/afnemer    [nr_OrgEntity];
 				attribute<string> full_name     := Accounting2/full_name  [nr_OrgEntity];
@@ -120,9 +120,9 @@ container Payments: FreeData = "False" // DEBUG
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
-			container applyBC  := substitute(Accounting,    '@BC@'   ,BC);
-			container applyWKOC:= substitute(applyBC/result,'@WKOC@', WKOC);
-			container applyRO  := substitute(applyWKOC/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
+			container applyBC  := substitute(Accounting,      '@BC@'   ,BC);
+			container applyWKOC:= substitute(applyBC/result,  '@WKOC@', WKOC);
+			container applyRO  := substitute(applyWKOC/result,'@RO@'   ,Voorkeuren/ActieveGebiedsOptie);
 
 			unit<uint32> mutatie := applyRO/result
 			{

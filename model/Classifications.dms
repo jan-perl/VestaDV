@@ -732,16 +732,16 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
 		
 		attribute<string> descr: [
-			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA', 'Omi_ge_EIA',
+			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA_@RO@', 'Omi_ge_EIA_@RO@',
 			'', '@RO@_bijstook_id', '@RO@_bijstook_id_gas', '@RO@_bijstook_id_gas_CO2', '', '@RO@_bijstook_id', '@RO@_bijstook_id_elek', '@RO@_bijstook_id_elek_CO2',
-			'Kj_id_oh', 'Kj_id_adm', '@RO@', '@RO@', '@RO@_EIA', '@RO@_id_EIA', '@RO@_EEA', '@RO@_id_SDE',
+			'Kj_id_oh_@RO@', 'Kj_id_adm_@RO@', '@RO@', '@RO@', 'Oji_id_EIA_@RO@', 'Omi_id_EIA_@RO@', 'Oj_EEA_@RO@', 'Oj_id_SDE_@RO@',
 			'', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas_CO2', '', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek_CO2',
-			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_EEA', 'Oj_wd_SDE',
-			'Kj_pt_oh', 'Kj_pt_adm', 'Kji_pt', 'Kmi_pt', 'Oji_pt_EIA', 'Omi_pt_EIA', 'Oj_pt_EEA',
+			'Kj_wd_oh_@RO@', 'Kj_wd_adm_@RO@', 'Kji_wd_@RO@', 'Kmi_wd_@RO@', 'Oji_wd_EIA_@RO@', 'Omi_wd_EIA_@RO@', 'Oj_wd_EEA_@RO@', 'Oj_wd_SDE_@RO@',
+			'Kj_pt_oh_@RO@', 'Kj_pt_adm_@RO@', 'Kji_pt_@RO@', 'Kmi_pt_@RO@', 'Oji_pt_EIA_@RO@', 'Omi_pt_EIA_@RO@', 'Oj_pt_EEA_@RO@',
 			'', '@RO@_ow_gas', '@RO@_ow_gas', '@RO@_ow_gas_CO2', '', '@RO@_ow_elek', '@RO@_ow_elek', '@RO@_ow_elek_CO2',			
 			'Kj_ow_productie', 
-			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow', 'Oji_ow_EIA', 'Omi_ow_EIA', 'Oj_ow_EEA', 'Oj_ow_SDE',
-			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik_@RO@', 'Oj_lv_vastrecht_@RO@', 'Oj_lv_SDE'
+			'Kj_ow_oh_@RO@', 'Kj_ow_adm_@RO@', 'Kji_ow_@RO@', 'Kmi_ow_@RO@', 'Oji_ow_EIA_@RO@', 'Omi_ow_EIA_@RO@', 'Oj_ow_EEA_@RO@', 'Oj_ow_SDE_@RO@',
+			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik_@RO@', 'Oj_lv_vastrecht_@RO@', 'Oj_lv_SDE_@RO@'
 		];
 		attribute<string> full_name := actor_code + '/' + name;
 		attribute<string> leverancier : [
@@ -754,7 +754,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
 		,	'WarmteInkoop'
 		,	'Onderhoud', 'Admin', 'KL_p', 'Opwekking', '@RO@', 'KL_p', '@RO@',  '@RO@'
-		,	'Leverancier', 'KL_p', 'Leverancier', 'Leverancier', 'Leverancier'
+		,	'', '', '', '', 'Leverancier'
 		];
 		attribute<string> afnemer : [
 			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort',	'BestaandeWoning/Eigenaar', 'KL_e', 'Subsidie'
@@ -766,7 +766,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		,	'', '@RO@', '@RO@', 'AardGas', '', '@RO@', '@RO@', 'Elektriciteit'
 		,	'@RO@'
 		,	'@RO@', '@RO@', '@RO@', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
-		,	'KL_p', 'KL_e', '@BC@/Gebruiker', '@BC@/Gebruiker', 'Subsidie'
+		,	'', '', '', '', 'Subsidie'
 		];
 		
 	}
