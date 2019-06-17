@@ -4,7 +4,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Maatschappelijk: Source = "FO v7a C6"
+container Maatschappelijk: Source = "FO v7a C6", isHidden = "true"
 {
 	container impl: IsHidden = "true"
 	{

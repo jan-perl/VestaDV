@@ -4,7 +4,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Netwerken
+container Netwerken: isHidden = "true"
 	{
 		attribute<bool> heeft_gas (PlanRegio) := TussenResultaten/AllocatieResultaten/heeft_gas;
 

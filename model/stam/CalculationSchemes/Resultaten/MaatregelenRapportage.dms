@@ -4,7 +4,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container MaatregelenRapportage
+container MaatregelenRapportage: isHidden = "true"
 	{
 		unit<uint32> RapportageRegio := SpecifiekeInstellingen/Rapportage/Regio;
 		container BestaandeWoning :=
