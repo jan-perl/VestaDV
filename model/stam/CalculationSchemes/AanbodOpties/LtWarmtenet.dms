@@ -64,31 +64,33 @@ Template LtWarmtenetImpl
 		//Aandelen primair en hulp in het secundaire net
 		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
 		parameter<Float64> 		AandeelHulpVermogen 		:= 				1.00, 					Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:= 				0.70, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:= 				0.30, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVolume   		:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVolume 			:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
 		
 		//Seasonal Performance Factors
 		parameter<Ratio> 		SPF_coll_W :=
-													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 :
-													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 :
-													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.5 :
-													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 :
-													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 :
-													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.8 :	1.0, Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
-		parameter<Ratio> 		SPF_coll_K			: [30], 										Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
-		parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,											Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";
-		parameter<Float64> 		SPF_ind_B_rv  		:= T_sec <= 35[Celsius] ? 4.2 : 1.0,			Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label B";
-		parameter<Float64> 		SPF_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0, Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label C, D of E";
-		parameter<Float64> 		SPF_ind_ww  		:= T_sec <= 55[Celsius] ? 2.5 : 1.0,			Descr = "efficientie van de individuele warmtepomp voor tapwaterverwarming";
-		parameter<Ratio> 		SPF_ind_K			: [3],											Descr = "efficientie van een individuele warmtepomp bij koudelevering"; // TODO, Check.
+													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30
+													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50
+													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.5 : // van 15 naar 70
+													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
+													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
+													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.8 : // van 30 naar 70
+																										1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
+		parameter<Ratio> 		SPF_coll_K			: [30], 															Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
+		parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,																Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";
+		parameter<Float64> 		SPF_ind_B_rv  		:= T_sec <= 35[Celsius] ? 4.2 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label B";
+		parameter<Float64> 		SPF_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0,	Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label C, D of E";
+		parameter<Float64> 		SPF_ind_ww  		:= T_sec <= 55[Celsius] ? 2.5 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor tapwaterverwarming";
+		parameter<Ratio> 		SPF_ind_K			: [3],																Descr = "efficientie van een individuele warmtepomp bij koudelevering"; // TODO, Check.
 		
 		
 		// Aandeel eigen opwekking
-		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 55[Celsius] ? 0.1 : 0.0,				Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
-		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.3 : 0.0,			Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
-		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0, Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
-		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0, Descr = "Aandeel eigen opwekking, warm tapwater";
+		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
+		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
+		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
+		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
 		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
+		
 		parameter<Ratio> 		Leidingverlies		: [0.15],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
