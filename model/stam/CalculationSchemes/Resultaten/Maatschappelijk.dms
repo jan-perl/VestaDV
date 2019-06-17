@@ -73,8 +73,8 @@ container Maatschappelijk: Source = "FO v7a C6"
 // 	}
 	container net
 	{
-		attribute<Eur_yr> Aardgas       (PlanRegio) := netwerken/aardgas/Kj_totaal       - netwerken/aardgas/netbijdrage;
-		attribute<Eur_yr> Elektriciteit (PlanRegio) := netwerken/elektriciteit/Kj_totaal - netwerken/elektriciteit/netbijdrage;
+		attribute<Eur_yr>	Kj_gasnet_netto		(PlanRegio)	:=	netwerken/aardgas/Kj_netto;
+		attribute<Eur_yr>	Kj_eleknet_netto	(PlanRegio)	:=	netwerken/elektriciteit/Kj_netto;
 	}
 	container Gebiedopties_Km
 	{
@@ -109,5 +109,5 @@ container Maatschappelijk: Source = "FO v7a C6"
 		attribute<Eur_yr>	totaal			(PlanRegio)	:=	Kmi_ge_pm + Kmi_ge_ov + Kmi_id + Kmi_pt + Kmi_ow;
 	}
 	attribute<Eur_yr>	Om_Comfort			(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/ge/Om_ge_comfort;
-	attribute<Eur_yr>	Kmi_Totaal			(PlanRegio)	:=	net/Aardgas + net/Elektriciteit + gebouwen/Kmi_Totaal + LokaleEnergieProductie/Kmi_Totaal + Gebiedopties_Km/totaal + Gebiedopties_Kmi/totaal;
+	attribute<Eur_yr>	Kmi_Totaal			(PlanRegio)	:=	net/Kj_gasnet_netto + net/Kj_eleknet_netto + gebouwen/Kmi_Totaal + LokaleEnergieProductie/Kmi_Totaal + Gebiedopties_Km/totaal + Gebiedopties_Kmi/totaal;
 }
