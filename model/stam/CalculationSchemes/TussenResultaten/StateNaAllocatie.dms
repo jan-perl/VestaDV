@@ -47,8 +47,8 @@ container StateNaAllocatie := GebiedsAllocatie/ResultState
 		attribute<nrAansl>           aant_g_aansl_woning_hoogb_gasloos (PlanRegio)    := aant_g_aansl_woning_hoogb - StateVoorAllocatie/Infra_per_buurt/aant_g_aansl_woning_hoogb;
 		attribute<nrAansl>           aant_g_aansl_woning_laagb_gasloos (PlanRegio)    := aant_g_aansl_woning_laagb - StateVoorAllocatie/Infra_per_buurt/aant_g_aansl_woning_laagb;
 		attribute<nrAansl>           aant_g_aansl_util_gasloos         (PlanRegio)    := aant_g_aansl_util - StateVoorAllocatie/Infra_per_buurt/aant_g_aansl_util;
-		attribute<Ratio>             fractie_laagb_gasloos             (PlanRegio)    := aant_g_aansl_woning_laagb_gasloos / aant_g_aansl_woning_gasloos;
-		attribute<Ratio>             fractie_hoogb_gasloos             (PlanRegio)    := aant_g_aansl_woning_hoogb_gasloos / aant_g_aansl_woning_gasloos;
+		attribute<Ratio>             fractie_laagb_gasloos             (PlanRegio)    := makedefined(aant_g_aansl_woning_laagb_gasloos / aant_g_aansl_woning_gasloos, 0d);
+		attribute<Ratio>             fractie_hoogb_gasloos             (PlanRegio)    := makedefined(aant_g_aansl_woning_hoogb_gasloos / aant_g_aansl_woning_gasloos, 0d);
 		
 		attribute<m>                 lengte_grogel_LD_net              (PlanRegio)    := AllocatieResultaten/GrondroeringInPlanRegio ? 0[m] : StateVoorAllocatie/Infra_per_buurt/lengte_grogel_LD_net;
 		attribute<m>                 lengte_LD_net                     (PlanRegio)    := aant_g_aansl == 0[nrAansl] ? 0[m] : StateVoorAllocatie/Infra_per_buurt/lengte_LD_net;
