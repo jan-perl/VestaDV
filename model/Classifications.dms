@@ -741,7 +741,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'', '@RO@_ow_gas', '@RO@_ow_gas', '@RO@_ow_gas_CO2', '', '@RO@_ow_elek', '@RO@_ow_elek', '@RO@_ow_elek_CO2',			
 			'Kj_ow_productie', 
 			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow', 'Oji_ow_EIA', 'Omi_ow_EIA', 'Oj_ow_EEA', 'Oj_ow_SDE',
-			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik', 'Oj_lv_vastrecht', 'Oj_lv_SDE'
+			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik_@RO@', 'Oj_lv_vastrecht_@RO@', 'Oj_lv_SDE'
 		];
 		attribute<string> full_name := actor_code + '/' + name;
 		attribute<string> leverancier : [
@@ -750,10 +750,11 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		,	'Onderhoud', 'Admin', 'KL_p', 'InpandigeDistributie', 'InpandigeDistributeur', 'KL_p', 'InpandigeDistributeur',  'InpandigeDistributeur'
 		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
 		,	'Onderhoud', 'Admin', 'KL_p', 'WijkDistributie', 'WijkDistributeur', 'KL_p', 'WijkDistributeur',  'WijkDistributeur'
-		,	'Onderhoud', 'Admin', 'KL_p', 'WijkDistributie', 'WijkDistributeur', 'KL_p', 'WijkDistributeur'
+		,	'Onderhoud', 'Admin', 'KL_p', 'PrimairTransport', 'PrimairTransporteur', 'KL_p', 'PrimairTransporteur'
 		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
 		,	'WarmteInkoop'
 		,	'Onderhoud', 'Admin', 'KL_p', 'Opwekking', '@RO@', 'KL_p', '@RO@',  '@RO@'
+		,	'Leverancier', 'KL_p', 'Leverancier', 'Leverancier', 'Leverancier'
 		];
 		attribute<string> afnemer : [
 			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort',	'BestaandeWoning/Eigenaar', 'KL_e', 'Subsidie'
@@ -763,8 +764,9 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		,	'WijkDistributeur', 'WijkDistributeur', 'WijkDistributeur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
 		,	'PrimairTransporteur', 'PrimairTransporteur', 'PrimairTransporteur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie'
 		,	'', '@RO@', '@RO@', 'AardGas', '', '@RO@', '@RO@', 'Elektriciteit'
-		'	@RO@'
+		,	'@RO@'
 		,	'@RO@', '@RO@', '@RO@', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
+		,	'KL_p', 'KL_e', '@BC@/Gebruiker', '@BC@/Gebruiker', 'Subsidie'
 		];
 		
 	}
