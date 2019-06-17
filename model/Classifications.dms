@@ -697,7 +697,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> name := GebiedsOptieActor/name[id(.)[GebiedsOptieActor]];
 		attribute<string> code := GebiedsOptieActor/code[id(.)[GebiedsOptieActor]];
 	}
-	unit<uint8> GebiedsOptie_Flow : nrofrows = 69
+	unit<uint8> GebiedsOptie_Flow : nrofrows = 70
 	{
 		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
@@ -721,6 +721,13 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 
 			'lv', 'lv', 'lv', 'lv', 'lv'
 		];
+		attribute<GebiedsOptieActor> GebiedsOptieActor_rel := rlookup(actor_code, GebiedsOptieActor/code);
+		attribute<bool> is_Kj := left(name, 2) == 'Kj';
+		attribute<bool> is_Oj := left(name, 2) == 'Oj';
+		
+		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		
 		attribute<string> descr: [
 			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'', '@RO@_bijstook_id', '@RO@_bijstook_id_gas', '@RO@_bijstook_id_gas_CO2', '', '@RO@_bijstook_id', '@RO@_bijstook_id_elek', '@RO@_bijstook_id_elek_CO2',
@@ -756,6 +763,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		'	@RO@'
 		,	'@RO@', '@RO@', '@RO@', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
 		];
+		
 	}
 	unit<uint8> GebiedsOptie_Stock : nrofrows = 12
 	{
