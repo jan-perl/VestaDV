@@ -408,15 +408,15 @@ template Resultaten
 		parameter<string> RunName      := Expand(., '%configName%');
 		parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName +'/'+ RekenstapName;
 	}
-	
-	container RegressieTest: isHidden = "True"
-	{
-		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
-		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
-		parameter<string> Generate                := 'Ready'
-		,	IntegrityCheck    = "All"
-		,	ExplicitSuppliers = "Generate/All"; // Generates All reports.
-	}
+// 	TODO: controleren of bestaande test in exports alles dekkend is
+// 	container RegressieTest: isHidden = "True"
+// 	{
+// 		parameter<bool>   PotentiaalKaartLeesbaar : = all(Grid100m/totaal/Vraag/Potentiaal/totaal >= 0.0) && sum(Grid100m/totaal/Vraag/Potentiaal/totaal) > 0.0;
+// 		parameter<bool>   All                     : = PotentiaalKaartLeesbaar;
+// 		parameter<string> Generate                := 'Ready'
+// 		,	IntegrityCheck    = "All"
+// 		,	ExplicitSuppliers = "Generate/All"; // Generates All reports.
+// 	}
 	
 	container PR_LD: isHidden = "True"
 	{
