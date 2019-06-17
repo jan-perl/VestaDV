@@ -8,6 +8,8 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 {
 	unit<uint32> PlanRegio := Invoer/SpecifiekeInstellingen/PlanRegio;
 	
+	parameter<bool> IsBeginSituatie := true;
+	
 	container Bebouwing := 
 		for_each_ne(Classifications/BebouwingsComponent/name, 
 			'CalculationSchemes/StartingStateComponent('+

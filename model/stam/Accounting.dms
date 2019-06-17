@@ -352,6 +352,25 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					''
 
 		// ===== Inpandige Distributie kosten
+			,	'@RO@', 'KL_p', 'InpandigeDistributeur', 
+					'StateNaAllocatie/Stock/Ki_id * '+ROSEL, 
+					AF28_ID, 
+					''
+
+			,	'@RO@', 'InpandigeDistributie', 'KL_p', 
+					'StateNaAllocatie/Stock/Ki_id * '+ROSEL, 
+					AF28_MR, 
+					''
+
+			,	'@RO@_EIA', 'InpandigeDistributeur', 'KL_p',
+					'StateNaAllocatie/Stock/Oi_id_subsidie * '+ROSEL,
+					AF28_ID,
+					''
+	
+			,	'@RO@_EIA_id', 'KL_p', 'Subsidie',
+					'StateNaAllocatie/Stock/Oi_id_subsidie * '+ROSEL,
+					AF28_MR,
+					''
 
 			,	'@RO@_EEA', 'InpandigeDistributeur', 'Subsidie',
 					'StateNaAllocatie/flow/Oe_id_subsidie * '+ROSEL,
