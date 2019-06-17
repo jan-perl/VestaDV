@@ -13,7 +13,7 @@
 
 container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 121
+	unit<uint32> mutatieSchema: nrofrows = 61
 	{
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -38,142 +38,15 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 			parameter<string> ROSEL   := 'float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == classifications/GebiedsOptie/V/@RO@)';
 			parameter<string> VAT_F   := '(SpecifiekeInstellingen/VAT / 100[Percent])';
 			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))';
-			attribute<string> Text := union_data(.,
+//* REMOVE			
+			attribute<string> Text := union_data(.
 				// name //leverancier //afnemer  
 					// item 
 					// factor 
 					//left-entity-rel // right-entity-rel
 
 		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
-				'maatschappelijk', 'AardGas', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/AardGas/maatschappelijk',
-					'', 
-					PRR
 
-			,	'AardGas' , 'EnergieHeffing', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/AardGas/EnergieHeffing',
-					'',
-					PRR
-
-			,	'CO2@BC@' , 'EmissieRechten', 'AardGas', 
-					'Allocatie/@BC@/AardGas/CO2Heffing',
-					'',
-					PRR
-
-			,	'Aardgas', 'BTW', '@BTW@/Gebruiker',
-					'Allocatie/@BTW@/AardGas/eindgebruik_excl * '+VAT_F, 
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Netkosten_@BC@', 'GasNet', 'AardGas', 
-					'Allocatie/@BC@/AardGas/netwerk',
-					'', 
-					PRR
-
-			,	'Vastrecht', 'GasNet', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/AardGas/Vastrecht',
-					'', 
-					PRR
-
-			,	'VastrechtGasNet', 'BTW', '@BTW@/Gebruiker',
-					'Allocatie/@BTW@/AardGas/VastRecht * '+VAT_F,
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'AardGas', 'KL_e', '@BC@/Eigenaar',
-					'Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_j * '+VAT_R,
-					'', 
-					''
-
-			,	'Aansluitbijdrage_@BC@', 'GasNet', 'KL_e',
-					'Eindgebruiker/@BC@/gebouwen/AardGas/Aansl_m',
-					'', 
-					''
-
-			,	'Aansluitbijdrage_AardGas@BTW@', 'BTW', 'KL_e',
-					'Eindgebruiker/@BTW@/gebouwen/AardGas/Aansl_m * '+VAT_F,
-					'',
-					''
-
-			,	'maatschappelijk', 'Elektriciteit', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/Elektriciteit/maatschappelijk',
-					'', 
-					PRR
-
-			,	'Elektriciteit', 'EnergieHeffing', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/Elektriciteit/EnergieHeffing', 
-					'', 
-					PRR
-
-			,	'CO2@BC@', 'EmissieRechten', 'Elektriciteit', 
-					'Allocatie/@BC@/Elektriciteit/CO2Heffing', 
-					'', 
-					PRR
-
-			,	'Elektriciteit', 'BTW', '@BTW@/Gebruiker',
-					'Allocatie/@BTW@/Elektriciteit/eindgebruik_excl * '+VAT_F,
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Netkosten@BC@', 'ElektriciteitsNet', 'Elektriciteit', 
-					'Allocatie/@BC@/Elektriciteit/netwerk',
-					'', 
-					PRR
-
-			,	'Vastrecht', 'ElektriciteitsNet', '@BC@/Gebruiker', 
-					'Allocatie/@BC@/Elektriciteit/Vastrecht',
-					'', 
-					PRR
-
-			,	'VastrechtElektriciteitsNet', 'BTW', '@BTW@/Gebruiker',
-					'Allocatie/@BTW@/Elektriciteit/VastRecht * '+VAT_F,
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Elektriciteit', 'KL_e', '@BC@/Eigenaar',
-					'Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_j * '+VAT_R,
-					'', 
-					''
-
-			,	'Aansluitbijdrage@BC@', 'ElektriciteitsNet', 'KL_e',
-					'Eindgebruiker/@BC@/gebouwen/Elektriciteit/Aansl_m',
-					'', 
-					''
-
-			,	'ElektriciteitAansluitbijdrage@BTW@', 'BTW', 'KL_e',
-					'Eindgebruiker/@BTW@/gebouwen/Elektriciteit/Aansl_m * '+VAT_F,
-					'',
-					''
-
-			,	'kapitaallasten', 'Netwerk', 'GasNet',
-					'netwerken/aardgas/kapitaallasten',
-					'', 
-					''
-
-			,	'verwijderkosten', 'Netwerk', 'GasNet',
-					'netwerken/aardgas/verwijderkosten',
-					'', 
-					''
-
-			,	'', 'Onderhoud', 'GasNet',
-					'netwerken/aardgas/onderhoud',
-					'', 
-					''
-
-			,	'kapitaallasten', 'Netwerk', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/kapitaallasten',
-					'', 
-					''
-
-			,	'netverzwaring', 'Netwerk', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/netverzwaring',
-					'', 
-					''
-
-			,	'', 'Onderhoud', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/onderhoud',
-					'', 
-					''
 
 		// ===== Lokale opwekking: eigenaar investeringen
 			,	'ZonneBoiler', 'KL_e', '@BC@/Eigenaar', 
@@ -226,16 +99,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					'NCW/mr15/AnnualisationFactor',
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
-			,	'LokaleOpwekking', 'Onderhoud', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking',
-					'',
-					PRR
-
-			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
-					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking * Kengetallen/Onderhoud/Rj_LokaleOpwekking * '+VAT_F,
-					'',
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
 		// ===== Gebouwverbeteringen
 			,	'Gebouwverbetering', 'KL_e', '@BC@/Eigenaar', 
 					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT_gv / 100[Percent], 0.0))',
@@ -252,27 +115,7 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					'NCW/mr30/AnnualisationFactor',
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
-		// ===== split incentive
-			,	'VergoedingLabelSprong', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/kosten/Kj_gv_incentive * BebouwingsComponenten/@BC@/BTW_Factor',
-					'',
-					PRR
-			,	'VergoedingZonPV', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/DragerOpties/Apparatuur/Zon_PV * BebouwingsComponenten/@BC@/PrijzenElektriciteit/KGJ_eindgebruik_excl[Allocatie/@BC@/Elektriciteit/ggk_rel] * BebouwingsComponenten/@BC@/BTW_Factor * BebouwingsComponenten/@BC@/EIA_Opties/R_SplitIncentiveFactor',
-					'',
-					PRR
-
-			,	'VergoedingZonneBoiler', '@BC@/Eigenaar', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/DragerOpties/WarmWater/ZonneBoiler * BebouwingsComponenten/@BC@/PrijzenAardgas/KGJ_eindgebruik_excl[Allocatie/@BC@/AardGas/ggk_rel] * BebouwingsComponenten/@BC@/BTW_Factor * BebouwingsComponenten/@BC@/EIA_Opties/R_SplitIncentiveFactor ',
-					'',
-					PRR
-		
 		// ===== subsidie
-			,	'LokaleOpwekking', '@BC@/Eigenaar', 'Subsidie',
-					'BebouwingsComponenten/@BC@/sprongen/subsidie/EEA',
-					'',
-					PRR
-
 			,	'EIA30', '@BC@/Eigenaar', 'KL_e',
 					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
 					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
@@ -314,27 +157,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AFAB_WD, 
 					PRR
 
-		// ===== vergoedingen van vastrecht en warmte aan leveranciers
-			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BC@/Aandelen/@RO@', 
-					'', 
-					PRR
-
-			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'BebouwingsComponenten/@BTW@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
-					'', 
-					PRR
-
-			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
-					'BebouwingsComponenten/@BTW@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,
-					'', 
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
 		// ===== Eigenaar kosten
 			,	'EIA', 'BestaandeWoning/Eigenaar', 'KL_e',
 					'StateNaAllocatie/Stock/Oi_ge_subsidie',
@@ -344,11 +166,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 			,	'ge_EIA', 'KL_e', 'Subsidie',
 					'StateNaAllocatie/Stock/Oi_ge_subsidie',
 					AF28_MR,
-					''
-
-			,	'EEA', 'BestaandeWoning/Eigenaar', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_ge_subsidie',
-					'',
 					''
 
 		// ===== Inpandige Distributie kosten
@@ -372,11 +189,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AF28_MR,
 					''
 
-			,	'@RO@_EEA', 'InpandigeDistributeur', 'Subsidie',
-					'StateNaAllocatie/flow/Oe_id_subsidie * '+ROSEL,
-					'',
-					''
-
 		// ===== WijkDistributie kosten
 			,	'@RO@', 'KL_p', 'WijkDistributeur', 
 					'StateNaAllocatie/Stock/Ki_wd * '+ROSEL, 
@@ -398,22 +210,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AF28_MR,
 					''
 
-/*
-			,	'@RO@_EEA', 'WijkDistributeur', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_wd_subsidie * '+ROSEL,
-					'',
-					''
-			,	'@RO@_bijstook', 'AardGas', 'WijkDistributeur', 
-					'StateNaAllocatie/Flow/Km_wd_verbruik * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-			// TODO: 'bijstookCO2', 'EmissieRechten', 'AardGas', 
-
-			,	'@RO@_bijstook', 'EnergieHeffing', 'WijkDistributeur', 
-					'(StateNaAllocatie/Flow/Kj_wd_verbruik - StateNaAllocatie/Flow/Km_wd_verbruik) * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-*/
 		// ===== PRIMAIR TRANSPORT
 			,	'@RO@', 'KL_p', 'PrimairTransporteur', 
 					'StateNaAllocatie/Stock/Ki_pt * '+ROSEL, 
@@ -435,11 +231,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AF28_MR,
 					''
 
-			,	'@RO@_EEA', 'PrimairTransporteur', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_pt_subsidie * '+ROSEL,
-					'',
-					''
-
 		// ===== OPWEKKING
 			,	'@RO@', 'KL_p', '@RO@', 
 					'StateNaAllocatie/Stock/Ki_ow * '+ROSEL, 
@@ -459,66 +250,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 			,	'@RO@_EIA_ov', 'KL_p', 'Subsidie',
 					'StateNaAllocatie/Stock/Oi_ow_subsidie * '+ROSEL,
 					AF28_MR,
-					''
-
-			,	'@RO@_EEA', '@RO@', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_ow_subsidie *'+ROSEL,
-					'',
-					''
-			,	'Commodity', 'WarmteInkoop', '@RO@', 
-					'StateNaAllocatie/Flow/Km_ow_verbruik * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'Opwekking', 'EnergieHeffing', '@RO@', 
-					'(StateNaAllocatie/Flow/Kj_ow_verbruik - StateNaAllocatie/Flow/Km_ow_verbruik) * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-				// TODO: CO2 heffing van gasinkoop tbv bijstook apart boeken.
-				
-//				,	'warmte_pt_@RO@', 'PrimairTransporteur', 'WijkDistributeur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
-//				,	'warmte_ow_@RO@', '@RO@',             'PrimairTransporteur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
-//				,	'Km_Opwekking', 'LokaleOpwekking', 'KL_e',   'BebouwingsComponenten/@BC@/kosten/Ki_totaal',AF15_m, PRR, PRR
-//				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'BebouwingsComponenten/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
-				
-
-		// ===== generieke kostenspecificatie voor alle gebiedsoptie actoren
-/* REMOVE		
-			,	'@RO@', 'Onderhoud', '@GOAN@', 
-					'StateNaAllocatie/Flow/Kj_@GOAC@_oh * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Admin', '@GOAN@', 
-					'StateNaAllocatie/Flow/Kj_@GOAC@_adm * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-*/	
-		// ===== LEVERANCIER
-			,	'Verrekening', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_ge_Netto', 
-					'', 
-					''
-
-			,	'Verrekening', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_id_netto',
-					'', 
-					''
-
-			,	'Verrekening', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_wd_netto',
-					'', 
-					''
-
-			,	'Verrekening', 'PrimairTransporteur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_pt_netto',
-					'', 
-					''
-
-			,	'Verrekening', '@RO@', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_ow_netto * '+ROSEL,
-					'', 
 					''
 
 		// ===== WKO
@@ -543,21 +274,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AFAB_ID, 
 					''
 
-		// ===== WKO vergoedingen van vastrecht en warmte aan leveranciers
-			,	'Verbruik_@CO@', 'Leverancier', '@WKOC@/Gebruiker',
-					'StateNaAllocatie/@CO@/Oj_verbruik/@WKOC@', // Vastrecht, warmte, en koude
-					'', 
-					''
-
-			,	'Verbruik_@CO@', 'BTW', '@BTW@/Gebruiker',
-					'StateNaAllocatie/@CO@/Oj_verbruik/@BTW@ * ' + VAT_F,
-					'', 
-					''
-
-//			,	'Koude_@CO@', '@WKOC@/Gebruiker', 'Comfort',
-//					'StateNaAllocatie/@CO@/Om_comfort/@WKOC@', // Vastrecht, warmte, en koude
-//					'', 
-//					''
 		// ===== WKO Eigenaar kosten
  			,	'projectmanagement_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
 					'StateNaAllocatie/@CO@/Ki_ge_pm', 
@@ -589,11 +305,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AF28_MR,
 					''
 
-			,	'EEA_@CO@', 'BestaandeWoning/Eigenaar', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_ge',
-					'',
-					''
-//
 		// ===== WKO Inpandige Distributie kosten
 			,	'@CO@', 'KL_p', 'InpandigeDistributeur', 
 					'StateNaAllocatie/@CO@/Ki_id', 
@@ -614,16 +325,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					'StateNaAllocatie/@CO@/Si_id', 
 					AF28_MR,
 					''
-
-			,	'@CO@_EEA', 'InpandigeDistributeur', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_id', 
-					'',
-					''
-
-// 			,	'@CO@', 'Onderhoud', 'InpandigeDistributeur', 
-// 					'StateNaAllocatie/@CO@/Kj_id_o',
-// 					'',  // TODO: Niet voor WKO
-// 					''
 
 		// ===== WKO WijkDistributie kosten
 			,	'@CO@', 'KL_p', 'WijkDistributeur', 
@@ -646,26 +347,6 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					AF28_MR,
 					''
 
-			,	'@CO@_EEA', 'WijkDistributeur', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_wd', 
-					'',
-					''
-
-//			,	'@CO@', 'Onderhoud', 'WijkDistributeur', 
-//					'StateNaAllocatie/@CO@/Kj_wd_onderhoud',
-//					'',
-//					''
-//					
-//			,	'@CO@', 'Admin', 'WijkDistributeur', 
-//					'StateNaAllocatie/@CO@/Kj_wd_adm',
-//					'',
-//					''
-//					
-			,	'@CO@', 'Precario', 'WijkDistributeur', 
-					'StateNaAllocatie/@CO@/Kj_wd_pr',
-					'',
-					''
-//
 		// ===== WKO OPWEKKING
 			,	'@CO@', 'KL_p', '@CO@', 
 					'StateNaAllocatie/@CO@/Ki_ow', 
@@ -686,61 +367,8 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 					'StateNaAllocatie/@CO@/Si_ow', 
 					AF28_MR,
 					''
-
-			,	'@CO@_EEA', '@CO@', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_ow', 
-					'',
-					''
-
-			,	'', 'Onderhoud', '@CO@', 
-					'StateNaAllocatie/@CO@/Kj_ow_o',
-					'',
-					''
-
-//			,	'', 'Admin', '@CO@', 
-//					'StateNaAllocatie/@CO@/Kj_ow_adm',
-//					'',
-//					''
-//					
-			,	'Commodity', 'Elektriciteit', '@CO@', 
-					'StateNaAllocatie/@CO@/Km_ow_e', 
-					'',
-					''
-
-//			,	'CO2@CO@', 'EmissieRechten', 'Elektriciteit', // TODO: CO2 is nu opgesplitst in wd en id voor LT; heffing niet berekend; default werd gebruikt die op 0 stond.
-//					'StateNaAllocatie/@CO@/KCO2_ow_e', 
-//					'',
-//					''
-
-//			,	'Opwekking', 'EnergieHeffing', '@CO@', 
-//					'StateNaAllocatie/@CO@/KEH_ow_e', // TODO: is nu opgesplits in Kj_wd_elek_EH en Kj_id_elek_EH voor LT; default werd gebruikt die op 0 stond.
-//					'',
-//					''
-
-		// ===== WKO LEVERANCIER
-			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_ge_netto', 
-					'',
-					''
-
-			,	'Verrekening@CO@', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_id_netto', 
-					'',
-					''
-			,	'Verrekening@CO@', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_wd_netto', 
-					'',
-					''
-			,	'Verrekening', '@CO@', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_ow_netto', 
-					'',
-					''
-//			,	'@CO@', 'Admin', 'Leverancier', 
-//					'StateNaAllocatie/Flow/Kj_lv_adm * '+ROSEL,
-//					'',  // TODO: Niet voor WKO
-//					''
-//			
 			);
+//REMOVE*/			
 		}
 
 		attribute<string> Name         := Elements/Text[value(id(.)* nrAttr + 0, Elements)];

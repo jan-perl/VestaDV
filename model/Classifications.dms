@@ -728,8 +728,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<bool> is_Kj := left(name, 2) == 'Kj';
 		attribute<bool> is_Oj := left(name, 2) == 'Oj';
 		
-		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
-		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+full_name: '' ,GebiedsOptieActor_rel)+')';
 		
 		attribute<string> descr: [
 			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA_@RO@', 'Omi_ge_EIA_@RO@',
@@ -772,14 +772,38 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 	unit<uint8> GebiedsOptie_Stock : nrofrows = 12
 	{
-		attribute<string> name: [ 'Oi_lv_Aansl', 'Ki_ge_ov', 'Ki_ge_pm', 'Oi_ge_EIA', 'Ki_id', 'Oi_id_EIA', 'Ki_wd', 'Oi_wd_EIA', 'Ki_pt', 'Oi_pt_EIA', 'Ki_ow', 'Oi_ow_EIA' ];
-		attribute<string> actor_code: [ 'lv', 'ge', 'ge', 'ge', 'id', 'id', 'wd', 'wd', 'pt', 'pt', 'ow', 'ow'];
+		attribute<string> name: [ 
+			'Oi_lv_Aansl', 'Ki_ge_ov', 'Ki_ge_pm', 'Oi_ge_EIA', 
+			'Ki_id', 'Oi_id_EIA', 
+			'Ki_wd', 'Oi_wd_EIA', 
+			'Ki_pt', 'Oi_pt_EIA', 
+			'Ki_ow', 'Oi_ow_EIA' 
+		];
+		
+		attribute<string> actor_code: [ 
+			'lv', 'ge', 'ge', 'ge', 
+			'id', 'id', 
+			'wd', 'wd', 
+			'pt', 'pt', 
+			'ow', 'ow'
+		];
+		
+		attribute<string> descr := name+iif(leverancier == '@RO@' || afnemer == '@RO@', '', '_@RO@');
+		attribute<string> full_name := name;
 		
 		attribute<string> leverancier : [
-			'xxx', 'ongeriefsvergoeding', 'KL_e', 'KL_e'
+			'Leverancier', 'Comfort', 'Admin', '@BC@', 
+			'InpandigeDistributie', 'InpandigeDistributeur', 
+			'WijkDistributie', 'WijkDistributeur'
+			'PrimairTransport', 'PrimairTransporteur'
+			'Opwekking', '@RO@'
 		];
 		attribute<string> afnemer : [
-			'xxx',	'KL_e', 'KL_e'
+			'@BC@',	'@BC@', '@BC@', 'Subsidie', 
+			'InpandigeDistributeur', 'Subsidie', 
+			'WijkDistributeur', 'Subsidie',
+			'PrimairTransport', 'Subsidie',
+			'@RO@', 'Subsidie'
 		];
 	}
 	unit<uint8> GebiedsOptie_Verbruik: nrofrows = 11

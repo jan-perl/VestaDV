@@ -298,7 +298,7 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/id], 
 					''
 
-			,	'Vegoeding@RO@', 'WijkDistributeur', 'Leverancier',
+			,	'Vergoeding@RO@', 'WijkDistributeur', 'Leverancier',
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/wd], 
 					''
 
@@ -306,7 +306,7 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/wd], 
 					''
 
-			,	'Vegoeding@RO@', 'PrimairTransport', 'Leverancier',
+			,	'Vergoeding@RO@', 'PrimairTransport', 'Leverancier',
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 
@@ -314,7 +314,7 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 
-			,	'Vegoeding', '@RO@', 'Leverancier',
+			,	'Vergoeding', '@RO@', 'Leverancier',
 					Classifications/GebiedsOptie_Flow/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/ow], 
 					''
 
