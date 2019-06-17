@@ -247,11 +247,12 @@ template WKO
 					attribute<Eur_yr> Kj_ge_hv     (PlanRegio) :=	const(0[Eur_yr], PlanRegio); // geen huurverlaging bij LT netten
 					attribute<Eur_yr> Kji_ge_ov    (PlanRegio) :=	stock/ki_ge_ov	 	* (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 					attribute<Eur_yr> Kji_ge_pm    (PlanRegio) :=	stock/ki_ge_pm 		* (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+					
 					attribute<Eur_yr> Kmi_ge_ov    (PlanRegio) :=	NCW/mr28/AnnualisationFactor * stock/ki_ge_ov;
 					attribute<Eur_yr> Kmi_ge_pm    (PlanRegio) :=	NCW/mr28/AnnualisationFactor * stock/ki_ge_pm;
 					attribute<Eur_yr> Om_ge_comfort(PlanRegio) :=	='add('+AsItemList('.../Om_Comfort/'+WkoComponent/Name)+')';
 					
-					attribute<Eur_yr> Kji_ge_Aansl (PlanRegio) := Stock/Oi_lv_Aansl * NCW/bw28/AnnualisationFactor;
+					attribute<Eur_yr> Bji_ge_Aansl (PlanRegio) := Stock/Oi_lv_Aansl * NCW/bw28/AnnualisationFactor;
 					attribute<Eur_yr> Oji_ge_EIA   (PlanRegio) :=	stock/Oi_ge_EIA * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
 					attribute<Eur_yr> Omi_ge_EIA   (PlanRegio) :=	NCW/mr28/AnnualisationFactor * stock/Oi_ge_EIA;
 				}

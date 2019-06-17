@@ -635,7 +635,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 // =========  Classificaties voor montaire units
 
-	unit<uint32> Kostensoort : nrofrows = 27
+	unit<uint32> Kostensoort : nrofrows = 28
 	{
 		parameter<uint32> nrAttr := 4;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -658,6 +658,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 				,'PrimairTransport'      ,'True'                   ,'False',  ''
 				,'Opwekking'             ,'True'                   ,'False',  ''
 				,'WarmteInkoop'          ,'True'                   ,'False',  ''
+				,'GebouwEigenaar'        ,'False'                  ,'False',  'ge'
 				,'InpandigeDistributeur' ,'False'                  ,'False',  'id'
 				,'WijkDistributeur'      ,'False'                  ,'False',  'wd'
 				,'PrimairTransporteur'   ,'False'                  ,'False',  'pt'
@@ -691,6 +692,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	{
 		attribute<string> name := Actor/name[nr_OrgEntity];
 		attribute<string> code := Actor/GebiedsOptieActorCode[nr_OrgEntity];
+		
+		container V := for_each_nedv(code, string(id(.))+'[..]', void, .);
 	}
 	unit<uint8> GebiedsOptieActor_uint8 := range(uint8, 0b, uint8(#GebiedsOptieActor))
 	{
@@ -699,7 +702,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 	unit<uint8> GebiedsOptie_Flow : nrofrows = 70
 	{
-		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
+		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Bji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
 			'Kj_id_oh', 'Kj_id_adm', 'Kji_id', 'Kmi_id', 'Oji_id_EIA', 'Omi_id_EIA', 'Oj_id_EEA', 'Oj_id_SDE',
 			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
