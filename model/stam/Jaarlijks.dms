@@ -13,7 +13,7 @@
 
 container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 67
+	unit<uint32> mutatieSchema: nrofrows = 63
 	{
 		parameter<uint32> nrAttr := 5;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -111,27 +111,31 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					''
 
 			,	'kapitaallasten', 'Netwerk', 'GasNet',
-					'netwerken/aardgas/kapitaallasten',
+					'netwerken/aardgas/Kji_infra',
 					''
 
 			,	'verwijderkosten', 'Netwerk', 'GasNet',
-					'netwerken/aardgas/verwijderkosten',
+					'netwerken/aardgas/Kji_verwijderen',
+					''
+
+			,	'vervangingskosten', 'Netwerk', 'GasNet',
+					'netwerken/aardgas/Kji_vervangen',
 					''
 
 			,	'', 'Onderhoud', 'GasNet',
-					'netwerken/aardgas/onderhoud',
+					'netwerken/aardgas/Kj_oh',
 					''
 
 			,	'kapitaallasten', 'Netwerk', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/kapitaallasten',
+					'netwerken/elektriciteit/Kji_infra',
 					''
 
 			,	'netverzwaring', 'Netwerk', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/netverzwaring',
+					'netwerken/elektriciteit/Kji_verzwaren',
 					''
 
 			,	'', 'Onderhoud', 'ElektriciteitsNet',
-					'netwerken/elektriciteit/onderhoud',
+					'netwerken/elektriciteit/Kj_oh',
 					''
 
 		// ===== Lokale opwekking: eigenaar investeringen
@@ -231,34 +235,14 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					PRR
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
-					'StateNaAllocatie/@RO@/Flow/ge/Bji_ge_Aansl *'+VAT_R,
-					''
-
 			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
 					'StateNaAllocatie/@RO@/Flow/lv/Omi_lv_Aansl * '+VAT_F,
 					''
 
-			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
-					'StateNaAllocatie/@RO@/Flow/lv/Omi_lv_Aansl',
-					''
-
-			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
-					'StateNaAllocatie/@RO@/Flow/lv/Oji_lv_Aansl',
-					''
-
 		// ===== vergoedingen van vastrecht en warmte aan leveranciers
-			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BC@/Aandelen/@RO@', 
-					PRR
-
 			,	'Vastrecht_@RO@', 'BTW', '@BTW@/Gebruiker',
 					'BebouwingsComponenten/@BTW@/Opbrengsten/VastrechtBijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Warmte_@RO@', 'Leverancier', '@BC@/Gebruiker',
-					'BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BC@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BC@/WarmtePrijs', 
-					PRR
 
 			,	'Warmte_@RO@', 'BTW', '@BTW@/Gebruiker',
 					'BebouwingsComponenten/@BTW@/WarmteVraag/deelnemers/Verbruik * Allocatie/@BTW@/Aandelen/@RO@ * StateNaAllocatie/KostenBaten/PlanRegioKaarten/@BTW@/WarmtePrijs * '+VAT_F,

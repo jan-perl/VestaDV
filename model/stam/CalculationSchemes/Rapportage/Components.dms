@@ -11,8 +11,8 @@ template Components
 	attribute<float64> factor (Invoer/SpecifiekeInstellingen/PlanRegio);
 	// end case parameters
 
-	container Jaarlijks := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Jaarlijks, Eur_yr , true , ReportFolder+ '/' + Name + '_Jaarlijks'  , factor);
-	container Eenmalig  := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Eenmalig,  Eur    , false, ReportFolder+ '/' + Name + '_Eenmalig' , factor);
+	container Jaarlijks := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Jaarlijks, Classifications/GebiedsOptie_Flow,  Eur_yr , true , ReportFolder+ '/' + Name + '_Jaarlijks'  , factor);
+	container Eenmalig  := CalculationSchemes/Payments/Main(Model/ReportingMetaData/Eenmalig,  Classifications/GebiedsOptie_Stock, Eur    , false, ReportFolder+ '/' + Name + '_Eenmalig' , factor);
 
 	container Energy := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Verbruik, GJ_yr ,  ReportFolder + '/' + Name + '_Energy', factor, ''                             , PJ_yr);
 	container CO2    := CalculationSchemes/Transformations/Main(Model/ReportingMetaData/Uitstoot, kg_yr ,  ReportFolder + '/' + Name + '_CO2'   , factor, 'CO2_' + string(ZichtJaar_jaar), kg_GJ);

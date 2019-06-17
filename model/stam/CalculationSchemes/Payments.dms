@@ -83,7 +83,8 @@ container Payments: FreeData = "False" // DEBUG
 	template Main
 	{
 		// begin case parameters
-		container          Accounting;
+		container          Accounting1;
+		unit<uint8>        Accounting2;
 		unit<float64>      Quantity;
 		parameter<bool>    is_flow; // false: calc stock only
 		parameter<string>  OutputSubFolder;
@@ -98,8 +99,30 @@ container Payments: FreeData = "False" // DEBUG
 		
 		container impl: IsHidden = "True"
 		{
-			container applyBC  := substitute(Accounting/mutatie,'@BC@'   ,BC);
-			container applyRO  := substitute(applyBC/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
+			unit<uint32> src := Accounting1/mutatie;
+			
+			unit<uint8> Accounting2Subset := subset(Accounting2/leverancier != '')
+			{
+				attribute<string> name          := Accounting2/name       [nr_OrgEntity];
+				attribute<string> leverancier   := Accounting2/leverancier[nr_OrgEntity];
+				attribute<string> afnemer       := Accounting2/afnemer    [nr_OrgEntity];
+				attribute<string> full_name     := Accounting2/full_name  [nr_OrgEntity];
+			}
+			unit<uint32> Accounting := union_unit(src, Accounting2Subset) {
+				attribute<string> name          := union_data(., src/name        , Accounting2Subset/name);
+				attribute<string> leverancier   := union_data(., src/leverancier , Accounting2Subset/leverancier);
+				attribute<string> afnemer       := union_data(., src/afnemer     , Accounting2Subset/afnemer);
+				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+Accounting2Subset/full_name);
+				attribute<string> PlanRegioRel  := union_data(., src/PlanRegioRel, const('', Accounting2Subset));
+			}
+			
+			unit<uint8> WKOC := subset(BC/KanWKO)
+			{
+				attribute<string> name := BC/name[nr_OrgEntity];
+			}
+			container applyBC  := substitute(Accounting,    '@BC@'   ,BC);
+			container applyWKOC:= substitute(applyBC/result,'@WKOC@', WKOC);
+			container applyRO  := substitute(applyWKOC/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
 
 			unit<uint32> mutatie := applyRO/result
 			{
