@@ -27,7 +27,6 @@ container Payments: FreeData = "False" // DEBUG
 			attribute<string> leverancier   := replace(src/leverancier [src_rel], key, valueset_name, key2, valueset_code);
 			attribute<string> afnemer       := replace(src/afnemer     [src_rel], key, valueset_name, key2, valueset_code);
 			attribute<string> Expr          := replace(src/Expr        [src_rel], key, valueset_name, key2, valueset_code);
-			attribute<string> AnnuFactor    := replace(src/AnnuFactor  [src_rel], key, valueset_name, key2, valueset_code);
 			attribute<string> PlanRegioRel  := replace(src/PlanRegioRel[src_rel], key, valueset_name, key2, valueset_code);
 		}
 	}
@@ -41,7 +40,7 @@ container Payments: FreeData = "False" // DEBUG
 		// end case parameters
 
 		unit<uint32> mutatie_elem := impl/mutatie_elem;
-		unit<uint32> mut          := subset(mutatie_elem/actor_rel == Actor_rel && mutatie_elem/is_active)
+		unit<uint32> mut          := subset(mutatie_elem/actor_rel == Actor_rel)
 		{
 			attribute<mutatie_elem> mutatie_elem_rel := nr_OrgEntity;
 			attribute<Actor>        other_rel        := mutatie_elem/other_rel[mutatie_elem_rel];
@@ -99,17 +98,10 @@ container Payments: FreeData = "False" // DEBUG
 		
 		container impl: IsHidden = "True"
 		{
-			unit<uint8> WKOC := subset(BC/KanWKO)
-			{
-				attribute<string> name := BC/name[nr_OrgEntity];
-			}
-
 			container applyBC  := substitute(Accounting/mutatie,'@BC@'   ,BC);
-			container applyWKO := substitute(applyBC/result    ,'@WKOC@' ,WKOC);
-			container applyRO  := substitute(applyWKO/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
-			container applyCO  := substitute(applyRO/result    ,'@CO@'   ,Voorkeuren/ClusterOptie);
+			container applyRO  := substitute(applyBC/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
 
-			unit<uint32> mutatie := applyCO/result
+			unit<uint32> mutatie := applyRO/result
 			{
 				attribute<Actor> Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
 				attribute<Actor> Afnemer_rel     := rlookup(Afnemer,     Actor/name), IntegrityCheck = "IsDefined(this)";
@@ -124,14 +116,11 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<string> entityRel  := union_data(., mutatie/PlanRegioRel, mutatie/PlanRegioRel);
 				attribute<string> ExprBase   := union_data(., '-('+mutatie/Expr+')', '('+mutatie/Expr+')');
 				attribute<string> AnnuFactor := union_data(., mutatie/AnnuFactor,  mutatie/AnnuFactor);
-				attribute<bool  > has_af     := AnnuFactor  != '';
-				attribute<bool  > is_active  := has_af || is_flow;
-				attribute<string> ExprProd   := has_af && is_flow ? ExprBase + ' * ('+AnnuFactor+')' : ExprBase;
-				attribute<string> ExprSum    := entityRel <> '' ? 'sum('+ExprProd + ', '+entityRel+')' : ExprProd;
+				attribute<string> ExprSum    := entityRel <> '' ? 'sum('+ExprBase + ', '+entityRel+')' : ExprBase;
 				attribute<string> Expr       := ExprSum +' * fraction';
 			}
 
-			unit<uint32> active_actor := subset(sum(uint32(mutatie_elem/is_active), mutatie_elem/actor_rel) > 0)
+			unit<uint32> active_actor := subset(pcount(mutatie_elem/actor_rel) > 0)
 			{
 				attribute<Actor>  Actor_rel                := nr_OrgEntity;
 				attribute<string> name                     := Actor/full_name[Actor_rel];
