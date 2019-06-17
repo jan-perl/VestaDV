@@ -699,11 +699,11 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 	unit<uint8> GebiedsOptie_Flow : nrofrows = 69
 	{
-		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
+		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
-			'Kj_id_oh', 'Kj_id_adm', 'Kji_id', 'Kmi_id', 'Oji_id_EIA', 'Omi_id_EIA', 'Oj_id_SDE', 'Oj_id_EEA',
+			'Kj_id_oh', 'Kj_id_adm', 'Kji_id', 'Kmi_id', 'Oji_id_EIA', 'Omi_id_EIA', 'Oj_id_EEA', 'Oj_id_SDE',
 			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
-			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_SDE', 'Oj_wd_EEA',
+			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_EEA', 'Oj_wd_SDE',
 			'Kj_pt_oh', 'Kj_pt_adm', 'Kji_pt', 'Kmi_pt', 'Oji_pt_EIA', 'Omi_pt_EIA', 'Oj_pt_EEA',
 			'Kj_ow_gas', 'Km_ow_gas', 'Kj_ow_gas_EH', 'Kj_ow_gas_CO2', 'Kj_ow_elek', 'Km_ow_elek', 'Kj_ow_elek_EH', 'Kj_ow_elek_CO2', 
 			'Kj_ow_productie', 
@@ -711,7 +711,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik', 'Oj_lv_vastrecht', 'Oj_lv_SDE'
 			];
 		attribute<string> actor_code: [
-			'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 
+			'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 'ge', 
 			'id', 'id', 'id', 'id', 'id', 'id', 'id', 'id', 
 			'id', 'id', 'id', 'id', 'id', 'id', 'id', 'id', 
 			'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 'wd', 
@@ -721,25 +721,40 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 'ow', 
 			'lv', 'lv', 'lv', 'lv', 'lv'
 		];
-		attribute<string> descr: ['Huurverlaging_@CO@', 'ongeriefsvergoeding_E@CO@', 'projectmanagement_E@CO@', 'ongeriefsvergoeding_M@CO@', 'projectmanagement_M@CO@', 'Koude_@CO@', 'Oji_ge_EIA', 'Omi_ge_EIA',
-			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
-			'Kj_id_oh', 'Kj_id_adm', '@CO@', '@CO@', '@RO@_EIA', '@RO@_id_EIA', '@RO@_id_SDE', '@RO@_EEA',
-			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
-			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_SDE', 'Oj_wd_EEA',
+		attribute<string> descr: [
+			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA', 'Omi_ge_EIA',
+			'', '@RO@_bijstook_id', '@RO@_bijstook_id_gas', '@RO@_bijstook_id_gas_CO2', '', '@RO@_bijstook_id', '@RO@_bijstook_id_elek', '@RO@_bijstook_id_elek_CO2',
+			'Kj_id_oh', 'Kj_id_adm', '@RO@', '@RO@', '@RO@_EIA', '@RO@_id_EIA', '@RO@_EEA', '@RO@_id_SDE',
+			'', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas_CO2', '', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek_CO2',
+			'Kj_wd_oh', 'Kj_wd_adm', 'Kji_wd', 'Kmi_wd', 'Oji_wd_EIA', 'Omi_wd_EIA', 'Oj_wd_EEA', 'Oj_wd_SDE',
 			'Kj_pt_oh', 'Kj_pt_adm', 'Kji_pt', 'Kmi_pt', 'Oji_pt_EIA', 'Omi_pt_EIA', 'Oj_pt_EEA',
-			'Kj_ow_gas', 'Km_ow_gas', 'Kj_ow_gas_EH', 'Kj_ow_gas_CO2', 'Kj_ow_elek', 'Km_ow_elek', 'Kj_ow_elek_EH', 'Kj_ow_elek_CO2', 
+			'', '@RO@_ow_gas', '@RO@_ow_gas', '@RO@_ow_gas_CO2', '', '@RO@_ow_elek', '@RO@_ow_elek', '@RO@_ow_elek_CO2',			
 			'Kj_ow_productie', 
 			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow', 'Oji_ow_EIA', 'Omi_ow_EIA', 'Oj_ow_EEA', 'Oj_ow_SDE',
 			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik', 'Oj_lv_vastrecht', 'Oj_lv_SDE'
-			];
+		];
 		attribute<string> full_name := actor_code + '/' + name;
 		attribute<string> leverancier : [
-			'Comfort', 'KL_e', 'KL_e', 'Comfort', 'Admin', '@WKOC@/Gebruiker', 'BestaandeWoning/Eigenaar', 'KL_e'
-		,	'Onderhoud', 'Admin', 'KL_p', 'InpandigeDistributie', 'InpandigeDistributeur', 'KL_p', 'xxx (SDE)',  'InpandigeDistributeur'
+			'Comfort', 'KL_e', 'KL_e', 'Comfort', 'Admin', '@WKOC@/Gebruiker', 'KL_e', 'BestaandeWoning/Eigenaar', 'KL_e'
+		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
+		,	'Onderhoud', 'Admin', 'KL_p', 'InpandigeDistributie', 'InpandigeDistributeur', 'KL_p', 'InpandigeDistributeur',  'InpandigeDistributeur'
+		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
+		,	'Onderhoud', 'Admin', 'KL_p', 'WijkDistributie', 'WijkDistributeur', 'KL_p', 'WijkDistributeur',  'WijkDistributeur'
+		,	'Onderhoud', 'Admin', 'KL_p', 'WijkDistributie', 'WijkDistributeur', 'KL_p', 'WijkDistributeur'
+		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
+		,	'WarmteInkoop'
+		,	'Onderhoud', 'Admin', 'KL_p', 'Opwekking', '@RO@', 'KL_p', '@RO@',  '@RO@'
 		];
 		attribute<string> afnemer : [
-			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort', 'KL_e', 'Subsidie'
-			'InpandigeDistributeur', 'InpandigeDistributeur', 'InpandigeDistributeur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
+			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort',	'BestaandeWoning/Eigenaar', 'KL_e', 'Subsidie'
+		,	'', 'InpandigeDistributeur', 'InpandigeDistributeur', 'AardGas', '', 'InpandigeDistributeur', 'InpandigeDistributeur', 'Elektriciteit'
+		,	'InpandigeDistributeur', 'InpandigeDistributeur', 'InpandigeDistributeur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
+		,	'', 'WijkDistributeur', 'WijkDistributeur', 'AardGas', '', 'WijkDistributeur', 'WijkDistributeur', 'Elektriciteit'
+		,	'WijkDistributeur', 'WijkDistributeur', 'WijkDistributeur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
+		,	'PrimairTransporteur', 'PrimairTransporteur', 'PrimairTransporteur', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie'
+		,	'', '@RO@', '@RO@', 'AardGas', '', '@RO@', '@RO@', 'Elektriciteit'
+		'	@RO@'
+		,	'@RO@', '@RO@', '@RO@', 'KL_p', 'KL_p', 'Subsidie', 'Subsidie', 'Subsidie'
 		];
 	}
 	unit<uint8> GebiedsOptie_Stock : nrofrows = 12

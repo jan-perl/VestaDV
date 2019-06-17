@@ -31,7 +31,7 @@ container Basis: Using = "Units"
 	}
 
 	parameter<Percent> VAT    := 21[Percent];                 // zie ook: Beleid/EIA/gebouw/E_bw
-	parameter<Percent> VAT_gv := 0.5 * (21.0 + 6.0)[Percent]; // BTW op gebouwverbetering
+	parameter<Percent> VAT_gv := 0.5 * (21.0 + 9.0)[Percent]; // BTW op gebouwverbetering
 
 	// parameter: prijzenbron
 	//

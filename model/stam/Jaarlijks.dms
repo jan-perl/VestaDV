@@ -11,9 +11,9 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "True"
+container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 133
+	unit<uint32> mutatieSchema: nrofrows = 61
 	{
 		parameter<uint32> nrAttr := 6;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -295,24 +295,24 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
 			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@ * '+VAT_R,
-					AFAB_GE, 
-					PRR
+					'StateNaAllocatie/@RO@/Flow/ge/Kji_lv_Aansl *'+VAT_R,
+					'', 
+					''
 
 			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
-					'BebouwingsComponenten/@BTW@/Opbrengsten/AansluitbijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
-					AFAB_MR,
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
+					'StateNaAllocatie/@RO@/Flow/lv/Kmi_lv_Aansl * '+VAT_F,
+					'',
+					''
 
 			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
-					AFAB_MR, 
-					PRR
+					'StateNaAllocatie/@RO@/Flow/lv/Omi_lv_Aansl',
+					'', 
+					''
 
 			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
-					AFAB_WD, 
-					PRR
+					'StateNaAllocatie/@RO@/Flow/lv/Oji_lv_Aansl',
+					'', 
+					''
 
 		// ===== vergoedingen van vastrecht en warmte aan leveranciers
 			,	'Vastrecht_@RO@', 'Leverancier', '@BC@/Gebruiker',
@@ -335,418 +335,24 @@ container Accounting: Using = "Units;Geography", KeepData = "True", isHidden = "
 					'', 
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
-		// ===== Eigenaar kosten
-			,	'EIA', 'BestaandeWoning/Eigenaar', 'KL_e',
-					'StateNaAllocatie/Stock/Oi_ge_subsidie',
-					AF28_BW,
-					''
-
-			,	'ge_EIA', 'KL_e', 'Subsidie',
-					'StateNaAllocatie/Stock/Oi_ge_subsidie',
-					AF28_MR,
-					''
-
-			,	'EEA', 'BestaandeWoning/Eigenaar', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_ge_subsidie',
-					'',
-					''
-
-		// ===== Inpandige Distributie kosten
-			,	'@RO@', 'KL_p', 'InpandigeDistributeur', 
-					'StateNaAllocatie/Stock/Ki_id * '+ROSEL, 
-					AF28_ID, 
-					''
-
-			,	'@RO@', 'InpandigeDistributie', 'KL_p', 
-					'StateNaAllocatie/Stock/Ki_id * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'InpandigeDistributeur', 'KL_p',
-					'StateNaAllocatie/Stock/Oi_id_subsidie * '+ROSEL,
-					AF28_ID,
-					''
-	
-			,	'@RO@_EIA_id', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Stock/Oi_id_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-			,	'@RO@_EEA', 'InpandigeDistributeur', 'Subsidie',
-					'StateNaAllocatie/flow/Oe_id_subsidie * '+ROSEL,
-					'',
-					''
-
-		// ===== WijkDistributie kosten
-			,	'@RO@', 'KL_p', 'WijkDistributeur', 
-					'StateNaAllocatie/Stock/Ki_wd * '+ROSEL, 
-					AF28_WD, 
-					''
-
-			,	'@RO@', 'WijkDistributie', 'KL_p', 
-					'StateNaAllocatie/Stock/Ki_wd * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'WijkDistributeur', 'KL_p',
-					'StateNaAllocatie/Stock/Oi_wd_subsidie * '+ROSEL,
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_wd', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Stock/Oi_wd_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-			,	'@RO@_EEA', 'WijkDistributeur', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_wd_subsidie * '+ROSEL,
-					'',
-					''
-
-			,	'@RO@_bijstook', 'AardGas', 'WijkDistributeur', 
-					'StateNaAllocatie/Flow/Km_wd_verbruik * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-			// TODO: 'bijstookCO2', 'EmissieRechten', 'AardGas', 
-
-			,	'@RO@_bijstook', 'EnergieHeffing', 'WijkDistributeur', 
-					'(StateNaAllocatie/Flow/Kj_wd_verbruik - StateNaAllocatie/Flow/Km_wd_verbruik) * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-		// ===== PRIMAIR TRANSPORT
-			,	'@RO@', 'KL_p', 'PrimairTransporteur', 
-					'StateNaAllocatie/Stock/Ki_pt * '+ROSEL, 
-					AF28_PT, 
-					''
-
-			,	'@RO@', 'PrimairTransport', 'KL_p', 
-					'StateNaAllocatie/Stock/Ki_pt * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'PrimairTransporteur', 'KL_p',
-					'StateNaAllocatie/Stock/Oi_pt_subsidie * '+ROSEL,
-					AF28_PT,
-					''
-
-			,	'@RO@_EIA_pt', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Stock/Oi_pt_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-			,	'@RO@_EEA', 'PrimairTransporteur', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_pt_subsidie * '+ROSEL,
-					'',
-					''
-
-		// ===== OPWEKKING
-			,	'@RO@', 'KL_p', '@RO@', 
-					'StateNaAllocatie/Stock/Ki_ow * '+ROSEL, 
-					AF28_OW, 
-					''
-
-			,	'@RO@', 'Opwekking', 'KL_p', 
-					'StateNaAllocatie/Stock/Ki_ow * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', '@RO@', 'KL_p',
-					'StateNaAllocatie/Stock/Oi_ow_subsidie * '+ROSEL,
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_ov', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Stock/Oi_ow_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-			,	'@RO@_EEA', '@RO@', 'Subsidie',
-					'StateNaAllocatie/Flow/Oe_ow_subsidie *'+ROSEL,
-					'',
-					''
-			,	'Commodity', 'WarmteInkoop', '@RO@', 
-					'StateNaAllocatie/Flow/Km_ow_verbruik * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'Opwekking', 'EnergieHeffing', '@RO@', 
-					'(StateNaAllocatie/Flow/Kj_ow_verbruik - StateNaAllocatie/Flow/Km_ow_verbruik) * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-				// TODO: CO2 heffing van gasinkoop tbv bijstook apart boeken.
-				
-//				,	'warmte_pt_@RO@', 'PrimairTransporteur', 'WijkDistributeur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
-//				,	'warmte_ow_@RO@', '@RO@',             'PrimairTransporteur', 'GebiedsAllocatie/@RO@/Kj_Totaal', '', '', ''
-//				,	'Km_Opwekking', 'LokaleOpwekking', 'KL_e',   'BebouwingsComponenten/@BC@/kosten/Ki_totaal',AF15_m, PRR, PRR
-//				,	'Kj_Opwekking', 'KL_e', '@BC@/Eigenaar', 'BebouwingsComponenten/@BC@/kosten/Ki_totaal', AF15_e, PRR, ''
-				
-
-		// ===== generieke kostenspecificatie voor alle gebiedsoptie actoren
-			,	'@RO@', 'Onderhoud', '@GOAN@', 
-					'StateNaAllocatie/Flow/Kj_@GOAC@_oh * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-
-			,	'@RO@', 'Admin', '@GOAN@', 
-					'StateNaAllocatie/Flow/Kj_@GOAC@_adm * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-			,	'@RO@', 'Precario', '@GOAN@', 
-					'StateNaAllocatie/Flow/Kj_@GOAC@_precario * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-	
 		// ===== LEVERANCIER
-			,	'Verrekening', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_ge_Netto', 
-					'', 
+			,	'Verrekening@RO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
+					'StateNaAllocatie/@RO@/Flow/lv/Kji_ge_netto', 
+					'',
 					''
 
-			,	'Verrekening', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_id_netto',
-					'', 
+			,	'Verrekening@RO@', 'InpandigeDistributeur', 'Leverancier',
+					'StateNaAllocatie/@RO@/Flow/lv/Kji_id_netto', 
+					'',
 					''
-
-			,	'Verrekening', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_wd_netto',
-					'', 
+			,	'Verrekening@RO@', 'WijkDistributeur', 'Leverancier',
+					'StateNaAllocatie/@RO@/Flow/lv/Kji_wd_netto', 
+					'',
 					''
-
-			,	'Verrekening', 'PrimairTransporteur', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_pt_netto',
-					'', 
-					''
-
 			,	'Verrekening', '@RO@', 'Leverancier',
-					'StateNaAllocatie/Flow/Kji_ow_netto * '+ROSEL,
-					'', 
-					''
-
-			,	'@RO@', 'Admin', 'Leverancier', 
-					'StateNaAllocatie/Flow/Kj_lv_adm * '+ROSEL,
-					'',  // TODO: Niet voor WKO
-					''
-		// ===== WKO
-		// ===== WKO vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@CO@', 'KL_e', '@WKOC@/Eigenaar',
-					'StateNaAllocatie/@CO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))', 
-					'BebouwingsComponenten/@WKOC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
-					''
-
-			,	'Aansluitbijdrage_@CO@_@BTW@', 'BTW', 'KL_e',
-					'StateNaAllocatie/@CO@/Oi_Aansl/@BTW@ * '+VAT_F,
-					AFAB_MR,
-					''
-
-			,	'Aansluitbijdrage_@CO@_@WKOC@', 'KL_p', 'KL_e',
-					'StateNaAllocatie/@CO@/Oi_Aansl/@WKOC@', 
-					AFAB_MR, 
-					''
-
-			,	'Aansluitbijdrage_@CO@_@WKOC@', 'Leverancier', 'KL_p',
-					'StateNaAllocatie/@CO@/Oi_Aansl/@WKOC@', 
-					AFAB_ID, 
-					''
-
-		// ===== WKO vergoedingen van vastrecht en warmte aan leveranciers
-			,	'Verbruik_@CO@', 'Leverancier', '@WKOC@/Gebruiker',
-					'StateNaAllocatie/@CO@/Oj_verbruik/@WKOC@', // Vastrecht, warmte, en koude
-					'', 
-					''
-
-			,	'Verbruik_@CO@', 'BTW', '@BTW@/Gebruiker',
-					'StateNaAllocatie/@CO@/Oj_verbruik/@BTW@ * ' + VAT_F,
-					'', 
-					''
-
-//			,	'Koude_@CO@', '@WKOC@/Gebruiker', 'Comfort',
-//					'StateNaAllocatie/@CO@/Om_comfort/@WKOC@', // Vastrecht, warmte, en koude
-//					'', 
-//					''
-		// ===== WKO Eigenaar kosten
- 			,	'projectmanagement_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/@CO@/Ki_ge_pm', 
-					AF28_BW,
-					''
-
-			,	'ongeriefsvergoeding_@CO@', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/@CO@/Ki_ge_ov', 
-					AF28_BW,
-					''
-
-			,	'projectmanagement_@CO@', 'Admin', 'KL_e',
-					'StateNaAllocatie/@CO@/Ki_ge_pm', 
-					AF28_MR,
-					''
-
-			,	'ongeriefsvergoeding_@CO@', 'Comfort', 'KL_e',
-					'StateNaAllocatie/@CO@/Ki_ge_ov',
-					AF28_MR, 
-					''
-
-			,	'EIA_@CO@', 'BestaandeWoning/Eigenaar', 'KL_e',
-					'StateNaAllocatie/@CO@/Si_ge',
-					AF28_BW,
-					''
-
-			,	'EIA_@CO@', 'KL_e', 'Subsidie',
-					'StateNaAllocatie/@CO@/Si_ge',
-					AF28_MR,
-					''
-
-			,	'EEA_@CO@', 'BestaandeWoning/Eigenaar', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_ge',
+					'StateNaAllocatie/@RO@/Flow/lv/Kji_ow_netto', 
 					'',
 					''
-//
-		// ===== WKO Inpandige Distributie kosten
-			,	'@CO@', 'KL_p', 'InpandigeDistributeur', 
-					'StateNaAllocatie/@CO@/Ki_id', 
-					AF28_ID, 
-					''
-
-			,	'@CO@', 'InpandigeDistributie', 'KL_p', 
-					'StateNaAllocatie/@CO@/Ki_id', 
-					AF28_MR, 
-					''
-
-			,	'@CO@_EIA', 'InpandigeDistributeur', 'KL_p',
-					'StateNaAllocatie/@CO@/Si_id', 
-					AF28_ID,
-					''
-
-			,	'@CO@_EIA_id', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@CO@/Si_id', 
-					AF28_MR,
-					''
-
-			,	'@CO@_EEA', 'InpandigeDistributeur', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_id', 
-					'',
-					''
-
-// 			,	'@CO@', 'Onderhoud', 'InpandigeDistributeur', 
-// 					'StateNaAllocatie/@CO@/Kj_id_o',
-// 					'',  // TODO: Niet voor WKO
-// 					''
-
-		// ===== WKO WijkDistributie kosten
-			,	'@CO@', 'KL_p', 'WijkDistributeur', 
-					'StateNaAllocatie/@CO@/Ki_wd', 
-					AF28_WD, 
-					''
-
-			,	'@CO@', 'WijkDistributie', 'KL_p', 
-					'StateNaAllocatie/@CO@/Ki_wd', 
-					AF28_MR, 
-					''
-
-			,	'@CO@_EIA', 'WijkDistributeur', 'KL_p',
-					'StateNaAllocatie/@CO@/Si_wd', 
-					AF28_WD,
-					''
-
-			,	'@CO@_EIA_wd', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@CO@/Si_wd', 
-					AF28_MR,
-					''
-
-			,	'@CO@_EEA', 'WijkDistributeur', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_wd', 
-					'',
-					''
-
-//			,	'@CO@', 'Onderhoud', 'WijkDistributeur', 
-//					'StateNaAllocatie/@CO@/Kj_wd_onderhoud',
-//					'',
-//					''
-//					
-//			,	'@CO@', 'Admin', 'WijkDistributeur', 
-//					'StateNaAllocatie/@CO@/Kj_wd_adm',
-//					'',
-//					''
-//					
-			,	'@CO@', 'Precario', 'WijkDistributeur', 
-					'StateNaAllocatie/@CO@/Kj_wd_pr',
-					'',
-					''
-//
-		// ===== WKO OPWEKKING
-			,	'@CO@', 'KL_p', '@CO@', 
-					'StateNaAllocatie/@CO@/Ki_ow', 
-					AF28_OW, 
-					''
-
-			,	'@CO@', 'Opwekking', 'KL_p', 
-					'StateNaAllocatie/@CO@/Ki_ow', 
-					AF28_MR, 
-					''
-
-			,	'@CO@_EIA', '@CO@', 'KL_p',
-					'StateNaAllocatie/@CO@/Si_ow', 
-					AF28_WD,
-					''
-
-			,	'@CO@_EIA_ov', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@CO@/Si_ow', 
-					AF28_MR,
-					''
-
-			,	'@CO@_EEA', '@CO@', 'Subsidie',
-					'StateNaAllocatie/@CO@/Se_ow', 
-					'',
-					''
-
-			,	'', 'Onderhoud', '@CO@', 
-					'StateNaAllocatie/@CO@/Kj_ow_o',
-					'',
-					''
-
-//			,	'', 'Admin', '@CO@', 
-//					'StateNaAllocatie/@CO@/Kj_ow_adm',
-//					'',
-//					''
-//					
-			,	'Commodity', 'Elektriciteit', '@CO@', 
-					'StateNaAllocatie/@CO@/Km_ow_e', 
-					'',
-					''
-
-//			,	'CO2@CO@', 'EmissieRechten', 'Elektriciteit', // TODO: CO2 is nu opgesplitst in wd en id voor LT; heffing niet berekend; default werd gebruikt die op 0 stond.
-//					'StateNaAllocatie/@CO@/KCO2_ow_e', 
-//					'',
-//					''
-
-//			,	'Opwekking', 'EnergieHeffing', '@CO@', 
-//					'StateNaAllocatie/@CO@/KEH_ow_e', // TODO: is nu opgesplits in Kj_wd_elek_EH en Kj_id_elek_EH voor LT; default werd gebruikt die op 0 stond.
-//					'',
-//					''
-
-		// ===== WKO LEVERANCIER
-			,	'Verrekening@CO@', 'BestaandeWoning/Eigenaar', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_ge_netto', 
-					'',
-					''
-
-			,	'Verrekening@CO@', 'InpandigeDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_id_netto', 
-					'',
-					''
-			,	'Verrekening@CO@', 'WijkDistributeur', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_wd_netto', 
-					'',
-					''
-			,	'Verrekening', '@CO@', 'Leverancier',
-					'StateNaAllocatie/@CO@/Kji_ow_netto', 
-					'',
-					''
-//			,	'@CO@', 'Admin', 'Leverancier', 
-//					'StateNaAllocatie/Flow/Kj_lv_adm * '+ROSEL,
-//					'',  // TODO: Niet voor WKO
-//					''
-//			
 			);
 		}
 

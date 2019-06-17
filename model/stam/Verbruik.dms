@@ -1,0 +1,550 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//                   (C) VESTA 2019 - Planbureau voor de Leefomgeving                   //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                      //
+//       Deze DMS-file wordt aangeroepen door stam.dms                                  //
+//       In deze configuratiefile worden items voor de energie transformaties           //
+//       inclusief bijbehorende emissies geconfigureerd                                 //
+//                                                                                      //
+//////////////////////////////////////////////////////////////////////////////////////////
+
+container Verbruik: Using = "Units;Geography", KeepData = "True"
+{
+	unit<uint8> BC := Classifications/BebouwingsComponent, isHidden = "True";
+
+	unit<uint32> mutatieSchema: nrofrows = 55
+	{
+		parameter<uint32> nrAttr := 29, isHidden = "True";
+		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.), isHidden = "True"
+		{
+			parameter<string> PRR := 'BebouwingsComponenten/@BC@/PlanRegio_rel';
+
+			attribute<string> Text := union_data(.,
+				// name, leverancier, afnemer  
+					// item 
+					// factor 
+					//left-entity-rel, right-entity-rel
+					// CO2_2010, CO2_2020, CO2_2030, CO2_2040, CO2_2050, 
+					// NOx_2010, NOx_2020, NOx_2030, NOx_2040, NOx_2050, 
+					// SO2_2010, SO2_2020, SO2_2030, SO2_2040, SO2_2050, 
+					// VOS_2010, VOS_2020, VOS_2030, VOS_2040, VOS_2050, 
+					// TS_2010, TS_2020, TS_2030, TS_2040, TS_2050, 
+
+		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
+				'A1_GLevering', 'e10_GNet', 
+					'-Allocatie/@BC@/MeterVraag/AardGas',
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'A1_GLevering', 'a@BN@1_Gas_@BC@',
+					'Allocatie/@BC@/MeterVraag/AardGas',
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'A2_eLevering', 'e20_eNet', 
+					'-Allocatie/@BC@/MeterVraag/Elektriciteit', 
+					PRR
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'A2_eLevering', 'a@BN@2_Elektra_@BC@', 
+					'Allocatie/@BC@/MeterVraag/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'B1_HR', 'a@BN@1_Gas_@BC@',
+					'-Allocatie/@BC@/MeterVraag/Aardgas_RV'
+					'-Allocatie/@BC@/MeterVraag/Aardgas_WW', 
+					PRR
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
+				,	'20.0', '20.0', '20.0', '20.0', '20.0'  //g per GJ NOx
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'B1_HR', 'a@BN@2_Elektra_@BC@',
+					'-Allocatie/@BC@/MeterVraag/CvPomp', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'B1_HR', 'a@BN@3_@BC@_RV',
+					'+Allocatie/@BC@/MeterVraag/Aardgas_RV * (BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AardGas / BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+	
+			,	'B1_HR', 'a@BN@5_@BC@_WW',
+					'+Allocatie/@BC@/MeterVraag/Aardgas_WW * (1.0 / BebouwingsComponenten/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor) * BebouwingsComponenten/@BC@/Efficiency/WarmWater/AardGas', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'B1_HR', 'i10_OmgevingVerlies',
+					'+Allocatie/@BC@/MeterVraag/Aardgas_RV * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AardGas / BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)'
+					'+Allocatie/@BC@/MeterVraag/Aardgas_WW * (1.0 - BebouwingsComponenten/@BC@/Efficiency/WarmWater/AardGas / BebouwingsComponenten/@BC@/DragerOpties/WarmWater/Aardgas_leidingverliesfactor)'
+					'+Allocatie/@BC@/MeterVraag/CvPomp', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C1_KoudePomp', 'a@BN@2_Elektra_@BC@',
+					'-Allocatie/@BC@/MeterVraag/Koude', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C1_KoudePomp', 'a@BN@4_@BC@_Koude', 
+					'-Allocatie/@BC@/MeterVraag/Koude * BebouwingsComponenten/@BC@/Efficiency/Koude/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C1_KoudePomp', 'i10_OmgevingVerlies',
+					'Allocatie/@BC@/MeterVraag/Koude + Allocatie/@BC@/MeterVraag/Koude * BebouwingsComponenten/@BC@/Efficiency/Koude/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+	
+			,	'C3_ZonneBoiler', 'g10_Zon',
+					'-BebouwingsComponenten/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C3_ZonneBoiler', 'a@BN@5_@BC@_WW',
+					'BebouwingsComponenten/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C4_eWP', 'a@BN@2_Elektra_@BC@',
+					'-(Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/Warmte/eWP)', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C4_eWP', 'a@BN@3_@BC@_RV',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP',  // RV
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C4_eWP', 'a@BN@5_@BC@_WW',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP',  // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C4_eWP', 'h10_OmgevingsWarmteWinst',
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/eWP * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP)'  // RV
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP)', // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C5_hWP', 'a@BN@2_Elektra_@BC@',
+					'-Allocatie/@BC@/MeterVraag/hWP', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C5_hWP', 'a@BN@3_@BC@_RV', 
+					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Vraagkentallen/hWP/DekkingsGraad * Allocatie/@BC@/Vraagkentallen/hWP/COP',  // RV
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C5_hWP', 'h10_OmgevingsWarmteWinst', 
+					'Allocatie/@BC@/Aandelen/hWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte * Allocatie/@BC@/Vraagkentallen/hWP/DekkingsGraad * (1.0 - 1.0 * Allocatie/@BC@/Vraagkentallen/hWP/COP)',  // RV
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C6_EWV', 'a@BN@2_Elektra_@BC@',
+					'-Allocatie/@BC@/MeterVraag/EWV', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C6_EWV', 'a@BN@3_@BC@_RV', 
+					'Allocatie/@BC@/MeterVraag/EWV', // RV
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C6_EWV', 'a@BN@5_@BC@_WW', 
+					'Allocatie/@BC@/MeterVraag/EWV', // WW
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C7_mWKK', 'a@BN@1_Gas_@BC@',
+					'-Allocatie/@BC@/MeterVraag/AardGas_mWKK', 
+					PRR
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
+				,	'20.0', '20.0', '20.0', '20.0', '20.0'  // g/GJ NOx
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_mWKK', 'i10_OmgevingVerlies',
+					'Allocatie/@BC@/MeterVraag/AardGas_mWKK * 0.25', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_mWKK', 'a@BN@2_Elektra_@BC@',
+					'Allocatie/@BC@/MeterVraag/mWKK', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_mWKK', 'a@BN@3_@BC@_RV',
+					'Allocatie/@BC@/aandelen/mWKK * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_mWKK', 'a@BN@5_@BC@_WW',
+					'Allocatie/@BC@/aandelen/mWKK * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/Warmte', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C2_Zon_PV', 'g10_Zon',
+					'-BebouwingsComponenten/@BC@/DragerOpties/Apparatuur/Zon_PV', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C2_Zon_PV', 'a@BN@2_Elektra_@BC@',
+					'BebouwingsComponenten/@BC@/DragerOpties/Apparatuur/Zon_PV', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C0_Apparatuur', 'a@BN@2_Elektra_@BC@',
+					'-BebouwingsComponenten/@BC@/DragerOpties/Apparatuur/Elektriciteit', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C0_Apparatuur', 'a@BN@6_@BC@_EA',
+					'BebouwingsComponenten/@BC@/Functioneel/Apparatuur', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'C0_Apparatuur', 'i10_OmgevingVerlies',
+					'BebouwingsComponenten/@BC@/Functioneel/Apparatuur * (1.0 / BebouwingsComponenten/@BC@/Efficiency/Apparatuur/Elektriciteit - 1.0)', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			// ***********  gebiedsopties
+
+			,	'D1_WijkDistributie', 'c10_WijkWarmte', 
+					'-StateNaAllocatie/KostenBaten/KostenD/Vj_Warmte * Float64(StateNaAllocatie/GebiedsOptie)', // incl opbrengst van bijstook
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'D1_WijkDistributie', 'a@BN@5_@BC@_WW', 
+					'Allocatie/@BC@/Aandelen/@ROC@ * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/Warmte', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'D1_WijkDistributie', 'a@BN@3_@BC@_RV', 
+					'Allocatie/@BC@/Aandelen/@ROC@ * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte', 
+					PRR
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'D1_WijkDistributie', 'i10_OmgevingVerlies', 
+					'StateNaAllocatie/KostenBaten/KostenD/Vj_LeidingVerlies * Float64(StateNaAllocatie/GebiedsOptie)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'D2_Bijstook', 'e10_GNet',
+					'-StateNaAllocatie/KostenBaten/KostenD/Bijstook/Vj_Bijstook * Float64(StateNaAllocatie/GebiedsOptie)', 
+					''
+				,	'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ', 'Prijzen/Aardgas/CO2_GJ' // KG/GJ CO2
+				,	'20.0', '20.0', '20.0', '20.0', '20.0' // g/GJ NOx
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'D2_Bijstook', 'c10_WijkWarmte',
+					'StateNaAllocatie/KostenBaten/KostenD/Bijstook/Vj_Vraag * Float64(StateNaAllocatie/GebiedsOptie)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'D2_Bijstook', 'i10_OmgevingVerlies',
+					'StateNaAllocatie/KostenBaten/KostenD/Bijstook/Vj_Verlies * Float64(StateNaAllocatie/GebiedsOptie)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'e10_GNet',  // Gas
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas', 
+					''
+				,	'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb', 'GebiedsAllocatie/@ROC@/CO2_GJb'
+				,	'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb', 'GebiedsAllocatie/@ROC@/NOx_GJb'
+				,	'GebiedsAllocatie/@ROC@/SO2_GJb', 'GebiedsAllocatie/@ROC@/SO2_GJb', 'GebiedsAllocatie/@ROC@/SO2_GJb', 'GebiedsAllocatie/@ROC@/SO2_GJb', 'GebiedsAllocatie/@ROC@/SO2_GJb'
+				,	'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb', 'GebiedsAllocatie/@ROC@/VOS_GJb'
+				,	'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb' , 'GebiedsAllocatie/@ROC@/TS_GJb'
+
+			,	'E@RON@_@ROC@', 'e20_eNet',  // Elektriciteit
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit', 
+					''
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'f10_Biogas',  //Biogas
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biogas', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'f20_Biovast',  //Biovast
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biovast', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'h10_OmgevingsWarmteWinst',  //Ondergrond
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E@RON@_@ROC@', 'h20_Opwekking',  // Opwekking
+					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'i10_OmgevingVerlies', 
+					'StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * '
+					'(GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas + GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit + GebiedsAllocatie/@ROC@/Results/Factoren/Biogas + GebiedsAllocatie/@ROC@/Results/Factoren/Biovast + GebiedsAllocatie/@ROC@/Results/Factoren/Ondergrond + GebiedsAllocatie/@ROC@/Results/Factoren/Opwekking + - 1.0)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			,	'E@RON@_@ROC@', 'c10_WijkWarmte', 
+					'StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@)', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+
+			// ===== WKO 
+			,	'E4_WKO_Warmte', 'a@WKON@3_@WKOC@_RV',
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E4_WKO_Warmte', 'h10_OmgevingsWarmteWinst',
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E4_WKO_Warmte', 'e20_eNet',
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+				
+			,	'E5_WKO_Koude', 'a@WKON@4_@WKOC@_Koude',
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E5_WKO_Koude', 'i20_OmgevingKoudeWinst',
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'E5_WKO_Koude', 'e20_eNet',
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC', 
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
+				,	'76.0', '35.0', '10.0', '8.0', '6.0'
+				,	'25.0', '11.0', '3.0', '3.0', '2.0'
+				,	'2.0', '1.0', '0.0', '0.0', '0.0'
+				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+			);
+		}
+
+		attribute<string> Name        := Elements/Text[value(ID(.)* nrAttr + 0, Elements)];
+		attribute<string> Actor       := Elements/Text[value(ID(.)* nrAttr + 1, Elements)];
+		attribute<string> Expr        := Elements/Text[value(ID(.)* nrAttr + 2, Elements)];
+		attribute<string> PlanRegioRel:= Elements/Text[value(ID(.)* nrAttr + 3, Elements)];
+		attribute<string> CO2_2010    := Elements/Text[value(ID(.)* nrAttr + 4, Elements)];
+		attribute<string> CO2_2020    := Elements/Text[value(ID(.)* nrAttr + 5, Elements)];
+		attribute<string> CO2_2030    := Elements/Text[value(ID(.)* nrAttr + 6, Elements)];
+		attribute<string> CO2_2040    := Elements/Text[value(ID(.)* nrAttr + 7, Elements)];
+		attribute<string> CO2_2050    := Elements/Text[value(ID(.)* nrAttr + 8, Elements)];
+		attribute<string> NOx_2010    := Elements/Text[value(ID(.)* nrAttr + 9, Elements)];
+		attribute<string> NOx_2020    := Elements/Text[value(ID(.)* nrAttr +10, Elements)];
+		attribute<string> NOx_2030    := Elements/Text[value(ID(.)* nrAttr +11, Elements)];
+		attribute<string> NOx_2040    := Elements/Text[value(ID(.)* nrAttr +12, Elements)];
+		attribute<string> NOx_2050    := Elements/Text[value(ID(.)* nrAttr +13, Elements)];
+		attribute<string> SO2_2010    := Elements/Text[value(ID(.)* nrAttr +14, Elements)];
+		attribute<string> SO2_2020    := Elements/Text[value(ID(.)* nrAttr +15, Elements)];
+		attribute<string> SO2_2030    := Elements/Text[value(ID(.)* nrAttr +16, Elements)];
+		attribute<string> SO2_2040    := Elements/Text[value(ID(.)* nrAttr +17, Elements)];
+		attribute<string> SO2_2050    := Elements/Text[value(ID(.)* nrAttr +18, Elements)];
+		attribute<string> VOS_2010    := Elements/Text[value(ID(.)* nrAttr +19, Elements)];
+		attribute<string> VOS_2020    := Elements/Text[value(ID(.)* nrAttr +20, Elements)];
+		attribute<string> VOS_2030    := Elements/Text[value(ID(.)* nrAttr +21, Elements)];
+		attribute<string> VOS_2040    := Elements/Text[value(ID(.)* nrAttr +22, Elements)];
+		attribute<string> VOS_2050    := Elements/Text[value(ID(.)* nrAttr +23, Elements)];
+		attribute<string> TS_2010     := Elements/Text[value(ID(.)* nrAttr +24, Elements)];
+		attribute<string> TS_2020     := Elements/Text[value(ID(.)* nrAttr +25, Elements)];
+		attribute<string> TS_2030     := Elements/Text[value(ID(.)* nrAttr +26, Elements)];
+		attribute<string> TS_2040     := Elements/Text[value(ID(.)* nrAttr +27, Elements)];
+		attribute<string> TS_2050     := Elements/Text[value(ID(.)* nrAttr +28, Elements)];
+	}
+	unit<uint32> mutatie := mutatieSchema, isHidden = "True";
+}

@@ -12,7 +12,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Transformations: Using = "Units;Geography", KeepData = "True"
+container Uitstoot: Using = "Units;Geography", KeepData = "True"
 {
 	unit<uint8> BC := Classifications/BebouwingsComponent, isHidden = "True";
 
