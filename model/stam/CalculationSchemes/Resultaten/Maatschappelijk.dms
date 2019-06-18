@@ -78,9 +78,9 @@ container Maatschappelijk: Source = "FO v7a C6", isHidden = "true"
 	}
 	container Gebiedopties_Km
 	{
-		attribute<Eur_yr>	Km_id_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Km_id_gas;
-		attribute<Eur_yr>	Km_id_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Km_id_elek;
-		attribute<Eur_yr>	Kj_id_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Flow/id/Kj_id_oh;
+		attribute<Eur_yr>	Km_id_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Km_id_gas;
+		attribute<Eur_yr>	Km_id_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Km_id_elek;
+		attribute<Eur_yr>	Kj_id_oh		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_oh;
 		attribute<Eur_yr>	Kj_id_adm		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_adm;
 		attribute<Eur_yr>	Km_ow_gas		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Km_ow_gas;
 		attribute<Eur_yr>	Km_ow_elek		(PlanRegio)	:=	StateNaAllocatie/totaal/Jaarlijks/ow/Km_ow_elek;
