@@ -787,17 +787,17 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<string> full_name := name;
 		
 		attribute<string> leverancier : [
-			'Leverancier', 'Comfort', 'Admin', '@BC@', 
+			'Leverancier', 'Comfort', 'Admin', 'BestaandeWoning/Eigenaar', 
 			'InpandigeDistributie', 'InpandigeDistributeur', 
-			'WijkDistributie', 'WijkDistributeur'
-			'PrimairTransport', 'PrimairTransporteur'
+			'WijkDistributie', 'WijkDistributeur',
+			'PrimairTransport', 'PrimairTransporteur',
 			'Opwekking', '@RO@'
 		];
 		attribute<string> afnemer : [
-			'@BC@',	'@BC@', '@BC@', 'Subsidie', 
+			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar', 'BestaandeWoning/Eigenaar', 'Subsidie', 
 			'InpandigeDistributeur', 'Subsidie', 
 			'WijkDistributeur', 'Subsidie',
-			'PrimairTransport', 'Subsidie',
+			'PrimairTransporteur', 'Subsidie',
 			'@RO@', 'Subsidie'
 		];
 	}

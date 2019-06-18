@@ -23,7 +23,6 @@ template WKOUtilData
 	attribute<GJ_yr>  V_WW      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
 	attribute<GJ_yr>  V_Warmte  (BebouwingsObject) := V_RV + V_WW;
 	attribute<GJ_yr>  V_Koude   (BebouwingsObject) := Lq4bis;
-//REMOVE	attribute<GJ_yr>  F_Elek    (BebouwingsObject) := V_Warmte + V_Koude;
 	
 	attribute<float64> SPF_ind_rv  (BebouwingsObject) := 
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :

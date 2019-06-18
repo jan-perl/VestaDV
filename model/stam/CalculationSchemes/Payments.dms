@@ -112,7 +112,7 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<string> name          := union_data(., src/name        , Accounting2Subset/name);
 				attribute<string> leverancier   := union_data(., src/leverancier , Accounting2Subset/leverancier);
 				attribute<string> afnemer       := union_data(., src/afnemer     , Accounting2Subset/afnemer);
-				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+Accounting2Subset/full_name);
+				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/'+(is_flow?'Jaarlijks':'Eenmalig')+'/'+Accounting2Subset/full_name);
 				attribute<string> PlanRegioRel  := union_data(., src/PlanRegioRel, const('', Accounting2Subset));
 			}
 			
@@ -120,25 +120,24 @@ container Payments: FreeData = "False" // DEBUG
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
-			container applyBC  := substitute(Accounting,      '@BC@'   ,BC);
-			container applyWKOC:= substitute(applyBC/result,  '@WKOC@', WKOC);
-			container applyRO  := substitute(applyWKOC/result,'@RO@'   ,Voorkeuren/ActieveGebiedsOptie);
+			container applyBC  := substitute(Accounting,      '@BC@'   ,BC);   // TODO: Checken dat amounts wel opgesplitst zijn per BC
+			container applyWKOC:= substitute(applyBC/result,  '@WKOC@', WKOC); // TODO: Checken dat amounts wel opgesplitst zijn per WKOC
+			container applyRO  := substitute(applyWKOC/result,'@RO@'   ,Voorkeuren/ActieveGebiedsOptie); // TODO: Checken dat amounts wel opgesplitst zijn per RO
 
 			unit<uint32> mutatie := applyRO/result
 			{
-				attribute<Actor> Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
-				attribute<Actor> Afnemer_rel     := rlookup(Afnemer,     Actor/name), IntegrityCheck = "IsDefined(this)";
+				attribute<Actor> Leverancier_rel := rlookup(Leverancier, Actor/name);
+				attribute<Actor> Afnemer_rel     := rlookup(Afnemer,     Actor/name);
 			}
 
 			unit<uint32> mutatie_elem := union_unit(mutatie, mutatie) //van afnemer aan leverancier
 			{
 				attribute<string> name       := union_data(., mutatie/name , mutatie/name);
 				attribute<string> label      := union_data(., mutatie/name+' (deb)', mutatie/name + ' (cr)');
-				attribute<actor>  actor_rel  := union_data(., mutatie/Afnemer_rel, mutatie/Leverancier_rel);
-				attribute<actor>  other_rel  := union_data(., mutatie/Leverancier_rel, mutatie/Afnemer_rel);
+				attribute<actor>  actor_rel  := union_data(., mutatie/Afnemer_rel, mutatie/Leverancier_rel), IntegrityCheck = "IsDefined(mutatie/Leverancier_rel)";
+				attribute<actor>  other_rel  := union_data(., mutatie/Leverancier_rel, mutatie/Afnemer_rel), IntegrityCheck = "IsDefined(mutatie/Afnemer_rel)";
 				attribute<string> entityRel  := union_data(., mutatie/PlanRegioRel, mutatie/PlanRegioRel);
 				attribute<string> ExprBase   := union_data(., '-('+mutatie/Expr+')', '('+mutatie/Expr+')');
-				attribute<string> AnnuFactor := union_data(., mutatie/AnnuFactor,  mutatie/AnnuFactor);
 				attribute<string> ExprSum    := entityRel <> '' ? 'sum('+ExprBase + ', '+entityRel+')' : ExprBase;
 				attribute<string> Expr       := ExprSum +' * fraction';
 			}

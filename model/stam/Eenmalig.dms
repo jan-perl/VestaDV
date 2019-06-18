@@ -13,32 +13,16 @@
 
 container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 61
+	unit<uint32> mutatieSchema: nrofrows = 13
 	{
-		parameter<uint32> nrAttr := 6;
+		parameter<uint32> nrAttr := 5;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
 		{
+			// Factors
 			parameter<string> PRR := 'BebouwingsComponenten/@BC@/PlanRegio_rel';
-
-			// Annualisation Factors
-			parameter<string> AF28_OW := 'NCW/ow28/AnnualisationFactor'; 
-			parameter<string> AF28_PT := 'NCW/pt28/AnnualisationFactor'; 
-			parameter<string> AF28_WD := 'NCW/wd28/AnnualisationFactor'; 
-			parameter<string> AF28_ID := 'NCW/id28/AnnualisationFactor'; 
-			parameter<string> AF28_MR := 'NCW/mr28/AnnualisationFactor';
-			parameter<string> AF28_BW := 'NCW/bw28/AnnualisationFactor';
-			parameter<string> AF15_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor';
-			parameter<string> AF30_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor';
-			parameter<string> AF15_MR := 'NCW/mr15/AnnualisationFactor';
-			parameter<string> AF30_MR := 'NCW/mr30/AnnualisationFactor';
-			parameter<string> AFAB_ID := 'NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor'; 
-			parameter<string> AFAB_WD := 'NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor'; 
-			parameter<string> AFAB_MR := 'NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor'; 
-			parameter<string> AFAB_GE := 'BebouwingsComponenten/@BC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@BC@/NcwRefs/_28/AnnualisationFactor';
 			parameter<string> ROSEL   := 'float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == classifications/GebiedsOptie/V/@RO@)';
 			parameter<string> VAT_F   := '(SpecifiekeInstellingen/VAT / 100[Percent])';
-			parameter<string> VAT_R   := '(1.0 + iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))';
-//* REMOVE			
+
 			attribute<string> Text := union_data(.
 				// name //leverancier //afnemer  
 					// item 
@@ -47,326 +31,64 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 
 		// ===== Gas en Electriciteitsleveringen aan eindgebruikers
 
-
+			// TODO: infra aanpassingen hier ook invullen?
+			
 		// ===== Lokale opwekking: eigenaar investeringen
-			,	'ZonneBoiler', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_ZonneBoiler * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
+			,	'ZonneBoiler', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_ZonneBoiler',
 					PRR
 
-			,	'Zon_PV', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_Zon_PV * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
+			,	'Zon_PV', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_Zon_PV',
 					PRR
 
-			,	'mWKK', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_mWKK * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
+			,	'EWV', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_EWV',
 					PRR
 
-			,	'eWP', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_eWP * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
+			,	'mWKK', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_mWKK',
 					PRR
 
-			,	'EWV', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_EWV * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
+			,	'eWP', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_eWP',
 					PRR
 
-			,	'hWP', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_hWP * '+ VAT_R,
-					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
+			,	'hWP', 'LokaleOpwekking', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_hWP',
 					PRR
 
-			,	'@BC@30j', 'LokaleOpwekking', 'KL_e', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking30',
-					'NCW/mr30/AnnualisationFactor',
-					PRR
 
-			,	'@BTW@30j', 'BTW', 'KL_e', 
-					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking30 * '+VAT_F,
-					'NCW/mr30/AnnualisationFactor',
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'@BC@15j', 'LokaleOpwekking', 'KL_e', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking15',
-					'NCW/mr15/AnnualisationFactor',
-					PRR
-
-			,	'@BTW@15j', 'BTW', 'KL_e', 
-					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking15 * '+VAT_F,
-					'NCW/mr15/AnnualisationFactor',
+			,	'@BTW@30j', 'BTW', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking * '+VAT_F,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Gebouwverbeteringen
-			,	'Gebouwverbetering', 'KL_e', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering * (1.0+iif(BC/DraagtBTW[BC/V/@BC@], SpecifiekeInstellingen/VAT_gv / 100[Percent], 0.0))',
-					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
-					PRR
-
-			,	'Gebouwverbetering@BC@', 'Gebouw', 'KL_e', 
+			,	'Gebouwverbetering@BC@', 'Gebouw', '@BC@/Eigenaar', 
 					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering',
-					'NCW/mr30/AnnualisationFactor',
 					PRR
 
-			,	'Gebouwverbetering@BTW@', 'BTW', 'KL_e', 
+			,	'Gebouwverbetering@BTW@', 'BTW', '@BC@/Eigenaar', 
 					'BebouwingsComponenten/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])',
-					'NCW/mr30/AnnualisationFactor',
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== subsidie
-			,	'EIA30', '@BC@/Eigenaar', 'KL_e',
+			,	'EIA30', '@BC@/Eigenaar', 'Subsidie',
 					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
-					'BebouwingsComponenten/@BC@/NcwRefs/_30/AnnualisationFactor',
 					PRR
 
-			,	'EIA30@BC@', 'KL_e', 'Subsidie',
-					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
-					'NCW/mr30/AnnualisationFactor',
-					PRR
-
-			,	'EIA15', '@BC@/Eigenaar', 'KL_e',
+			,	'EIA15', '@BC@/Eigenaar', 'Subsidie',
 					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15',
-					'BebouwingsComponenten/@BC@/NcwRefs/_15/AnnualisationFactor',
-					PRR
-
-			,	'EIA15@BC@', 'KL_e', 'Subsidie',
-					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15',
-					'NCW/mr15/AnnualisationFactor',
 					PRR
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@RO@', 'KL_e', '@BC@/Eigenaar',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@ * '+VAT_R,
-					AFAB_GE, 
-					PRR
-
-			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
+			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', '@BC@/Eigenaar',
 					'BebouwingsComponenten/@BTW@/Opbrengsten/AansluitbijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
-					AFAB_MR,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
-			,	'Aansluitbijdrage_@RO@_@BC@', 'KL_p', 'KL_e',
+			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', '@BC@/Eigenaar',
 					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
-					AFAB_MR, 
 					PRR
-
-			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', 'KL_p',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
-					AFAB_WD, 
-					PRR
-
-		// ===== Eigenaar kosten
-			,	'EIA', 'BestaandeWoning/Eigenaar', 'KL_e',
-					'StateNaAllocatie/Eenmalig/Oi_ge_subsidie',
-					AF28_BW,
-					''
-
-			,	'ge_EIA', 'KL_e', 'Subsidie',
-					'StateNaAllocatie/Eenmalig/Oi_ge_subsidie',
-					AF28_MR,
-					''
-
-		// ===== Inpandige Distributie kosten
-			,	'@RO@', 'KL_p', 'InpandigeDistributeur', 
-					'StateNaAllocatie/Eenmalig/Ki_id * '+ROSEL, 
-					AF28_ID, 
-					''
-
-			,	'@RO@', 'InpandigeDistributie', 'KL_p', 
-					'StateNaAllocatie/Eenmalig/Ki_id * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'InpandigeDistributeur', 'KL_p',
-					'StateNaAllocatie/Eenmalig/Oi_id_subsidie * '+ROSEL,
-					AF28_ID,
-					''
-	
-			,	'@RO@_EIA_id', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Eenmalig/Oi_id_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-		// ===== WijkDistributie kosten
-			,	'@RO@', 'KL_p', 'WijkDistributeur', 
-					'StateNaAllocatie/Eenmalig/Ki_wd * '+ROSEL, 
-					AF28_WD, 
-					''
-
-			,	'@RO@', 'WijkDistributie', 'KL_p', 
-					'StateNaAllocatie/Eenmalig/Ki_wd * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'WijkDistributeur', 'KL_p',
-					'StateNaAllocatie/Eenmalig/Oi_wd_subsidie * '+ROSEL,
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_wd', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Eenmalig/Oi_wd_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-		// ===== PRIMAIR TRANSPORT
-			,	'@RO@', 'KL_p', 'PrimairTransporteur', 
-					'StateNaAllocatie/Eenmalig/Ki_pt * '+ROSEL, 
-					AF28_PT, 
-					''
-
-			,	'@RO@', 'PrimairTransport', 'KL_p', 
-					'StateNaAllocatie/Eenmalig/Ki_pt * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'PrimairTransporteur', 'KL_p',
-					'StateNaAllocatie/Eenmalig/Oi_pt_subsidie * '+ROSEL,
-					AF28_PT,
-					''
-
-			,	'@RO@_EIA_pt', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Eenmalig/Oi_pt_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-		// ===== OPWEKKING
-			,	'@RO@', 'KL_p', '@RO@', 
-					'StateNaAllocatie/Eenmalig/Ki_ow * '+ROSEL, 
-					AF28_OW, 
-					''
-
-			,	'@RO@', 'Opwekking', 'KL_p', 
-					'StateNaAllocatie/Eenmalig/Ki_ow * '+ROSEL, 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', '@RO@', 'KL_p',
-					'StateNaAllocatie/Eenmalig/Oi_ow_subsidie * '+ROSEL,
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_ov', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/Eenmalig/Oi_ow_subsidie * '+ROSEL,
-					AF28_MR,
-					''
-
-		// ===== WKO
-		// ===== WKO vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@RO@', 'KL_e', '@WKOC@/Eigenaar',
-					'StateNaAllocatie/@RO@/Oi_Aansl/@WKOC@ * (1.0+iif(BC/DraagtBTW[BC/V/@WKOC@], SpecifiekeInstellingen/VAT / 100[Percent], 0.0))', 
-					'BebouwingsComponenten/@WKOC@/NcwRefs/_28/StartDiscountFactor * BebouwingsComponenten/@WKOC@/NcwRefs/_28/AnnualisationFactor', 
-					''
-
-			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', 'KL_e',
-					'StateNaAllocatie/@RO@/Oi_Aansl/@BTW@ * '+VAT_F,
-					AFAB_MR,
-					''
-
-			,	'Aansluitbijdrage_@RO@_@WKOC@', 'KL_p', 'KL_e',
-					'StateNaAllocatie/@RO@/Oi_Aansl/@WKOC@', 
-					AFAB_MR, 
-					''
-
-			,	'Aansluitbijdrage_@RO@_@WKOC@', 'Leverancier', 'KL_p',
-					'StateNaAllocatie/@RO@/Oi_Aansl/@WKOC@', 
-					AFAB_ID, 
-					''
-
-		// ===== WKO Eigenaar kosten
- 			,	'projectmanagement_@RO@', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/@RO@/Ki_ge_pm', 
-					AF28_BW,
-					''
-
-			,	'ongeriefsvergoeding_@RO@', 'KL_e', 'BestaandeWoning/Eigenaar',
-					'StateNaAllocatie/@RO@/Ki_ge_ov', 
-					AF28_BW,
-					''
-
-			,	'projectmanagement_@RO@', 'Admin', 'KL_e',
-					'StateNaAllocatie/@RO@/Ki_ge_pm', 
-					AF28_MR,
-					''
-
-			,	'ongeriefsvergoeding_@RO@', 'Comfort', 'KL_e',
-					'StateNaAllocatie/@RO@/Ki_ge_ov',
-					AF28_MR, 
-					''
-
-			,	'EIA_@RO@', 'BestaandeWoning/Eigenaar', 'KL_e',
-					'StateNaAllocatie/@RO@/Si_ge',
-					AF28_BW,
-					''
-
-			,	'EIA_@RO@', 'KL_e', 'Subsidie',
-					'StateNaAllocatie/@RO@/Si_ge',
-					AF28_MR,
-					''
-
-		// ===== WKO Inpandige Distributie kosten
-			,	'@RO@', 'KL_p', 'InpandigeDistributeur', 
-					'StateNaAllocatie/@RO@/Ki_id', 
-					AF28_ID, 
-					''
-
-			,	'@RO@', 'InpandigeDistributie', 'KL_p', 
-					'StateNaAllocatie/@RO@/Ki_id', 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'InpandigeDistributeur', 'KL_p',
-					'StateNaAllocatie/@RO@/Si_id', 
-					AF28_ID,
-					''
-
-			,	'@RO@_EIA_id', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@RO@/Si_id', 
-					AF28_MR,
-					''
-
-		// ===== WKO WijkDistributie kosten
-			,	'@RO@', 'KL_p', 'WijkDistributeur', 
-					'StateNaAllocatie/@RO@/Ki_wd', 
-					AF28_WD, 
-					''
-
-			,	'@RO@', 'WijkDistributie', 'KL_p', 
-					'StateNaAllocatie/@RO@/Ki_wd', 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', 'WijkDistributeur', 'KL_p',
-					'StateNaAllocatie/@RO@/Si_wd', 
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_wd', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@RO@/Si_wd', 
-					AF28_MR,
-					''
-
-		// ===== WKO OPWEKKING
-			,	'@RO@', 'KL_p', '@RO@', 
-					'StateNaAllocatie/@RO@/Ki_ow', 
-					AF28_OW, 
-					''
-
-			,	'@RO@', 'Opwekking', 'KL_p', 
-					'StateNaAllocatie/@RO@/Ki_ow', 
-					AF28_MR, 
-					''
-
-			,	'@RO@_EIA', '@RO@', 'KL_p',
-					'StateNaAllocatie/@RO@/Si_ow', 
-					AF28_WD,
-					''
-
-			,	'@RO@_EIA_ov', 'KL_p', 'Subsidie',
-					'StateNaAllocatie/@RO@/Si_ow', 
-					AF28_MR,
-					''
 			);
 		}
 
@@ -374,15 +96,14 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 		attribute<string> Leverancier  := Elements/Text[value(id(.)* nrAttr + 1, Elements)];
 		attribute<string> Afnemer      := Elements/Text[value(id(.)* nrAttr + 2, Elements)];
 		attribute<string> Expr         := Elements/Text[value(id(.)* nrAttr + 3, Elements)];
-		attribute<string> AnnuFactor   := Elements/Text[value(id(.)* nrAttr + 4, Elements)];
-		attribute<string> PlanRegioRel := Elements/Text[value(id(.)* nrAttr + 5, Elements)];
+		attribute<string> PlanRegioRel := Elements/Text[value(id(.)* nrAttr + 4, Elements)];
 		attribute<string> FullDescr    := 
 				Name + ': ' + Leverancier + ' -> ' + Afnemer +
 				' = ' + Expr 
-				+ iif(AnnuFactor = '','', ' * '+AnnuFactor ) 
 				+ iif(PlanRegioRel == '', '', ' per '+PlanRegioRel);
 	}
 
-	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', Classifications/BtwComponent);
+	// TODO: Checken dat amounts wel opgesplitst zijn per BTW component
+	container applyBTW := CalculationSchemes/Payments/substitute(mutatieSchema, '@BTW@', Classifications/BtwComponent); 
 	unit<uint32> mutatie := applyBTW/result;
 }
