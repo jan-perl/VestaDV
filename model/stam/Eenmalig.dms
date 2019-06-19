@@ -13,7 +13,7 @@
 
 container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "True"
 {
-	unit<uint32> mutatieSchema: nrofrows = 13
+	unit<uint32> mutatieSchema: nrofrows = 12
 	{
 		parameter<uint32> nrAttr := 5;
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.)
@@ -35,60 +35,47 @@ container Eenmalig: Using = "Units;Geography", KeepData = "True", isHidden = "Tr
 			
 		// ===== Lokale opwekking: eigenaar investeringen
 			,	'ZonneBoiler', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_ZonneBoiler',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_ZonneBoiler', PRR
 
 			,	'Zon_PV', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_Zon_PV',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_Zon_PV', PRR
 
 			,	'EWV', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_EWV',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_EWV', PRR
 
 			,	'mWKK', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_mWKK',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_mWKK', PRR
 
 			,	'eWP', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_eWP',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_eWP', PRR
 
 			,	'hWP', 'LokaleOpwekking', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_hWP',
-					PRR
+					'BebouwingsComponenten/@BC@/kosten/Ki_hWP', PRR
 
-
-			,	'@BTW@30j', 'BTW', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking * '+VAT_F,
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
+			,	'LokaleOpwekking', 'BTW', '@BTW@/Eigenaar', 
+					'BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking * '+VAT_F, 'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Gebouwverbeteringen
-			,	'Gebouwverbetering@BC@', 'Gebouw', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering',
-					PRR
+			,	'Gebouwverbetering', 'Gebouw', '@BC@/Eigenaar', 
+					'BebouwingsComponenten/@BC@/kosten/Ki_GebouwVerbetering', PRR
 
-			,	'Gebouwverbetering@BTW@', 'BTW', '@BC@/Eigenaar', 
-					'BebouwingsComponenten/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])',
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
+			,	'Gebouwverbetering_BTW', 'BTW', '@BTW@/Eigenaar', 
+					'BebouwingsComponenten/@BTW@/kosten/Ki_GebouwVerbetering * (SpecifiekeInstellingen/VAT_gv / 100[Percent])', 'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== subsidie
 			,	'EIA30', '@BC@/Eigenaar', 'Subsidie',
-					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30',
-					PRR
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA30', PRR
 
 			,	'EIA15', '@BC@/Eigenaar', 'Subsidie',
-					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15',
-					PRR
+					'BebouwingsComponenten/@BC@/sprongen/subsidie/EIA15', PRR
 
 		// ===== vergoedingen van Aansluitbijdrage aan Leverancier geannualiseerd obv discontovoet WijkDistributie
-			,	'Aansluitbijdrage_@RO@_@BTW@', 'BTW', '@BC@/Eigenaar',
-					'BebouwingsComponenten/@BTW@/Opbrengsten/AansluitbijdrageD * Allocatie/@BTW@/Aandelen/@RO@ * '+VAT_F,
-					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
-
-			,	'Aansluitbijdrage_@RO@_@BC@', 'Leverancier', '@BC@/Eigenaar',
-					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO
-					PRR
+			,	'Oi_lv_Aansl_@RO@_BTW', 'BTW', 'BestaandeWoning/Eigenaar', // TODO: check of dit niet deels door andere BC's moet worden betaald/
+					'StateNaAllocatie/@RO@/Eenmalig/Oi_lv_Aansl * '+VAT_F, ''
+					
+//			,	'Aansluitbijdrage_@RO@', 'Leverancier', '@BC@/Eigenaar',
+//					'BebouwingsComponenten/@BC@/Opbrengsten/AansluitbijdrageD * Allocatie/@BC@/Aandelen/@RO@',  // TODO: Niet voor WKO of LT? Op te lossen door Oi_lv_Aansl per BC te definieren.
+//					PRR
 			);
 		}
 

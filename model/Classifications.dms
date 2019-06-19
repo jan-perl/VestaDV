@@ -697,7 +697,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 	unit<uint8> GebiedsOptie_Jaarlijks : nrofrows = 70
 	{
-		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Bji_ge_Aansl', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Oji_ge_EIA', 'Omi_ge_EIA',
+		attribute<string> name: ['Kj_ge_hv', 'Kji_ge_ov', 'Kji_ge_pm', 'Kmi_ge_ov', 'Kmi_ge_pm', 'Om_ge_comfort', 'Bji_ge_Aansl', 'Oji_ge_EIA', 'Omi_ge_EIA',
 			'Kj_id_gas', 'Km_id_gas', 'Kj_id_gas_EH', 'Kj_id_gas_CO2', 'Kj_id_elek', 'Km_id_elek', 'Kj_id_elek_EH', 'Kj_id_elek_CO2',
 			'Kj_id_oh', 'Kj_id_adm', 'Kji_id', 'Kmi_id', 'Oji_id_EIA', 'Omi_id_EIA', 'Oj_id_EEA', 'Oj_id_SDE',
 			'Kj_wd_gas', 'Km_wd_gas', 'Kj_wd_gas_EH', 'Kj_wd_gas_CO2', 'Kj_wd_elek', 'Km_wd_elek', 'Kj_wd_elek_EH', 'Kj_wd_elek_CO2',
@@ -733,14 +733,14 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas', '@RO@_bijstook_wd_gas_CO2', '', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek', '@RO@_bijstook_wd_elek_CO2',
 			'Kj_wd_oh_@RO@', 'Kj_wd_adm_@RO@', 'Kji_wd_@RO@', 'Kmi_wd_@RO@', 'Oji_wd_EIA_@RO@', 'Omi_wd_EIA_@RO@', 'Oj_wd_EEA_@RO@', 'Oj_wd_SDE_@RO@',
 			'Kj_pt_oh_@RO@', 'Kj_pt_adm_@RO@', 'Kji_pt_@RO@', 'Kmi_pt_@RO@', 'Oji_pt_EIA_@RO@', 'Omi_pt_EIA_@RO@', 'Oj_pt_EEA_@RO@',
-			'', '@RO@_ow_gas', '@RO@_ow_gas', '@RO@_ow_gas_CO2', '', '@RO@_ow_elek', '@RO@_ow_elek', '@RO@_ow_elek_CO2',			
+			'', 'Km_ow_gas', 'Kj_ow_gas_EH', 'Kj_ow_gas_CO2_@RO@', '', 'Km_ow_elek', 'Kj_ow_elek_EH', 'Kj_ow_elek_CO2_@RO@',			
 			'Kj_ow_productie', 
-			'Kj_ow_oh_@RO@', 'Kj_ow_adm_@RO@', 'Kji_ow_@RO@', 'Kmi_ow_@RO@', 'Oji_ow_EIA_@RO@', 'Omi_ow_EIA_@RO@', 'Oj_ow_EEA_@RO@', 'Oj_ow_SDE_@RO@',
+			'Kj_ow_oh', 'Kj_ow_adm', 'Kji_ow', 'Kmi_ow_@RO@', 'Oji_ow_EIA', 'Omi_ow_EIA_@RO@', 'Oj_ow_EEA', 'Oj_ow_SDE',
 			'Oji_lv_Aansl', 'Omi_lv_Aansl', 'Oj_lv_verbruik_@RO@', 'Oj_lv_vastrecht_@RO@', 'Oj_lv_SDE_@RO@'
 		];
 		attribute<string> full_name := actor_code + '/' + name;
 		attribute<string> leverancier : [
-			'Comfort', 'KL_e', 'KL_e', 'Comfort', 'Admin', '@WKOC@/Gebruiker', 'KL_e', 'BestaandeWoning/Eigenaar', 'KL_e'
+			'Comfort', 'KL_e', 'KL_e', 'Comfort', 'Admin', 'BestaandeWoning/Gebruiker', 'KL_e', 'BestaandeWoning/Eigenaar', 'KL_e'
 		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
 		,	'Onderhoud', 'Admin', 'KL_p', 'InpandigeDistributie', 'InpandigeDistributeur', 'KL_p', 'InpandigeDistributeur',  'InpandigeDistributeur'
 		,	'', 'AardGas', 'EnergieHeffing', 'EmissieRechten', '', 'Elektriciteit', 'EnergieHeffing', 'EmissieRechten'
@@ -751,6 +751,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		,	'Onderhoud', 'Admin', 'KL_p', 'Opwekking', '@RO@', 'KL_p', '@RO@',  '@RO@'
 		,	'', '', '', '', 'Leverancier'
 		];
+		// TODO: checken dat wat hier aan BestaandeWoning/xxx geleverd zou worden niet aan andere BC geleverd zou moeten worden.
 		attribute<string> afnemer : [
 			'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'BestaandeWoning/Eigenaar',	'KL_e',	'KL_e', 'Comfort',	'BestaandeWoning/Eigenaar', 'KL_e', 'Subsidie'
 		,	'', 'InpandigeDistributeur', 'InpandigeDistributeur', 'AardGas', '', 'InpandigeDistributeur', 'InpandigeDistributeur', 'Elektriciteit'
@@ -803,8 +804,34 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 	unit<uint8> GebiedsOptie_Verbruik: nrofrows = 11
 	{
-		attribute<string> name: [  'V_id_gas', 'V_wd_gas', 'V_ow_gas', 'V_id_elek', 'V_wd_elek', 'V_ow_elek', 'V_id_verlies', 'V_wd_verlies', 'V_pt_verlies', 'V_warmte', 'V_koude'];
-		attribute<string> actor_code: [ 'id', 'wd', 'ow', 'id', 'wd', 'ow', 'id', 'wd', 'pt', '', ''];		
+		attribute<string> name: [  
+			'V_id_gas',  'V_wd_gas',  'V_ow_gas', 
+			'V_id_elek', 'V_wd_elek', 'V_ow_elek', 
+			'V_id_verlies', 'V_wd_verlies', 'V_pt_verlies', 
+			'V_warmte', 'V_koude'
+		];
+		attribute<string> actor_code: [ 
+			'id', 'wd', 'ow', 
+			'id', 'wd', 'ow', 
+			'id', 'wd', 'pt', 
+			'', ''
+		];
+/* REMOVE		
+		attribute<string> technology : [
+			'InpandigeDistributeur', 'WijkDistributeur', '@RO@',
+			'InpandigeDistributeur', 'WijkDistributeur', '@RO@',
+			'Omgeving', 'Omgeving', 'Omgeving',
+			'PrimairTransporteur'
+		];
+// REMOVE */
+
+		attribute<string> location : [
+			'AardGas', 'AardGas', 'AardGas',
+			'Elektriciteit', 'Elektriciteit', 'Elektriciteit',
+			'InpandigeDistributeur', 'WijkDistributeur', 'PrimairTransporteur',
+			'@RO@', '@RO@'
+		];
+		attribute<string> full_name := name;
 	}
 		
 	unit<uint8> GebiedsOptie_Uitstoot: nrofrows = 6
