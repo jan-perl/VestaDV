@@ -620,6 +620,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 		attribute<bool> kanGebiedsOptie := union_data(., GebouwOptie/kanGebiedsOptie, const(false, GebiedsOptie));
 		
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
+		attribute<string> LabelText := name;
 	}
 
 	unit<uint8> PlanRegioOptie := subset(GebiedsOptie/IsPlanRegioOptie) 
