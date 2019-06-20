@@ -263,23 +263,24 @@ template WKO
 					attribute<Eur_yr>	Kj_id_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij WKO
 					attribute<Eur_yr>	Kj_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_id_elek	')+')';
 					attribute<Eur_yr>	Kj_id_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_id_oh		')+')';
-					attribute<Eur_yr>	Kji_id			(PlanRegio)		:=	Eenmalig/ki_id			* (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
-					attribute<Eur_yr>	Kmi_id			(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/ki_id;
+					attribute<Eur_yr>	Kji_id			(PlanRegio)		:=	Eenmalig/ki_id * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor); // kapitaallasten van id investering die bij aansluiting, na 2 jaar, gemaakt worden.
+					attribute<Eur_yr>	Kmi_id			(PlanRegio)		:=	Eenmalig/ki_id * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor);
 					attribute<Eur_yr>	Km_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Km_id_elek		')+')';
 					attribute<Eur_yr>	Km_id_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Kj_id_gas_EH	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Kj_id_gas_CO2	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Kj_id_elek_EH	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_id_elek_EH	')+')';
 					attribute<Eur_yr>	Kj_id_elek_CO2	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_id_elek_CO2	')+')';
-					attribute<Eur_yr>	Omi_id_EIA		(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/Oi_id_EIA;
 					attribute<Eur_yr>	Oji_id_EIA		(PlanRegio)		:=	Eenmalig/Oi_id_EIA * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor);
+					attribute<Eur_yr>	Omi_id_EIA		(PlanRegio)		:=	Eenmalig/Oi_id_EIA * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor);
 					attribute<Eur_yr>	Oj_id_EEA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oj_id_EEA	')+')';
 					attribute<Eur_yr>	Oj_id_SDE		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen aparte SDE voor inpandig distributeur
 				}		
 					
 				container wd
 				{					
-					attribute<Eur_yr>	Kji_wd			(PlanRegio)		:=	Eenmalig/ki_wd			* (NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor);
+					attribute<Eur_yr>	Kji_wd			(PlanRegio)		:=	Eenmalig/ki_wd * NCW/wd28/AnnualisationFactor;
+					attribute<Eur_yr>	Kmi_wd			(PlanRegio)		:=	Eenmalig/ki_wd * NCW/mr28/AnnualisationFactor;
 					attribute<Eur_yr>	Kj_wd_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij WKO
 					attribute<Eur_yr>	Kj_wd_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_elek	')+')';
 					attribute<Eur_yr>	Km_wd_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Km_wd_elek		')+')';
@@ -289,11 +290,10 @@ template WKO
 					attribute<Eur_yr>	Kj_wd_elek_EH	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_elek_EH	')+')';
 					attribute<Eur_yr>	Kj_wd_elek_CO2	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_elek_CO2	')+')';
 					attribute<Eur_yr>	Oj_wd_SDE		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen aparte SDE voor wijkdistributeur
-					attribute<Eur_yr>	Oji_wd_EIA		(PlanRegio)		:=	Eenmalig/Oi_wd_EIA * (NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor);
+					attribute<Eur_yr>	Oji_wd_EIA		(PlanRegio)		:=	Eenmalig/Oi_wd_EIA * NCW/wd28/AnnualisationFactor;
+					attribute<Eur_yr>	Omi_wd_EIA		(PlanRegio)		:=	Eenmalig/Oi_wd_EIA * NCW/mr28/AnnualisationFactor;
 					attribute<Eur_yr>	Kj_wd_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_adm	')+')';
-					attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_oh		')+')';
-					attribute<Eur_yr>	Kmi_wd			(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/ki_wd;
-					attribute<Eur_yr>	Omi_wd_EIA		(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/Oi_wd_EIA;
+					attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_wd_oh		')+')';					
 					attribute<Eur_yr>	Oj_wd_EEA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oj_wd_EEA	')+')';
 				}
 
@@ -310,21 +310,21 @@ template WKO
 				
 				container ow
 				{
+					attribute<Eur_yr>	Kji_ow			(PlanRegio)		:=	Eenmalig/ki_ow * NCW/ow28/AnnualisationFactor;
+					attribute<Eur_yr>	Kmi_ow			(PlanRegio)		:=	Eenmalig/ki_ow * NCW/mr28/AnnualisationFactor;
 					attribute<Eur_yr>	Kj_ow_gas_EH	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Km_ow_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Km_ow_elek		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen elektriciteitsverbruik bij opwekker
 					attribute<Eur_yr>	Kj_ow_gas_CO2	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr>	Kj_ow_elek_EH	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen elektriciteitsverbruik bij opwekker
 					attribute<Eur_yr>	Kj_ow_elek_CO2	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio);  // geen elektriciteitsverbruik bij opwekker
-					attribute<Eur_yr>	Oji_ow_EIA		(PlanRegio)		:=	Eenmalig/Oi_ow_EIA * (NCW/ow28/StartDiscountFactor * NCW/ow28/AnnualisationFactor);
 					attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ow_adm	')+')';
 					attribute<Eur_yr>	Kj_ow_productie	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen productiekosten bij WKO
 					attribute<Eur_yr>	Kj_ow_elek		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen extra elektriciteitsverbruik bij WKO
 					attribute<Eur_yr>	Kj_ow_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij WKO
 					attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Kj_ow_oh		')+')';
-					attribute<Eur_yr>	Kji_ow			(PlanRegio)		:=	Eenmalig/ki_ow			* (NCW/ow28/StartDiscountFactor * NCW/ow28/AnnualisationFactor);
-					attribute<Eur_yr>	Kmi_ow			(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/ki_ow;
-					attribute<Eur_yr>	Omi_ow_EIA		(PlanRegio)		:=	NCW/mr28/AnnualisationFactor * Eenmalig/Oi_ow_EIA;
+					attribute<Eur_yr>	Oji_ow_EIA		(PlanRegio)		:=	Eenmalig/Oi_ow_EIA * NCW/ow28/AnnualisationFactor;
+					attribute<Eur_yr>	Omi_ow_EIA		(PlanRegio)		:=	Eenmalig/Oi_ow_EIA * NCW/mr28/AnnualisationFactor;
 					attribute<Eur_yr>	Oj_ow_EEA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oj_ow_EEA	')+')';
 					attribute<Eur_yr>	Oj_ow_SDE		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen aparte SDE voor opwekker
 				}
@@ -361,8 +361,15 @@ template WKO
 				attribute<Gj_yr> V_ge_netto (PlanRegio):= V_Warmte - V_Koude;
 				attribute<Gj_yr> V_id_netto (PlanRegio):= V_ge_netto - (V_id_gas + V_id_elek - V_id_verlies);
 				attribute<Gj_yr> V_wd_netto (PlanRegio):= V_id_netto - (V_wd_gas + V_wd_elek - V_wd_verlies);
-				attribute<Gj_yr> V_pt_netto (PlanRegio):= V_wd_netto + V_wd_verlies;
+				attribute<Gj_yr> V_pt_netto (PlanRegio):= V_wd_netto + V_pt_verlies;
 				attribute<Gj_yr> V_ow_netto (PlanRegio):= V_pt_netto - (V_ow_gas + V_ow_elek);
+				
+				// generieke netto warmte onttrekking:
+				attribute<Gj_yr> V_id_warmte(PlanRegio):= V_warmte    - (V_id_gas + V_id_elek - V_id_verlies);
+				attribute<Gj_yr> V_wd_warmte(PlanRegio):= V_id_warmte - (V_wd_gas + V_wd_elek - V_wd_verlies);
+				attribute<Gj_yr> V_pt_warmte(PlanRegio):= V_wd_warmte + V_pt_verlies;
+				attribute<Gj_yr> V_ow_warmte(PlanRegio):= V_pt_warmte - (V_ow_gas + V_ow_elek);				
+				attribute<Gj_yr> V_ow_koude (PlanRegio):= V_Koude;
 			}
 			
 			container Uitstoot
