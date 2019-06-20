@@ -653,9 +653,6 @@ Template LtWarmtenetImpl
 					attribute<Eur_yr>	Oj_lv_vastrecht	(PlanRegio)		:=	='add('+AsItemList('Oj_Vastrecht/'+LT_Component/Name)+')';
 					attribute<Eur_yr>	Oj_lv_verbruik	(PlanRegio)		:=	='add('+AsItemList('Oj_Verbruik/'+LT_Component/Name)+')';
 				}
-				
-				
-				
 			}
 			
 			container Verbruik
@@ -675,6 +672,13 @@ Template LtWarmtenetImpl
 				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/V_warmte	')+')';
 				attribute<Gj_yr>	V_koude			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/V_koude	')+')';
 				attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	
+				
+				// generieke netto warmte onttrekking:
+				attribute<Gj_yr> V_ge_netto (PlanRegio):= V_Warmte - V_Koude;
+				attribute<Gj_yr> V_id_netto (PlanRegio):= V_ge_netto - (V_id_gas + V_id_elek - V_id_verlies);
+				attribute<Gj_yr> V_wd_netto (PlanRegio):= V_id_netto - (V_wd_gas + V_wd_elek - V_wd_verlies);
+				attribute<Gj_yr> V_pt_netto (PlanRegio):= V_wd_netto + V_wd_verlies;
+				attribute<Gj_yr> V_ow_netto (PlanRegio):= V_pt_netto - (V_ow_gas + V_ow_elek);
 			}
 			
 			container Uitstoot

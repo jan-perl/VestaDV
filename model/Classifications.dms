@@ -830,7 +830,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'AardGas', 'AardGas', 'AardGas',
 			'Elektriciteit', 'Elektriciteit', 'Elektriciteit',
 			'InpandigeDistributeur', 'WijkDistributeur', 'PrimairTransporteur',
-			'@RO@', '@RO@'
+			'@ROC@', '@ROC@'
 		];
 		attribute<string> full_name := name;
 	}

@@ -464,7 +464,56 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 
 			// ===== WKO 
-			,	'E4_WKO_Warmte', 'a@WKON@3_@WKOC@_RV',
+			,	'C7_WKO', 'a@WKON@3_@WKOC@_Warmte',
+					'StateNaAllocatie/@COC@/Verbruik/V_warmte', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_WKO', 'a@WKON@3_@WKOC@_Koude',
+					'-StateNaAllocatie/@COC@/Verbruik/V_koude', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_WKO', 'e10_GNet',
+					'StateNaAllocatie/@COC@/Verbruik/V_id_gas', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_WKO', 'e20_eNet',
+					'-StateNaAllocatie/@COC@/Verbruik/V_id_elek', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_WKO', 'i10_OmgevingVerlies',
+					'-StateNaAllocatie/@COC@/Verbruik/V_id_verlies', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+			,	'C7_WKO', 'WijkDistr',
+					'-StateNaAllocatie/@COC@/Verbruik/V_id_netto', 
+					''
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+				,	'0.0', '0.0', '0.0', '0.0', '0.0'
+/*				
+			,	'E4_WKO', 'a@WKON@3_@WKOC@_RV',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -473,7 +522,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'E4_WKO_Warmte', 'h10_OmgevingsWarmteWinst',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC - GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
+					'StateNaAllocatie/@COC@/Verbruik/V_ow_warmte', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -481,7 +530,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 			,	'E4_WKO_Warmte', 'e20_eNet',
-					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekWC', 
+					'-StateNaAllocatie/Cumulaties/@COC@/Verbruik/V_ow_elek', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
@@ -513,6 +562,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'25.0', '11.0', '3.0', '3.0', '2.0'
 				,	'2.0', '1.0', '0.0', '0.0', '0.0'
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
+*/				
 			);
 		}
 
