@@ -127,7 +127,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-			,	'C1_KoudePomp', 'a@BN@4_@BC@_Koude', 
+			,	'C1_KoudePomp', 'a@BN@_@BC@_Koude', 
 					'-Allocatie/@BC@/MeterVraag/Koude * BebouwingsComponenten/@BC@/Efficiency/Koude/Elektriciteit', 
 					PRR
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
