@@ -473,8 +473,8 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
 			,	'C_@CON@_@COC@', 'a@WKON@3_@WKOC@_Warmte',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC',
-					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
+					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/PR/Totaal/V_Warmte',
+					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
@@ -588,7 +588,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
-/*				
+/*
 			,	'E4_WKO', 'a@WKON@3_@WKOC@_RV',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
@@ -615,7 +615,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 				
 			,	'E5_WKO_Koude', 'a@WKON@4_@WKOC@_Koude',
-					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
+					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/Totaal/V_KoudeC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'

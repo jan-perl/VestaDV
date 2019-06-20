@@ -109,15 +109,26 @@ template WKOResults
 		attribute<Eur_yr>	Oj_ow_EEA		(PlanRegio)	:=	sum(WkoData/Oj_ow_EEA		* float64(StartThis)	, BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Oj_SDE			(PlanRegio)	:=	sum(WkoData/Oj_SDE			* float64(StartThis)	, BCdata/PlanRegio_rel);
 
-		attribute<KG_yr>	CO2				(PlanRegio)	:=	sum(WkoData/CO2				* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	GJe				(PlanRegio)	:=	sum(WkoData/GJe				* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	GJw				(PlanRegio)	:=	sum(WkoData/GJw				* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	V_wd_verlies	(PlanRegio)	:=	sum(WkoData/V_wd_verlies	* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	V_id_elek		(PlanRegio)	:=	sum(WkoData/V_id_elek		* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	V_wd_elek		(PlanRegio)	:=	sum(WkoData/V_wd_elek		* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	V_warmte		(PlanRegio)	:=	sum(WkoData/V_warmte		* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<GJ_yr>	V_koude			(PlanRegio)	:=	sum(WkoData/V_koude			* float64(StartThis)	, BCdata/PlanRegio_rel);
-
+		container Nieuw {
+			attribute<KG_yr> CO2         (PlanRegio) :=	sum(WkoData/CO2			 * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> GJe         (PlanRegio) :=	sum(WkoData/GJe			 * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> GJw         (PlanRegio) :=	sum(WkoData/GJw			 * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_wd_verlies(PlanRegio) :=	sum(WkoData/V_wd_verlies * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_id_elek   (PlanRegio) :=	sum(WkoData/V_id_elek    * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_wd_elek   (PlanRegio) :=	sum(WkoData/V_wd_elek    * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_warmte    (PlanRegio) :=	sum(WkoData/V_warmte     * float64(StartThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_koude     (PlanRegio) :=	sum(WkoData/V_koude      * float64(StartThis), BCdata/PlanRegio_rel);
+		}
+		container Totaal {
+			attribute<KG_yr> CO2         (PlanRegio) :=	sum(WkoData/CO2			 * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> GJe         (PlanRegio) :=	sum(WkoData/GJe			 * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> GJw         (PlanRegio) :=	sum(WkoData/GJw			 * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_wd_verlies(PlanRegio) :=	sum(WkoData/V_wd_verlies * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_id_elek   (PlanRegio) :=	sum(WkoData/V_id_elek    * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_wd_elek   (PlanRegio) :=	sum(WkoData/V_wd_elek    * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_warmte    (PlanRegio) :=	sum(WkoData/V_warmte     * float64(hasThis), BCdata/PlanRegio_rel);
+			attribute<GJ_yr> V_koude     (PlanRegio) :=	sum(WkoData/V_koude      * float64(hasThis), BCdata/PlanRegio_rel);
+		}
 	}
 
 	container Result := BCdata
