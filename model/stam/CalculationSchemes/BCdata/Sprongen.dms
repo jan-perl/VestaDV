@@ -260,7 +260,7 @@ container Sprongen
 		attribute<Eur_yr> S_B_AP   (BebouwingsObject) := VerbeterKosten_i/S_B_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
 
 		attribute<Eur_yr> LTAS     (BebouwingsObject) := VerbeterKosten_i/LTAS * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * Kengetallen/Onderhoud/Rj_LokaleEWP       * RuimtelijkeVraagComponent/nrModelUnits;
 		attribute<Eur_yr> EWV      (BebouwingsObject) := VerbeterKosten_i/EWV  * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
 
 		attribute<Eur_yr> S_AP_eWP (BebouwingsObject) := eWP + LTAS;
@@ -526,7 +526,7 @@ container Sprongen
 	attribute<Eur_yr> Kj_OnderhoudAdministratie (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 		add(
 			Ki_gv_w  * Kengetallen/Onderhoud/Rj_GebouwVerbetering
-		,	Ki_eWP_w * Kengetallen/Onderhoud/Rj_LokaleOpwekking 
+		,	Ki_eWP_w * Kengetallen/Onderhoud/Rj_LokaleEWP 
 		, 	Ki_EWV_w * Kengetallen/Onderhoud/Rj_LokaleOpwekking 
 		);
 

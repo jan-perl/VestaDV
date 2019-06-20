@@ -139,7 +139,8 @@ container Rapportage
 			attribute<Eur>    Ki_Totaal15    (PlanRegio) := sum(BCdata/Kosten/Ki_LokaleOpwekking15, BCdata/PlanRegio_rel);
 
 			attribute<Eur_yr> Kw_Totaal_excl (PlanRegio) :=  Ki_Totaal30 * Ncw30/AnnualisationFactor + Ki_Totaal15 * Ncw15/AnnualisationFactor;
-			attribute<Eur_yr> Kj_OenM_base   (PlanRegio) := (Ki_Totaal30 + Ki_Totaal15) * Kengetallen/Onderhoud/Rj_LokaleOpwekking;
+			
+			attribute<Eur_yr> Kj_OenM_base   (PlanRegio) := (Ki_Totaal30 + Ki_Totaal15 - Ki_eWP) * Kengetallen/Onderhoud/Rj_LokaleOpwekking + Ki_eWP * Kengetallen/Onderhoud/Rj_LokaleEWP;
 			attribute<Eur_yr> Kj_Onderh_excl (PlanRegio) := Kj_OenM_base * Kengetallen/Onderhoud/R_Onderhoud;
 			attribute<Eur_yr> Kj_Admin_excl  (PlanRegio) := Kj_OenM_base * Kengetallen/Onderhoud/R_Admin;
 		}

@@ -140,7 +140,7 @@ container Basis: Using = "Units"
 			}
 			container hWP: Source = "Rapport Vesta 3.0 F85"
 			{
-				parameter<Ratio>     COP: [4.00];
+				parameter<Ratio>     COP: [4.00]; //COP is aangenomen inclusief pompenergie
 				parameter<Ratio>     DekkingsGraad: [0.80];
 				parameter<Eur_Aansl> InvesteringsKosten_Min: [2500];
 				parameter<Eur_Aansl> InvesteringsKosten_Max: [4300];
