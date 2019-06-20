@@ -89,7 +89,7 @@ container Transformations
 	{
 		// begin case parameters
 		container          Accounting1;
-		unit<uint8>        Accounting2;
+//		unit<uint8>        Accounting2;
 		unit<float64>      Quantity;
 		parameter<string>  OutputSubFolder;
 		attribute<float64> fraction (PR);
@@ -102,8 +102,12 @@ container Transformations
 
 		container impl: isHidden = "True"
 		{
-			unit<uint32> src := Accounting1/mutatie;
+			parameter<string> EmissionExprE := (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 			
+			unit<uint32> Accounting := Accounting1/mutatie {
+				attribute<string> EmissionExpr  := =EmissionExprE;
+			}
+/* REMOVE			
 			unit<uint8> Accounting2Subset := subset(Accounting2/Location != '' && false)
 			{
 				attribute<string> name          := Accounting2/name       [nr_OrgEntity];
@@ -119,6 +123,7 @@ container Transformations
 				parameter<string> EmissionExprE := (EmissionPrefix == '' ? 'const('''', .)' : EmissionPrefix);
 				attribute<string> EmissionExpr  := =EmissionExprE;
 			}
+*/			
 			unit<uint8> BC   := Classifications/BebouwingsComponent;
 			unit<uint8> WKOC := subset(BC/KanWKO)
 			{

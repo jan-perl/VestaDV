@@ -824,7 +824,6 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'Omgeving', 'Omgeving', 'Omgeving',
 			'PrimairTransporteur'
 		];
-// REMOVE */
 
 		attribute<string> location : [
 			'AardGas', 'AardGas', 'AardGas',
@@ -832,6 +831,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'InpandigeDistributeur', 'WijkDistributeur', 'PrimairTransporteur',
 			'@ROC@', '@ROC@'
 		];
+// REMOVE */
 		attribute<string> full_name := name;
 	}
 		

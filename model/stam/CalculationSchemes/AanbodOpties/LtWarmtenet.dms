@@ -578,26 +578,26 @@ Template LtWarmtenetImpl
 				
 				container id
 				{
-					attribute<Eur_yr>	Kj_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek	')+')';
-					attribute<Eur_yr>	Km_id_elek		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Km_id_elek		')+')';
-					attribute<Eur_yr>	Kj_id_elek_EH	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_EH	')+')';
-					attribute<Eur_yr>	Kj_id_elek_CO2	(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_CO2	')+')';
+					attribute<Eur_yr> Kj_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek	')+')';
+					attribute<Eur_yr> Km_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Km_id_elek		')+')';
+					attribute<Eur_yr> Kj_id_elek_EH (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_EH	')+')';
+					attribute<Eur_yr> Kj_id_elek_CO2(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_CO2	')+')';
 					
-					attribute<Eur_yr>	Kj_id_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
-					attribute<Eur_yr>	Km_id_gas		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
-					attribute<Eur_yr>	Kj_id_gas_CO2	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
-					attribute<Eur_yr>	Kj_id_gas_EH	(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
+					attribute<Eur_yr> Kj_id_gas		(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
+					attribute<Eur_yr> Km_id_gas		(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
+					attribute<Eur_yr> Kj_id_gas_CO2	(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
+					attribute<Eur_yr> Kj_id_gas_EH	(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					
-					attribute<Eur_yr>	Kji_id			(PlanRegio)		:=	Eenmalig/ki_id * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Kji_id;
-					attribute<Eur_yr>	Kmi_id			(PlanRegio)		:=	Eenmalig/ki_id * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Kmi_id;
-					attribute<Eur_yr>	Kj_id_oh		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Totaal/Kj_id_oh ')+')';
-					attribute<Eur_yr>	Kj_id_adm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Totaal/Kj_id_adm')+')';
+					attribute<Eur_yr> Kji_id        (PlanRegio) := Eenmalig/ki_id * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Kji_id;
+					attribute<Eur_yr> Kmi_id		(PlanRegio) := Eenmalig/ki_id * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Kmi_id;
+					attribute<Eur_yr> Kj_id_oh		(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Totaal/Kj_id_oh ')+')';
+					attribute<Eur_yr> Kj_id_adm		(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/OenM/Totaal/Kj_id_adm')+')';
 					
 					
-					attribute<Eur_yr>	Oji_id_EIA		(PlanRegio)		:=	Eenmalig/Oi_id_EIA * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Oji_id_EIA;
-					attribute<Eur_yr>	Omi_id_EIA		(PlanRegio)		:=	Eenmalig/Oi_id_EIA * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Omi_id_EIA;
-					attribute<Eur_yr>	Oj_id_EEA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Oj_id_EEA	')+')';
-					attribute<Eur_yr>	Oj_id_SDE		(PlanRegio)		:=	const(0[Eur_yr], PlanRegio); // geen aparte SDE voor inpandig distributeur				
+					attribute<Eur_yr> Oji_id_EIA	(PlanRegio) := Eenmalig/Oi_id_EIA * (NCW/id28/StartDiscountFactor * NCW/id28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Oji_id_EIA;
+					attribute<Eur_yr> Omi_id_EIA	(PlanRegio) := Eenmalig/Oi_id_EIA * (NCW/mr28/StartDiscountFactor * NCW/mr28/AnnualisationFactor) + VorigePeriode/jaarlijks/id/Omi_id_EIA;
+					attribute<Eur_yr> Oj_id_EEA		(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Oj_id_EEA	')+')';
+					attribute<Eur_yr> Oj_id_SDE		(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen aparte SDE voor inpandig distributeur				
 				}
 				
 				container wd

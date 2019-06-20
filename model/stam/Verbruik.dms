@@ -472,7 +472,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
 				
-			,	'C_@CON@_@COC@', 'a@WKON@3_@WKOC@_Warmte',
+			,	'C_@CON@_@COC@', 'a@WKON@_@WKOC@_RV',
 					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/PR/Totaal/V_Warmte',
 					''
 				,	'0.0', '0.0', '0.0', '0.0', '0.0'
