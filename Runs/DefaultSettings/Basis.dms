@@ -168,20 +168,37 @@ container Basis: Using = "Units"
 				attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := SpecifiekeInstellingen/LokaleOpwekking/BestaandeWoning/ZonneBoiler_Oppervlak;
 			}
 
-			container eWP
+			container eWP //TODO: oude waarden verwijderen
 			{
-				parameter<Ratio> COP: [ 3.00 ];
-				// Het minimum is gebaseerd op lucht/water systeem met LT-radiatoreen en het maximum op water/water systeem met vloerverwarming, 
-				// beide voor rijtjeshuis uit de periode 1960-1980 (CE-rapport, augustus 2013) met aftrek van het alternatief van de HR-ketel:
-				// 2000 Euro ketelkosten bij minimale kosten
-				// 1200 Euro ketelkosten bij maximale kosten
-				// email Ruud 260813: Minimale investeringskosten = 8006 Euro  en maximale investeringskosten 21546 Euro. 
-				// De kosten zijn als volgt opgebouwd:
-				// LT-systeem (1506; 8246 = 7635*1,08), eWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
-				// EWP (8500; 14500) en aftrek van HR ketel (2000; 1200).
-				// 061113 Ruud en Bas - PBL: Splitsen van WKO-kosten. LT-systeem kosten niet meer meegenomen
+				parameter<Ratio>	COP				:	[ 3.00 ],	Descr = "Oorspronkelijke COP in versie 3.3", Source = "Functioneel ontwerp 3.0 en uitbreidingen en dataverificaties";
 				parameter<units/Eur_Woning> InvesteringsKosten_min : [ 6500.0];
 				parameter<units/Eur_Woning> InvesteringsKosten_max : [13300.0];
+				
+				container Lucht:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
+				{
+					parameter<Ratio>	COP_K			:=	   4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimtekoeling";
+					parameter<Ratio>	COP_WW			:=	   2.30 [Ratio],	Descr = "COP van luchtwarmtepomp voor tapwaterbereiding";
+					parameter<Ratio>	COP_RV_A		:=	   4.50 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel A+";
+					parameter<Ratio>	COP_RV_B		:=	   4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel B";
+				
+					parameter<Eur>		Ki_vast_min		:=	2264.18 [Eur],		Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur>		Ki_vast_max		:=	3651.90 [Eur],		Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_min		:=	 174.12 [Eur_kw],	Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_max		:=	 280.84 [Eur_kw],	Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+				}
+				
+				container Bodem:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
+				{
+					parameter<Ratio>	COP_K			:=	   8.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimtekoeling";
+					parameter<Ratio>	COP_WW			:=	   3.25 [Ratio],	Descr = "COP van bodemwarmtepomp voor tapwaterbereiding";
+					parameter<Ratio>	COP_RV_A		:=	   5.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel A+";
+					parameter<Ratio>	COP_RV_B		:=	   4.50 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel B";
+					
+					parameter<Eur>		Ki_vast_min		:=	5295.60 [Eur],		Descr = "minimale vaste investering bodemwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur>		Ki_vast_max		:=	8826.00 [Eur],		Descr = "maximale vaste investering bodemwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_min		:=	  39.00 [Eur_kw],	Descr = "minimale variabele investering bodemwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_max		:=	  65.00 [Eur_kw],	Descr = "maximale variabele investering bodemwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+				}
 			}
 
 			container Opbrengsten : Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
@@ -207,12 +224,6 @@ container Basis: Using = "Units"
 			container ZonneBoiler := BestaandeWoning/ZonneBoiler
 			{
 				attribute<m2_MU> Oppervlak (Classifications/WoningtypeNieuwbouw) := LokaleOpwekking/NieuwbouwWoning/ZonneBoiler_Oppervlak;
-			}
-
-			container eWP := BestaandeWoning/eWP
-			{
-				parameter<units/Eur_Woning> InvesteringsKosten_Min : [5000.0], Source = "Cor CE";
-				parameter<units/Eur_Woning> InvesteringsKosten_Max : [5000.0], Source = "Cor CE";
 			}
 
 			container Opbrengsten := BestaandeWoning/Opbrengsten, Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
@@ -247,11 +258,18 @@ container Basis: Using = "Units"
 				attribute<m2_MU > Oppervlak (Classifications/UtilTypeBestaand) := LokaleOpwekking/BestaandeUtil/ZonneBoiler_Oppervlak;
 			}
 
-			container eWP
+			container eWP:= BestaandeWoning/eWP  //TODO: oude waarden verwijderen
 			{
-				parameter<Ratio>        COP: [4.00];
-				parameter<units/Eur_m2> InvesteringsKosten_min: [42.0];
-				parameter<units/Eur_m2> InvesteringsKosten_max: [42.0];
+				parameter<units/Eur_m2> InvesteringsKosten_min: [42.0], Source = "FO 3.0 + uitbreidingen en dataverificaties"; //OUD
+				parameter<units/Eur_m2> InvesteringsKosten_max: [42.0], Source = "FO 3.0 + uitbreidingen en dataverificaties"; //OUD
+				
+				container Lucht:= BestaandeWoning/eWP/Lucht //TODO: source toevoegen FO 4.0
+				{
+					parameter<Eur>		Ki_vast_min		:=	   0.00 [Eur],		Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur>		Ki_vast_max		:=	   0.00 [Eur],		Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_min		:=	1193.50 [Eur_kw],	Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>	Ki_var_max		:=	1925.00 [Eur_kw],	Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+				}				
 			}
 
 			container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
