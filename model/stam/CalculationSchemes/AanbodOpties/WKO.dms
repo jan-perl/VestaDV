@@ -355,32 +355,24 @@ template WKO
 				
 				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/V_warmte	')+')';
 				attribute<Gj_yr>	V_koude			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/V_koude	')+')';
-				attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	// TODO: checken wat hier mee gebeurt.
-				
-				// generieke netto warmte onttrekking:
-				attribute<Gj_yr> V_ge_netto (PlanRegio):= V_Warmte - V_Koude;
-				attribute<Gj_yr> V_id_netto (PlanRegio):= V_ge_netto - (V_id_gas + V_id_elek - V_id_verlies);
-				attribute<Gj_yr> V_wd_netto (PlanRegio):= V_id_netto - (V_wd_gas + V_wd_elek - V_wd_verlies);
-				attribute<Gj_yr> V_pt_netto (PlanRegio):= V_wd_netto + V_pt_verlies;
-				attribute<Gj_yr> V_ow_netto (PlanRegio):= V_pt_netto - (V_ow_gas + V_ow_elek);
+//				attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	// TODO: checken wat hier mee gebeurt.
 				
 				// generieke netto warmte onttrekking:
 				attribute<Gj_yr> V_id_warmte(PlanRegio):= V_warmte    - (V_id_gas + V_id_elek - V_id_verlies);
 				attribute<Gj_yr> V_wd_warmte(PlanRegio):= V_id_warmte - (V_wd_gas + V_wd_elek - V_wd_verlies);
-				attribute<Gj_yr> V_pt_warmte(PlanRegio):= V_wd_warmte + V_pt_verlies;
-				attribute<Gj_yr> V_ow_warmte(PlanRegio):= V_pt_warmte - (V_ow_gas + V_ow_elek);				
+				attribute<Gj_yr> V_ow_warmte(PlanRegio):= V_wd_warmte - (V_ow_gas + V_ow_elek - V_pt_verlies);				
 				attribute<Gj_yr> V_ow_koude (PlanRegio):= V_Koude;
 			}
 			
 			container Uitstoot
 			{
-				attribute<KG_yr>	CO2_id_gas		(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
-				attribute<KG_yr>	CO2_wd_gas		(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
-				attribute<KG_yr>	CO2_ow_gas		(PlanRegio)		:=	const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
+				attribute<KG_yr> CO2_id_gas (PlanRegio) := const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
+				attribute<KG_yr> CO2_wd_gas (PlanRegio) := const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
+				attribute<KG_yr> CO2_ow_gas (PlanRegio) := const(0[KG_yr], PlanRegio); // geen gasverbruik bij WKO
 				
-				attribute<KG_yr>	CO2_id_elek		(PlanRegio)		:=	verbruik/V_id_elek * prijzen/Elektriciteit/CO2_GJ;
-				attribute<KG_yr>	CO2_wd_elek		(PlanRegio)		:=	verbruik/V_wd_elek * prijzen/Elektriciteit/CO2_GJ;
-				attribute<KG_yr>	CO2_ow_elek		(PlanRegio)		:=	verbruik/V_ow_elek * prijzen/Elektriciteit/CO2_GJ;
+				attribute<KG_yr> CO2_id_elek(PlanRegio) := verbruik/V_id_elek * prijzen/Elektriciteit/CO2_GJ;
+				attribute<KG_yr> CO2_wd_elek(PlanRegio) := verbruik/V_wd_elek * prijzen/Elektriciteit/CO2_GJ;
+				attribute<KG_yr> CO2_ow_elek(PlanRegio) := verbruik/V_ow_elek * prijzen/Elektriciteit/CO2_GJ;
 			}
 		}
 	}

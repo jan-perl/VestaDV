@@ -674,11 +674,10 @@ Template LtWarmtenetImpl
 				attribute<Gj_yr>	V_WKO			(PlanRegio)		:=	V_warmte - V_koude;	
 				
 				// generieke netto warmte onttrekking:
-				attribute<Gj_yr> V_ge_netto (PlanRegio):= V_Warmte - V_Koude;
-				attribute<Gj_yr> V_id_netto (PlanRegio):= V_ge_netto - (V_id_gas + V_id_elek - V_id_verlies);
-				attribute<Gj_yr> V_wd_netto (PlanRegio):= V_id_netto - (V_wd_gas + V_wd_elek - V_wd_verlies);
-				attribute<Gj_yr> V_pt_netto (PlanRegio):= V_wd_netto + V_pt_verlies;
-				attribute<Gj_yr> V_ow_netto (PlanRegio):= V_pt_netto - (V_ow_gas + V_ow_elek);
+				attribute<Gj_yr> V_id_warmte(PlanRegio):= V_warmte    - (V_id_gas + V_id_elek - V_id_verlies);
+				attribute<Gj_yr> V_wd_warmte(PlanRegio):= V_id_warmte - (V_wd_gas + V_wd_elek - V_wd_verlies);
+				attribute<Gj_yr> V_ow_warmte(PlanRegio):= V_wd_warmte - (V_ow_gas + V_ow_elek - V_pt_verlies);				
+				attribute<Gj_yr> V_ow_koude (PlanRegio):= V_Koude;
 			}
 			
 			container Uitstoot
