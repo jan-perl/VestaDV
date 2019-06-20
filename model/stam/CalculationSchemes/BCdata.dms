@@ -313,19 +313,21 @@ template BCdata
 		}
 		container WarmWater
 		{
-			parameter<float64> Aardgas_leidingverliesfactor := 1.10;
+			parameter<float64>	Aardgas_leidingverliesfactor	:=	1.10,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	eWP_leidingverliesfactor		:=	1.10,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
 			
 			attribute<GJ_yr> AardGas     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/AardGas) * Aardgas_leidingverliesfactor;
 			attribute<GJ_yr> Warmte      (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Warmte );
-			attribute<GJ_yr> eWP         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP    );
+			attribute<GJ_yr> eWP         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP    ) * eWP_leidingverliesfactor;
 			attribute<GJ_yr> EWV         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/EWV    );
 			attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Opwekking/Zonneboiler;
 		}
 		container Warmte
 		{
+			parameter<float64>	eWP_leidingverliesfactor		:=	1.05,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
 			attribute<GJ_yr> AardGas (BebouwingsObject) := RuimteVerwarming/AardGas + WarmWater/AardGas;
 			attribute<GJ_yr> Warmte  (BebouwingsObject) := RuimteVerwarming/Warmte  + WarmWater/Warmte;
-			attribute<GJ_yr> eWP     (BebouwingsObject) := RuimteVerwarming/eWP     + WarmWater/eWP;
+			attribute<GJ_yr> eWP     (BebouwingsObject) := RuimteVerwarming/eWP     + WarmWater/eWP * eWP_leidingverliesfactor;
 			attribute<GJ_yr> EWV     (BebouwingsObject) := RuimteVerwarming/EWV     + WarmWater/EWV;
 		}
 		container Apparatuur
