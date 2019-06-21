@@ -86,33 +86,34 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		,	StorageReadOnly = "True"
 		{}
 		
-		container kentallen
+		container kentallen	:	Source	=	"doc/Notitie wijzigingen Vesta MAIS model E en G infrastructuur"
 		{
-			parameter<Eur_m>       kental_verv_LD_net           := 270[Eur_m], Descr = "vervangen LD-gasnet (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_laagb    := 550[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij laagbouw (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_hoogb    := 182[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij hoogbouw (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_util     := 1932[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij utiliteit (RNBs)";
-			parameter<Eur_m>       kental_verw_LD_net           := 100[Eur_m], Descr = "kostenkengetal verwijderen LD-gasnet (RNBs)";
-			parameter<Eur_Aansl>   kental_verzw_e_aansl         := 227[Eur_Aansl], Descr = "kostenkengetal verzwaren aansluiting naar 3x25 (RNBs)";
-			parameter<Eur_MSR>     kental_nieuwe_MSR            := 70000[Eur_MSR], Descr = "kostenkengetal plaatsen nieuwe MS-ruimte (RNBs)";
-			parameter<Eur_m>       kental_verzw_LS              := 110[Eur_m], Descr = "kostenkengetal verzwaren LS-net (RNBs)";
-			parameter<kW_MSR>      kental_capaciteit_nieuwe_MSR := 630[kW_MSR], Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes (RNBs)";
+			//kentallen investeringen ingrepen e en g infra
+			parameter<Eur_m>		kental_verv_LD_net								:=	270[Eur_m],			Descr = "kostenkengetal vervangen LD-gasnet",							Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_laagb						:=	550[Eur_Aansl],		Descr = "kostenkengetal verwijderen gasaansluiting bij laagbouw",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_hoogb						:=	182[Eur_Aansl],		Descr = "kostenkengetal verwijderen gasaansluiting bij hoogbouw",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_util						:=	1932[Eur_Aansl],	Descr = "kostenkengetal verwijderen gasaansluiting bij utiliteit",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_m>		kental_verw_LD_net								:=	100[Eur_m],			Descr = "kostenkengetal verwijderen LD-gasnet",							Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verzw_e_aansl							:=	227[Eur_Aansl],		Descr = "kostenkengetal verzwaren aansluiting naar 3x25",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_MSR>		kental_nieuwe_MSR								:=	70000[Eur_MSR],		Descr = "kostenkengetal plaatsen nieuwe MS-ruimte",						Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_m>		kental_verzw_LS									:=	110[Eur_m],			Descr = "kostenkengetal verzwaren LS-net",								Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_MSR>		kental_capaciteit_nieuwe_MSR					:=	630[kW_MSR],		Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes",		Source = "doc/notitie aanpassingen E en G infra";
 			
-			parameter<kW_Woning>   kental_aansluitwaarde_woning_zonderWP            := 11[kW_Woning];
-			parameter<kW_Woning>   kental_aansluitwaarde_woning_metWP               := 15[kW_Woning];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_zonderWP   := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_metWP      := 0.5[Ratio];
+			//kentallen dimensionering net obv piekvraag
+			parameter<kW_Woning>	kental_aansluitwaarde_woning_zonderWP			:=	11[kW_Woning],		Descr = "kengetal aansluitwaarde woningen zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_Woning>	kental_aansluitwaarde_woning_metWP				:=	15[kW_Woning],		Descr = "kengetal aansluitwaarde woningen met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_m2>		kental_aansluitwaarde_util_zonderWP				:=	0.05[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_m2>		kental_aansluitwaarde_util_metWP				:=	0.07[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
 			
-			parameter<kW_m2>       kental_aansluitwaarde_util_zonderWP              := 0.05[kW_m2];
-			parameter<kW_m2>       kental_aansluitwaarde_util_metWP                 := 0.07[kW_m2];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_zonderWP     := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_metWP        := 0.5[Ratio];
-			
-			//TO DO: check
-			parameter<kW_m2>       kental_aansluitwaarde_gltb_zonderWP              := 0.05[kW_m2];
-			parameter<kW_m2>       kental_aansluitwaarde_gltb_metWP                 := 0.07[kW_m2];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_zonderWP     := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_metWP        := 0.5[Ratio];
+			//voorlopig GLTB gelijkgesteld aan utiliteit
+			parameter<kW_m2>		kental_aansluitwaarde_gltb_zonderWP				:=	kental_aansluitwaarde_util_zonderWP;
+			parameter<kW_m2>		kental_aansluitwaarde_gltb_metWP				:=	kental_aansluitwaarde_util_metWP;
+			parameter<ratio>		kental_gelijktijdigheidsfactor_gltb_zonderWP	:=	kental_gelijktijdigheidsfactor_util_zonderWP;
+			parameter<ratio>		kental_gelijktijdigheidsfactor_gltb_metWP		:=	kental_gelijktijdigheidsfactor_util_metWP;
 		}
 		
 		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "kentallen"
