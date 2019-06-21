@@ -35,7 +35,7 @@ template AllocatieResultatenComponent
 	{
 		attribute<float64> eWP          (BebouwingsObject) := BCdata/Opwekking/eWP;
 		attribute<float64> mWKK         (BebouwingsObject) := BCdata/Opwekking/mWKK;
-		attribute<float64> EWV          (BebouwingsObject) := BCdata/Opwekking/EWV; // @RUUD: meenemen in energiekosten als elektriciteitsvraag
+		attribute<float64> EWV          (BebouwingsObject) := BCdata/Opwekking/EWV;
 		attribute<float64> hWP          (BebouwingsObject) := BCdata/Opwekking/hWP;
 
 		attribute<float64> GebiedsOptie (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * float64(Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie]);
