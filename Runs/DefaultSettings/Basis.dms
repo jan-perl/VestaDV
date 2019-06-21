@@ -361,6 +361,10 @@ container Basis: Using = "Units"
 		{
 			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
 		}
+		container TEO        := VraagKentallen
+		{
+			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
+		}
 		container AardGas := VraagKentallen;
 		container Lt15_30 := VraagKentallen;
 		container Lt15_50 := VraagKentallen;

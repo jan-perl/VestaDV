@@ -200,6 +200,33 @@ container WarmteBronnen
 			attribute<ContourSet> Grid (Geography/rdc_grids/m100) := poly2grid(impl/geometry, Geography/rdc_grids/m100), FreeData = "False";
 		}
 	}
+	container TEO: Descr = "zie FO $3.4"
+	{
+		unit<uint32> ContourSet:
+			StorageName     = "%sourceDataProjDir%/Aanbod/WKO/20190618_TEO_potentiecontour.dbf",
+			StorageReadOnly = "True",
+			url             = "%sourceDataProjDir%/Aanbod/WKO/20190518_Metadata_TEO_contour.txt",
+			DialogType      = "Map",
+			DialogData      = "geometry"
+		{
+			attribute<rdc_meter> geometry(poly) : StorageName = "%sourceDataProjDir%/Aanbod/WKO/20190618_TEO_potentiecontour.shp", StorageReadOnly = "True";
+			attribute<Uint32>    hulp;
+			attribute<Bool>      Geschikt := hulp == 1;
+		}
+		unit<uint32> GeschikteContour := subset(ContourSet/Geschikt), FreeData = "False"
+		{
+			container impl : FreeData = "True", IsHidden = "True"
+			{
+				attribute<rdc_meter> geometry  (poly, GeschikteContour) := ContourSet/geometry[nr_OrgEntity];
+			}
+			attribute<ContourSet> Grid (Geography/rdc_grids/m100) := poly2grid(impl/geometry, Geography/rdc_grids/m100), FreeData = "False";
+			unit<uint32> PointSet := subset(IsDefined(Grid)), FreeData = "False"
+			{
+				attribute<rdc_meter> point := rdc_grids/m100/point[nr_OrgEntity];
+			}
+		}
+	}
+	
 	container LtWarmte: Source = "SN82_Functioneel ontwerp LT-warmtenetten_CPT_2018-10-3.docx"
 	{
 		unit<uint32> Categorie: nrofrows = 12 // source is 5N82 Functioneel Ontwerp LT-warmtenetten_CPT_2018-10-3.docx Tabel 16
