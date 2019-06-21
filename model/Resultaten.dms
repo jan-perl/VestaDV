@@ -43,9 +43,9 @@ container Resultaten :=
 				'<description>Vesta indicator results, Run4Combi_2016_Referentie, <br>'
 				'<I>version</i>: </description>' + 
 				'<result><br><br>' + 
-				' Flow, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2020 : ' + replace(string(J2020/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2030 : ' + replace(string(J2030/InputOutput/NL/All/Flow/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
+				' Jaarlijks, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2020 : ' + replace(string(J2020/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2030 : ' + replace(string(J2030/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
 				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
 				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
 				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 

@@ -65,19 +65,23 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 	}
 
 	container LegeGebiedsOptie {
-		container Flow     := for_each_nedv(classifications/gebiedsoptie_flow/full_name, 'const(0[EUR_yr], PlanRegio)', PlanRegio, EUR_yr);
-		container Stock    := for_each_nedv(classifications/gebiedsoptie_stock/name, 'const(0[EUR], PlanRegio)', PlanRegio, EUR);		
+		container Jaarlijks:= for_each_nedv(classifications/gebiedsoptie_jaarlijks/full_name, 'const(0[EUR_yr], PlanRegio)', PlanRegio, EUR_yr);
+		container Eenmalig := for_each_nedv(classifications/gebiedsoptie_eenmalig/name, 'const(0[EUR], PlanRegio)', PlanRegio, EUR);		
 		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name, 'const(0[GJ_yr], PlanRegio)', PlanRegio, GJ_yr);
 		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name, 'const(0[kg_yr], PlanRegio)', PlanRegio, kg_yr);
 	}
 	container Cumulaties := for_each_ne(Classifications/GebiedsOptie/Name, 'LegeGebiedsOptie');
 
-	container Wko
+	container MiniState
 	{
 		container	Oi_Aansl		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur]   , PlanRegio)', PlanRegio, Eur);
-		container	Oj_Verbruik		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
-		container	Oj_Vastrecht	:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
-		container	Om_comfort		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+	}
+	container Wko := MiniState
+	{
+		container	Oi_Aansl		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur]   , PlanRegio)', PlanRegio, Eur);
+//		container	Oj_Verbruik		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+//		container	Oj_Vastrecht	:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
+//		container	Om_comfort		:= for_each_nedv(Classifications/WkoComponent/Name, 'const(0[Eur_yr], PlanRegio)', PlanRegio, Eur_yr);
 
 		unit<uint32> Cluster: NrOfRows = 0 // TODO MTA: adapt to fix of issue 1233, available with GeoDMS 7.200
 		{
@@ -87,12 +91,12 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 			attribute<rdc_meter> Point := const(Point(0.0, 0.0, rdc_meter), .);
 		}
 	}
-	container Lt15_30;
-	container Lt15_50;
-	container Lt15_70;
-	container Lt30_30;
-	container Lt30_50;
-	container Lt30_70;
+	container Lt15_30 := MiniState;
+	container Lt15_50 := MiniState;
+	container Lt15_70 := MiniState;
+	container Lt30_30 := MiniState;
+	container Lt30_50 := MiniState;
+	container Lt30_70 := MiniState;
 
 	container LtWarmte {
 		unit<uint32> bron := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {

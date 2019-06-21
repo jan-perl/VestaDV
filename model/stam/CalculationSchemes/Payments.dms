@@ -4,7 +4,7 @@
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
-container Payments: FreeData = "False" // DEBUG
+container Payments
 {
 	template substitute
 	{
@@ -15,7 +15,16 @@ container Payments: FreeData = "False" // DEBUG
 		parameter<string> key2 := '@@@';
 		// end case parameters
 
-		attribute<bool>   condition   (src) := strpos(src/name, key) >= 0 || strpos(src/leverancier, key) >= 0 || strpos(src/afnemer, key) >= 0 || strpos(src/expr, key) >= 0;
+		attribute<bool>   conditionN  (src) := strpos(src/name, key) >= 0;
+		attribute<bool>   conditionL  (src) := strpos(src/leverancier, key) >= 0;
+		attribute<bool>   conditionA  (src) := strpos(src/afnemer, key) >= 0;
+		attribute<bool>   tooManyCodes(src) := conditionN && (conditionL || conditionA);
+		attribute<bool>   condition1  (src) := conditionN || conditionL || conditionA, IntegrityCheck = "!tooManyCodes"; // save on double naming
+		
+		attribute<bool>   condition2  (src) := strpos(src/expr, key) >= 0;
+		
+		attribute<bool>   condition   (src)  := condition1 || condition2, IntegrityCheck = "condition1 == condition2"; // only distributed expressions may be substututed by a group.
+		
 		attribute<uint32> firstResult (src) := uint32(int32(id(src)) + makedefined(cumulate(int32(condition))[id(src)-1]*(int32(#valueset)-1i),0i));
 
 		unit<uint32> result := range(uint32, 0, uint32(int32(#src) + sum(int32(condition))*(int32(#valueset)-1i)))
@@ -91,11 +100,10 @@ container Payments: FreeData = "False" // DEBUG
 		attribute<Float64> fraction(PR);
 		// end case parameters
 
-		unit<float64> MQuantity   := 1000000 * Quantity;
-		unit<uint32>  PR          := Invoer/SpecifiekeInstellingen/PlanRegio;
-		unit<uint32>  Kostensoort := Classifications/KostenSoort;
-		unit<uint8>   BC          := Classifications/BebouwingsComponent;
-		unit<uint32>  Actor       := Classifications/Actor;
+		unit<float64> MQuantity := 1000000 * Quantity;
+		unit<uint32>  PR        := Invoer/SpecifiekeInstellingen/PlanRegio;
+		unit<uint32>  Actor     := Classifications/Actor;
+		unit<uint8>   BC        := Classifications/BebouwingsComponent;
 		
 		container impl: IsHidden = "True"
 		{
@@ -103,7 +111,7 @@ container Payments: FreeData = "False" // DEBUG
 			
 			unit<uint8> Accounting2Subset := subset(Accounting2/leverancier != '')
 			{
-				attribute<string> name          := Accounting2/name       [nr_OrgEntity];
+				attribute<string> name          := Accounting2/descr      [nr_OrgEntity];
 				attribute<string> leverancier   := Accounting2/leverancier[nr_OrgEntity];
 				attribute<string> afnemer       := Accounting2/afnemer    [nr_OrgEntity];
 				attribute<string> full_name     := Accounting2/full_name  [nr_OrgEntity];
@@ -112,7 +120,7 @@ container Payments: FreeData = "False" // DEBUG
 				attribute<string> name          := union_data(., src/name        , Accounting2Subset/name);
 				attribute<string> leverancier   := union_data(., src/leverancier , Accounting2Subset/leverancier);
 				attribute<string> afnemer       := union_data(., src/afnemer     , Accounting2Subset/afnemer);
-				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/Flow/'+Accounting2Subset/full_name);
+				attribute<string> Expr          := union_data(., src/Expr        , 'StateNaAllocatie/Cumulaties/@RO@/'+(is_flow?'Jaarlijks':'Eenmalig')+'/'+Accounting2Subset/full_name);
 				attribute<string> PlanRegioRel  := union_data(., src/PlanRegioRel, const('', Accounting2Subset));
 			}
 			
@@ -120,25 +128,24 @@ container Payments: FreeData = "False" // DEBUG
 			{
 				attribute<string> name := BC/name[nr_OrgEntity];
 			}
-			container applyBC  := substitute(Accounting,    '@BC@'   ,BC);
-			container applyWKOC:= substitute(applyBC/result,'@WKOC@', WKOC);
-			container applyRO  := substitute(applyWKOC/result   ,'@RO@'   ,Voorkeuren/PlanRegioOptie);
+			container applyBC  := substitute(Accounting,      '@BC@'   ,BC);
+			container applyWKOC:= substitute(applyBC/result,  '@WKOC@', WKOC);
+			container applyRO  := substitute(applyWKOC/result,'@RO@'   ,Voorkeuren/ActieveGebiedsOptie);
 
 			unit<uint32> mutatie := applyRO/result
 			{
-				attribute<Actor> Leverancier_rel := rlookup(Leverancier, Actor/name), IntegrityCheck = "IsDefined(this)";
-				attribute<Actor> Afnemer_rel     := rlookup(Afnemer,     Actor/name), IntegrityCheck = "IsDefined(this)";
+				attribute<Actor> Leverancier_rel := rlookup(Leverancier, Actor/name);
+				attribute<Actor> Afnemer_rel     := rlookup(Afnemer,     Actor/name);
 			}
 
 			unit<uint32> mutatie_elem := union_unit(mutatie, mutatie) //van afnemer aan leverancier
 			{
 				attribute<string> name       := union_data(., mutatie/name , mutatie/name);
 				attribute<string> label      := union_data(., mutatie/name+' (deb)', mutatie/name + ' (cr)');
-				attribute<actor>  actor_rel  := union_data(., mutatie/Afnemer_rel, mutatie/Leverancier_rel);
-				attribute<actor>  other_rel  := union_data(., mutatie/Leverancier_rel, mutatie/Afnemer_rel);
+				attribute<actor>  actor_rel  := union_data(., mutatie/Afnemer_rel, mutatie/Leverancier_rel), IntegrityCheck = "IsDefined(mutatie/Leverancier_rel)";
+				attribute<actor>  other_rel  := union_data(., mutatie/Leverancier_rel, mutatie/Afnemer_rel), IntegrityCheck = "IsDefined(mutatie/Afnemer_rel)";
 				attribute<string> entityRel  := union_data(., mutatie/PlanRegioRel, mutatie/PlanRegioRel);
 				attribute<string> ExprBase   := union_data(., '-('+mutatie/Expr+')', '('+mutatie/Expr+')');
-				attribute<string> AnnuFactor := union_data(., mutatie/AnnuFactor,  mutatie/AnnuFactor);
 				attribute<string> ExprSum    := entityRel <> '' ? 'sum('+ExprBase + ', '+entityRel+')' : ExprBase;
 				attribute<string> Expr       := ExprSum +' * fraction';
 			}

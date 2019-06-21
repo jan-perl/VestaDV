@@ -188,20 +188,20 @@ container AanbodOpties
 		container Cumulator;
 		container Increment;
 		
-		container Flow     := for_each_nedv(classifications/gebiedsoptie_flow/full_name, replace('Cumulator/Flow/@X@     + Increment/Flow/@X@'    , '@X@', classifications/gebiedsoptie_flow/full_name), PlanRegio, EUR_yr);
-		container Stock    := for_each_nedv(classifications/gebiedsoptie_stock/name,     replace('Cumulator/Stock/@X@    + Increment/Stock/@X@'   , '@X@', classifications/gebiedsoptie_stock/name    ), PlanRegio, EUR);
-		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name,  replace('Cumulator/Verbruik/@X@ + Increment/Verbruik/@X@', '@X@', classifications/gebiedsoptie_verbruik/name ), PlanRegio, GJ_yr);
-		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name,  replace('Cumulator/Uitstoot/@X@ + Increment/Uitstoot/@X@', '@X@', classifications/gebiedsoptie_uitstoot/name ), PlanRegio, kg_yr);
+		container Jaarlijks:= for_each_nedv(classifications/gebiedsoptie_jaarlijks/full_name, replace('Cumulator/Jaarlijks/@X@+ Increment/Jaarlijks/@X@', '@X@', classifications/gebiedsoptie_jaarlijks/full_name), PlanRegio, EUR_yr);
+		container Eenmalig := for_each_nedv(classifications/gebiedsoptie_eenmalig/name,       replace('Cumulator/Eenmalig/@X@ + Increment/Eenmalig/@X@' , '@X@', classifications/gebiedsoptie_eenmalig/name      ), PlanRegio, EUR   );
+		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name,       replace('Cumulator/Verbruik/@X@ + Increment/Verbruik/@X@' , '@X@', classifications/gebiedsoptie_verbruik/name      ), PlanRegio, GJ_yr );
+		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name,       replace('Cumulator/Uitstoot/@X@ + Increment/Uitstoot/@X@' , '@X@', classifications/gebiedsoptie_uitstoot/name      ), PlanRegio, kg_yr );
 	}
 	
 	template GebiedsAllocatieResultaat_verzamelen {
 		container Cumulaties;
 		unit<uint8> GebiedsOptieSet;
 		
-		container Flow     := for_each_nedv(classifications/gebiedsoptie_flow/full_name, replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Flow/@X@'    )+')', '@X@', classifications/gebiedsoptie_flow/full_name), PlanRegio, EUR_yr);
-		container Stock    := for_each_nedv(classifications/gebiedsoptie_stock/name,     replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Stock/@X@'   )+')', '@X@', classifications/gebiedsoptie_stock/name    ), PlanRegio, EUR);
-		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name,  replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Verbruik/@X@')+')', '@X@', classifications/gebiedsoptie_verbruik/name ), PlanRegio, GJ_yr);
-		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name,  replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Uitstoot/@X@')+')', '@X@', classifications/gebiedsoptie_uitstoot/name ), PlanRegio, kg_yr);
+		container Jaarlijks:= for_each_nedv(classifications/gebiedsoptie_jaarlijks/full_name, replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Jaarlijks/@X@')+')', '@X@', classifications/gebiedsoptie_jaarlijks/full_name), PlanRegio, EUR_yr);
+		container Eenmalig := for_each_nedv(classifications/gebiedsoptie_eenmalig/name,       replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Eenmalig/@X@' )+')', '@X@', classifications/gebiedsoptie_eenmalig/name      ), PlanRegio, EUR);
+		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name,       replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Verbruik/@X@' )+')', '@X@', classifications/gebiedsoptie_verbruik/name      ), PlanRegio, GJ_yr);
+		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name,       replace('add('+AsItemList('Cumulaties/'+GebiedsOptieSet/name+'/Uitstoot/@X@' )+')', '@X@', classifications/gebiedsoptie_uitstoot/name      ), PlanRegio, kg_yr);
 	}
 	
 }

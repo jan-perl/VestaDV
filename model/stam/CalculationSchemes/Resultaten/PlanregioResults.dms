@@ -78,62 +78,62 @@ container PlanregioResults: isHidden = "True"
 			attribute<EUR_yr>	I40_U_geb_energiebelasting	(Planregio)	:=	subitem/U_EH_gas + subitem/U_EH_elek;
 				
 		//warmtebedrijf
-			attribute<EUR>		I41_Wbedrijf_investering	(Planregio)	:=	  StateNaAllocatie/totaal/Stock/Ki_wd
-																			+ StateNaAllocatie/totaal/Stock/Ki_ow
-																			+ StateNaAllocatie/totaal/Stock/Ki_pt
-																			+ StateNaAllocatie/totaal/Stock/Ki_id
-																			+ StateNaAllocatie/totaal/Stock/Ki_ge_ov
-																			+ StateNaAllocatie/totaal/Stock/Ki_ge_pm;
-			attribute<EUR>		I42_Wbedrijf_subsidie		(Planregio)	:=	  StateNaAllocatie/totaal/Stock/Oi_wd_EIA
-																			+ StateNaAllocatie/totaal/Stock/Oi_ow_EIA
-																			+ StateNaAllocatie/totaal/Stock/Oi_pt_EIA
-																			+ StateNaAllocatie/totaal/Stock/Oi_id_EIA
-																			+ StateNaAllocatie/totaal/Stock/Oi_ge_EIA;
+			attribute<EUR>		I41_Wbedrijf_investering	(Planregio)	:=	  StateNaAllocatie/totaal/Eenmalig/Ki_wd
+																			+ StateNaAllocatie/totaal/Eenmalig/Ki_ow
+																			+ StateNaAllocatie/totaal/Eenmalig/Ki_pt
+																			+ StateNaAllocatie/totaal/Eenmalig/Ki_id
+																			+ StateNaAllocatie/totaal/Eenmalig/Ki_ge_ov
+																			+ StateNaAllocatie/totaal/Eenmalig/Ki_ge_pm;
+			attribute<EUR>		I42_Wbedrijf_subsidie		(Planregio)	:=	  StateNaAllocatie/totaal/Eenmalig/Oi_wd_EIA
+																			+ StateNaAllocatie/totaal/Eenmalig/Oi_ow_EIA
+																			+ StateNaAllocatie/totaal/Eenmalig/Oi_pt_EIA
+																			+ StateNaAllocatie/totaal/Eenmalig/Oi_id_EIA
+																			+ StateNaAllocatie/totaal/Eenmalig/Oi_ge_EIA;
 							// jaarlijkse kapitaallasten na subsidies
-			attribute<EUR_yr>	I43_Wbedrijf_kapitaallast	(Planregio)	:=	  StateNaAllocatie/totaal/Flow/wd/Kji_wd
-																			+ StateNaAllocatie/totaal/Flow/id/Kji_id
-																			+ StateNaAllocatie/totaal/Flow/pt/Kji_pt
-																			+ StateNaAllocatie/totaal/Flow/ow/Kji_ow
-																			+ StateNaAllocatie/totaal/Flow/ge/Kji_ge_pm
-																			+ StateNaAllocatie/totaal/Flow/ge/Kji_ge_ov
-																			- StateNaAllocatie/totaal/Flow/id/Oji_id_EIA
-																			- StateNaAllocatie/totaal/Flow/pt/Oji_pt_EIA
-																			- StateNaAllocatie/totaal/Flow/ow/Oji_ow_EIA
-																			- StateNaAllocatie/totaal/Flow/ge/Oji_ge_EIA;
-			attribute<EUR_yr>	I44_Wbedrijf_inkoopenergie	(Planregio)	:=	  StateNaAllocatie/totaal/Flow/id/Kj_id_gas
-																			+ StateNaAllocatie/totaal/Flow/wd/Kj_wd_gas
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_gas
-																			+ StateNaAllocatie/totaal/Flow/id/Kj_id_elek
-																			+ StateNaAllocatie/totaal/Flow/wd/Kj_wd_elek
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_elek;	
+			attribute<EUR_yr>	I43_Wbedrijf_kapitaallast	(Planregio)	:=	  StateNaAllocatie/totaal/Jaarlijks/wd/Kji_wd
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kji_id
+																			+ StateNaAllocatie/totaal/Jaarlijks/pt/Kji_pt
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kji_ow
+																			+ StateNaAllocatie/totaal/Jaarlijks/ge/Kji_ge_pm
+																			+ StateNaAllocatie/totaal/Jaarlijks/ge/Kji_ge_ov
+																			- StateNaAllocatie/totaal/Jaarlijks/id/Oji_id_EIA
+																			- StateNaAllocatie/totaal/Jaarlijks/pt/Oji_pt_EIA
+																			- StateNaAllocatie/totaal/Jaarlijks/ow/Oji_ow_EIA
+																			- StateNaAllocatie/totaal/Jaarlijks/ge/Oji_ge_EIA;
+			attribute<EUR_yr>	I44_Wbedrijf_inkoopenergie	(Planregio)	:=	  StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_gas
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_gas
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_gas
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_elek
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_elek
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_elek;	
 							// waarvan energiebelasting
-			attribute<EUR_yr>	I47_Wbedrijf_energiebel		(Planregio)	:=	  StateNaAllocatie/totaal/Flow/wd/Kj_wd_gas_EH
-																			+ StateNaAllocatie/totaal/Flow/id/Kj_id_gas_EH
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_gas_EH
-																			+ StateNaAllocatie/totaal/Flow/wd/Kj_wd_elek_EH
-																			+ StateNaAllocatie/totaal/Flow/id/Kj_id_elek_EH
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_elek_EH;
-			attribute<EUR_yr>	I45_Wbedrijf_inkomsten		(Planregio)	:=	  StateNaAllocatie/totaal/Flow/lv/Oji_lv_aansl
-																			+ StateNaAllocatie/totaal/Flow/lv/Oj_lv_vastrecht
-																			+ StateNaAllocatie/totaal/Flow/lv/Oj_lv_verbruik
-																			+ StateNaAllocatie/totaal/Flow/wd/Oj_wd_EEA
-																			+ StateNaAllocatie/totaal/Flow/id/Oj_id_EEA
-																			+ StateNaAllocatie/totaal/Flow/pt/Oj_pt_EEA
-																			+ StateNaAllocatie/totaal/Flow/ow/Oj_ow_EEA
-																			+ StateNaAllocatie/totaal/Flow/id/Oj_id_SDE
-																			+ StateNaAllocatie/totaal/Flow/ow/Oj_ow_SDE
-																			+ StateNaAllocatie/totaal/Flow/wd/Oj_wd_SDE
-																			+ StateNaAllocatie/totaal/Flow/lv/Oj_lv_SDE;
-			attribute<EUR_yr>	I46_Wbedrijf_lopendekosten	(Planregio)	:=	  StateNaAllocatie/totaal/Flow/ge/Kj_ge_hv
-																			+ StateNaAllocatie/totaal/Flow/id/Kj_id_oh
-																			+ StateNaAllocatie/totaal/Flow/id/Kj_id_adm
-																			+ StateNaAllocatie/totaal/Flow/wd/Kj_wd_oh
-																			+ StateNaAllocatie/totaal/Flow/wd/Kj_wd_adm
-																			+ StateNaAllocatie/totaal/Flow/pt/Kj_pt_oh
-																			+ StateNaAllocatie/totaal/Flow/pt/Kj_pt_adm
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_oh
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_adm
-																			+ StateNaAllocatie/totaal/Flow/ow/Kj_ow_productie;
+			attribute<EUR_yr>	I47_Wbedrijf_energiebel		(Planregio)	:=	  StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_gas_EH
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_gas_EH
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_gas_EH
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_elek_EH
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_elek_EH
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_elek_EH;
+			attribute<EUR_yr>	I45_Wbedrijf_inkomsten		(Planregio)	:=	  StateNaAllocatie/totaal/Jaarlijks/lv/Oji_lv_aansl
+																			+ StateNaAllocatie/totaal/Jaarlijks/lv/Oj_lv_vastrecht
+																			+ StateNaAllocatie/totaal/Jaarlijks/lv/Oj_lv_verbruik
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Oj_wd_EEA
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Oj_id_EEA
+																			+ StateNaAllocatie/totaal/Jaarlijks/pt/Oj_pt_EEA
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Oj_ow_EEA
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Oj_id_SDE
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Oj_ow_SDE
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Oj_wd_SDE
+																			+ StateNaAllocatie/totaal/Jaarlijks/lv/Oj_lv_SDE;
+			attribute<EUR_yr>	I46_Wbedrijf_lopendekosten	(Planregio)	:=	  StateNaAllocatie/totaal/Jaarlijks/ge/Kj_ge_hv
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_oh
+																			+ StateNaAllocatie/totaal/Jaarlijks/id/Kj_id_adm
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_oh
+																			+ StateNaAllocatie/totaal/Jaarlijks/wd/Kj_wd_adm
+																			+ StateNaAllocatie/totaal/Jaarlijks/pt/Kj_pt_oh
+																			+ StateNaAllocatie/totaal/Jaarlijks/pt/Kj_pt_adm
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_oh
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_adm
+																			+ StateNaAllocatie/totaal/Jaarlijks/ow/Kj_ow_productie;
 
 			attribute<EUR_yr>	I48_Wbedrijf_resultaat		(Planregio)	:=	  I45_Wbedrijf_inkomsten
 																			- I43_Wbedrijf_kapitaallast
