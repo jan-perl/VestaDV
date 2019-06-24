@@ -20,7 +20,8 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 		parameter<_yr> Rj_id                 := 0.025[_yr]; // geen Admin.
 		parameter<_yr> Rj_Installatie:       [0.00]; // @@@ Moet dit echt nul zijn?
 		parameter<_yr> Rj_GebouwVerbetering: [0.00];
-		parameter<_yr> Rj_LokaleOpwekking:   [0.05]; // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, eWP, hWP en EWV
+		parameter<_yr> Rj_LokaleOpwekking:   [0.05]; // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, hWP en EWV TODO: check met FO 4.0
+		parameter<_yr> Rj_LokaleEWP:         [0.02], Descr = "onderhoudskosten individuele warmtepompen als percentage van investering", Source = "Validatiesessies startanalyse 2019"; // TODO source naar FO 4.0
 		// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden.
 		// TODO: onderzoeken bij WKO: onderhoudskosten, min-max kosten en leercurvetoepassing, toepassing NMDA tariefswijziging
 

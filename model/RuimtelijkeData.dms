@@ -80,59 +80,78 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	#include <WarmteBronnen.dms>
 
 	container infra {
-		unit<uint32> netbeheerders_input
-		:	StorageName     = "%SourceDataProjDir%/infra/test_netbeheerders_input.csv"
+		unit<uint32> netwerk_input
+		:	StorageName     = "%SourceDataProjDir%/infra/20190618_E_G_infra.csv"
 		,	StorageType     = "gdal.vect"
 		,	StorageReadOnly = "True"
 		{}
 		
-		container kentallen
+		container kentallen	:	Source	=	"doc/Notitie wijzigingen Vesta MAIS model E en G infrastructuur"
 		{
-			parameter<Eur_m>       kental_verv_LD_net           := 270[Eur_m], Descr = "vervangen LD-gasnet (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_laagb    := 550[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij laagbouw (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_hoogb    := 182[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij hoogbouw (RNBs)";
-			parameter<Eur_Aansl>   kental_verw_g_aansl_util     := 1932[Eur_Aansl], Descr = "kostenkengetal verwijderen gasaansluiting bij utiliteit (RNBs)";
-			parameter<Eur_m>       kental_verw_LD_net           := 100[Eur_m], Descr = "kostenkengetal verwijderen LD-gasnet (RNBs)";
-			parameter<Eur_Aansl>   kental_verzw_e_aansl         := 227[Eur_Aansl], Descr = "kostenkengetal verzwaren aansluiting naar 3x25 (RNBs)";
-			parameter<Eur_MSR>     kental_nieuwe_MSR            := 70000[Eur_MSR], Descr = "kostenkengetal plaatsen nieuwe MS-ruimte (RNBs)";
-			parameter<Eur_m>       kental_verzw_LS              := 110[Eur_m], Descr = "kostenkengetal verzwaren LS-net (RNBs)";
-			parameter<kW_MSR>      kental_capaciteit_nieuwe_MSR := 630[kW_MSR], Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes (RNBs)";
+			//kentallen investeringen ingrepen e en g infra
+			parameter<Eur_m>		kental_verv_LD_net								:=	270[Eur_m],			Descr = "kostenkengetal vervangen LD-gasnet",							Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_laagb						:=	550[Eur_Aansl],		Descr = "kostenkengetal verwijderen gasaansluiting bij laagbouw",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_hoogb						:=	182[Eur_Aansl],		Descr = "kostenkengetal verwijderen gasaansluiting bij hoogbouw",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verw_g_aansl_util						:=	1932[Eur_Aansl],	Descr = "kostenkengetal verwijderen gasaansluiting bij utiliteit",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_m>		kental_verw_LD_net								:=	100[Eur_m],			Descr = "kostenkengetal verwijderen LD-gasnet",							Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_Aansl>	kental_verzw_e_aansl							:=	227[Eur_Aansl],		Descr = "kostenkengetal verzwaren aansluiting naar 3x25",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_MSR>		kental_nieuwe_MSR								:=	70000[Eur_MSR],		Descr = "kostenkengetal plaatsen nieuwe MS-ruimte",						Source = "doc/notitie aanpassingen E en G infra";
+			parameter<Eur_m>		kental_verzw_LS									:=	110[Eur_m],			Descr = "kostenkengetal verzwaren LS-net",								Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_MSR>		kental_capaciteit_nieuwe_MSR					:=	630[kW_MSR],		Descr = "individuele capaciteit van nieuw te plaatsen MS-ruimtes",		Source = "doc/notitie aanpassingen E en G infra";
 			
-			parameter<kW_Woning>   kental_aansluitwaarde_woning_zonderWP            := 11[kW_Woning];
-			parameter<kW_Woning>   kental_aansluitwaarde_woning_metWP               := 15[kW_Woning];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_zonderWP   := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_woning_metWP      := 0.5[Ratio];
+			//kentallen dimensionering net obv piekvraag
+			parameter<kW_Woning>	kental_aansluitwaarde_woning_zonderWP			:=	2.4[kW_Woning],		Descr = "kengetal aansluitwaarde woningen zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_Woning>	kental_aansluitwaarde_woning_metWP				:=	7.0[kW_Woning],		Descr = "kengetal aansluitwaarde woningen met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_m2>		kental_aansluitwaarde_util_zonderWP				:=	0.024[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
+			parameter<kW_m2>		kental_aansluitwaarde_util_metWP				:=	0.070[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
 			
-			parameter<kW_m2>       kental_aansluitwaarde_util_zonderWP              := 0.05[kW_m2];
-			parameter<kW_m2>       kental_aansluitwaarde_util_metWP                 := 0.07[kW_m2];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_zonderWP     := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_util_metWP        := 0.5[Ratio];
-			
-			//TO DO: check
-			parameter<kW_m2>       kental_aansluitwaarde_gltb_zonderWP              := 0.05[kW_m2];
-			parameter<kW_m2>       kental_aansluitwaarde_gltb_metWP                 := 0.07[kW_m2];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_zonderWP     := 0.5[Ratio];
-			parameter<ratio>       kental_gelijktijdigheidsfactor_gltb_metWP        := 0.5[Ratio];
+			//voorlopig GLTB gelijkgesteld aan utiliteit
+			parameter<kW_m2>		kental_aansluitwaarde_gltb_zonderWP				:=	kental_aansluitwaarde_util_zonderWP;
+			parameter<kW_m2>		kental_aansluitwaarde_gltb_metWP				:=	kental_aansluitwaarde_util_metWP;
+			parameter<ratio>		kental_gelijktijdigheidsfactor_gltb_zonderWP	:=	kental_gelijktijdigheidsfactor_util_zonderWP;
+			parameter<ratio>		kental_gelijktijdigheidsfactor_gltb_metWP		:=	kental_gelijktijdigheidsfactor_util_metWP;
 		}
 		
 		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "kentallen"
 		, DialogType = "map"
 		, DialogData = "geometry"
 		{
-			attribute<Geography/rdc_meter> geometry (poly)             := /Geography/RegioIndelingen/buurt/Geometry;
-			attribute<string>              BU_CODE                     := /Geography/RegioIndelingen/buurt/BU_CODE;
-			// attribute<nrAansl>             aant_g_aansl                := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aantal_g_aansl)[nrAansl]              , Descr = "aantal gasaansluitingen per buurt (RNBs)";
-			// attribute<m>                   lengte_grogel_LD_net        := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_grogel_LD_net)[m]              , Descr = "lengte grondroeringsgevoelige LD-gasleidingen per buurt (RNBs)";
-			attribute<m>                   lengte_grogel_LD_net        := const(0[m],.);
-			// attribute<m>                   lengte_LD_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LD_net)[m]                     , Descr = "lengte LD-gasnet per buurt (RNBs)";
-			attribute<m>                   lengte_LD_net               := /TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_g;
-			// attribute<nrAansl>             aant_won_elec               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/aant_won_elec)[nrAansl]               , Descr = "aantal aansluitingen per buurt dat all-electric of LT-warmte wordt (PBL)";
-			// attribute<Ratio>               fractie_3x25_aansl          := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/fractie_3x25_aansl)[Ratio]            , Descr = "aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is (RNBs)";
-			attribute<Ratio>               fractie_3x25_aansl          :=  const(0[Ratio],.);
-			// attribute<kw>                  capaciteit_buurt            := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/capaciteit_buurt)[kw]                 , Descr = "huidige opgestelde capaciteit aan MS-ruimtes (RNBs)";
-			// attribute<m>                   lengte_LS_net               := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/lengte_LS_buurt)[m]                   , Descr = "totale lengte van het LS-net per buurt (RNBs)";
-			attribute<m>                   lengte_LS_net               := /TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_e;
-			// attribute<kw>                  vermogensvraag_huidig       := rjoin(BU_CODE, netbeheerders_input/BU_CODE, netbeheerders_input/vermogensvraag_huidig)[kw]            , Descr = "huidige vermogensvraag per buurt (PBL of wanneer mogelijk RNBs)";
+			attribute<Geography/rdc_meter>	geometry (poly)		:=	/Geography/RegioIndelingen/buurt/Geometry;
+			attribute<string> 				BU_CODE				:=	/Geography/RegioIndelingen/buurt/BU_CODE;
+			
+			attribute<nrAansl>	input_aant_g_aansl				:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/aantal_g_aansl)[nrAansl],				Descr = "invoer aantal gasaansluitingen per buurt";
+			attribute<nrAansl>	default_aant_g_aansl			:=	TussenResultaten/StartJaar/StateNaAllocatie/nrAansluitinging/Gas,							Descr = "default aantal gasaansluitingen per buurt";
+			attribute<nrAansl>	aant_g_aansl					:=	IsDefined(input_aant_g_aansl) ? input_aant_g_aansl : default_aant_g_aansl;
+			attribute<nrAansl>	verschil_g_aansl				:=	aant_g_aansl - default_aant_g_aansl;
+			
+			attribute<m>		input_lengte_grogel_LD_net		:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/lengte_grogel_LD_net)[m],				Descr = "invoer lengte grondroeringsgevoelige LD-gasleidingen per buurt";
+			attribute<m>		default_lengte_grogel_LD_net	:=	const(0[m],.),																				Descr = "default lengte grondroeringsgevoelige LD-gasleidingen per buurt";
+			attribute<m>		lengte_grogel_LD_net			:=	IsDefined(input_lengte_grogel_LD_net) ? input_lengte_grogel_LD_net : default_lengte_grogel_LD_net;
+			attribute<m>		verschil_lengte_grogel_LD_net	:=	lengte_grogel_LD_net - default_lengte_grogel_LD_net;
+			
+			attribute<m>		input_lengte_LD_net				:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/lengte_LD_net)[m],						Descr = "invoer lengte LD-gasnet per buurt";
+			attribute<m>		default_lengte_LD_net			:=	/TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_g,					Descr = "default lengte LD-gasnet per buurt";
+			attribute<m>		lengte_LD_net					:=	IsDefined(input_lengte_LD_net) ? input_lengte_LD_net : default_lengte_LD_net;
+			attribute<m>		verschil_g_lengte_LD_net		:=	lengte_LD_net - default_lengte_LD_net;
+			
+			attribute<Ratio>	input_fractie_3x25_aansl		:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/fractie_3x25_aansl)[Ratio],				Descr = "invoer aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is";
+			attribute<Ratio>	default_fractie_3x25_aansl		:=	const(0[Ratio],.),																			Descr = "default aandeel van aansluitingen per buurt dat momenteel al 3x25 of groter is";
+			attribute<Ratio>	fractie_3x25_aansl				:=	IsDefined(input_fractie_3x25_aansl) ? input_fractie_3x25_aansl : default_fractie_3x25_aansl;
+			attribute<Ratio>	verschil_fractie_3x25_aansl		:=	fractie_3x25_aansl - default_fractie_3x25_aansl;
+
+			attribute<kw>		input_capaciteit_buurt			:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/capaciteit_buurt)[kw],					Descr = "invoer huidige opgestelde capaciteit aan MS-ruimtes ";
+			attribute<kw>		default_capaciteit_buurt		:=	/BeginSituatie/Infra_per_buurt/capaciteit_buurt,											Descr = "default huidige opgestelde capaciteit aan MS-ruimtes";
+			attribute<kw>		capaciteit_buurt				:=	IsDefined(input_capaciteit_buurt) ? (input_capaciteit_buurt > default_capaciteit_buurt ? input_capaciteit_buurt : default_capaciteit_buurt) : default_capaciteit_buurt;
+			attribute<kW>		verschil_capaciteit_buurt		:=	capaciteit_buurt - default_capaciteit_buurt;
+			
+			attribute<m>		input_lengte_LS_net				:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/lengte_LS_buurt)[m],						Descr = "invoer totale lengte van het LS-net per buurt";
+			attribute<m>		default_lengte_LS_net			:=	/TussenResultaten/StartJaar/StateNaAllocatie/KostenBaten/KostenD/L_infra_e,					Descr = "default totale lengte van het LS-net per buurt";
+			attribute<m>		lengte_LS_net					:=	IsDefined(input_lengte_LS_net) ? input_lengte_LS_net : default_lengte_LS_net;
+			attribute<m>		verschil_lengte_LS_net			:=	lengte_LS_net - default_lengte_LS_net;
 		}
 	}
 	

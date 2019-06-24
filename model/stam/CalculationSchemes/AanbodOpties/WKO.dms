@@ -45,12 +45,13 @@ template WKO
 		parameter<Float64> SPF_ind_ww    := SPF_coll_w; // TODO: CHECK
 
 		//Aandeel eigen opwekking
-		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 55[Celsius] ? 0.1 : 0.0,				Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
-		parameter<Float64> 		AEO_ind_B_rv  := T_sec <= 35[Celsius] ? 0.3 : 0.0;
-		parameter<Float64> 		AEO_ind_CE_rv := T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0;
 		
-		parameter<Float64> 		AEO_ind_ww := T_sec <= 35[Celsius] ? 0.5 : T_sec <= 55[Celsius] ? 0.2 : 0.0;
-		parameter<Float64> 		AEO_ind_k  : [0.0], Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, TODO: Checken; vooralsnog op 0 wegens vooralsnog alleen centrale koude bij WKO";
+		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
+		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
+		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
+		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
+		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
+		
 		parameter<Ratio> 		Leidingverlies		: [0.20],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
