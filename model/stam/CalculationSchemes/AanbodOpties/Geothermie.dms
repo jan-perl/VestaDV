@@ -270,7 +270,7 @@ template GeoThermie
 			container Verbruik
 			{
 				attribute<Gj_yr>	V_id_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
-				attribute<Gj_yr>	V_wd_gas		(PlanRegio)		:=	KostenBaten/KostenD/Bijstook/Vj_Bijstook;
+				attribute<Gj_yr>	V_wd_gas		(PlanRegio)		:=	NewGebruik ? KostenBaten/KostenD/Bijstook/Vj_Bijstook : 0[GJ_Yr];
 				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
@@ -281,8 +281,14 @@ template GeoThermie
 				attribute<Gj_yr>	V_wd_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				attribute<Gj_yr>	V_pt_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen primair transport bij LT netten
 				
-				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	KostenBaten/KostenD/Vj_Warmte;
+				attribute<Gj_yr>	V_warmte		(PlanRegio)		:=	NewGebruik ? KostenBaten/KostenD/Vj_Warmte : 0[GJ_yr];
 				attribute<Gj_yr>	V_koude			(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen koude bij RW.
+				
+				// generieke netto warmte onttrekking:
+				attribute<Gj_yr> V_id_warmte(PlanRegio):= V_warmte    - (V_id_gas + V_id_elek - V_id_verlies);
+				attribute<Gj_yr> V_wd_warmte(PlanRegio):= V_id_warmte - (V_wd_gas + V_wd_elek - V_wd_verlies);
+				attribute<Gj_yr> V_ow_warmte(PlanRegio):= V_wd_warmte - (V_ow_gas + V_ow_elek - V_pt_verlies);				
+				attribute<Gj_yr> V_ow_koude (PlanRegio):= V_Koude;
 			}
 			
 			container Uitstoot
