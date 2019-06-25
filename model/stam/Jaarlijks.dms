@@ -185,8 +185,8 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					PRR
 
 			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
-					'BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BC@/kosten/Ki_eWP) * Kengetallen/Onderhoud/Rj_LokaleOpwekking
-					+ BebouwingsComponenten/@BC@/kosten/Ki_eWP * Kengetallen/Onderhoud/Rj_LokaleEWP * '+VAT_F,
+					'((BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BTW@/kosten/Ki_eWP) * Kengetallen/Onderhoud/Rj_LokaleOpwekking
+					+ BebouwingsComponenten/@BTW@/kosten/Ki_eWP * Kengetallen/Onderhoud/Rj_LokaleEWP) * '+VAT_F,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Gebouwverbeteringen

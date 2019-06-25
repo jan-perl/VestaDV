@@ -137,23 +137,6 @@ template LtResults
 		attribute<Eur_yr>	Kji_wd				(PlanRegio)			:=	Kji_wd_gebouw + Kji_wd_gebied;
 		attribute<Eur_yr>	Kji_ow				(PlanRegio)			:=	Kji_ow_gebouw + Kji_ow_gebied;
 		
-		//kosten elektriciteit
-		attribute<Eur_yr>	Km_id_elek			(PlanRegio)			:=	sum(WkoData/Km_id_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Km_wd_elek			(PlanRegio)			:=	sum(WkoData/Km_wd_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Km_elek				(PlanRegio)			:=	Km_id_elek + Km_wd_elek;
-		
-		attribute<Eur_yr>	Kj_id_elek			(PlanRegio)			:=	sum(WkoData/Kj_id_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_wd_elek			(PlanRegio)			:=	sum(WkoData/Kj_wd_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_elek				(PlanRegio)			:=	Kj_wd_elek + Kj_id_elek;
-		
-		attribute<Eur_yr>	Kj_id_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_EH	* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_wd_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_EH	* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_elek_EH			(PlanRegio)			:=	Kj_id_elek_EH + Kj_wd_elek_EH;
-		
-		attribute<Eur_yr>	Kj_id_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_CO2	* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_wd_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_CO2	* float64(StartThis),		BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Kj_elek_CO2			(PlanRegio)			:=	Kj_id_elek_CO2 + Kj_wd_elek_CO2;
-	
 		container OenM
 		{
 			//productiekosten
@@ -189,6 +172,24 @@ template LtResults
 			attribute<GJ_yr> V_wd_elek   (PlanRegio) :=	sum(WkoData/V_wd_elek    * float64(StartThis), BCdata/PlanRegio_rel);
 			attribute<GJ_yr> V_warmte    (PlanRegio) :=	sum(WkoData/V_warmte     * float64(StartThis), BCdata/PlanRegio_rel);
 			attribute<GJ_yr> V_koude     (PlanRegio) :=	sum(WkoData/V_koude      * float64(StartThis), BCdata/PlanRegio_rel);
+			
+			//kosten elektriciteit
+			attribute<Eur_yr>	Km_id_elek			(PlanRegio)			:=	sum(WkoData/Km_id_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Km_wd_elek			(PlanRegio)			:=	sum(WkoData/Km_wd_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Km_elek				(PlanRegio)			:=	Km_id_elek + Km_wd_elek;
+			
+			attribute<Eur_yr>	Kj_id_elek			(PlanRegio)			:=	sum(WkoData/Kj_id_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek			(PlanRegio)			:=	sum(WkoData/Kj_wd_elek		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek				(PlanRegio)			:=	Kj_wd_elek + Kj_id_elek;
+			
+			attribute<Eur_yr>	Kj_id_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_EH	* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_EH	* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek_EH			(PlanRegio)			:=	Kj_id_elek_EH + Kj_wd_elek_EH;
+			
+			attribute<Eur_yr>	Kj_id_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_CO2	* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_CO2	* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek_CO2			(PlanRegio)			:=	Kj_id_elek_CO2 + Kj_wd_elek_CO2;
+	
 		}
 		container Totaal {
 			attribute<KG_yr> CO2         (PlanRegio) :=	sum(WkoData/CO2			 * float64(HasThis), BCdata/PlanRegio_rel);
@@ -205,6 +206,24 @@ template LtResults
 			attribute<Eur_yr> Oj_verbruik (PlanRegio) := sum(WkoData/Oj_verbruik  * float64(HasThis), BCdata/PlanRegio_rel);
 			attribute<Eur_yr> Oj_vastrecht(PlanRegio) := sum(WkoData/Oj_Vastrecht * float64(HasThis), BCdata/PlanRegio_rel);
 			attribute<Eur_yr> Om_comfort  (PlanRegio) := sum(WkoData/Om_comfort   * float64(HasThis), BCdata/PlanRegio_rel);
+			
+			//kosten elektriciteit
+			attribute<Eur_yr>	Km_id_elek			(PlanRegio)			:=	sum(WkoData/Km_id_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Km_wd_elek			(PlanRegio)			:=	sum(WkoData/Km_wd_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Km_elek				(PlanRegio)			:=	Km_id_elek + Km_wd_elek;
+			
+			attribute<Eur_yr>	Kj_id_elek			(PlanRegio)			:=	sum(WkoData/Kj_id_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek			(PlanRegio)			:=	sum(WkoData/Kj_wd_elek		* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek				(PlanRegio)			:=	Kj_wd_elek + Kj_id_elek;
+			
+			attribute<Eur_yr>	Kj_id_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek_EH		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_EH	* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek_EH			(PlanRegio)			:=	Kj_id_elek_EH + Kj_wd_elek_EH;
+			
+			attribute<Eur_yr>	Kj_id_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_id_elek_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_elek_CO2		(PlanRegio)			:=	sum(WkoData/Kj_wd_elek_CO2	* float64(HasThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_elek_CO2			(PlanRegio)			:=	Kj_id_elek_CO2 + Kj_wd_elek_CO2;
+	
 		}
 	}
 

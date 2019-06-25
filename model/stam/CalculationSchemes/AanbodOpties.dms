@@ -184,7 +184,7 @@ container AanbodOpties
 		container Cumulator;
 		container Increment;
 		
-		container Jaarlijks:= for_each_nedv(classifications/gebiedsoptie_jaarlijks/full_name, replace('Cumulator/Jaarlijks/@X@+ Increment/Jaarlijks/@X@', '@X@', classifications/gebiedsoptie_jaarlijks/full_name), PlanRegio, EUR_yr);
+		container Jaarlijks:= for_each_nedv(classifications/gebiedsoptie_jaarlijks/full_name, replace('                         Increment/Jaarlijks/@X@', '@X@', classifications/gebiedsoptie_jaarlijks/full_name), PlanRegio, EUR_yr);
 		container Eenmalig := for_each_nedv(classifications/gebiedsoptie_eenmalig/name,       replace('Cumulator/Eenmalig/@X@ + Increment/Eenmalig/@X@' , '@X@', classifications/gebiedsoptie_eenmalig/name      ), PlanRegio, EUR   );
 		container Verbruik := for_each_nedv(classifications/gebiedsoptie_verbruik/name,       replace('Cumulator/Verbruik/@X@ + Increment/Verbruik/@X@' , '@X@', classifications/gebiedsoptie_verbruik/name      ), PlanRegio, GJ_yr );
 		container Uitstoot := for_each_nedv(classifications/gebiedsoptie_uitstoot/name,       replace('Cumulator/Uitstoot/@X@ + Increment/Uitstoot/@X@' , '@X@', classifications/gebiedsoptie_uitstoot/name      ), PlanRegio, kg_yr );
