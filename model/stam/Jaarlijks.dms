@@ -308,11 +308,11 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/wd], 
 					''
 
-			,	'Vergoeding@RO@', 'PrimairTransport', 'Leverancier',
+			,	'Vergoeding@RO@', 'PrimairTransporteur', 'Leverancier',
 					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_KjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 
-			,	'Verrekening@RO@', 'Leverancier', 'PrimairTransport',
+			,	'Verrekening@RO@', 'Leverancier', 'PrimairTransporteur',
 					Classifications/GebiedsOptie_Jaarlijks/GebiedsOptie_OjExpr[Classifications/GebiedsOptieActor/V/pt], 
 					''
 

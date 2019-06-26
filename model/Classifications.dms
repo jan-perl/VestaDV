@@ -693,6 +693,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	{
 		attribute<string> name := Actor/name[nr_OrgEntity];
 		attribute<string> code := Actor/GebiedsOptieActorCode[nr_OrgEntity];
+		attribute<string> label := code;
 		
 		container V := for_each_nedv(code, string(id(.))+'[..]', void, .);
 	}
