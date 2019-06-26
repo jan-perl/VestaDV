@@ -14,7 +14,7 @@ container NieuwbouwUtilOperaties
 		parameter<units/yr_uint16> zichtjaar;
 		// einde case parameters
 
-		unit<uint32> results := Subset(att > 0i && IsDefined(Geography/rdc_grids/m100/buurt_Rel))
+		unit<uint32> results := Subset(att > 0i && IsDefined(Geography/rdc_grids/m100/buurt_Rel) && StudiegebiedGemeentes/selected_per_m100)
 		,	DialogType = "map"
 		,	DialogData = "Point"
 		{

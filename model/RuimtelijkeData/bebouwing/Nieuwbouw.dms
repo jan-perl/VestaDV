@@ -42,8 +42,8 @@ Container Nieuwbouw
 	}
 	
 	Container GlasTuinBouw:= for_each_ne( Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/Name : '' 
-			,'CalculationSchemes/NieuwbouwGlTbOperaties/MaakMutatieNieuwbouw(RuimtelijkeData/GlasTuinBouw/Bij/' + Classifications/Zichtjaar/Name
-				+ ',RuimtelijkeData/GlasTuinBouw/Af/'  + Classifications/Zichtjaar/Name
+			,'CalculationSchemes/NieuwbouwGlTbOperaties/MaakMutatieNieuwbouw(RuimtelijkeData/GlasTuinBouw/Bij_studiegebied/' + Classifications/Zichtjaar/Name
+				+ ',RuimtelijkeData/GlasTuinBouw/Af_studiegebied/'  + Classifications/Zichtjaar/Name
 				+ ',value(' + String(Classifications/Zichtjaar/jaar )+ ',units/yr_uint16)'
 //				+ ','+MakeDefined(Classifications/Zichtjaar/Name[ID(Classifications/Zichtjaar)-1]+'/Nieuwbouw/BebouwingsObject','Huidig/LegeNieuwbouw/results/BebouwingsObject')
 			+')'

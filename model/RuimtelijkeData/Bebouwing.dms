@@ -163,15 +163,13 @@ container Bebouwing :=
 				,	Geography/rdc_grids/m100, int32
 			);
 
-		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/gltb_180219, url = "%sourceDataProjDir%/vraag/glastuinbouw/Werkwijze_aanmaak_huidige_glastuinbouw_tbv_Vesta33.pdf",FreeData = "True"
+		unit<uint32> BestaandeGlTb := RuimtelijkeData/Glastuinbouw/bestaand_studiegebied, url = "%sourceDataProjDir%/vraag/glastuinbouw/Werkwijze_aanmaak_huidige_glastuinbouw_tbv_Vesta33.pdf",FreeData = "True"
 		{
 			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
 
 			attribute<string>                   code              := string(id(.));
 
-			attribute<string>                   buurtcode         := substr(BU_CODE,2,10), isHidden = "True";
-			attribute<uint32>                   Buurt_nr          := value(buurtcode,  uint32), isHidden = "True";
-			attribute<RegioIndelingen/buurt>    buurt_rel         := rlookup(Buurt_nr, RegioIndelingen/buurt/code), isHidden = "True";
+			attribute<RegioIndelingen/buurt>    buurt_rel         :=  RuimtelijkeData/Glastuinbouw/bestaand_studiegebied/buurt_rel, isHidden = "True";
 
 			attribute<RegioIndelingen/blok500m> blok500m_rel      := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
 			attribute<RegioIndelingen/blok1km>  blok1km_rel       := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]], isHidden = "True";
