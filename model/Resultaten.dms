@@ -44,14 +44,14 @@ container Resultaten :=
 				'<I>version</i>: </description>' + 
 				'<result><br><br>' + 
 				' Jaarlijks, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2020 : ' + replace(string(J2020/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2030 : ' + replace(string(J2030/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
-				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
-				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
+				' 2020 : ' + replace(string(R1_2020/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2030 : ' + replace(string(R2_2030/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
+				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(Resultaten/StartJaar/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2020 : ' + replace(string(sum(R1_2020/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2030 : ' + replace(string(sum(R2_2030/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br><br>'  + 
+				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto )),'.',',') +' kilo ton per jaar <br>' + 
+				' 2020 : ' + replace(string(sum(R1_2020/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
+				' 2030 : ' + replace(string(sum(R2_2030/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
 			,	StorageType = "str"
 			,	storagename = "= '%LocalDataDir%/vesta_indicator_results_test.html'";
 		}
