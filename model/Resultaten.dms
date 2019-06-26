@@ -32,10 +32,10 @@ container Resultaten :=
 	container Exports: isHidden = "True"
 	{
 		parameter<String> GenerateAllIndicatoren := 'Ready', 
-			ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/Generate/All', ';')", IsHidden = "True";
+			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/Generate/All', ';')", IsHidden = "True";
 
 		parameter<string> GenerateAllAlloc := 'ready', 
-			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
+			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
 	
 		container t510_indicator_results_test
 		{
