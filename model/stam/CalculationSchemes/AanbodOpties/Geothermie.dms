@@ -53,6 +53,7 @@ template GeoThermie
 		attribute<Eur_yr> Kji_pt (PlanRegio) := Ki_pt * NCW/pt28/AnnualisationFactor ;
 		attribute<Eur> Ki_Totaal   (PlanRegio) := Ki_ow + ki_pt;
 
+		// TODO: gebruik /Invoer/Kengetallen/WarmteBronnen/MetaData/RekenTypes/GeoThermie/Elektriciteit_Factor en EH, en CO2 van elektriciteit
 		parameter<Eur_GJ> K_GJ :=
 			(Jaar < 2020[units/yr_uint16] 
 				? TypeInfo/K_GJ10 
@@ -216,12 +217,13 @@ template GeoThermie
 					attribute<Eur_yr> Kj_ow_gas_CO2   (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					attribute<Eur_yr> Km_ow_gas       (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
-					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := GebruikOptie ? Kosten/Kj_WarmteWaarde  : 0[Eur_yr];
-					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := GebruikOptie ? Kosten/Kj_WarmteWaarde  : 0[Eur_yr];
-					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) := GebruikOptie ? Kosten/Kj_WarmteWaarde  : 0[Eur_yr];
-					attribute<Eur_yr> Km_ow_elek      (PlanRegio) := GebruikOptie ? Kosten/Km_WarmteWaarde  : 0[Eur_yr];
+					// TODO: gebruik /Invoer/Kengetallen/WarmteBronnen/MetaData/RekenTypes/GeoThermie/Elektriciteit_Factor en EH, en CO2 van elektriciteit en preciseer Kosten/Kj_WarmteWaarde.
+					attribute<Eur_yr> Kj_ow_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Km_ow_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
 					
-					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_ow_productie (PlanRegio) := GebruikOptie ? Kosten/Kj_WarmteWaarde : 0[Eur_yr]; // geen opsplitsing naar EH, CO2 etc.
 					
 					attribute<Eur_yr> Kj_ow_oh        (PlanRegio) := (NewGebruik ? Kosten/Kj_ow_oh        : 0[Eur_yr]) + VorigePeriode/jaarlijks/ow/Kj_ow_oh;
 					attribute<Eur_yr> Kj_ow_adm       (PlanRegio) := (NewGebruik ? Kosten/Kj_ow_adm       : 0[Eur_yr]) + VorigePeriode/jaarlijks/ow/Kj_ow_adm;
@@ -275,6 +277,8 @@ template GeoThermie
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
 				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
+				
+				// TODO: gebruik /Invoer/Kengetallen/WarmteBronnen/MetaData/RekenTypes/GeoThermie/Elektriciteit_Factor en EH, en CO2 van elektriciteit
 				attribute<Gj_yr>	V_ow_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // geen elektriciteitsverbruik bij LT bronnen TODO: controle met FO
 				
 				attribute<Gj_yr>	V_id_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // niet specifiek benoemd, alles in WD, TODO: specifiek maken
