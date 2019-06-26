@@ -93,6 +93,7 @@ container Geography: Using = "Units", IsHidden = "True"
 			attribute<string> label     := 'RES '+string(Values);
 			attribute<string> Name      := replace_value(Replace(Label, '-', '', '/', '_', ' ', '', '(', '', ')', ''), '', 'Elders');
 			parameter<string> RegioNaam := 'Energieregio';
+			attribute<string> StudieGebied := AsItemList(Gemeente/GM_code, Gemeente/Energieregio_rel);
 		}
 
 		unit<uint32> Gemeente := unique(buurt/GM_CODE)
@@ -104,6 +105,8 @@ container Geography: Using = "Units", IsHidden = "True"
 			attribute<string> GM_code   := values;
 			attribute<string> label     := rjoin(values, buurt/GM_CODE, buurt/GM_NAAM);
 			parameter<string> RegioNaam := 'Gemeente';
+			
+			attribute<Energieregio> Energieregio_rel := modus(buurt/energieregio_rel, buurt/gemeente_rel);
 			
 			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 		}
