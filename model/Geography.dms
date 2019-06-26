@@ -96,10 +96,16 @@ container Geography: Using = "Units", IsHidden = "True"
 		}
 
 		unit<uint32> Gemeente := unique(buurt/GM_CODE)
+		,	DialogType = "Map"
+		,	DialogData = "geometry"
 		{
-			attribute<string> name      := 'G'+string(Values);
+			attribute<rdc_meter> geometry (poly) := partitioned_union_polygon(ipolygon(buurt/Geometry), buurt/gemeente_rel)[rdc_meter], FreeData = "False";
+
+			attribute<string> GM_code   := values;
 			attribute<string> label     := rjoin(values, buurt/GM_CODE, buurt/GM_NAAM);
 			parameter<string> RegioNaam := 'Gemeente';
+			
+			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 		}
 
 		unit<uint32> Wijk := unique(buurt/WK_CODE)
