@@ -29,6 +29,7 @@ container NieuwbouwUtilOperaties
 			attribute<Classifications/UtilTypeNieuwbouw>  BebouwingsType     := const(rlookup(utiliteit_lbl, Classifications/UtilTypeNieuwbouw/label), .);
 			attribute<Classifications/BouwJaar>           Bouwjaar           := const(classify(value(zichtjaar, Units/Yr) - 0.5[units/yr], classifications/bouwjaar/ClassBreak), .);
 			attribute<float64>                            AandeelWarmteVraag := const(1.0, .); // alle util Nieuwbouw is geschikt voor WarmteOpties
+//			attribute<float64>                            pand_aandeel       := const(Classifications/WoningtypeNieuwbouw/pand_aandeel[type], BebouwingsObject);
 
 			container Gebied
 			{
@@ -76,6 +77,8 @@ container NieuwbouwUtilOperaties
 			attribute<nrAansl>                  nrAansluitingen_i  := const(1, ., nrAansl);
 			attribute<nrWoningen>               nrWoonUnits_i      := nrJoinedUnits / 100[ m2 / nrWoningen];
 			attribute<float64>                  AandeelWarmteVraag := ='Union_Data(., ' + asItemList('bron/' + BebouwingsTypeDomein/Name + '/results/AandeelWarmteVraag') + ')';
+			attribute<float64>                  pand_aandeel       := const(1.0, .);
+
 
 			container Gebied
 			{

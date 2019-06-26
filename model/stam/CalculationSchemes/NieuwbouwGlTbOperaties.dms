@@ -55,6 +55,7 @@ container NieuwbouwGlTbOperaties
 			attribute<units/ratio>                        Verdeling          := RuimtelijkeData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
 			attribute<m2>                                 Oppervlakte        := Verdeling * 10000[units/m2];
 			attribute<float64>                            AandeelWarmteVraag := const(1.0, .); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
+			attribute<float64>                            pand_aandeel       := const(1.0, .);
 
 			container Criteria;
 			container Gebied: FreeData = "True" // noodzakelijk voor Bebouwingscomponent interfact, hoewel gtb niet gebruikt wordt voor WKO.
