@@ -559,7 +559,6 @@ Template LtWarmtenetImpl
 				attribute<Eur>		Oi_pt_EIA		(PlanRegio)		:=	const(0[EUR], PlanRegio); // geen primair transport bij LT netten
 			}
 			
-			
 			container jaarlijks
 			{
 				container ge

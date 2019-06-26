@@ -128,10 +128,10 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		}
 	}
 	
-	container Geothermie;
-	container BioWKK    ;
-	container WijkWKK   ;	
-	container RestWarmte
+	container Geothermie := LegeGebiedsOptie;
+	container BioWKK     := LegeGebiedsOptie;
+	container WijkWKK    := LegeGebiedsOptie;	
+	container RestWarmte := LegeGebiedsOptie
 	{
 		attribute<CumulatedArcSet> CumulatedArcSet_rel (PlanRegio) := invert(CumulatedArcSet/planregio_rel);
 		attribute<bool>            GebruikRestWarmte   (PlanRegio) := IsDefined(CumulatedArcSet_rel);
