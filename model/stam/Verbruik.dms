@@ -396,7 +396,7 @@ REMOVE */
 		attribute<string> TS_2020  := MakeDefined(EmissieType/TS_2020 [ET_rel], '0.0');
 		attribute<string> TS_2030  := MakeDefined(EmissieType/TS_2030 [ET_rel], '0.0');
 		attribute<string> TS_2040  := MakeDefined(EmissieType/TS_2040 [ET_rel], '0.0');
-		attribute<string> TS_2050  := MakeDefined(EmissiwType/TS_2050 [ET_rel], '0.0');
+		attribute<string> TS_2050  := MakeDefined(EmissieType/TS_2050 [ET_rel], '0.0');
 	}
 	unit<uint32> mutatie := mutatieSchema, isHidden = "True";
 }
