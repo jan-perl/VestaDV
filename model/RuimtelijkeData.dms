@@ -28,9 +28,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 		attribute<bool> selected_buurt (RegioIndelingen/buurt) := impl/selected/values[0] = 'nl' 
 			? const(true, RegioIndelingen/buurt)
 			: isDefined(rlookup(lowercase(RegioIndelingen/buurt/GM_code), impl/selected/values));
-			
+
 		attribute<bool> selected_gemeente_per_m100 (Geography/rdc_grids/m100 ) := selected_gemeente[Geography/RegioIndelingen/gemeente/per_m100];
-		
+
 		unit<uint32> Gemeente := subset(selected_gemeente)
 		{
 			attribute<rdc_meter> geometry (poly)                     := RegioIndelingen/gemeente/geometry[nr_OrgEntity];
@@ -38,42 +38,32 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<string>    label                               := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
 			attribute<.>         per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 		}
+
 		unit<uint32> Buurt := subset(selected_buurt)
 		{
-			attribute<rdc_meter>     geometry (poly)                        := RegioIndelingen/buurt/geometry[nr_OrgEntity];
-			attribute<string>        BU_code                                := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
-			attribute<string>        WK_code                                := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
-			attribute<string>        GM_code                                := RegioIndelingen/buurt/GM_CODE[nr_OrgEntity];
-			attribute<string>        PROV_code                              := RegioIndelingen/buurt/PROV_CODE[nr_OrgEntity];
-			attribute<string>        ER_NAAM                                := RegioIndelingen/buurt/ER_NAAM[nr_OrgEntity];
-			
-			attribute<uint32>        code                                   := RegioIndelingen/buurt/code[nr_OrgEntity];
-			
-			attribute<rdc_meter>     Point                                  := centroid_or_mid(geometry);
-			attribute<m2>            Area                                   := Area(geometry, m2);
-			attribute<km2>           AreaInKm2                              := Area / value(1000000, m2 / km2);
-			attribute<units/Percent> Eigendom_Koopwoningen                  := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_koopw);
-			attribute<units/Percent> Eigendom_Huurwoningen_totaal           := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_huurw);
-			attribute<units/Percent> Eigendom_In_bezit_woningcorporatie     := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw);
-			attribute<units/Percent> Eigendom_In_bezit_overige_verhuurders  := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw);
-			attribute<units/Percent> Eigendom_Eigendom_onbekend             := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w);
-			attribute<units/Percent> Eigendom_p_checksum                    := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_checksum);//eigen check
-			attribute<units/Percent> Inkomen_Huishoudens_met_laag_inkomen   := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_li);
-			attribute<units/Percent> Inkomen_Huishoudens_met_hoog_inkomen   := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi);
-			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi);//berekend veld uit andere velden
-			attribute<units/Percent> Inkomen_p_checksum                     := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_checksum);//eigen check
-			attribute<float64>       Overigen_p_land_com                    := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Overigen/p_land_com);
-			attribute<yr_uint16>     BioWKK_Start                           := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/BioWKK_Start);
-			
-			attribute<Studiegebied/gemeente> gemeente_rel                   := point_in_polygon(Point, Studiegebied/gemeente/geometry);
-			
-			attribute</Geography/RegioIndelingen/NL>                    NL_rel                         := const(0[/Geography/RegioIndelingen/NL],.);
-			attribute</Geography/RegioIndelingen/Provincie>             Provincie_rel                  := rlookup(PROV_CODE, /Geography/RegioIndelingen/Provincie/Values);
-			attribute</Geography/RegioIndelingen/Energieregio>          Energieregio_rel               := rlookup(ER_NAAM, /Geography/RegioIndelingen/Energieregio/Values);
-			attribute</Geography/RegioIndelingen/Wijk>                  Wijk_rel                       := rlookup(WK_CODE, /Geography/RegioIndelingen/Wijk/Values);
-			
-			attribute<.>                     per_m100 (Geography/rdc_grids/m100)    := poly2grid(geometry, Geography/rdc_grids/m100);
-			
+			attribute<rdc_meter>                               geometry (poly)     := RegioIndelingen/buurt/geometry[nr_OrgEntity];
+			attribute<string>                                  BU_code             := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
+			attribute<string>                                  WK_code             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
+			attribute<string>                                  GM_code             := RegioIndelingen/buurt/GM_CODE[nr_OrgEntity];
+			attribute<string>                                  ER_NAAM             := RegioIndelingen/buurt/ER_NAAM[nr_OrgEntity];
+
+			attribute<uint32>                                  code                := RegioIndelingen/buurt/code[nr_OrgEntity];
+
+			attribute<rdc_meter>                               Point               := RegioIndelingen/buurt/Point[nr_OrgEntity];
+			attribute<m2>                                      Area                := RegioIndelingen/buurt/Area[nr_OrgEntity];
+			attribute<km2>                                     AreaInKm2           := RegioIndelingen/buurt/AreaInKm2[nr_OrgEntity];
+			attribute<float64>                                 Overigen_p_land_com := RegioIndelingen/buurt/Overigen/p_land_com[nr_OrgEntity];
+			attribute<yr_uint16>                               BioWKK_Start        := RegioIndelingen/buurt/BioWKK_Start[nr_OrgEntity];
+
+			attribute<Studiegebied/gemeente>                   gemeente_rel        := point_in_polygon(Point, Studiegebied/gemeente/geometry);
+
+			attribute</Geography/RegioIndelingen/NL>           NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Provincie>    Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Energieregio> Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Wijk>         Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
+
+			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
+
 		}
 		
 	}

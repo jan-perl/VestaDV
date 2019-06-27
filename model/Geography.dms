@@ -90,10 +90,10 @@ container Geography: Using = "Units", IsHidden = "True"
 		
 		unit<uint32> Energieregio := unique(buurt/ER_NAAM)
 		{
-			attribute<string> label     := 'RES '+string(Values);
-			attribute<string> Name      := replace_value(Replace(Label, '-', '', '/', '_', ' ', '', '(', '', ')', ''), '', 'Elders');
-			parameter<string> RegioNaam := 'Energieregio';
-			attribute<string> StudieGebied := AsItemList(Gemeente/GM_code, Gemeente/Energieregio_rel);
+			attribute<string> label        := 'RES '+string(Values);
+			attribute<string> Name         := replace_value(Replace(Label, '-', '', '/', '_', ' ', '', '(', '', ')', ''), '', 'Elders');
+			parameter<string> RegioNaam    := 'Energieregio';
+			attribute<string> GM_code_list := AsItemList(Gemeente/GM_code, Gemeente/Energieregio_rel);
 		}
 
 		unit<uint32> Gemeente := unique(buurt/GM_CODE)
