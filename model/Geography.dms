@@ -37,18 +37,18 @@ container Geography: Using = "Units", IsHidden = "True"
 			,	Descr = "rdCoords/100m van NW naar SE (2700 cols)"
 		{
 			attribute<rdc_meter>             point                 := id(.)[rdc_meter] + point(-50.0, 50.0, rdc_meter);
-			attribute<RegioIndelingen/buurt> buurt_rel_org         := point_in_polygon(point, RegioIndelingen/Buurt/Geometry);
+			attribute</Invoer/RuimtelijkeData/StudieGebied/buurt>    buurt_rel_org         := point_in_polygon(point, Invoer/RuimtelijkeData/StudieGebied/Buurt/Geometry);
 			attribute<bool>                  buurt_rel_org_defined := IsDefined(buurt_rel_org);
 
 			unit<uint32> NearBuurt := Subset(potential(float32(buurt_rel_org_defined), DistMatrices/pot1000m/KernelDomain/Cilindrical) >= 0.000001f && !buurt_rel_org_defined);
 
-			container connect := connect_info( RegioIndelingen/Buurt/Geometry, point[NearBuurt/nr_OrgEntity]);
+			container connect := connect_info( Invoer/RuimtelijkeData/StudieGebied/Buurt/Geometry, point[NearBuurt/nr_OrgEntity]);
 
 			attribute<RegioIndelingen/blok500m> blok500m_rel := RegioIndelingen/blok500m/BaseGrid[ ID(.)[m500] ];
 			attribute<RegioIndelingen/blok1km>  blok1km_rel  := RegioIndelingen/blok1km/BaseGrid[ ID(.)[km1] ];
 			attribute<RegioIndelingen/blok2km>  blok2km_rel  := RegioIndelingen/blok2km/BaseGrid[ ID(.)[km2 ] ];
 
-			attribute<RegioIndelingen/Buurt> Buurt_rel       := MakeDefined(buurt_rel_org, connect/ArcID[invert(NearBuurt/nr_OrgEntity)]), FreeData = "False";
+			attribute<Invoer/RuimtelijkeData/StudieGebied/Buurt>       Buurt_rel       := MakeDefined(buurt_rel_org, connect/ArcID[invert(NearBuurt/nr_OrgEntity)]), FreeData = "False";
 		}
 
 		unit<wpoint> m500 := gridset(rdc_grids/m100, point( 5w, 5w, m100), point(0w,0w, m100), wpoint)

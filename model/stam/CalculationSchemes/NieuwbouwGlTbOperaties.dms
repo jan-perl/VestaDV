@@ -24,7 +24,7 @@ container NieuwbouwGlTbOperaties
 				attribute<Geography/RegioIndelingen/blok500m> blok500m_rel := Geography/rdc_grids/m100/blok500m_rel[nr_OrgEntity];
 				attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel  := Geography/rdc_grids/m100/blok1km_rel [nr_OrgEntity];
 				attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel  := Geography/rdc_grids/m100/blok2km_rel [nr_OrgEntity];
-				attribute<Geography/RegioIndelingen/buurt>    buurt_rel    := Geography/rdc_grids/m100/buurt_rel   [nr_OrgEntity];
+				attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>                 buurt_rel    := Geography/rdc_grids/m100/buurt_rel   [nr_OrgEntity];
 			}
 		}
 		unit<uint32>  results := combine(impl/lokatiesBij, Classifications/GLTB)
@@ -41,7 +41,7 @@ container NieuwbouwGlTbOperaties
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := impl/lokatiesBij/blok500m_rel[nr_1];
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := impl/lokatiesBij/blok1km_rel [nr_1];
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := impl/lokatiesBij/blok2km_rel [nr_1];
-			attribute<Geography/RegioIndelingen/buurt>    buurt_rel          := impl/lokatiesBij/buurt_rel   [nr_1];
+			attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>                 buurt_rel          := impl/lokatiesBij/buurt_rel   [nr_1];
 			attribute<BebouwingsTypeDomein>               BebouwingsType     := GLTB_Code;
 			attribute<Classifications/bouwjaar>           bouwjaarOrg        := const(classify(value(zichtjaar, units/Yr) - 0.5[units/Yr],  classifications/bouwjaar/ClassBreak), .);
 			attribute<Classifications/bouwjaar>           bouwjaar           := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/V/Onbekend : bouwjaarOrg;

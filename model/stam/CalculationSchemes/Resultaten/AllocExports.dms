@@ -12,7 +12,7 @@ container AllocExports: = Units, isHidden = "false"
 
 		Unit<UInt32>  table := Invoer/SpecifiekeInstellingen/PlanRegio
 		{
-			attribute<string> BU_CODE                                       := Geography/RegioIndelingen/buurt/BU_CODE;
+			attribute<string> BU_CODE                                       := /Invoer/RuimtelijkeData/StudieGebied/buurt/BU_CODE;
 			attribute<Classifications/GebiedsOptie> GebiedsOptie            := StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE;
 
 			attribute<units/kg_yr> CO2_gebouwen_AardGas_totaal              := EnergyResults/CO2/gebouwen/AardGas/totaal;
@@ -29,16 +29,16 @@ container AllocExports: = Units, isHidden = "false"
 			attribute<units/GJ_yr>   Vj_WarmtePrimairD                      := TussenResultaten/GebiedsAllocatie/Initieel/KostenBaten/Vj_WarmtePrimairD;
 			attribute<units/GJ_yr>   WarmteVraagDeelnemers                  := TussenResultaten/GebiedsAllocatie/Initieel/KostenBaten/WarmteVraag/deelnemers;
 
-			attribute<units/Percent> Eigendom_Koopwoningen                  := Geography/RegioIndelingen/buurt/Eigendom/p_koopw;
-			attribute<units/Percent> Eigendom_Huurwoningen_totaal           := Geography/RegioIndelingen/buurt/Eigendom/p_huurw;
-			attribute<units/Percent> Eigendom_In_bezit_woningcorporatie     := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw;
-			attribute<units/Percent> Eigendom_In_bezit_overige_verhuurders  := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw;
-			attribute<units/Percent> Eigendom_Eigendom_onbekend             := Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w;
-			attribute<units/Percent> Eigendom_p_checksum                    := Geography/RegioIndelingen/buurt/Eigendom/p_checksum;//eigen check
-			attribute<units/Percent> Inkomen_Huishoudens_met_laag_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li;
-			attribute<units/Percent> Inkomen_Huishoudens_met_hoog_inkomen   := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi;
-			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi;//berekend veld uit andere velden
-			attribute<units/Percent> Inkomen_p_checksum                     := Geography/RegioIndelingen/buurt/Inkomen/p_checksum;//eigen check
+			attribute<units/Percent> Eigendom_Koopwoningen                  := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_koopw);
+			attribute<units/Percent> Eigendom_Huurwoningen_totaal           := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_huurw);
+			attribute<units/Percent> Eigendom_In_bezit_woningcorporatie     := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw);
+			attribute<units/Percent> Eigendom_In_bezit_overige_verhuurders  := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw);
+			attribute<units/Percent> Eigendom_Eigendom_onbekend             := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_e_o_w);
+			attribute<units/Percent> Eigendom_p_checksum                    := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Eigendom/p_checksum);//eigen check
+			attribute<units/Percent> Inkomen_Huishoudens_met_laag_inkomen   := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_li);
+			attribute<units/Percent> Inkomen_Huishoudens_met_hoog_inkomen   := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi);
+			attribute<units/Percent> Inkomen_Huishoudens_met_midden_inkomen := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi);//berekend veld uit andere velden
+			attribute<units/Percent> Inkomen_p_checksum                     := rjoin(BU_CODE, Geography/RegioIndelingen/buurt/BU_CODE, Geography/RegioIndelingen/buurt/Inkomen/p_checksum);//eigen check
 
 			attribute<units/GJ_yr> GebiedsOptie_totaal                      := /Resultaten/StartJaar/EnergyResults/Metervraag/gebouwen/WarmteKoudelevering/V_warmte;
 			attribute<units/GJ_yr> Aardgas_totaal                           := /Resultaten/StartJaar/EnergyResults/Metervraag/gebouwen/Gas/totaal;

@@ -27,9 +27,9 @@ container Referentie
 		// Run specific overruling
 		container SpecifiekeInstellingen := DefaultInstellingen/Basis
 		{
-			parameter<string> PlanRegioNaam     := 'blok2km';
+			parameter<string> PlanRegioNaam     := 'buurt';
 			parameter<bool>   HasStartingArcSet := false; // Need to be always false if buurt is not used.
-			unit<uint32>      PlanRegio         := ='Geography/RegioIndelingen/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam;
+			unit<uint32>      PlanRegio         := ='/Invoer/RuimtelijkeData/StudieGebied/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam;
 
 			container StartJaar := DefaultInstellingen/Basis
 			{

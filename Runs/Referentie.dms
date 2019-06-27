@@ -19,7 +19,12 @@ container Referentie
 
 	container Invoer
 	{
-		parameter<string> StudieGebied: ['NL']; // NL or a set of municipality code, comma seperater, are allowed, e.g ['GM']
+		//RES als selectie
+		parameter<string> RES_StudieGebied : ['RESAchterhoek'];
+		parameter<string> StudieGebied     := /Geography/RegioIndelingen/Energieregio/StudieGebied[rlookup(RES_StudieGebied, /Geography/RegioIndelingen/Energieregio/name)];
+		
+		//Gemeentes als selectie
+		// parameter<string> StudieGebied: ['NL']; // NL or a set of municipality code, comma seperater, are allowed, e.g ['GM']
 //		parameter<string> StudieGebied: ['GM0375']; // NL or a set of municipality code, comma seperater, are allowed, e.g ['GM0453,GM0375,GM0396']
 //		parameter<string> StudieGebied: ['GM0453,GM0375,GM0396']; // NL or a set of municipality code, comma seperater, are allowed, e.g ['GM0453,GM0375,GM0396']
 

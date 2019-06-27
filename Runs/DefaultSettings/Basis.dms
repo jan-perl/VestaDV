@@ -15,11 +15,13 @@ container Basis: Using = "Units"
 {
 	parameter<string> PlanRegioNaam := // te kiezen uit onderstaande opties, let op, bij blokken moet HasStartingArcSet False zijn en Rapportage/RapportageRegio op NL worden ingesteld
 		'buurt';
+//		'gemeente';
 //		'blok500m';
 //		'blok1km';
 //		'blok2km';
 
-	unit<uint32> PlanRegio := ='Geography/RegioIndelingen/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam, isHidden = "True";
+	unit<uint32> PlanRegio := ='/Invoer/RuimtelijkeData/StudieGebied/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam, isHidden = "True";
+	// unit<uint32> PlanRegio := ='Geography/RegioIndelingen/'+ Invoer/SpecifiekeInstellingen/PlanRegioNaam, isHidden = "True";
 
 	parameter<bool> HasStartingArcSet := True; // Moet False zijn voor alle blok PlanRegioNaam configuraties
 

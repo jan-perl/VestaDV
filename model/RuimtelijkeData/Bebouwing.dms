@@ -35,7 +35,7 @@ container Bebouwing :=
 			attribute<RegioIndelingen/blok500m> blok500m_rel       := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]];
 			attribute<RegioIndelingen/blok1km>  blok1km_rel        := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]];
 			attribute<RegioIndelingen/blok2km>  blok2km_rel        := RegioIndelingen/blok2km/BaseGrid[point[rdc_grids/km2]];
-			attribute<RegioIndelingen/buurt>    buurt_rel          := BAG/vbo_woonfunctie_studiegebied/buurt_rel;
+			attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>       buurt_rel          := BAG/vbo_woonfunctie_studiegebied/buurt_rel;
 
 			attribute<nrAansl>                  nrAansluitingen_i  := Impl/nrWon * 1[ nrAansl / nrWoningen];
 			attribute<nrWoningen>               nrWoonUnits_i      := Impl/nrWon;
@@ -94,7 +94,7 @@ container Bebouwing :=
 			attribute<string>                   code              := BAG/vbo_utiliteit_studiegebied/identificatie;
 			attribute<string>                   postcode          := BAG/vbo_utiliteit_studiegebied/postcode;
 
-			attribute<RegioIndelingen/buurt>    buurt_rel         := BAG/vbo_utiliteit_studiegebied/buurt_rel, isHidden = "True";
+			attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>    buurt_rel         := BAG/vbo_utiliteit_studiegebied/buurt_rel, isHidden = "True";
 
 			attribute<rdc_meter>                point             := BAG/vbo_utiliteit_studiegebied/locatie, isHidden = "True";
 			attribute<RegioIndelingen/blok500m> blok500m_rel      := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
@@ -168,8 +168,8 @@ container Bebouwing :=
 			unit<uint8>   BebouwingsTypeDomein := Classifications/GLTB ,isHidden = "True";
 
 			attribute<string>                   code              := string(id(.));
-
-			attribute<RegioIndelingen/buurt>    buurt_rel         :=  RuimtelijkeData/Glastuinbouw/bestaand_studiegebied/buurt_rel, isHidden = "True";
+			
+			attribute<Studiegebied/buurt>    buurt_rel         :=  RuimtelijkeData/Glastuinbouw/bestaand_studiegebied/buurt_rel, isHidden = "True";
 
 			attribute<RegioIndelingen/blok500m> blok500m_rel      := RegioIndelingen/blok500m/BaseGrid[point[rdc_grids/m500]], isHidden = "True";
 			attribute<RegioIndelingen/blok1km>  blok1km_rel       := RegioIndelingen/blok1km/BaseGrid[point[rdc_grids/km1]], isHidden = "True";

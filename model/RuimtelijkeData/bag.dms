@@ -170,7 +170,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 
 	unit<uint32> vbo_woonfunctie_studiegebied := Subset(
 			import/vbo/gebruiksdoelen/woon
-		&&	StudiegebiedGemeentes/selected[import/vbo/gemeente_rel]
+		&&	Studiegebied/selected_gemeente[import/vbo/gemeente_rel]
 		&&	IsDefined(import/vbo/pand_rel)
 		&&	import/vbo/oppervlak_filters/wonen >=  10[Units/m2]
 		&&	import/vbo/oppervlak_filters/wonen < 1000[Units/m2]
@@ -191,8 +191,8 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 		attribute<string>                                 pand_id                    := import/vbo/pand_id[nr_OrgEntity];
 		attribute<import/pand>                            pand_rel                   := import/vbo/pand_rel[nr_OrgEntity];
 		attribute<Float64>                                pand_aandeel               := 1.0 / float64(import/pand/nr_woningen[pand_rel]);
-
-		attribute<RegioIndelingen/buurt>                  buurt_rel                  := import/vbo/buurt_rel[nr_OrgEntity];
+ 
+		attribute<Studiegebied/buurt>                     buurt_rel                  := point_in_polygon(geometry, Studiegebied/buurt/geometry);
 
 		attribute<Units/Yr>                               bouwjaar                   := rjoin(pand_id, import/pand/identificatie, import/pand/bouwjaar_gecorrigeerd);
 		attribute<Classifications/BouwjaarWoningBestaand> BouwjaarWoningBestaand_rel := isNull(bouwjaar) ? Classifications/BouwjaarWoningBestaand/onbekend : classify(bouwjaar,Classifications/BouwjaarWoningBestaand/ClassBreak);
@@ -214,7 +214,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 	
 	unit<uint32> vbo_woonfunctie_studiegebied_export := Subset(
 			import/vbo/gebruiksdoelen/woon
-		&&	StudiegebiedGemeentes/selected[import/vbo/gemeente_rel]
+		&&	Studiegebied/selected_gemeente[import/vbo/gemeente_rel]
 		&&	IsDefined(import/vbo/pand_rel)
 		&&	import/vbo/oppervlak_filters/wonen >= 10[Units/m2]
 		&&	import/vbo/oppervlak_filters/wonen < 1000[Units/m2]
@@ -232,7 +232,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 
 	unit<uint32> vbo_utiliteit_studiegebied:= ='Subset (
 			!import/vbo/gebruiksdoelen/woon 
-		&&	StudiegebiedGemeentes/selected[import/vbo/gemeente_rel]
+		&&	Studiegebied/selected_gemeente[import/vbo/gemeente_rel]
 		&&	IsDefined(import/vbo/pand_rel)
 		&&	isDefined(import/vbo/oppervlak_filters/utiliteit)
 		&&	' + vbo_utiliteit_industrie_sub_expr + 
@@ -250,8 +250,8 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 		attribute<Units/m2>                             oppervlakte              := import/vbo/oppervlak_filters/utiliteit[nr_OrgEntity];
 		attribute<string>                               pand_id                  := import/vbo/pand_id[nr_OrgEntity];
 		attribute<import/pand>                          pand_rel                 := import/vbo/pand_rel[nr_OrgEntity];
-
-		attribute<RegioIndelingen/buurt>                buurt_rel                := import/vbo/buurt_rel[nr_OrgEntity];
+		
+		attribute<Studiegebied/buurt>                   buurt_rel                := point_in_polygon(geometry, Studiegebied/buurt/geometry);
 
 		attribute<units/Yr>                             bouwjaar                 := rjoin(pand_id, import/pand/identificatie, import/pand/bouwjaar_gecorrigeerd);
 		attribute<Classifications/BouwjaarUtilBestaand> BouwjaarUtilBestaand_rel := isNull(bouwjaar) ? Classifications/BouwjaarUtilBestaand/V/onbekend :classify(bouwjaar,Classifications/BouwjaarUtilBestaand/ClassBreak);
@@ -290,7 +290,7 @@ container BAG: url="%sourceDataProjDir%/BAG/20190114_actualisatie_BAG_FvdM.txt"
 	unit<uint32> vbo_utiliteit_studiegebied_export:= Subset
 		(
 			!import/vbo/gebruiksdoelen/woon 
-		&&	StudiegebiedGemeentes/selected[import/vbo/gemeente_rel]
+		&&	Studiegebied/selected_gemeente[import/vbo/gemeente_rel]
 		&&	IsDefined(import/vbo/pand_rel)
 		&&	isDefined(import/vbo/oppervlak_filters/utiliteit)
 	//	&&	!import/vbo/gebruiksdoelen/Industrie    // Deze regel aanzetten als in Utiliteit alle industrie niet meedoet (dus ook alle vbo die industrie in combinatie met een andere gebruikdoel hebben)
