@@ -136,41 +136,30 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		attribute<CumulatedArcSet> CumulatedArcSet_rel (PlanRegio) := invert(CumulatedArcSet/planregio_rel);
 		attribute<bool>            GebruikRestWarmte   (PlanRegio) := IsDefined(CumulatedArcSet_rel);
 
-		unit<uint32> WarmteBronnen_src := RuimtelijkeData/WarmteBronnen/RestWarmte/bron
+		unit<uint32> WarmteBronnen := Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/StartJaar/BronElementen
 		{
-			attribute<uint32> PlanRegio_rel := point_in_polygon(P, PlanRegio/geometry);
-		}
-		
-		unit<uint32> WarmteBronnen := subset(IsDefined(WarmteBronnen_src/PlanRegio_rel))
-		{
-			attribute<rdc_meter> P            := WarmteBronnen_src/p[nr_OrgEntity];
-			attribute<string>    bron_naam    := WarmteBronnen_src/bron_naam[nr_OrgEntity];
+			attribute<rdc_meter> Point        := Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/StartJaar/BronElementen/Point;
+			attribute<string>    bron_naam    := Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/BronSelecties/StartJaar/BronElementen/bron_naam;
 		}
 		
 		// inlezen bestaande warmtenetten met indicatie van huidige bron en doorkoppelingen
-		unit<uint32> linkset: StorageName = "%SourceDataProjDir%/infra/20190614_CBS_bestaande_warmtenetten_2019.csv"
-		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		,	url             = "%SourceDataProjDir%/infra/20190118_update_bestaande_warmtenetten_FvdM.txt"
+		unit<uint32> linkset:= Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/linkset_selected
 		{
-			attribute<string> BU_code;
-			attribute<string> BU_code_dk;
-			attribute<string> pntnr;
+			attribute<planregio>     BU_rel    := rlookup(BU_Code,    Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
+			attribute<planregio>     BU_DK_rel := rlookup(BU_Code_dk, Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
 
-			attribute<PlanRegio>     BU_rel    := rlookup(BU_Code,    /Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
-			attribute<PlanRegio>     BU_DK_rel := rlookup(BU_Code_dk, /Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
 			attribute<.>             up_rel    := rlookup(BU_DK_rel, BU_rel);
 			attribute<rdc_meter>     Point     := PlanRegio/Point[BU_rel];
-			attribute<WarmteBronnen_src> bron_rel  := rlookup(pntnr, WarmteBronnen_src/bron_naam);
+			attribute<WarmteBronnen> bron_rel  := rlookup(pntnr, WarmteBronnen/bron_naam);
 			attribute<nodeset>       F1        := MakeDefined(value(bron_rel+#linkset, nodeset), value(up_rel, nodeset)), // source, a WarmteBronnen or alternatively the up_rel Planregio
-						IntegrityCheck = "isNull(Point) || (IsDefined(point) && (IsDefined(bron_rel) || IsDefined(up_rel)))";
+						IntegrityCheck = "isNull(Point) || (IsDefined(point) && (IsDefined(bron_rel) != IsDefined(up_rel)))";
 
 			attribute<nodeset>       F2        := value(id(.), nodeset); // serviced Planregio
 		}
 
 		unit<uint32> nodeset := union_unit(linkset, WarmteBronnen)
 		{
-			attribute<rdc_meter> Point := union_data(., linkset/Point, WarmteBronnen/P);
+			attribute<rdc_meter> Point := union_data(., linkset/Point, WarmteBronnen/Point);
 			
 			unit<uint32> e_dijkstra :=
 				dijkstra_m(
