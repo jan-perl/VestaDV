@@ -143,7 +143,7 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 		}
 		
 		// inlezen bestaande warmtenetten met indicatie van huidige bron en doorkoppelingen
-		unit<uint32> linkset:= Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/linkset_selected
+		unit<uint32> linkset:= Invoer/RuimtelijkeData/WarmteBronnen/RestWarmte/linkset/selected 
 		{
 			attribute<planregio>     BU_rel    := rlookup(BU_Code,    Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
 			attribute<planregio>     BU_DK_rel := rlookup(BU_Code_dk, Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code);
@@ -191,7 +191,7 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 			attribute<rdc_meter>                       PrevPoint     := nodeset/Point[linkset/F1];
 //					attribute<Eur>                             Ki_Netto;
 			attribute<WarmteBronnen>                   Bron_rel      := value(rjoin(value(id(linkset), nodeset), nodeset/e/DstZone_rel, nodeset/e/OrgZone_rel), WarmteBronnen);
-			attribute<rdc_meter>                       BronPoint     := WarmteBronnen/P[Bron_rel];
+			attribute<rdc_meter>                       BronPoint     := WarmteBronnen/Point[Bron_rel];
 
 			parameter<bool> HasArcs := true; // avoid reading the dbf to find this out.
 		}
