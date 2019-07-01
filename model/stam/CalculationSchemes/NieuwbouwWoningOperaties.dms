@@ -14,7 +14,7 @@ container NieuwbouwWoningOperaties
 		parameter<units/yr_uint16>                     zichtjaar;
 		// einde case parameters
 
-		unit<uint32> BebouwingsObject := Subset(NrWoningenGrid > 0[Units/nrWoningen] && Invoer/RuimtelijkeData/StudieGebied/selected_per_gemeente_per_m100),
+		unit<uint32> BebouwingsObject := Subset(NrWoningenGrid > 0[Units/nrWoningen] && Invoer/RuimtelijkeData/StudieGebied/selected_per_m100),
 			DialogType = "Map",
 			DialogData = "Point"
 		{

@@ -17,6 +17,11 @@ container WarmteBronnen
 	
 	container RestWarmte: Descr = "zie FO $3.3", FreeData = "False"
 	{
+		parameter<string> status := 
+			#linkset/bron_studiegebied_uit_in == 0 && #linkset/herkomstbuurt_studiegebied_uit_in  == 0 
+				? 'Ok'
+				: string(#linkset/bron_studiegebied_uit_in) + ' : bronnen studiegebied in/uit, ' + string(#linkset/herkomstbuurt_studiegebied_uit_in) + ' : herkomstbuurten studiegebied in/uit';
+
 		// inlezen bestand voor bekende puntbronnen geschikt voor warmtelevering
 		unit<uint32> bron
 		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190612_MT_puntbronnen.dbf"
@@ -92,7 +97,7 @@ container WarmteBronnen
 			attribute<Geography/RegioIndelingen/gemeente>  target_gem_rel := MakeDefined(rlookup(targetGMC,Geography/RegioIndelingen/gemeente/GM_CODE),gem_rel_P);
 
 			// in StudieGebied
-			attribute<bool> inStudieGebied := isDefined(point_in_polygon(P, Invoer/RuimtelijkeData/StudieGebied/Gemeente/Geometry));
+			attribute<bool> inStudieGebied := Invoer/RuimtelijkeData/StudieGebied/selected_per_gemeente[target_gem_rel];
 		}
 
 		template BronSelectie: IsHidden = "True"
@@ -211,16 +216,53 @@ container WarmteBronnen
 				attribute<string> pntnr      := src/pntnr[nr_OrgEntity];      // bron waarvan direct afgetapt wordt.TODO DOC: Er mag en moet of een geldige BU_code_dk en een lege string als pntnr of andersom
 			}
 
-			unit<uint32> in_uit_studiegebied := Subset(src/BU_selected <> src/DK_selected) // Deze set bekijken bij het niet voldoen aan de integrity check op linkset_selected. De set moet leeg zijn.
+			unit<uint32> bron_studiegebied_uit_in := Subset((src/BU_selected <> src/DK_selected) && src/pntnr <> '9999') // Deze set bekijken bij het niet voldoen aan de integrity check op linkset_selected. De set moet leeg zijn.
 			{
-				attribute<string> BU_code     := src/BU_code[nr_OrgEntity];
-				attribute<string> gemeente    := rjoin(BU_code, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
+				attribute<string> BU_code  := src/BU_code[nr_OrgEntity];
+				attribute<string> gemeente := rjoin(BU_code, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
+
+				attribute<string> herkomst_bronnaam                := src/pntnr[nr_OrgEntity];
+				attribute<string> herkomst_bron_toegekendegemeente := RegioIndelingen/Gemeente/Label[RestWarmte/bron/target_gem_rel[src/bron_rel[nr_OrgEntity]]];
+
+				attribute<rdc_meter> van_point  := centroid_or_mid(rjoin(BU_code,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
+				attribute<rdc_meter> naar_point := rjoin(herkomst_bronnaam, bron/bron_naam, bron/P);
 	
-				attribute<string> BU_code_dk  := src/BU_code_dk[nr_OrgEntity];
-				attribute<string> gemeente_dk := rjoin(BU_code_dk, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
+				attribute<rdc_meter> geometry  (arc) := points2sequence(pointset/point, pointset/sequence, pointset/ordinal)
+				{
+					parameter<uint32> PenColor := rgb(100,0,0), DialogType = "PenColor";
+					parameter<int16>  PenWidth := 3s          , DialogType = "PenWidth";
+				}
 	
-				attribute<bool>   BU_rel_dk   := isDefined(rlookup(BU_code_dk, Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code));
-				attribute<string> pntnr       := src/pntnr[nr_OrgEntity]; // bron waarvan direct afgetapt wordt.TODO DOC: Er mag en moet of een geldige BU_code_dk en een lege string als pntnr of andersom
+				unit<uint32> pointset := union_unit(.,.)
+				{
+					attribute<rdc_meter> point    := union_data(.,van_point, naar_point);
+					attribute<..>        sequence := union_data(.,id(..),id(..));
+					attribute<uint32>    ordinal  := union_data(.,const(0,..),const(1,..));
+				}
+			}
+			unit<uint32> herkomstbuurt_studiegebied_uit_in := Subset((src/BU_selected <> src/DK_selected) && src/BU_code_dk <> '') // Deze set bekijken bij het niet voldoen aan de integrity check op linkset_selected. De set moet leeg zijn.
+			{
+				attribute<string> BU_code  := src/BU_code[nr_OrgEntity];
+				attribute<string> gemeente := rjoin(BU_code, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
+	
+				attribute<string> herkomst_BU_code  := src/BU_code_dk[nr_OrgEntity];
+				attribute<string> herkomst_gemeente := rjoin(herkomst_BU_code, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
+
+				attribute<rdc_meter> van_point  := centroid_or_mid(rjoin(BU_code,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
+				attribute<rdc_meter> naar_point := centroid_or_mid(rjoin(herkomst_BU_code,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
+	
+				attribute<rdc_meter> geometry  (arc) := points2sequence(pointset/point, pointset/sequence, pointset/ordinal)
+				{
+					parameter<uint32> PenColor := rgb(100,0,0), DialogType = "PenColor";
+					parameter<int16>  PenWidth := 3s          , DialogType = "PenWidth";
+				}
+	
+				unit<uint32> pointset := union_unit(.,.)
+				{
+					attribute<rdc_meter> point    := union_data(.,van_point, naar_point);
+					attribute<..>        sequence := union_data(.,id(..),id(..));
+					attribute<uint32>    ordinal  := union_data(.,const(0,..),const(1,..));
+				}
 			}
 		}
 	}
