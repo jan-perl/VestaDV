@@ -18,11 +18,11 @@ container Sprongen
 
 	container VermedenGas
 	{
-		attribute<units/GJ_yr> RV_H   (BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/Aardgas) * DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor;
+		attribute<units/GJ_yr> RV_H   (BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/Aardgas) / DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor;
 		attribute<units/GJ_yr> RV     (BebouwingsObject) := RV_H / Efficiency/gebouw/LaatsteWaarde;
 		attribute<units/GJ_yr> RV_AP  (BebouwingsObject) := RV_H / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel];
 
-		attribute<units/GJ_yr> WW     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Aardgas) * DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
+		attribute<units/GJ_yr> WW     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Aardgas) / DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
 
 		attribute<units/GJ_yr> S_H_T  (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency )[Model_rel];
 		attribute<units/GJ_yr> S_H_B  (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency )[Model_rel];

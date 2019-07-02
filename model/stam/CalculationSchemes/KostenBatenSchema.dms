@@ -54,7 +54,7 @@ template KostenBaten
 	container KostenFactorenD: Source = "F 3"
 	{
 		parameter<Ratio>  gr_warmte_geen_bijstook := 80[Percent] / 100[Percent], Source = "N1: FO v7a F 35", Descr = "Percentage grootschalige warmte dat niet wordt bijgestookt";
-		parameter<Ratio>  warmteverlies_wd        := 0.2[ratio]                , Source = "N3: FO v7a F 35", Descr = "WarmteVerlies in de wijkdistributie";
+		parameter<Ratio>	warmteverlies_wd		:=	0.28[ratio],	Source = "validatiesessies startanalyse 2019",	Descr = "WarmteVerlies in de wijkdistributie"; //TODO: bron = FO 4.0
 
 		parameter<Eur_GJ> AardGasPrijs            := Prijzen/AardGas/Bijstook/KGJ_eindgebruik_excl, Source = "N2: FO v7a F 35";
 		parameter<Eur_GJ> AardGasPrijs_m          := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
