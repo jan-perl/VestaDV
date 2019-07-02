@@ -148,7 +148,7 @@ template KostenBaten
 			container CapaciteitsVraag
 			{
 				attribute<kW> Klein (PlanRegio) :=
-					 0.5 * ( // gelijktijdigheidsfactor
+					 0.95 * ( // gelijktijdigheidsfactor
 						sum(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit 
 							* float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/BestaandeUtil/WarmteAllocatie]))
 							* float64(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit <= afkapgrens_klein) 
@@ -161,7 +161,7 @@ template KostenBaten
 						)
 					);
 				attribute<kW> Groot (PlanRegio) :=
-						// geen gelijktijdigheidsfactor voor grote utiliteit
+						0.95 * (// gelijktijdigheidsfactor
 						sum(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit 
 							* float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/BestaandeUtil/WarmteAllocatie]))
 							* float64(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit > afkapgrens_klein) 
@@ -171,7 +171,8 @@ template KostenBaten
 							* float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/NieuwbouwUtil/WarmteAllocatie]))
 							* float64(BebouwingsComponenten/NieuwbouwUtil/WarmteVraag/deelnemers/AansluitCapaciteit > afkapgrens_klein) 
 							, BebouwingsComponenten/NieuwbouwUtil/PlanRegio_rel
-						);
+						)
+					);
 				attribute<kW> Totaal(PlanRegio) := Klein + Groot;
 			}
 
