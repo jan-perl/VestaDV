@@ -132,7 +132,20 @@ container CalculationSchemes: Using = "Units;Geography"
 		attribute<Eur_m> K_m   (PlanRegio) := (K_min * Schuiven/KostenMin + K_max * Schuiven/KostenMax) * Leercurves/curve2;
 		attribute<Eur_m> aK_m  (PlanRegio) := a * K_m; // K_hoofd_m incl omwegfactor
 	}
+	template BuisKostenBC
+	{
+		// begin case parameters
+		unit<uint32>  BebouwingsComponent;
+		attribute<MW> Capaciteit (BebouwingsComponent);
+		// begin case parameters
 
+		parameter<Ratio> a                 := 1.25; // omwegfactor
+
+		attribute<Eur_m> K_min (BebouwingsComponent) := Capaciteit > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.5 : 0[Eur_m];
+		attribute<Eur_m> K_max (BebouwingsComponent) := Capaciteit > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (Capaciteit * 1.0[1 / MW])^ 0.6 : 0[Eur_m];
+		attribute<Eur_m> K_m   (BebouwingsComponent) := (K_min * Schuiven/KostenMin + K_max * Schuiven/KostenMax) * Leercurves/curve2;
+		attribute<Eur_m> aK_m  (BebouwingsComponent) := a * K_m; // K_hoofd_m incl omwegfactor
+	}
 	#include <NcwSchema.dms>
 	#include <AanbodOpties.dms>
 	#include <Rapportage.dms>
