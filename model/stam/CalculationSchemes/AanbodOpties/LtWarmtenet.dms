@@ -128,7 +128,9 @@ Template LtWarmtenetImpl
 		//investeringskosten wijkdistributie
 		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
 		parameter<Eur_m >		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
-		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_max			:=	150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/Curve2 * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
 		
 		// begrenzingen aan cluster mogelijkheden.
 		parameter<m>            L_max_bron_connectie:=                      2000    [m],            Descr = "Afzonderlijke aantakkingen aan een bron-cluster mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
