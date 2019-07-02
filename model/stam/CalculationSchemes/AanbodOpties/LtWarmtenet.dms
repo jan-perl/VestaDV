@@ -126,9 +126,6 @@ Template LtWarmtenetImpl
 		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
 		
 		//investeringskosten wijkdistributie
-		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/Curve2 * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
-		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/Curve2 * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
-		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
 		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
 		parameter<Eur_m >		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
 		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";

@@ -105,7 +105,11 @@ template WKOUtilData
 
 		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
 		attribute<Eur>		Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
-		attribute<Eur>		Ki_wd_aansluiting	(BebouwingsObject)	:= const(constanten/Ki_aansl_util[Eur], BebouwingsObject), Descr = "Investeringskosten aansluitleidingen";
+		attribute<m_aansl>	L_aansl				(BebouwingsObject)	:= /Invoer/RuimtelijkeData/buislengte/per_buurt/L_aansl_pand[BCdata/PlanRegio_rel];
+		container			LeidingKosten							:=	BuisKostenBC(BebouwingsObject, P_sec * 0.001[ MW / kW]);
+		attribute<Eur_m>	K_aansl_m			(BebouwingsObject)	:=	Leidingkosten/K_m;	
+
+		attribute<Eur>		Ki_wd_aansluiting	(BebouwingsObject)	:=	L_aansl * K_aansl_m * 1[nraansl], Descr = "Investeringskosten aansluitleidingen";
 		attribute<Eur>		Ki_wd				(BebouwingsObject)	:= Ki_wd_OS + Ki_wd_aansluiting,		Descr = "Investeringskosten wijkdistributie exclusief distributieleidingen";
 
 		//Jaarlijkse kosten elektriciteitsverbruik

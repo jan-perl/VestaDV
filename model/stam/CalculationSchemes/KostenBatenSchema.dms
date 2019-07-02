@@ -71,29 +71,25 @@ template KostenBaten
 
 	container KostenD: using = "KostenFactorenD"
 	{
-		parameter<nrWoningen> optimaal_aantal_woningen_os  := 150[nrWoningen] , Source = "aopt: FO v7a F 21";
-		parameter<kW_Woning>  Vermogen_woning              := 11[kw_woning]   , Source = "ASWgem: FO v7a F 21";
-		parameter<float64>    gelijktijdigheidsfactor_w    := 0.5             , Source = "y: FO v7a F 21";
+		parameter<nrWoningen>	woningen_OS					:=	150[nrWoningen],									Source = "aopt: FO v7a F 21";
+		parameter<kW_Woning>	Vermogen_woning				:=	11[kw_woning],										Descr = "aansluitwaarde woning op MT warmtenet", Source = "ASWgem: FO v7a F 21";	
+		parameter<float64>		GTF_woning_warmte			:=	0.55,												Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_min					:=	120[Eur_kW],										Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_Max					:=	150[Eur_kW],										Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_OS_p						:=	(K_os_p_min * Schuiven/KostenMin + K_os_p_Max * Schuiven/KostenMax) * LeerCurves/Curve1;
+		parameter<float64>		woning_os_factor			:=	(1.0 / 0.95 ) * GTF_woning_warmte,					Descr = "verwerking 5% capaciteitsverlies";
+		parameter<kW>			Vermogen_OS					:=	woningen_OS * Vermogen_woning * woning_os_factor,	Descr = "vermogen van een onderstation";
+		parameter<Eur>			Kosten_OS					:=	Vermogen_OS * K_OS_p,								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 
-		parameter<Eur_kW>     K_os_p_min                   :=  50[Eur_kW]     , Source = "Table 36";
-		parameter<Eur_kW>     K_os_p_Max                   := 150[Eur_kW]     , Source = "Table 36";
+		parameter<Ratio>		afschrijving_resterend		:=	1.0 / 3.0; // resterende afschijving.
+		parameter<Eur>			KetelVergoeding				:=	130[Eur_kW] * afschrijving_resterend * Vermogen_OS; // vergoeding bestaande blokverwarmingsketels obv nieuwwaarde
 
-		parameter<float64>    woning_os_factor             := (1.0 / 0.95 ) * gelijktijdigheidsfactor_w; // piekfactor en gelijktijdigheidsfactor (y: FO v7a F 21), aanname: meer dan 40 woningen
-		parameter<kW>         Vermogen_OS                  := optimaal_aantal_woningen_os * Vermogen_woning * 0.5, Source = "FO v7a F 21";
-		parameter<Eur_kW>     K_OS_p                       := (K_os_p_min * Schuiven/KostenMin + K_os_p_Max * Schuiven/KostenMax) * LeerCurves/Curve1, Source = "FO v7a F 22";
-		parameter<Eur>        Kosten_OS                    := Vermogen_OS * K_OS_p, Source = "FO v7a F 22";
-
-		parameter<Ratio>      afschrijving_resterend       := 1.0 / 3.0; // resterende afschijving.
-		parameter<Eur>        KetelVergoeding              := 130[Eur_kW] * afschrijving_resterend * Vermogen_OS; // vergoeding bestaande blokverwarmingsketels obv nieuwwaarde
-
-		parameter<Eur_Aansl>  Ki_HR_ketel_W                := 1900[Eur_Aansl], Source = "IKHR: FO F84";
-		parameter<Eur_Aansl>  Ki_HR_ketel_U                :=  780[Eur_Aansl], Source = "Kengetallen Arcadis 2018";
-		parameter<m_Aansl>    L_di_gem                     :=   15[m_Aansl]  , Source = "FO, nummer voetnoot 31 onder F80";
+		parameter<Eur_Aansl>	Ki_HR_ketel_W                := 1900[Eur_Aansl], Source = "IKHR: FO F84";
+		parameter<Eur_Aansl>	Ki_HR_ketel_U                :=  780[Eur_Aansl], Source = "Kengetallen Arcadis 2018";
+		parameter<m_Aansl>		L_di_gem                     :=   15[m_Aansl]  , Source = "FO, nummer voetnoot 31 onder F80";
 
 		container Wonen
 		{
-	//		parameter<Eur_Aansl> Kaansluiten_wd_gestappeld       :=  656[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 6/7"; //correctie utigaande van €5000/pand met gemiddeld aantal aansluitingen per pand bij gestapelde bouw
-	//		parameter<Eur_Aansl> Kaansluiten_wd_grondgebonden    := 5000[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 8";
 			parameter<Eur_Aansl> Ongeriefsvergoeding             :=  125[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 7/8";
 			parameter<Eur_Aansl> Projectmanagementvergoeding_min :=   50[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 6";
 			parameter<Eur_Aansl> Projectmanagementvergoeding_max :=  250[Eur_Aansl], Source = "FO Vesta 3.0 Tabel 7/8";
@@ -394,10 +390,8 @@ template KostenBaten
 		attribute<nrAansl>nrAansl_d       (PlanRegio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/WarmteVraag/deelnemers/nrAansluitingen, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/name))+')';
 		attribute<nrAansl>nrAansl_g       (PlanRegio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/WarmteVraag/alle/nrAansluitingen, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/name))+')';
 		attribute<nrAansl>nrAansl_e       (PlanRegio) := ='add('+AsItemList(replace('sum(BebouwingsComponenten/@BC@/RuimtelijkeVraagComponent/nrAansluitingen, BebouwingsComponenten/@BC@/PlanRegio_rel)', '@BC@', Classifications/BebouwingsComponent/name))+')';
-		attribute<m>      L_distr_d       (PlanRegio) := nrAansl_d * L_di_gem;
 		attribute<m>      L_distr_g       (PlanRegio) := nrAansl_g * L_di_gem;
 		attribute<m>      L_distr_e       (PlanRegio) := nrAansl_e * L_di_gem;
-		attribute<m>      L_infra_d       (PlanRegio) := L_distr_d + SecundairNet/L_transport;
 		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(AllocatieResultaten/heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
