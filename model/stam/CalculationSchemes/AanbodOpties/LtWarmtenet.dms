@@ -126,8 +126,6 @@ Template LtWarmtenetImpl
 		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
 		
 		//investeringskosten wijkdistributie
-		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
-		parameter<Eur_m >		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
 		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_os_p_max			:=	150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/Curve2 * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
@@ -371,15 +369,15 @@ Template LtWarmtenetImpl
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
 			attribute<MW>		P_sec			(BronCluster)	:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
 			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
-			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
 			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
 			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
 			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
 			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
-			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
 		}
 		
