@@ -344,6 +344,16 @@ template KostenBaten
 			attribute<m>		L_transport		(Planregio)		:=	L_hoofdleiding + L_zijleiding;
 			attribute<Eur_yr>	Kj_Onderhoud	(PlanRegio)		:=	(K_hoofdleiding + K_zijleiding) * Kengetallen/Onderhoud/Rj_SecundairNet + K_WOS * Kengetallen/Onderhoud/Rj_WOS;
 			attribute<Eur_yr>	Kj_Admin		(PlanRegio)		:=	Kj_Onderhoud * Kengetallen/Onderhoud/R_Admin;
+			
+			//pompenergie
+			unit<uint8>			Prijzen_elec					:= Prijzen/Elektriciteit/Staffel;
+			parameter<Ratio>	Pompenergie						:	[0.0072],																		Descr = "kental elektriciteitsverbruik distributiepompen";
+			attribute<GJ_yr>	V_wd_elek		(PlanRegio)		:=	Vj_warmte * Pompenergie,														Descr = "elektriciteitsverbruik distributiepompen";	
+			parameter<classifications/gebruiksgrootteklasse>	wd_gebruiksgrootteklasse_rel	:= last(ID(Prijzen_elec)),			Descr = "elektriciteitstarief voor wijkdistributeur";
+			attribute<Eur_yr>	Kj_wd_elek		(PlanRegio)		:=	V_wd_elek * Prijzen_elec/KGJ_eindgebruik_excl	[wd_gebruiksgrootteklasse_rel],	Descr = "jaarlijkse elektriciteitskosten collectief eindgebruiker";
+			attribute<Eur_yr>	Km_wd_elek		(PlanRegio)		:=	V_wd_elek * Prijzen_elec/KGJ_maatschappelijk	[wd_gebruiksgrootteklasse_rel],	Descr = "jaarlijkse elektriciteitskosten collectief maatschappelijk";
+			attribute<Eur_yr>	Kj_wd_elek_EH	(PlanRegio)		:=	V_wd_elek * Prijzen_elec/KGJ_EnergieHeffing		[wd_gebruiksgrootteklasse_rel],	Descr = "energieheffing over elektriciteitsverbruik pompenergie";
+			attribute<Eur_yr>	Kj_wd_elek_CO2	(PlanRegio)		:=	V_wd_elek * Prijzen_elec/KGJ_CO2Heffing			[wd_gebruiksgrootteklasse_rel],	Descr = "co2heffing over elektriciteitsverbruik pompenergie";
 		}
 
 		container PrimairNet
@@ -378,7 +388,8 @@ template KostenBaten
 		attribute<Eur_yr> Kj_id_oh        (PlanRegio) := Wonen/Kj_id_oh;
 		attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := Wonen/Kj_wd_oh + Utiliteit/Kj_Onderhoud + Glastuinbouw/Kj_Onderhoud + SecundairNet/Kj_Onderhoud;
 		attribute<Eur_yr> Kj_Onderhoud    (PlanRegio) := Kj_wd_oh + Kj_id_oh;
-		
+		attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := SecundairNet/Kj_wd_elek;
+		attribute<Eur_yr> Km_wd_elek      (PlanRegio) := SecundairNet/Km_wd_elek;
 		attribute<Eur_yr> Kj_wd_gas       (PlanRegio) := Bijstook/Kj_wd_gas;
 		attribute<Eur_yr> Km_wd_gas       (PlanRegio) := Bijstook/Km_wd_gas;
 		attribute<Eur_yr> Kj_lv_adm       (PlanRegio) := opbrengsten/JaarlijksD/Oj_VastRecht * Kengetallen/Onderhoud/R_lv_Admin;
@@ -392,8 +403,8 @@ template KostenBaten
 		attribute<m>      L_infra_g       (PlanRegio) := (L_distr_g + SecundairNet/L_transport)*float64(AllocatieResultaten/heeft_gas);
 		attribute<m>      L_infra_e       (PlanRegio) := L_distr_e + SecundairNet/L_transport;
 
-		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_wd_gas + Kj_wd_adm + Kj_lv_adm + Kj_ge_hv, Source = "FO v7a F 2";
-		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_wd_gas + Kj_wd_adm + Kj_lv_adm ;
+		attribute<Eur_yr> Kj_Totaal       (PlanRegio) := Kj_Onderhoud + Kj_wd_gas + Kj_wd_elek + Kj_wd_adm + Kj_lv_adm + Kj_ge_hv, Source = "FO v7a F 2";
+		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_wd_gas + Km_wd_elek + Kj_wd_adm + Kj_lv_adm ;
 	}
 
 	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Totaal;
@@ -434,7 +445,7 @@ template KostenBaten
 	attribute<Eur_yr> Oe_wd_subsidie      (PlanRegio) := Kji_wd_base * SpecifiekeInstellingen/Beleid/EEA/wd;
 	attribute<Eur_yr> Kji_ge_Netto        (PlanRegio) := Kji_ge_base - Oe_ge_subsidie;
 	attribute<Eur_yr> Kji_id_Netto        (PlanRegio) := Kji_id_base - Oe_id_subsidie;
-	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_wd_gas - Oe_wd_subsidie - Oji_wd_KL;
+	attribute<Eur_yr> Kji_wd_Netto        (PlanRegio) := Kji_wd_base  + KostenD/Kj_wd_gas + KostenD/Kj_wd_elek - Oe_wd_subsidie - Oji_wd_KL;
 	attribute<Eur_yr> Kji_Netto           (PlanRegio) := Kji_ge_Netto + Kji_id_Netto + Kji_wd_Netto + KostenD/Kj_lv_adm;
 
 	attribute<Eur_yr> Oji_wd              (PlanRegio) := Oji_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;

@@ -65,7 +65,7 @@ template WKO
 		
 		parameter<Ratio> 		Leidingverlies		: [0.28],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer", Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
+		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
 
 		//gelijktijdigheidsfactoren
 		parameter<float64>		GTF_woning_w		:=						0.55, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";

@@ -136,10 +136,10 @@ template WijkTempl
 					attribute<Eur_yr> Kj_wd_gas_CO2   (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/Bijstook/Kj_wd_gas_CO2: 0[Eur_yr];
 					attribute<Eur_yr> Km_wd_gas       (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/Bijstook/Km_wd_gas    : 0[Eur_yr];
 					
-					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek		: 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek_eh	: 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek_co2	: 0[Eur_yr];
+					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Km_wd_elek		: 0[Eur_yr];
 					
 					attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := (NewGebruik ? KostenBaten/KostenD/Kj_wd_oh        : 0[Eur_yr]) + VorigePeriode/jaarlijks/wd/Kj_wd_oh;
 					attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := (NewGebruik ? KostenBaten/KostenD/Kj_wd_adm       : 0[Eur_yr]) + VorigePeriode/jaarlijks/wd/Kj_wd_adm;
@@ -229,7 +229,7 @@ template WijkTempl
 				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
-				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
+				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	KostenBaten/KostenD/SecundairNet/V_wd_elek;
 				attribute<Gj_yr>	V_ow_elek		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // niet specifiek benoemd, alles in WD, TODO: specifiek maken

@@ -15,13 +15,14 @@ template KostenWoningen
 	unit<uint32>			WoonObject						:=	BCdata/BebouwingsObject;
 	attribute<float64>		pand_aandeel	(WoonObject)	:=	WoonObject/Pand_aandeel;
 	attribute<bool>			IsMeergezins	(WoonObject)	:=	BCdata/BebouwingsTypeDomein/IsMeergezins[BCdata/BebouwingsType];
+	
+	// kosten aansluitleiding
 	attribute<m_aansl>		L_aansl			(WoonObject)	:=	/Invoer/RuimtelijkeData/buislengte/per_buurt/L_aansl_pand[BCdata/PlanRegio_rel];
 	container				LeidingKosten					:=	BuisKostenBC(WoonObject, P_aansl * 0.001[ MW / kW]);
 	attribute<EUR_m>		K_aansl_m		(WoonObject)	:=	Leidingkosten/K_m;	
 	attribute<Eur_Aansl>	Ki_wd_w			(WoonObject)	:=	L_aansl * K_aansl_m * pand_aandeel;
 
-	
-	
+	// vermeden gasketel
 	parameter<Eur_Aansl> Oi_vermeden_gasketel := Ki_HR_ketel_W * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
 
 	// eenmalige kosten, zie FO tabellen 5..7

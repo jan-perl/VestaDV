@@ -93,7 +93,7 @@ Template LtWarmtenetImpl
 		
 		parameter<Ratio> 		Leidingverlies		: [0.28],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
+		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
 		
 		//aansluitwaardes
 		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
