@@ -84,7 +84,7 @@ template WKOWoningData
 		//Investeringskosten binnen gebouw
 		attribute<float64>		Pand_aandeel		(BebouwingsObject)	:= IsAppt ? (Schuiven/VerketelingMax * BebouwingsObject/pand_aandeel +  Schuiven/VerketelingMin) : 1.0,	Descr = "verrekening individuele verketeling";
 		attribute<Eur_woning>	Ki_id_inpandig		(BebouwingsObject)	:= IsAppt ? constanten/Ki_inpandig * Pand_aandeel : 0 [Eur_woning],	Descr = "inpandig leidingwerk bij gestapelde bouw";
-		attribute<Eur_woning>	Ki_id_afleverset	(BebouwingsObject)	:= constanten/Ki_afleverset * Pand_aandeel,			Descr = "inpandige afleverset, met indidivuele verketeling verrekend";
+		attribute<Eur_woning>	Ki_id_afleverset	(BebouwingsObject)	:= (T_sec <= 55[Celsius]) ? 0[Eur_woning] : constanten/Ki_afleverset * Pand_aandeel,			Descr = "inpandige afleverset, met indidivuele verketeling verrekend";
 		attribute<Eur>			Ki_id_wv			(BebouwingsObject)	:= (Ki_id_inpandig + Ki_id_afleverset) * nr_won,	Descr = "inpandige afleverset en inpandig leidingwerk met individuele verketeling verrekend";
 		attribute<Eur>			Ki_id_EigenOpwek	(BebouwingsObject)	:= 
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? constanten/Ki_Booster : 0.0[eur]) :

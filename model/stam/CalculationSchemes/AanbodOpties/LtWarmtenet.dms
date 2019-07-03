@@ -62,19 +62,19 @@ Template LtWarmtenetImpl
 		parameter<bool> KoudeBeschikbaar := false, Descr = "Wordt binnen dit type gebiedsoptie ook centraal koude aangeboden, ja/nee"; // TO DO: brontype-afhankelijk maken
 		
 		//Aandelen primair en hulp in het secundaire net
-		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVermogen 		:= 				1.00, 					Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVermogen 		:=				0.30,					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVermogen 		:=	T_ow == T_sec ? 0.70 : 1.00,		Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVolume   		:=				1.00,					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVolume 			:=	T_ow == T_sec ? 0.30 : 1.00,		Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
 		
 		//Seasonal Performance Factors
 		parameter<Ratio> 		SPF_coll_W :=
-													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30
-													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50
-													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.5 : // van 15 naar 70
+													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.0 : // van 15 naar 70
 													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
 													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
-													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.8 : // van 30 naar 70
+													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.2 : // van 30 naar 70
 																										1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
 		parameter<Ratio> 		SPF_coll_K			: [30], 															Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
 		parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,																Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";

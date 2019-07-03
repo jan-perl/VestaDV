@@ -22,22 +22,33 @@ template WKO
 
 	container constanten {
 	
-		parameter<bool> KoudeBeschikbaar := true; // centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.
+		
+		parameter<Celsius>	T_ow				:	[20];
+		parameter<Celsius>	T_sec				:	[50];
+		parameter<bool>		CollectieveWP		:=	(T_ow < T_sec);
+		parameter<bool>		KoudeBeschikbaar	:=	true, Descr = "centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.";
 		
 		//Aandelen primair en hulp in het secundaire net
-		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVermogen 		:= 				1.00, 					Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:= 				0.70, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:= 				0.30, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVermogen 		:=				0.30,					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVermogen 		:=	T_ow == T_sec ? 0.70 : 1.00,		Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVolume   		:=				1.00,					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVolume 			:=	T_ow == T_sec ? 0.30 : 1.00,		Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+		
+		//Seasonal Performance Factors
+		parameter<Ratio> 		SPF_coll_W :=
+													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 3.5 : // van 15 naar 50 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.0 : // van 15 naar 70
+													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
+													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
+													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.2 : // van 30 naar 70
+																								  1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
+		
 		
 		//Seasonal Performance Factor
-		parameter<Ratio>   SPF_ind_k := 1.0; // Wordt niet gebruikt; bij WKO is AEO_ind_k toch 0
-		parameter<Ratio>   SPF_coll_w: [3.5]; // @@@ LET OP: Bij LT15_50 nemen we aan: COP = 4.2, dd 28/03/2019 
+		parameter<Ratio>   SPF_ind_k := 1.0;
 		parameter<Ratio>   SPF_coll_k := SPF_coll_w - 1.0;
 		
-		parameter<Celsius> T_ow:   [20];
-		parameter<Celsius> T_sec:   [50];
-		parameter<bool> CollectieveWP := (T_ow < T_sec);
 		
 		parameter<Float64> SPF_ind_A_rv  := SPF_coll_w; // irrelevant, AEO is toch 0
 		parameter<Float64> SPF_ind_B_rv  := SPF_coll_w; // TODO: CHECK, relevant indien T_sec <= 35[Celsius]

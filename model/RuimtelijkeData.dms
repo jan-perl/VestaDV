@@ -121,12 +121,12 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			//kentallen dimensionering net obv piekvraag
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_zonderWP			:=	2.4[kW_Woning],		Descr = "kengetal aansluitwaarde woningen zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_metWP				:=	7.0[kW_Woning],		Descr = "kengetal aansluitwaarde woningen met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.55[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.55[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_zonderWP				:=	0.024[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_metWP				:=	0.070[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.95[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.95[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
 			
 			//voorlopig GLTB gelijkgesteld aan utiliteit
 			parameter<kW_m2>		kental_aansluitwaarde_gltb_zonderWP				:=	kental_aansluitwaarde_util_zonderWP;

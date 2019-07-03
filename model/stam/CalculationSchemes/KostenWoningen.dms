@@ -16,7 +16,7 @@ template KostenWoningen
 	attribute<float64>		pand_aandeel	(WoonObject)	:=	WoonObject/Pand_aandeel;
 	attribute<bool>			IsMeergezins	(WoonObject)	:=	BCdata/BebouwingsTypeDomein/IsMeergezins[BCdata/BebouwingsType];
 	attribute<m_aansl>		L_aansl			(WoonObject)	:=	/Invoer/RuimtelijkeData/buislengte/per_buurt/L_aansl_pand[BCdata/PlanRegio_rel];
-	container				LeidingKosten					:=	BuisKostenBC(WoonObject, Capaciteit* 0.001[ MW / kW]);
+	container				LeidingKosten					:=	BuisKostenBC(WoonObject, P_aansl * 0.001[ MW / kW]);
 	attribute<EUR_m>		K_aansl_m		(WoonObject)	:=	Leidingkosten/K_m;	
 	attribute<Eur_Aansl>	Ki_wd_w			(WoonObject)	:=	L_aansl * K_aansl_m * pand_aandeel;
 
@@ -25,8 +25,8 @@ template KostenWoningen
 	parameter<Eur_Aansl> Oi_vermeden_gasketel := Ki_HR_ketel_W * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor, Source = "FO F84";
 
 	// eenmalige kosten, zie FO tabellen 5..7
-	attribute<Eur_Aansl> Ki_id_fa (WoonObject) := IsMeergezins ? Schuiven/VerketelingMin * 1800[Eur_Aansl] + Schuiven/VerketelingMax * 5300[Eur_Aansl] :  0[Eur_Aansl]; // fysieke aansluitmaatregelen  // ?????
-	parameter<Eur_Aansl> Ki_id_va              := 0[Eur_Aansl] * float64(!IsNieuwbouw);
+	attribute<Eur_Aansl> Ki_id_fa (WoonObject) := IsMeergezins ? Schuiven/VerketelingMin * 1800[Eur_Aansl] + Schuiven/VerketelingMax * 5300[Eur_Aansl] :  0[Eur_Aansl]; // inpandige leidingen gestapelde woningen
+	parameter<Eur_Aansl> Ki_id_va              := 0[Eur_Aansl] * float64(!IsNieuwbouw); // extra inpandige leidingen nieuwbouw
 
 	// kosten voor projectmanagement en door huurder ervaren en door eigenaar vergoedde ongerief
 	attribute<Eur_Aansl> Ki_ge_ov_w   (WoonObject) := =IsNieuwbouw ? 'const(0[Eur_Aansl], WoonObject)' : 'IsMeergezins ? Schuiven/VerketelingMin *                    0[Eur_Aansl] + Schuiven/VerketelingMax * Ongeriefsvergoeding             : Ongeriefsvergoeding';             // woon-ongerief
@@ -38,8 +38,9 @@ template KostenWoningen
 	attribute<Eur_yr_Aansl> Kj_hv_w   (WoonObject) := =IsNieuwbouw ? 'const(0[Eur_yr_Aansl], WoonObject)' : '(IsMeergezins ? Schuiven/VerketelingMax : 1.0) * 160[Eur_yr_Aansl] * Schuiven/HuurVerlagingBijGebiedsOptie';// ?????
 	attribute<Eur_yr>       Kj_hv_o   (WoonObject) := =IsNieuwbouw ? 'const(0[Eur_yr      ], WoonObject)' : 'Kj_hv_w* NrDeelnemers';
 
-	attribute<nrAansl> NrDeelnemers   (WoonObject) := BCdata/WarmteVraag/deelnemers/nrAansluitingen    * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
-	attribute<kW>      Capaciteit     (WoonObject) := BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
+	attribute<nrAansl>	NrDeelnemers	(WoonObject)	:=	BCdata/WarmteVraag/deelnemers/nrAansluitingen    * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
+	attribute<kW>		P_aansl			(WoonObject)	:=	BCdata/WarmteVraag/deelnemers/AansluitCapaciteit * float64(!Classifications/WarmteOptie/isGebiedsOptie[BCdata/WarmteAllocatie]);
+	attribute<kw>		P_sec			(WoonObject)	:=	P_aansl / Pfactor;
 
 	attribute<Eur>     Ki_ge_bruto    (WoonObject) := Ki_ge_ov_o + Ki_ge_pm_o - Oi_vermeden_gasketel * NrDeelnemers;
 	attribute<Eur>     Oi_ge_subsidie (WoonObject) := Ki_ge_ov_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_OngeriefsVergoeding + Ki_ge_pm_o * SpecifiekeInstellingen/Beleid/EIA/E_bw/Rs_ProjectManagement;
@@ -51,9 +52,8 @@ template KostenWoningen
 
 	container Onderstation
 	{
-		attribute<kW> GevraagdeCapaciteit                (PlanRegio) := woning_os_factor * sum(Capaciteit, BCdata/PlanRegio_rel);
-		attribute<kW> GevraagdeCapaciteit_blokverwarming (PlanRegio) := float64(!IsNieuwbouw) * 
-			woning_os_factor * sum(Capaciteit * (IsMeergezins ? Schuiven/VerketelingMin : 0.0), BCdata/PlanRegio_rel);
+		attribute<kW>		GevraagdeCapaciteit					(PlanRegio)	:=	sum(P_sec, BCdata/PlanRegio_rel);
+		attribute<kW>		GevraagdeCapaciteit_blokverwarming	(PlanRegio)	:=	float64(!IsNieuwbouw) *  sum(P_sec * (IsMeergezins ? Schuiven/VerketelingMin : 0.0), BCdata/PlanRegio_rel);
 
 		attribute<float64>  n0    (PlanRegio) := GevraagdeCapaciteit / Vermogen_OS, Source = "FO v7a F 23";
 		attribute<float64>  n2    (PlanRegio) := GevraagdeCapaciteit_blokverwarming / Vermogen_OS, Descr = "F 28";

@@ -72,14 +72,21 @@ template KostenBaten
 	container KostenD: using = "KostenFactorenD"
 	{
 		parameter<nrWoningen>	woningen_OS					:=	150[nrWoningen],									Source = "aopt: FO v7a F 21";
-		parameter<kW_Woning>	Vermogen_woning				:=	11[kw_woning],										Descr = "aansluitwaarde woning op MT warmtenet", Source = "ASWgem: FO v7a F 21";	
-		parameter<float64>		GTF_woning_warmte			:=	0.55,												Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Eur_kW>		K_os_p_min					:=	120[Eur_kW],										Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Eur_kW>		K_os_p_Max					:=	150[Eur_kW],										Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<kW_Woning>	ASW_woning_WW				:=	7[kw_woning],										Descr = "aansluitwaarde woning voor warm water",		Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<kW_Woning>	ASW_woning_RV				:=	4[kw_woning],										Descr = "aansluitwaarde woning voor ruimteverwarming",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<kW_Woning>	ASW_woning					:=	ASW_woning_WW + ASW_woning_RV,						Descr = "aansluitwaarde woning op MT warmtenet";
+		parameter<float64>		GTF_woning_WW				:=	0.50,												Descr = "gelijktijdigheidsfactor warm water",			Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<float64>		GTF_woning_RV				:=	0.10,												Descr = "gelijktijdigheidsfactor ruimteverwarming",		Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_min					:=	120[Eur_kW],										Descr = "minimumkosten van een onderstation per KW",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_Max					:=	150[Eur_kW],										Descr = "maximumkosten van een onderstation per KW",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_OS_p						:=	(K_os_p_min * Schuiven/KostenMin + K_os_p_Max * Schuiven/KostenMax) * LeerCurves/Curve1;
-		parameter<float64>		woning_os_factor			:=	(1.0 / 0.95 ) * GTF_woning_warmte,					Descr = "verwerking 5% capaciteitsverlies";
-		parameter<kW>			Vermogen_OS					:=	woningen_OS * Vermogen_woning * woning_os_factor,	Descr = "vermogen van een onderstation";
-		parameter<Eur>			Kosten_OS					:=	Vermogen_OS * K_OS_p,								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<kW_woning>	P_woning_WW					:=	ASW_woning_WW * GTF_woning_WW;
+		parameter<float64>		Pfactor						:=	ASW_woning / P_woning;
+		parameter<kW_woning>	P_woning_RV					:=	ASW_woning_RV * GTF_woning_RV;
+		parameter<float64>		Capaciteitsverlies			:=	0.95,												Descr = "aandeel capaciteit dat verloren gaat in distributie";
+		parameter<kW_woning>	P_woning					:=	(P_woning_WW + P_woning_RV) / Capaciteitsverlies;
+		parameter<kW>			Vermogen_OS					:=	woningen_OS * P_woning,								Descr = "vermogen van een onderstation";
+		parameter<Eur>			Kosten_OS					:=	Vermogen_OS * K_OS_p;
 
 		parameter<Ratio>		afschrijving_resterend		:=	1.0 / 3.0; // resterende afschijving.
 		parameter<Eur>			KetelVergoeding				:=	130[Eur_kW] * afschrijving_resterend * Vermogen_OS; // vergoeding bestaande blokverwarmingsketels obv nieuwwaarde
@@ -148,7 +155,7 @@ template KostenBaten
 			container CapaciteitsVraag
 			{
 				attribute<kW> Klein (PlanRegio) :=
-					 0.95 * ( // gelijktijdigheidsfactor
+					 0.95 * ( // gelijktijdigheidsfactor GTF
 						sum(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit 
 							* float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/BestaandeUtil/WarmteAllocatie]))
 							* float64(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit <= afkapgrens_klein) 
@@ -161,7 +168,7 @@ template KostenBaten
 						)
 					);
 				attribute<kW> Groot (PlanRegio) :=
-						0.95 * (// gelijktijdigheidsfactor
+						0.95 * (// gelijktijdigheidsfactor GTF
 						sum(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit 
 							* float64(Not(Classifications/WarmteOptie/isGebiedsOptie[BebouwingsComponenten/BestaandeUtil/WarmteAllocatie]))
 							* float64(BebouwingsComponenten/BestaandeUtil/WarmteVraag/deelnemers/AansluitCapaciteit > afkapgrens_klein) 
