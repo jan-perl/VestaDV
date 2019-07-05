@@ -31,6 +31,16 @@ container Resultaten :=
 
 	container Exports: isHidden = "True"
 	{
+		container ESDL
+		{
+			parameter<string> Generate_SY             := /Resultaten/StartJaar/AllocExports/PlanRegioResults/export/result;
+			parameter<string> Generate_2020           := /Resultaten/R1_2020/AllocExports/PlanRegioResults/export/result;
+			parameter<string> Generate_2030           := /Resultaten/R2_2030/AllocExports/PlanRegioResults/export/result;
+			parameter<string> Generate_2040           := /Resultaten/R3_2040/AllocExports/PlanRegioResults/export/result;
+			parameter<string> Generate_2050           := /Resultaten/R4_2050/AllocExports/PlanRegioResults/export/result;
+		}
+	
+	
 		parameter<String> GenerateAllIndicatoren := 'Ready', 
 			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/Generate/All', ';')", IsHidden = "True";
 
