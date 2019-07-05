@@ -12,6 +12,20 @@
 
 container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 {
+	container StudiegebiedGemeentes
+	{
+		container impl
+		{
+			unit<uint32> selected := range(uint32, 0, strcount(Invoer/StudieGebied, ',') + 1 )
+			{
+				attribute<string> values := ReadArray(lowercase(trim(Invoer/StudieGebied)), ., String, 0);
+			}
+		}
+		attribute<bool> selected (RegioIndelingen/gemeente) := impl/selected/values[0] = 'nl' 
+			? const(true, RegioIndelingen/gemeente)
+			: isDefined(rlookup(lowercase(RegioIndelingen/gemeente/GM_code), impl/selected/values));
+		attribute<bool> selected_per_m100 (Geography/rdc_grids/m100 ) := selected[Geography/RegioIndelingen/gemeente/per_m100];
+	}
 	#include <BAG.dms>
 	#include <Nieuwbouw.dms>
 	#include <Sloop.dms>
@@ -68,7 +82,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 				attribute<bool> heeft_voorkomende_labelsprong_2040  (opgelegd) := strlen(J2040) == 0 || isDefined(rlookup(J2040, Classifications/LabelSprong/code));
 				attribute<bool> heeft_voorkomende_labelsprong_2050  (opgelegd) := strlen(J2050) == 0 || isDefined(rlookup(J2050, Classifications/LabelSprong/code));
 
-				attribute<bool> heeft_voorkomende_vbo_identificatie (opgelegd) := strlen(J2050) == 0 || isDefined(rlookup(identificatie, Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/identificatie));
+				attribute<bool> heeft_voorkomende_vbo_identificatie (opgelegd) := strlen(J2050) == 0 || isDefined(rlookup(identificatie, Invoer/RuimtelijkeData/BAG/vbo_woonfunctie_studiegebied/identificatie));
 
 				parameter<bool> alle_labelsprongen_komen_voor      := all(heeft_voorkomende_labelsprong_2020) && all(heeft_voorkomende_labelsprong_2030) && all(heeft_voorkomende_labelsprong_2040) && all(heeft_voorkomende_labelsprong_2050);
 				parameter<bool> alle_vbo_identificaties_komen_voor := all(heeft_voorkomende_vbo_identificatie);

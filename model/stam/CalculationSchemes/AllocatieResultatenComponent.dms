@@ -20,7 +20,7 @@ template AllocatieResultatenComponent
 	unit<uint32>                                      PlanRegio                                           := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<float64>                                     ModelUnit                                           := BCdata/ModelUnit;
 	attribute<Classifications/WoningtypeBestaand>     BebouwingsType                   (BebouwingsObject) := BebouwingsObject/BebouwingsType;
-	attribute<PlanRegio>                              PlanRegio_BebouwingsObject_rel   (BebouwingsObject) := point_in_polygon(BebouwingsObject/geometry, PlanRegio/Geometry);
+	attribute<PlanRegio>                              PlanRegio_BebouwingsObject_rel   (BebouwingsObject) := point_in_polygon(BebouwingsObject/point, PlanRegio/Geometry);
 	
 	attribute<bool>                                   VeroorzaaktGrondroering          (BebouwingsObject) := Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie];
 	attribute<bool>                                   GrondroeringInPlanRegio          (PlanRegio)        := sum(VeroorzaaktGrondroering ? 1 : 0, PlanRegio_BebouwingsObject_rel) > 0;
