@@ -60,7 +60,7 @@ template KostenBaten
 		parameter<Eur_GJ> AardGasPrijs_m          := Prijzen/AardGas/Bijstook/KGJ_maatschappelijk;
 
 		attribute<NrWoningen>    nr_won        (PlanRegio) := (PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwWoning/nrAanslWarmteDeelnemers) * 1[NrWoningen / NrAansl], Source = "Lw1, FO v7a F 76", Descr = "Aantal woningen";
-		attribute<Units/km2>     opp_land   (PlanRegio) := (PlanRegio/AreaInKm2 * (PlanRegio/Overigen/p_land_com / 100d)) , Source = "Lw2, FO v7a C1.3", Descr = "Landoppervlakte";
+		attribute<Units/km2>     opp_land   (PlanRegio) := (PlanRegio/AreaInKm2 * (PlanRegio/Overigen_p_land_com / 100d)) , Source = "Lw2, FO v7a C1.3", Descr = "Landoppervlakte";
 		attribute<Units/nrAansl> Lu            (PlanRegio) := PlanRegioKaarten/BestaandeUtil/nrAanslWarmteDeelnemers + PlanRegioKaarten/NieuwbouwUtil/nrAanslWarmteDeelnemers, Descr = "Omvang utiliteitsbouw"; // ?????
 		//attribute<units/Eur_m2>  Ld          (PlanRegio) : Descr = "Distributieskosten per woning m2 utiliteitsbouw";
 		attribute<units/m2>      opp_gltb      (PlanRegio) := PlanRegioKaarten/BestaandeGlTb/nrModelUnitsWarmteDeelnemers + PlanRegioKaarten/NieuwbouwGlTb/nrModelUnitsWarmteDeelnemers, Source = "Lt, FO v7a C1.3", Descr = "Omvang glastuinbouw";

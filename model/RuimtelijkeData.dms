@@ -12,7 +12,7 @@
 
 container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 {
-	container StudiegebiedGemeentes
+	container Studiegebied
 	{
 		container impl
 		{
@@ -21,10 +21,51 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 				attribute<string> values := ReadArray(lowercase(trim(Invoer/StudieGebied)), ., String, 0);
 			}
 		}
-		attribute<bool> selected (RegioIndelingen/gemeente) := impl/selected/values[0] = 'nl' 
+		attribute<bool> selected_per_gemeente (RegioIndelingen/gemeente) := impl/selected/values[0] = 'nl'
 			? const(true, RegioIndelingen/gemeente)
 			: isDefined(rlookup(lowercase(RegioIndelingen/gemeente/GM_code), impl/selected/values));
-		attribute<bool> selected_per_m100 (Geography/rdc_grids/m100 ) := selected[Geography/RegioIndelingen/gemeente/per_m100];
+		
+		attribute<bool> selected_per_buurt (RegioIndelingen/buurt) := impl/selected/values[0] = 'nl'
+			? const(true, RegioIndelingen/buurt)
+			: isDefined(rlookup(lowercase(RegioIndelingen/buurt/GM_code), impl/selected/values));
+
+		attribute<bool> selected_per_m100 (Geography/rdc_grids/m100 ) := selected_per_gemeente[Geography/RegioIndelingen/gemeente/per_m100];// TODO: RENAME to selected_per_m100
+
+		unit<uint32> Gemeente := subset(selected_per_gemeente)
+		{
+			attribute<rdc_meter> geometry (poly)                     := RegioIndelingen/gemeente/geometry[nr_OrgEntity];
+			attribute<string>    GM_code                             := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
+			attribute<string>    label                               := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
+			attribute<.>         per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
+		}
+
+		unit<uint32> Buurt := subset(selected_per_buurt)
+		{
+			attribute<rdc_meter>                               geometry (poly)     := RegioIndelingen/buurt/geometry[nr_OrgEntity];
+			attribute<string>                                  BU_code             := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
+			attribute<string>                                  WK_code             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
+			attribute<string>                                  GM_code             := RegioIndelingen/buurt/GM_CODE[nr_OrgEntity];
+			attribute<string>                                  ER_NAAM             := RegioIndelingen/buurt/ER_NAAM[nr_OrgEntity];
+
+			attribute<uint32>                                  code                := RegioIndelingen/buurt/code[nr_OrgEntity];
+
+			attribute<rdc_meter>                               Point               := RegioIndelingen/buurt/Point[nr_OrgEntity];
+			attribute<m2>                                      Area                := RegioIndelingen/buurt/Area[nr_OrgEntity];
+			attribute<km2>                                     AreaInKm2           := RegioIndelingen/buurt/AreaInKm2[nr_OrgEntity];
+			attribute<float64>                                 Overigen_p_land_com := RegioIndelingen/buurt/Overigen/p_land_com[nr_OrgEntity];
+			attribute<yr_uint16>                               BioWKK_Start        := RegioIndelingen/buurt/BioWKK_Start[nr_OrgEntity];
+
+			attribute<Studiegebied/gemeente>                   gemeente_rel        := point_in_polygon(Point, Studiegebied/gemeente/geometry);
+
+			attribute</Geography/RegioIndelingen/NL>           NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Provincie>    Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Energieregio> Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
+			attribute</Geography/RegioIndelingen/Wijk>         Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
+
+			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
+
+		}
+		
 	}
 	#include <BAG.dms>
 	#include <Nieuwbouw.dms>
@@ -130,12 +171,12 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			parameter<ratio>		kental_gelijktijdigheidsfactor_gltb_metWP		:=	kental_gelijktijdigheidsfactor_util_metWP;
 		}
 		
-		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "kentallen"
+		unit<uint32> per_buurt := Studiegebied/buurt, using = "kentallen"
 		, DialogType = "map"
 		, DialogData = "geometry"
 		{
-			attribute<Geography/rdc_meter>	geometry (poly)		:=	/Geography/RegioIndelingen/buurt/Geometry;
-			attribute<string> 				BU_CODE				:=	/Geography/RegioIndelingen/buurt/BU_CODE;
+			attribute<Geography/rdc_meter>	geometry (poly)		:=	Studiegebied/buurt/Geometry;
+			attribute<string> 				BU_CODE				:=	Studiegebied/buurt/BU_CODE;
 			
 			attribute<nrAansl>	input_aant_g_aansl				:=	rjoin(BU_CODE, netwerk_input/BU_CODE, netwerk_input/aantal_g_aansl)[nrAansl],				Descr = "invoer aantal gasaansluitingen per buurt";
 			attribute<nrAansl>	default_aant_g_aansl			:=	TussenResultaten/StartJaar/StateNaAllocatie/nrAansluitinging/Gas,							Descr = "default aantal gasaansluitingen per buurt";

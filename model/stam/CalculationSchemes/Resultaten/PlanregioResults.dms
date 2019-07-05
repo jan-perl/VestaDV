@@ -9,14 +9,14 @@ container PlanregioResults: isHidden = "True"
 		//statische indicatoren per buurt
 		container Statisch
 		{
-			attribute<String>		I01_Buurtcode				(Planregio)	:=	Geography/RegioIndelingen/buurt/BU_CODE;
-			attribute<String>		I02_Buurtnaam				(Planregio)	:=	Geography/RegioIndelingen/buurt/BU_NAAM;
-			attribute<String>		I03_Wijkcode				(Planregio)	:=	Geography/RegioIndelingen/buurt/WK_CODE;
-			attribute<String>		I04_Wijknaam				(Planregio)	:=	Geography/RegioIndelingen/buurt/WK_NAAM;
-			attribute<String>		I05_Gemeentecode			(Planregio)	:=	Geography/RegioIndelingen/buurt/GM_CODE;
-			attribute<String>		I06_Gemeentenaam			(Planregio)	:=	Geography/RegioIndelingen/buurt/GM_NAAM;
-			attribute<String>		I07_Energieregio			(Planregio)	:=	Geography/RegioIndelingen/buurt/ER_NAAM;
-			attribute<String>		I08_Provincienaam			(Planregio)	:=	Geography/RegioIndelingen/buurt/PROV_NAAM;
+			attribute<String>		I01_Buurtcode				(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/BU_CODE;
+			attribute<String>		I02_Buurtnaam				(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/BU_NAAM;
+			attribute<String>		I03_Wijkcode				(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/WK_CODE;
+			attribute<String>		I04_Wijknaam				(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/WK_NAAM;
+			attribute<String>		I05_Gemeentecode			(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/GM_CODE;
+			attribute<String>		I06_Gemeentenaam			(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/GM_NAAM;
+			attribute<String>		I07_Energieregio			(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/ER_NAAM;
+			attribute<String>		I08_Provincienaam			(Planregio)	:=	/Invoer/RuimtelijkeData/StudieGebied/buurt/PROV_NAAM;
 			attribute<nrAansl>		I09_Vbo_woningen			(Planregio)	:=	float64(round(0.49 + sum(BebouwingsComponenten/BestaandeWoning/RuimtelijkeVraagComponent/nrAansluitingen,	BebouwingsComponenten/BestaandeWoning/PlanRegio_rel)));
 			attribute<nrAansl>		I10_vbo_utiliteit			(Planregio)	:=	float64(round(0.49 + sum(BebouwingsComponenten/BestaandeUtil/RuimtelijkeVraagComponent/nrAansluitingen,		BebouwingsComponenten/BestaandeUtil/PlanRegio_rel)));
 			attribute<nrWoningen>	I11_Woningequivalenten		(Planregio)	:=	float64(round(0.49 + nrWEQ));	//100m2 utiliteit = 1 WEQ
@@ -183,7 +183,7 @@ container PlanregioResults: isHidden = "True"
 			attribute<GJ_yr>	BW_elek				(Planregio)		:=	sum(Allocatie/BestaandeWoning/Metervraag/elektriciteit,		BebouwingsComponenten/BestaandeWoning/PlanRegio_rel);
 			attribute<GJ_yr>	V_elek_col			(Planregio)		:=	add(V_elek_col_id, V_elek_col_wd, V_elek_col_ow);
 			
-			attribute<ha>		Oppervlak			(Planregio)		:=	( Geography/RegioIndelingen/buurt/AreaInKm2 * ( Geography/RegioIndelingen/buurt/Overigen/p_land_com / 100d)) / 100[km2 / ha], Descr = "landoppervlakte van de buurt";
+			attribute<ha>		Oppervlak			(Planregio)		:=	(/Invoer/RuimtelijkeData/StudieGebied/buurt/AreaInKm2 * (Invoer/RuimtelijkeData/StudieGebied/buurt/Overigen_p_land_com / 100d)) / 100[km2 / ha], Descr = "landoppervlakte van de buurt";
 			attribute<GJ_yr>	Warmtevraag			(Planregio)		:=	Hoofdindicatoren/H01_Vraag_warmtetotaal * nrWEQ;
 			
 			attribute<kg_yr>	Orig_CO2			(Planregio)		:=	StartJaar/AllocExports/PlanRegioResults/Table/CO2_totaal;

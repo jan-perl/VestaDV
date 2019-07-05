@@ -31,8 +31,8 @@ container GlasTuinBouw
 			// parameter<int16>   SymbolIndex:     DialogType = "SymbolIndex",     expr = "int16(81)";
 		}
 		
-		attribute<RegioIndelingen/buurt>    buurt_rel    := point_in_polygon(point, RegioIndelingen/buurt/geometry);
-		attribute<RegioIndelingen/gemeente> gemeente_rel := RegioIndelingen/buurt/gemeente_rel[buurt_rel];
+		attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>    buurt_rel    := point_in_polygon(point, Invoer/RuimtelijkeData/StudieGebied/buurt/geometry);
+		attribute<Invoer/RuimtelijkeData/StudieGebied/gemeente> gemeente_rel := point_in_polygon(point, Invoer/RuimtelijkeData/StudieGebied/gemeente/geometry);
 
 		attribute<Classifications/GLTB> GLTB_Code;
 		attribute<m2>                   Opp_M2;
@@ -50,18 +50,18 @@ container GlasTuinBouw
 			SpecifiekeInstellingen/WloScenarioFolder+'/'+Classifications/Zichtjaar/period_name+'/GLTB/Bij.tif'
 		);
 
-	unit<uint32> bestaand_studiegebied:= Subset(StudiegebiedGemeentes/selected[bestaand/gemeente_rel])
+	unit<uint32> bestaand_studiegebied:= Subset(IsDefined(bestaand/gemeente_rel))
 	,	DialogData  = "point"
 	,	DialogType  = "Map"
 	{
 		attribute<rdc_meter>             point     := bestaand/point[nr_OrgEntity];
-		attribute<RegioIndelingen/buurt> buurt_rel := bestaand/buurt_rel[nr_OrgEntity];
+		attribute<Studiegebied/buurt>    buurt_rel := bestaand/buurt_rel[nr_OrgEntity];
 		attribute<Classifications/GLTB>  GLTB_Code := bestaand/GLTB_Code[nr_OrgEntity];
 		attribute<m2>                    Opp_M2    := bestaand/Opp_M2[nr_OrgEntity];
 	}
 	container Af_studiegebied :=
 		for_each_nedv(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : ''
-			, 'Af/' +  Classifications/Zichtjaar/name  + '&& StudiegebiedGemeentes/selected_per_m100'
+			, 'Af/' +  Classifications/Zichtjaar/name  + '&& Studiegebied/selected_per_m100'
 			, Geography/rdc_grids/m100
 			, bool
 			
@@ -69,7 +69,7 @@ container GlasTuinBouw
 
 	container Bij_studiegebied :=
 		for_each_nedv(Classifications/Zichtjaar/HasMutations ? Classifications/Zichtjaar/name : ''
-			, 'Bij/' +  Classifications/Zichtjaar/name  + '&& StudiegebiedGemeentes/selected_per_m100'
+			, 'Bij/' +  Classifications/Zichtjaar/name  + '&& Studiegebied/selected_per_m100'
 			, Geography/rdc_grids/m100
 			, bool
 			
