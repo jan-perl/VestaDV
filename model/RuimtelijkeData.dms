@@ -133,7 +133,26 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	}
 
 	#include <WarmteBronnen.dms>
-
+	
+	container buislengte {
+		unit<uint32> buislengte_input
+		:	StorageName     = "%SourceDataProjDir%/infra/20190702_buislengte.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True"
+		{}
+		
+		unit<uint32> per_buurt := Geography/RegioIndelingen/buurt, using = "buislengte_input"
+		, DialogType = "map"
+		, DialogData = "geometry"
+		{
+		attribute<Geography/rdc_meter>	geometry	(poly)	:=	/Geography/RegioIndelingen/buurt/Geometry;
+		attribute<string>				BU_CODE				:=	/Geography/RegioIndelingen/buurt/BU_CODE;
+		attribute<m>					L_aansl				:=	max_elem(rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Aansluit_lengte_m)[m], nrPanden * 1[m_aansl]),	Descr = "invoer lengte aansluitleidingen per buurt";
+		attribute<m>					L_dist				:=	max_elem(rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Hoofdleiding_lengte_m)[m], 1000[m]),				Descr = "invoer lengte distributieleidingen per buurt";
+		attribute<nrAansl>				nrPanden			:=	rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Panden)[nrAansl],											Descr = "invoer aantal panden per buurt";
+		attribute<m_aansl>				L_aansl_pand		:=	max_elem(L_aansl / nrPanden, 1[m_aansl]),																			Descr = "invoer gemiddelde lengte aansluitleidingen per pand";
+		}
+	}
 	container infra {
 		unit<uint32> netwerk_input
 		:	StorageName     = "%SourceDataProjDir%/infra/20190618_E_G_infra.csv"
@@ -157,12 +176,12 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			//kentallen dimensionering net obv piekvraag
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_zonderWP			:=	2.4[kW_Woning],		Descr = "kengetal aansluitwaarde woningen zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_metWP				:=	7.0[kW_Woning],		Descr = "kengetal aansluitwaarde woningen met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_zonderWP				:=	0.024[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_metWP				:=	0.070[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
 			
 			//voorlopig GLTB gelijkgesteld aan utiliteit
 			parameter<kW_m2>		kental_aansluitwaarde_gltb_zonderWP				:=	kental_aansluitwaarde_util_zonderWP;

@@ -62,19 +62,19 @@ Template LtWarmtenetImpl
 		parameter<bool> KoudeBeschikbaar := false, Descr = "Wordt binnen dit type gebiedsoptie ook centraal koude aangeboden, ja/nee"; // TO DO: brontype-afhankelijk maken
 		
 		//Aandelen primair en hulp in het secundaire net
-		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVermogen 		:= 				1.00, 					Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVermogen 		:=				0.30,					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVermogen 		:=	T_ow == T_sec ? 0.70 : 1.00,		Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
+		parameter<Float64> 		AandeelPrimairVolume   		:=				1.00,					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
+		parameter<Float64> 		AandeelHulpVolume 			:=	T_ow == T_sec ? 0.30 : 1.00,		Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
 		
 		//Seasonal Performance Factors
 		parameter<Ratio> 		SPF_coll_W :=
-													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30
-													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50
-													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.5 : // van 15 naar 70
+													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50 TODO: gelijkstellen F.O. 4.0
+													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.0 : // van 15 naar 70
 													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
 													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
-													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.8 : // van 30 naar 70
+													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.2 : // van 30 naar 70
 																										1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
 		parameter<Ratio> 		SPF_coll_K			: [30], 															Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
 		parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,																Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";
@@ -91,9 +91,9 @@ Template LtWarmtenetImpl
 		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
 		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
 		
-		parameter<Ratio> 		Leidingverlies		: [0.15],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio> 		Leidingverlies		: [0.28],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
+		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
 		
 		//aansluitwaardes
 		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
@@ -104,8 +104,8 @@ Template LtWarmtenetImpl
 		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
 		
 		//gelijktijdigheidsfactoren
-		parameter<float64>		GTF_woning_w		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
-		parameter<float64>		GTF_woning_k		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
+		parameter<float64>		GTF_woning_w		:=						0.55, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
+		parameter<float64>		GTF_woning_k		:=						0.55, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
 		parameter<float64>		GTF_util_w 			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
 		parameter<float64>		GTF_util_k	 		:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
 		
@@ -126,12 +126,9 @@ Template LtWarmtenetImpl
 		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
 		
 		//investeringskosten wijkdistributie
-		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/Curve2 * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
-		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/Curve2 * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
-		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
-		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
-		parameter<Eur_m >		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
-		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_max			:=	150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/Curve2 * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
 		
 		// begrenzingen aan cluster mogelijkheden.
 		parameter<m>            L_max_bron_connectie:=                      2000    [m],            Descr = "Afzonderlijke aantakkingen aan een bron-cluster mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
@@ -372,15 +369,15 @@ Template LtWarmtenetImpl
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
 			attribute<MW>		P_sec			(BronCluster)	:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
 			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
-			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
 			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
 			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
 			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
 			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
-			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
 		}
 		
