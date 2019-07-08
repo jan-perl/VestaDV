@@ -179,28 +179,56 @@ container Basis: Using = "Units"
 				
 				container Lucht:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
 				{
-					parameter<Ratio>  COP_K       :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimtekoeling";
-					parameter<Ratio>  COP_WW      :=    2.30 [Ratio],	Descr = "COP van luchtwarmtepomp voor tapwaterbereiding";
-					parameter<Ratio>  COP_RV_A    :=    4.50 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel A+";
-					parameter<Ratio>  COP_RV_B    :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel B";
+//					parameter<Ratio>  COP_K       :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimtekoeling"; // TODO: Moet hier niet nog wat mee gebeuren
+//					parameter<Ratio>  COP_WW      :=    2.30 [Ratio],	Descr = "COP van luchtwarmtepomp voor tapwaterbereiding";
+//					parameter<Ratio>  COP_RV_A    :=    4.50 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel A+";
+//					parameter<Ratio>  COP_RV_B    :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel B";
 				
-					parameter<Eur>    Ki_vast_min := 2264.18 [Eur],		Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
-					parameter<Eur>    Ki_vast_max := 3651.90 [Eur],		Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw> Ki_var_min  :=  174.12 [Eur_kw],	Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw> Ki_var_max  :=  280.84 [Eur_kw],	Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_min := 4637 [Eur_Aansl],   Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_max := 5359 [Eur_Aansl],   Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_min  :=  500 [Eur_kw],      Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_max  :=  320 [Eur_kw],      Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					
+					parameter<Eur_aansl> Ki_util_vast_min   := 103378 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
+					parameter<Eur_aansl> Ki_util_vast_max   := 103378 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_min    :=  640   [Eur_kw],	   Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_max    :=  640   [Eur_kw],	   Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					parameter<Ratio>     SPF_won_A          := 5.93;
+					parameter<Ratio>     SPF_won_B          := 4.49;
+					parameter<Ratio>     SPF_won_C          := 3.66;
+					parameter<Ratio>     SPF_util           := 3.66;
+					parameter<Ratio>     SPF_WW             := 2.00;
+					parameter<Ratio>     SPF_K              := 4.00;
+					
+					parameter<Jaar>      afschrijftermijn   := 15[jaar];
 				}
 				
 				container Bodem:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
 				{
-					parameter<Ratio>  COP_K       :=    8.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimtekoeling";
-					parameter<Ratio>  COP_WW      :=    3.25 [Ratio],	Descr = "COP van bodemwarmtepomp voor tapwaterbereiding";
-					parameter<Ratio>  COP_RV_A    :=    5.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel A+";
-					parameter<Ratio>  COP_RV_B    :=    4.50 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel B";
+//					parameter<Ratio>  COP_K       :=    8.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimtekoeling";
+//					parameter<Ratio>  COP_WW      :=    3.25 [Ratio],	Descr = "COP van bodemwarmtepomp voor tapwaterbereiding";
+//					parameter<Ratio>  COP_RV_A    :=    5.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel A+";
+//					parameter<Ratio>  COP_RV_B    :=    4.50 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel B";
 					
-					parameter<Eur>    Ki_vast_min := 5295.60 [Eur],		Descr = "minimale vaste investering bodemwarmtepomp door projectmatige collectieve aanpak";
-					parameter<Eur>    Ki_vast_max := 8826.00 [Eur],		Descr = "maximale vaste investering bodemwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw> Ki_var_min  :=   39.00 [Eur_kw],	Descr = "minimale variabele investering bodemwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw> Ki_var_max  :=   65.00 [Eur_kw],	Descr = "maximale variabele investering bodemwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_min := 4628 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_max := 8460 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_min  :=  899 [Eur_kw],    Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_max  :=  573 [Eur_kw],    Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					
+					parameter<Eur_aansl> Ki_util_vast_min   := 6000 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
+					parameter<Eur_aansl> Ki_util_vast_max   := 6000 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_min    := 1480   [Eur_kw],  Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_max    := 1480   [Eur_kw],  Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					parameter<Jaar>      afschrijftermijn   := 15[jaar];
+					parameter<Ratio>     SPF_won_A          := 6.35;
+					parameter<Ratio>     SPF_won_B          := 4.68;
+					parameter<Ratio>     SPF_won_C          := 3.76;
+					parameter<Ratio>     SPF_util           := 3.76;
+					parameter<Ratio>     SPF_WW             := 2.00;
+					parameter<Ratio>     SPF_K              := 8.00;
+					
+					parameter<Jaar>      afschrijftermijn_40   := 30[jaar];
+					parameter<Jaar>      afschrijftermijn_60   := 15[jaar];
 				}
 				
 				parameter<Ratio> Aandeel_Lucht := 0.5; // TODO: Verwijs hier naar een nog aan te brengen schuifinstelling
