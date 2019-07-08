@@ -59,7 +59,7 @@ template RestWarmteIteratie
 
 		attribute<Eur_yr> Kj_ow           (PlanRegio) := Kj_WarmteWaarde + Kj_ow_oh + Kj_ow_adm;
 		attribute<Eur_yr> Km_ow           (PlanRegio) := Km_WarmteWaarde + Kj_ow_oh + Kj_ow_adm;
-		attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := Kj_pt * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/pt, 0.0);
+		attribute<Eur_yr> Oj_pt_EEA       (PlanRegio) := Kj_pt * SpecifiekeInstellingen/Beleid/EEA/pt;
 		attribute<Eur_yr> Oj_ow_EEA       (PlanRegio) := Kj_ow * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfoList_rel], 0.0);
 		attribute<Eur_yr> Kj_owpt         (PlanRegio) := Kj_ow + Kj_pt;
 		attribute<Eur_yr> Oji_Netto       (PlanRegio) := KostenBaten/Oji_NettoD + Oj_pt_EEA + Oj_ow_EEA - Kj_owpt;

@@ -18,7 +18,7 @@ container Resultaten :=
 		for_each_nedv(Classifications/RekenStap/name
 		,	replace(
 				'sum('
-					'@RW@/BeginStatus/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
+					'@RW@/KostenBaten/Vj_WarmtePrimairD * Float64(@RW@/GebruikOptie), '
 					'MakeDefined(@RW@/Bronnen/TypeInfoList_rel[@RW@/LastState/CurrBron], Kengetallen/WarmteBronnen/MetaData/TypeInfoList/V/Onbekend)'
 				') / 1000000[Units/GJ / Units/PJ]'
 			,	'@RW@', 'TussenResultaten/@STAP@/GebiedsAllocatie/RestWarmte'
@@ -32,10 +32,10 @@ container Resultaten :=
 	container Exports: isHidden = "True"
 	{
 		parameter<String> GenerateAllIndicatoren := 'Ready', 
-			ExplicitSuppliers = "=AsList(Classifications/zichtjaar/Name+'/Generate/All', ';')", IsHidden = "True";
+			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/Generate/All', ';')", IsHidden = "True";
 
 		parameter<string> GenerateAllAlloc := 'ready', 
-			ExplicitSuppliers = "=AsList(Classifications/ZichtJaar/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
+			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
 	
 		container t510_indicator_results_test
 		{
@@ -44,14 +44,14 @@ container Resultaten :=
 				'<I>version</i>: </description>' + 
 				'<result><br><br>' + 
 				' Jaarlijks, Maatschappelijk<br>StartJaar : ' + replace(string(StartJaar/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2020 : ' + replace(string(J2020/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
-				' 2030 : ' + replace(string(J2030/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
-				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br>'  + 
-				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/Energy/matrix/TableData/Oj_totaal)),'.',',') +' peta J per jaar<br><br>'  + 
-				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2020 : ' + replace(string(sum(J2020/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
-				' 2030 : ' + replace(string(sum(J2030/InputOutput/NL/All/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
+				' 2020 : ' + replace(string(R1_2020/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br>' + 
+				' 2030 : ' + replace(string(R2_2030/InputOutput/NL/All/Jaarlijks/MaatschappelijkEindtotaal),'.',',') +' mega euro per jaar <br><br>' + 
+				' Energy, O Totaal<br>StartJaar : ' + replace(string(sum(Resultaten/StartJaar/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2020 : ' + replace(string(sum(R1_2020/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br>'  + 
+				' 2030 : ' + replace(string(sum(R2_2030/InputOutput/NL/All/jaarlijks/matrix/table/Oji_Totaal)),'.',',') +' peta J per jaar<br><br>'  + 
+				' CO2, O Netto<br>StartJaar : ' + replace(string(sum(StartJaar/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto )),'.',',') +' kilo ton per jaar <br>' + 
+				' 2020 : ' + replace(string(sum(R1_2020/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar <br>' + 
+				' 2030 : ' + replace(string(sum(R2_2030/InputOutput/NL/All/Uitstoot/CO2/matrix/TableData/Oj_Netto)),'.',',') +' kilo ton per jaar </result>'
 			,	StorageType = "str"
 			,	storagename = "= '%LocalDataDir%/vesta_indicator_results_test.html'";
 		}
@@ -79,14 +79,14 @@ container Resultaten :=
 				}
 			}
 
-			unit<uint32> vbo_utiliteit := Invoer/RuimtelijkeData/BAG/vbo_utiliteit;
+			unit<uint32> vbo_utiliteit := Invoer/RuimtelijkeData/BAG/vbo_utiliteit_studiegebied;
 			unit<uint32> combine_BouwjaarUtil_utiliteit := combine(Classifications/BouwjaarUtilBestaand ,Classifications/UtilTypeBestaand)
 			{
 				attribute<string>  name_bj                          := Classifications/BouwjaarUtilBestaand/label[nr_1];
 				attribute<string>  name_gd                          := Classifications/UtilTypeBestaand/label[nr_2];
-				attribute<.>       combine_bj_gd_rel(vbo_utiliteit) := combine_data(., vbo_utiliteit/BouwjaarUtilBestaand_rel, vbo_utiliteit/gebruiksdoel);
+				attribute<.>       combine_bj_gd_rel(vbo_utiliteit) := combine_data(., vbo_utiliteit_studiegebied/BouwjaarUtilBestaand_rel, vbo_utiliteit_studiegebied/gebruiksdoel);
 				attribute<uint32>  count(.)                         := pcount(combine_bj_gd_rel);
-				attribute<float64> sum(.)                           := sum(vbo_utiliteit/Oppervlakte,combine_bj_gd_rel);
+				attribute<float64> sum(.)                           := sum(vbo_utiliteit_studiegebied/Oppervlakte,combine_bj_gd_rel);
 			}
 		}
 	}

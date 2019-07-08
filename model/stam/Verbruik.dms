@@ -52,7 +52,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 		attribute<string> TS_2050  := union_data(.,  '0.0',  '0.0');
 	}
 	
-	unit<uint32> mutatieSchema: nrofrows = 63
+	unit<uint32> mutatieSchema: nrofrows = 55
 	{
 		parameter<uint32> nrAttr := 5, isHidden = "True";
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.), isHidden = "True"
@@ -204,6 +204,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 					PRR, ''
 
 			// ***********  gebiedsopties
+/* REMOVE			
 			,	'D1_WijkDistributie', 'c10_WijkWarmte', 
 					'-StateNaAllocatie/KostenBaten/KostenD/Vj_Warmte * Float64(StateNaAllocatie/GebiedsOptie)', // incl opbrengst van bijstook
 					'', ''
@@ -231,7 +232,9 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 			,	'D2_Bijstook', 'i10_OmgevingVerlies',
 					'StateNaAllocatie/KostenBaten/KostenD/Bijstook/Vj_Verlies * Float64(StateNaAllocatie/GebiedsOptie)', 
 					'', ''
+//REMOVE */
 
+/* REMOVE
 			,	'E@RON@_@ROC@', 'e10_GNet',  // Gas
 					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Aardgas', 
 					'', 'G'
@@ -239,7 +242,69 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 			,	'E@RON@_@ROC@', 'e20_eNet',  // Elektriciteit
 					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Elektriciteit', 
 					'', 'E'
+REMOVE */
+			// ===== WKO
+			,	'C_@RON@_@ROC@', 'a@BN@_@BC@_RV',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@ROC@)*BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Warmte',
+					PRR, ''
+				
+			,	'C_@RON@_@ROC@', 'a@BN@_@BC@_WW',
+					'Float64(StateNaAllocatie/Bebouwing/@BC@/WarmteAllocatie == Classifications/WarmteOptie/V/@ROC@)*BebouwingsComponenten/@BC@/DragerOpties/WarmWater/Warmte',
+					PRR, ''
+				
+			,	'C_@RON@_@ROC@', 'a@WKON@_@WKOC@_Koude',
+					'-Float64(StateNaAllocatie/Bebouwing/@WKOC@/WarmteAllocatie == Classifications/WarmteOptie/V/@ROC@)*BebouwingsComponenten/@WKOC@/Functioneel/Koude',
+					'BebouwingsComponenten/@WKOC@/PlanRegio_rel', ''
+				
+			,	'C_@RON@_@ROC@', 'e10_GNet',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_id_gas', 
+					'', 'G' 
 
+			,	'C_@RON@_@ROC@', 'e20_eNet',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_id_elek', 
+					'', 'E'
+				
+			,	'C_@RON@_@ROC@', 'b2_InpandigeWarmte',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_id_warmte',
+					'', ''				
+				
+			,	'D2_Bijstook', 'e10_GNet',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_wd_gas', 
+					'', 'G'
+
+			,	'D2_Bijstook', 'e20_eNet',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_wd_elek', 
+					'', 'E'
+
+			,	'D2_Bijstook', 'c10_WijkWarmte',
+					'-StateNaAllocatie/@ROC@/Verbruik/V_wd_warmte', 
+					'', ''
+				
+			,	'D2_Bijstook', 'i10_OmgevingVerlies',
+					'StateNaAllocatie/@ROC@/Verbruik/V_wd_verlies', 
+					'', ''
+				
+			,	'D2_Bijstook', 'b2_InpandigeWarmte',
+					'StateNaAllocatie/@ROC@/Verbruik/V_id_warmte', 
+					'', ''
+				
+				
+			,	'E@RON@_@ROC@', 'h10_OmgevingsWarmteWinst',
+					'StateNaAllocatie/@ROC@/Verbruik/V_ow_warmte', 
+					'', ''
+					
+			,	'E@RON@_@ROC@', 'e10_GNet',
+					'StateNaAllocatie/@ROC@/Verbruik/V_ow_gas', 
+					'', 'G'
+				
+			,	'E@RON@_@ROC@', 'e20_eNet',
+					'StateNaAllocatie/@ROC@/Verbruik/V_ow_elek', 
+					'', 'E'
+					
+			,	'E@RON@_@ROC@', 'c10_WijkWarmte',
+					'StateNaAllocatie/@ROC@/Verbruik/V_wd_warmte', 
+					'', ''
+					
 			,	'E@RON@_@ROC@', 'f10_Biogas',  //Biogas
 					'-StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@) * GebiedsAllocatie/@ROC@/Results/Factoren/Biogas', 
 					'', ''
@@ -265,72 +330,15 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 					'StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD * Float64(StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE == Classifications/GebiedsOptie/V/@ROC@)', 
 					'', ''
 
-			// ===== WKO
-			,	'C_@CON@_@COC@', 'a@WKON@_@WKOC@_Koude',
-					'-StateNaAllocatie/@COC@/Verbruik/V_koude', 
-					'', ''
-				
-			,	'C_@CON@_@COC@', 'a@WKON@_@WKOC@_RV',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/PR/Totaal/V_Warmte',
-					'', ''
-				
-			,	'C_@CON@_@COC@', 'e10_GNet',
-					'-StateNaAllocatie/@COC@/Verbruik/V_id_gas', 
-					'', 'G' 
-
-			,	'C_@CON@_@COC@', 'e20_eNet',
-					'-StateNaAllocatie/@COC@/Verbruik/V_id_elek', 
-					'', 'E'
-				
-			,	'C_@CON@_@COC@', 'b2_InpandigeWarmte',
-					'-StateNaAllocatie/@COC@/Verbruik/V_id_warmte',
-					'', ''				
-				
-			,	'D2_Bijstook', 'e10_GNet',
-					'-StateNaAllocatie/@COC@/Verbruik/V_wd_gas', 
-					'', 'G'
-
-			,	'D2_Bijstook', 'e20_eNet',
-					'-StateNaAllocatie/@COC@/Verbruik/V_wd_elek', 
-					'', 'E'
-
-			,	'D2_Bijstook', 'c10_WijkWarmte',
-					'-StateNaAllocatie/@COC@/Verbruik/V_wd_warmte', 
-					'', ''
-				
-			,	'D2_Bijstook', 'i10_OmgevingVerlies',
-					'StateNaAllocatie/@COC@/Verbruik/V_wd_verlies', 
-					'', ''
-				
-			,	'D2_Bijstook', 'b2_InpandigeWarmte',
-					'StateNaAllocatie/@COC@/Verbruik/V_id_warmte', 
-					'', ''
-				
-				
-			,	'E@CON@_@COC@', 'h10_OmgevingsWarmteWinst',
-					'StateNaAllocatie/@COC@/Verbruik/V_ow_warmte', 
-					'', ''
-					
-			,	'E@CON@_@COC@', 'e10_GNet',
-					'StateNaAllocatie/@COC@/Verbruik/V_ow_gas', 
-					'', 'G'
-				
-			,	'E@CON@_@COC@', 'e20_eNet',
-					'StateNaAllocatie/@COC@/Verbruik/V_ow_elek', 
-					'', 'E'
-					
-			,	'E@CON@_@COC@', 'c10_WijkWarmte',
-					'StateNaAllocatie/@COC@/Verbruik/V_wd_warmte', 
-					'', ''
 /*
 			,	'E4_WKO', 'a@WKON@3_@WKOC@_RV',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_WarmteC', 
+					'GebiedsAllocatie/@ROC@/ObjectResults/@WKOC@/V_WarmteC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel', ''
 			,	'E4_WKO_Warmte', 'h10_OmgevingsWarmteWinst',
-					'StateNaAllocatie/@COC@/Verbruik/V_ow_warmte', 
+					'StateNaAllocatie/@ROC@/Verbruik/V_ow_warmte', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel', ''
 			,	'E4_WKO_Warmte', 'e20_eNet',
-					'-StateNaAllocatie/Cumulaties/@COC@/Verbruik/V_ow_elek', 
+					'-StateNaAllocatie/Cumulaties/@ROC@/Verbruik/V_ow_elek', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
@@ -339,13 +347,13 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 				,	'1.0', '0.0', '0.0', '0.0', '0.0'
 				
 			,	'E5_WKO_Koude', 'a@WKON@4_@WKOC@_Koude',
-					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/Totaal/V_KoudeC', 
+					'-GebiedsAllocatie/@ROC@/ObjectResults/@WKOC@/Totaal/V_KoudeC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel', ''
 			,	'E5_WKO_Koude', 'i20_OmgevingKoudeWinst',
-					'GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC + GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_KoudeC', 
+					'GebiedsAllocatie/@ROC@/ObjectResults/@WKOC@/V_ElekKC + GebiedsAllocatie/@ROC@/ObjectResults/@WKOC@/V_KoudeC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel', ''
 			,	'E5_WKO_Koude', 'e20_eNet',
-					'-GebiedsAllocatie/@COC@/ObjectResults/@WKOC@/V_ElekKC', 
+					'-GebiedsAllocatie/@ROC@/ObjectResults/@WKOC@/V_ElekKC', 
 					'BebouwingsComponenten/@WKOC@/PlanRegio_rel'
 				,	'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ', 'Prijzen/Elektriciteit/CO2_GJ'
 				,	'76.0', '35.0', '10.0', '8.0', '6.0'
@@ -388,7 +396,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 		attribute<string> TS_2020  := MakeDefined(EmissieType/TS_2020 [ET_rel], '0.0');
 		attribute<string> TS_2030  := MakeDefined(EmissieType/TS_2030 [ET_rel], '0.0');
 		attribute<string> TS_2040  := MakeDefined(EmissieType/TS_2040 [ET_rel], '0.0');
-		attribute<string> TS_2050  := MakeDefined(EmissiwType/TS_2050 [ET_rel], '0.0');
+		attribute<string> TS_2050  := MakeDefined(EmissieType/TS_2050 [ET_rel], '0.0');
 	}
 	unit<uint32> mutatie := mutatieSchema, isHidden = "True";
 }

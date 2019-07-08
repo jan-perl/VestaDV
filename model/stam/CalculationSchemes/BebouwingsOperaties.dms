@@ -58,7 +58,7 @@ container BebouwingsOperaties
 			attribute<Geography/RegioIndelingen/blok500m> blok500m_rel       := union_data(., Bestaand/blok500m_rel, Nieuwbouw/blok500m_rel);
 			attribute<Geography/RegioIndelingen/blok1km>  blok1km_rel        := union_data(., Bestaand/blok1km_rel, Nieuwbouw/blok1km_rel);
 			attribute<Geography/RegioIndelingen/blok2km>  blok2km_rel        := union_data(., Bestaand/blok2km_rel, Nieuwbouw/blok2km_rel);
-			attribute<Geography/RegioIndelingen/buurt>    buurt_rel          := union_data(., Bestaand/buurt_rel,   Nieuwbouw/buurt_rel);
+			attribute<Invoer/RuimtelijkeData/StudieGebied/buurt>                 buurt_rel          := union_data(., Bestaand/buurt_rel,   Nieuwbouw/buurt_rel);
 			attribute<BebouwingsTypeDomein>               BebouwingsType     := union_data(., Bestaand/BebouwingsType, Nieuwbouw/BebouwingsType);
 			attribute<Classifications/BouwJaar>           Bouwjaar           := union_data(., Bestaand/Bouwjaar, Nieuwbouw/Bouwjaar);
 			attribute<uint8>                              ModelObjectKey     := union_data(., Bestaand/ModelObjectKey, Nieuwbouw/ModelObjectKey);
@@ -66,6 +66,7 @@ container BebouwingsOperaties
 			attribute<nrWoningen>                         nrWoonUnits_i      := union_data(., Bestaand/nrWoonUnits_i, Nieuwbouw/nrWoonUnits_i);
 			attribute<float64>                            AandeelWarmteVraag := union_data(., Bestaand/AandeelWarmteVraag, Nieuwbouw/AandeelWarmteVraag);
 			attribute<float64>                            pand_aandeel       := union_data(., Bestaand/pand_aandeel, Nieuwbouw/pand_aandeel);
+			attribute<m2>                                 nrOppunits_i       := union_data(., Bestaand/nrOppunits_i, Nieuwbouw/nrOppunits_i);
 			
 			attribute<nrWoningen>                         nrWoonUnits_per_PlanRegio (Invoer/SpecifiekeInstellingen/PlanRegio)     := sum(nrWoonUnits_i, planregio_rel)[nrWoningen];
 

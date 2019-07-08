@@ -18,15 +18,17 @@ container Sprongen
 
 	container VermedenGas
 	{
-		attribute<units/GJ_yr> RV_H   (BebouwingsObject) := (Functioneel/RuimteVerwarming / Efficiency/RuimteVerwarming/Aardgas) * DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor;
-		attribute<units/GJ_yr> RV     (BebouwingsObject) := RV_H / Efficiency/gebouw/LaatsteWaarde;
-		attribute<units/GJ_yr> RV_AP  (BebouwingsObject) := RV_H / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel];
+		attribute<units/GJ_yr>	RV_H_vast		(BebouwingsObject)	:=	Functioneel/RuimteVerwarming_vast / (Efficiency/RuimteVerwarming/Aardgas * DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor);
+		attribute<units/GJ_yr>	RV_H_var		(BebouwingsObject)	:=	Functioneel/RuimteVerwarming_var  / (Efficiency/RuimteVerwarming/Aardgas * DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor);
+		attribute<units/GJ_yr>	RV_vast			(BebouwingsObject)	:=	RV_H_vast / Efficiency/gebouw/LaatsteWaarde_vast;
+		attribute<units/GJ_yr>	RV_var			(BebouwingsObject)	:=	RV_H_var / Efficiency/gebouw/LaatsteWaarde_var;
+		attribute<units/GJ_yr>	RV_AP_vast		(BebouwingsObject)	:=	RV_H_vast / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel];
+		attribute<units/GJ_yr>	RV_AP_var		(BebouwingsObject)	:=	RV_H_var / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel];
 
-		attribute<units/GJ_yr> WW     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Aardgas) * DragerOpties/WarmWater/Aardgas_leidingverliesfactor;
-
-		attribute<units/GJ_yr> S_H_T  (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency )[Model_rel];
-		attribute<units/GJ_yr> S_H_B  (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency )[Model_rel];
-		attribute<units/GJ_yr> S_H_AP (BebouwingsObject) := RV_H * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency)[Model_rel];
+		attribute<units/GJ_yr> WW     (BebouwingsObject) := (Functioneel/WarmWater - Opwekking/Zonneboiler) / (Efficiency/WarmWater/Aardgas * DragerOpties/WarmWater/Aardgas_leidingverliesfactor);
+		attribute<units/GJ_yr> S_H_T  (BebouwingsObject) := RV_H_vast * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_vast )		[Model_rel] + RV_H_var * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_var)	[Model_rel];
+		attribute<units/GJ_yr> S_H_B  (BebouwingsObject) := RV_H_vast * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_vast )		[Model_rel] + RV_H_var * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_var)	[Model_rel];
+		attribute<units/GJ_yr> S_H_AP (BebouwingsObject) := RV_H_vast * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast )	[Model_rel] + RV_H_var * (1.0 - 1.0 / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var)	[Model_rel];
 		attribute<units/GJ_yr> S_T_B  (BebouwingsObject) := S_H_B  - S_H_T;
 		attribute<units/GJ_yr> S_T_AP (BebouwingsObject) := S_H_AP - S_H_T;
 		attribute<units/GJ_yr> S_B_AP (BebouwingsObject) := S_H_AP - S_H_B;
@@ -43,7 +45,7 @@ container Sprongen
 
 	container VermedenKosten_eg_excl
 	{
-		attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_eindgebruik_excl[classify(VermedenGas/RV + VermedenGas/WW, PrijzenAardgas/ClassBreak)];
+		attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_eindgebruik_excl[classify(VermedenGas/RV_vast + VermedenGas/RV_var +VermedenGas/WW, PrijzenAardgas/ClassBreak)];
 		attribute<Eur_GJ> ElektriciteitPrijs (BebouwingsObject) := PrijzenElektriciteit/KGJ_eindgebruik_excl[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
 
 		attribute<Eur_yr> S_H_T  (BebouwingsObject) := VermedenGas/S_H_T  * AardgasPrijs;
@@ -54,21 +56,26 @@ container Sprongen
 		attribute<Eur_yr> S_B_AP (BebouwingsObject) := VermedenGas/S_B_AP * AardgasPrijs;
 
 		attribute<Eur_yr> K_Pomp    (BebouwingsObject) := Functioneel/PompEnergie * ElektriciteitPrijs;
-		attribute<Eur_yr> GeenGas_H (BebouwingsObject) := (VermedenGas/RV_H + VermedenGas/WW)* AardgasPrijs + opbrengsten/VastRechtBijdrage + K_Pomp;
+		attribute<Eur_yr> GeenGas_H (BebouwingsObject) := (VermedenGas/RV_H_vast + VermedenGas/RV_H_var + VermedenGas/WW)* AardgasPrijs + opbrengsten/VastRechtBijdrage + K_Pomp;
 
 		// n.b.: besparing op WarmWater wordt hier buiten beschouwing gelaten maar telt later wel mee in de kosten/baten berekening. 
 		// Wellicht is eWP zelfs wat duurder voor WarmWater dan gas. Dit kan nadelig zijn voor de gebruiker.
 
-		attribute<Eur_yr> KostenBasis_eWP (BebouwingsObject) := ElektriciteitPrijs *
-			(Functioneel/RuimteVerwarming / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] / Efficiency/RuimteVerwarming/eWP 
-			+ (Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP);
+		attribute<Eur_yr>	KostenBasis_eWP	(BebouwingsObject)	:=	ElektriciteitPrijs *
+																	((Functioneel/RuimteVerwarming_vast / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast [Model_rel]
+																	+ Functioneel/RuimteVerwarming_var  / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var  [Model_rel])
+																	/ Efficiency/RuimteVerwarming/eWP 
+																	+ (Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP);
 
 		attribute<Eur_yr> S_H_eWP         (BebouwingsObject) := GeenGas_H         - KostenBasis_eWP;
 		attribute<Eur_yr> S_T_eWP         (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_eWP;
 		attribute<Eur_yr> S_B_eWP         (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_eWP;
 		attribute<Eur_yr> S_AP_eWP        (BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_eWP;
 
-		attribute<Eur_yr> KostenBasis_EWV (BebouwingsObject) := (VermedenGas/RV_AP / Efficiency/RuimteVerwarming/EWV + Functioneel/WarmWater / Efficiency/WarmWater/EWV) * ElektriciteitPrijs;
+		attribute<Eur_yr>	KostenBasis_EWV	(BebouwingsObject)	:=	ElektriciteitPrijs * 
+																	( VermedenGas/RV_AP_vast / Efficiency/RuimteVerwarming/EWV
+																	+ VermedenGas/RV_AP_var  / Efficiency/RuimteVerwarming/EWV
+																	+ Functioneel/WarmWater  / Efficiency/WarmWater/EWV);
 
 		attribute<Eur_yr> S_H_EWV         (BebouwingsObject) := GeenGas_H         - KostenBasis_EWV;
 		attribute<Eur_yr> S_T_EWV         (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_EWV;
@@ -96,7 +103,7 @@ container Sprongen
 	}
 	container VermedenKosten_m
 	{
-		attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_maatschappelijk      [classify(VermedenGas/RV + VermedenGas/WW, PrijzenAardgas/ClassBreak)];
+		attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_maatschappelijk      [classify(VermedenGas/RV_vast + VermedenGas/RV_var + VermedenGas/WW, PrijzenAardgas/ClassBreak)];
 		attribute<Eur_GJ> ElektriciteitPrijs (BebouwingsObject) := PrijzenElektriciteit/KGJ_maatschappelijk[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
 
 		attribute<Eur_yr> S_H_T              (BebouwingsObject) := VermedenGas/S_H_T  * AardgasPrijs;
@@ -107,18 +114,23 @@ container Sprongen
 		attribute<Eur_yr> S_B_AP             (BebouwingsObject) := VermedenGas/S_B_AP * AardgasPrijs;
 
 		attribute<Eur_yr> K_Pomp             (BebouwingsObject) := Functioneel/PompEnergie * ElektriciteitPrijs;
-		attribute<Eur_yr> GeenGas_H          (BebouwingsObject) := (VermedenGas/RV_H + VermedenGas/WW) * AardgasPrijs + opbrengsten/VastRechtBijdrage + K_Pomp;
-
-		attribute<Eur_yr> KostenBasis_eWP    (BebouwingsObject) := ElektriciteitPrijs *
-			(Functioneel/RuimteVerwarming / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] / Efficiency/RuimteVerwarming/eWP 
-			+ Functioneel/WarmWater / Efficiency/WarmWater/eWP);
+		attribute<Eur_yr> GeenGas_H          (BebouwingsObject) := (VermedenGas/RV_H_vast + VermedenGas/RV_H_var + VermedenGas/WW)* AardgasPrijs + opbrengsten/VastRechtBijdrage + K_Pomp;
+		
+		attribute<Eur_yr>	KostenBasis_eWP	(BebouwingsObject)	:=	ElektriciteitPrijs *
+																	((Functioneel/RuimteVerwarming_vast / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast [Model_rel]
+																	+ Functioneel/RuimteVerwarming_var  / EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var  [Model_rel])
+																	/ Efficiency/RuimteVerwarming/eWP 
+																	+ (Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP);
 
 		attribute<Eur_yr> S_H_eWP            (BebouwingsObject) := GeenGas_H         - KostenBasis_eWP;
 		attribute<Eur_yr> S_T_eWP            (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_eWP;
 		attribute<Eur_yr> S_B_eWP            (BebouwingsObject) := GeenGas_H - S_H_B - KostenBasis_eWP;
 		attribute<Eur_yr> S_AP_eWP           (BebouwingsObject) := GeenGas_H - S_H_AP- KostenBasis_eWP;
 
-		attribute<Eur_yr> KostenBasis_EWV    (BebouwingsObject) := (VermedenGas/RV_AP / Efficiency/RuimteVerwarming/EWV + Functioneel/WarmWater / Efficiency/WarmWater/EWV) * ElektriciteitPrijs;
+		attribute<Eur_yr>	KostenBasis_EWV	(BebouwingsObject)	:=	ElektriciteitPrijs * 
+																	( VermedenGas/RV_AP_vast / Efficiency/RuimteVerwarming/EWV
+																	+ VermedenGas/RV_AP_var  / Efficiency/RuimteVerwarming/EWV
+																	+ Functioneel/WarmWater  / Efficiency/WarmWater/EWV);
 
 		attribute<Eur_yr> S_H_EWV            (BebouwingsObject) := GeenGas_H         - KostenBasis_EWV;
 		attribute<Eur_yr> S_T_EWV            (BebouwingsObject) := GeenGas_H - S_H_T - KostenBasis_EWV;
@@ -373,7 +385,7 @@ container Sprongen
 
 	attribute<Classifications/LabelSprong> LabelSprong_opgelegd (BebouwingsObject) := 
 		= BCname = 'BestaandeWoning'
-			? 'rlookup(Invoer/RuimtelijkeData/BAG/vbo_woonfunctie/labelsprong_opgelegd/' + classifications/zichtjaar/name[zichtjaar_rel] +', Classifications/LabelSprong/code)'
+			? 'rlookup(Invoer/RuimtelijkeData/BAG/vbo_woonfunctie_studiegebied/labelsprong_opgelegd/' + classifications/zichtjaar/name[zichtjaar_rel] +', Classifications/LabelSprong/code)'
 			: 'const(0 / 0, BebouwingsObject, Classifications/LabelSprong)';
 	
 	attribute<Classifications/LabelSprong> LabelSprong_rendabel (BebouwingsObject) :=

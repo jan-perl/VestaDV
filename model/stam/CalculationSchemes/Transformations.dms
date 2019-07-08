@@ -132,10 +132,10 @@ container Transformations
 			}
 			container applyBC  := substitute(Accounting     ,'@BC@'  , '@BN@'   , BC);
 			container applyWKO := substitute(applyBC/result ,'@WKOC@', '@WKON@' ,WKOC);
-			container applyRO  := substitute(applyWKO/result,'@ROC@' , '@RON@'  ,Voorkeuren/PlanRegioOptie);
-			container applyCO  := substitute(applyRO/result ,'@COC@' , '@CON@'  ,Voorkeuren/ClusterOptie);
+			container applyRO  := substitute(applyWKO/result,'@ROC@' , '@RON@'  ,Voorkeuren/ActieveGebiedsOptie);
+//			container applyCO  := substitute(applyRO/result ,'@COC@' , '@CON@'  ,Voorkeuren/ClusterOptie);
 
-			unit<uint32> mutatie := applyCO/result
+			unit<uint32> mutatie := applyRO/result
 			{
 				attribute<technology> technology_rel := rlookup(name,  technology/values), IntegrityCheck = "IsDefined(this)";
 				attribute<location>   location_rel   := rlookup(actor, location/values), IntegrityCheck = "IsDefined(this)";
@@ -151,17 +151,17 @@ container Transformations
 			unit<uint32> active_location   := location   { attribute<location>   location_rel   := id(.); }
 
 			// TODO: Move to classifications.dms
-			container applyAllRO := substitute(applyWKO/result,   '@ROC@', '@RON@' , Classifications/PlanRegioOptie);
-			container applyAllCO := substitute(applyAllRO/result, '@COC@', '@CON@' , Classifications/ClusterOptie);
+			container applyAllRO := substitute(applyWKO/result,   '@ROC@', '@RON@' , Classifications/GebiedsOptie);
+//			container applyAllCO := substitute(applyAllRO/result, '@COC@', '@CON@' , Classifications/ClusterOptie);
 
-			unit<uint32> all_technology := unique(applyAllCO/result/name)
+			unit<uint32> all_technology := unique(applyAllRO/result/name)
 			{
 				attribute<string>     name           := values;
 				attribute<string>     label          := values;
 				attribute<technology> technology_rel := rlookup(name, technology/values);
 			}
 
-			unit<uint32> all_location := unique(applyAllCO/result/actor)
+			unit<uint32> all_location := unique(applyAllRO/result/actor)
 			{
 				attribute<string>   name         := values;
 				attribute<string>   label        := values;

@@ -54,7 +54,9 @@ template EnergieKengetallenImport
 
 		container Functioneel
 		{
-			attribute<GJ_yr_per_eenheid> RuimteVerwarming      (ModelObject) := value(table/V_RV,       GJ_yr_per_eenheid);
+			attribute<GJ_yr_per_eenheid>	RuimteVerwarming_vast	(ModelObject)	:=	value(table/V_RV_vast,	GJ_yr_per_eenheid),	Descr = "vaste functionele warmtevraag, onafhankelijk van oppervlak";
+			attribute<GJ_yr_m2>	RuimteVerwarming_var	(ModelObject)	:=	value(table/V_RV_var,	GJ_yr_m2),	Descr = "variabel deel functionele warmtevraag, afhankelijk van oppervlak";
+			
 			attribute<GJ_yr_M2>          Pompenergie_M2        (ModelObject) :=
 				= IsDefined(rlookup('V_P_ELEK', TableColumns/name))
 					? 'MakeDefined(value(table/V_P_ELEK,  Ratio), 0.0[GJ_yr_M2])'

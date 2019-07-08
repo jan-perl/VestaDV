@@ -693,6 +693,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	{
 		attribute<string> name := Actor/name[nr_OrgEntity];
 		attribute<string> code := Actor/GebiedsOptieActorCode[nr_OrgEntity];
+		attribute<string> label := code;
 		
 		container V := for_each_nedv(code, string(id(.))+'[..]', void, .);
 	}
@@ -721,11 +722,19 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'lv', 'lv', 'lv', 'lv', 'lv'
 		];
 		attribute<GebiedsOptieActor> GebiedsOptieActor_rel := rlookup(actor_code, GebiedsOptieActor/code);
-		attribute<bool> is_Kj := left(name, 2) == 'Kj';
-		attribute<bool> is_Oj := left(name, 2) == 'Oj';
+		attribute<bool> leverancier_vergoed: [ true, true, true, false, false, true, false, true, true,
+			true, false, false, false, true, false, false, false,
+			true, true, true, false, true, false, true, true,
+			true, false, false, false, true, false, false, false,
+			true, true, true, false, true, false, true, true,
+			true, true, true, false, true, false, true, 
+			true, false, false, false, true, false, false, false,
+			true,
+			true, true, true, false, true, false, true, true,
+			false, false, false, false, false
+		];
 		
-		attribute<string> GebiedsOptie_KjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Kj ? 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+full_name: '' ,GebiedsOptieActor_rel)+')';
-		attribute<string> GebiedsOptie_OjExpr(GebiedsOptieActor) := 'add('+AsItemList(Is_Oj ? 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+full_name: '' ,GebiedsOptieActor_rel)+')';
+		attribute<string> GebiedsOptie_Expr(GebiedsOptieActor) := 'add('+AsItemList(leverancier_vergoed ? 'StateNaAllocatie/Cumulaties/@RO@/Jaarlijks/'+full_name: '' ,GebiedsOptieActor_rel)+')';
 		
 		attribute<string> descr: [
 			'Huurverlaging_@RO@', 'ongeriefsvergoeding_E@RO@', 'projectmanagement_E@RO@', 'ongeriefsvergoeding_M@RO@', 'projectmanagement_M@RO@', 'Koude_@RO@', 'Aansluitbijdrage@RO@', 'Oji_ge_EIA_@RO@', 'Omi_ge_EIA_@RO@',
