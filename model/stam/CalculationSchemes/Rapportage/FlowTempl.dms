@@ -17,9 +17,9 @@ template Flow: using = "Classifications"
 	attribute<RapportageRegio> PlanRegioRapportageRegio_rel (Invoer/SpecifiekeInstellingen/PlanRegio) := ='PlanRegio/'+RapportageRegio/RegioNaam + '_rel';
 	attribute<float64>         PlanRegioInRapportageFactor  (Invoer/SpecifiekeInstellingen/PlanRegio) := float64(PlanRegioRapportageRegio_rel == RapportageRegio_sel);
 
-	container All := Components('All', PlanRegioInRapportageFactor);
+	container Ongewogen := Components('All', PlanRegioInRapportageFactor);
 	
-	container PerInkomensGroep
+	container NaarInkomensGroep
 	{
 		container Inkomen := RegioIndelingen/buurt/Inkomen;
 		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
@@ -29,7 +29,7 @@ template Flow: using = "Classifications"
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "laag/GenerateAll;midden/GenerateAll;hoog/GenerateAll";
 	}
 
-	container PerEigendom
+	container NaarEigendom
 	{
 		container Eigendom := RegioIndelingen/buurt/Eigendom;
 		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw  / Eigendom/p_checksum);
@@ -39,5 +39,5 @@ template Flow: using = "Classifications"
 		parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "koop/GenerateAll;wcorpw/GenerateAll;ov_hw/GenerateAll";
 	}
 
-	parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "All/GenerateAll;PerInkomensGroep/GenerateAll;PerEigendom/GenerateAll";
+	parameter<string> GenerateAll := 'Ready', ExplicitSuppliers = "Ongewogen/GenerateAll;NaarInkomensGroep/GenerateAll;NaarEigendom/GenerateAll";
 }
