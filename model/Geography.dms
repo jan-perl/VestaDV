@@ -108,6 +108,7 @@ container Geography: Using = "Units", IsHidden = "True"
 			attribute<rdc_meter> geometry (poly) := partitioned_union_polygon(ipolygon(buurt/Geometry), buurt/gemeente_rel)[rdc_meter], FreeData = "False";
 
 			attribute<string> GM_code   := values;
+			attribute<string> Name      := GM_Code;
 			attribute<string> label     := rjoin(values, buurt/GM_CODE, buurt/GM_NAAM);
 			parameter<string> RegioNaam := 'Gemeente';
 			

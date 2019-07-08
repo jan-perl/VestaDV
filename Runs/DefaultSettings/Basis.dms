@@ -27,8 +27,14 @@ container Basis: Using = "Units"
 
 	container Rapportage
 	{
-		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
-//		unit<uint32> Regio := Geography/RegioIndelingen/Energieregio; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
+//		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
+		unit<uint32> Regio := =
+			(Invoer/StudieGebied == 'NL')
+			? 'Geography/RegioIndelingen/Energieregio' 
+			: (#Invoer/RuimtelijkeData/StudieGebied/Gemeente == 1)
+				? 'Geography/RegioIndelingen/Buurt'
+				: 'Geography/RegioIndelingen/Gemeente';
+			
 		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep_rel: [ 3 ];
 	}
 
