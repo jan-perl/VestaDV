@@ -47,6 +47,10 @@ container NieuwbouwGlTbOperaties
 			attribute<Classifications/bouwjaar>           bouwjaar           := (bouwjaarOrg < Classifications/BouwJaar/V/n2020) ? Classifications/BouwJaar/V/Onbekend : bouwjaarOrg;
 			attribute<uint8>                              ModelObjectKey     := BebouwingsType * uint8(NrOfRows(Classifications/BouwJaar)) + BouwJaar;
 			attribute<m2>                                 NrJoinedunits      := Oppervlakte;
+			attribute<m2>                                 nrOppUnits_i       := Oppervlakte;
+			attribute<float64>                            pand_aandeel       := const(1d, .);
+
+
 			attribute<nrAansl>                            nrAansluitingen_i  := const(1[nrAansl   ], .), FreeData = "True";
 			attribute<nrWoningen>                         nrWoonunits_i      := const(0[nrWoningen], .), FreeData = "True";
 
@@ -55,7 +59,6 @@ container NieuwbouwGlTbOperaties
 			attribute<units/ratio>                        Verdeling          := RuimtelijkeData/GlasTuinBouw/Verdeling/nl/GLTB[GLTB_code];
 			attribute<m2>                                 Oppervlakte        := Verdeling * 10000[units/m2];
 			attribute<float64>                            AandeelWarmteVraag := const(1.0, .); // geen AandeelWarmteVraag in de nieuwe glastuinbouw
-			attribute<float64>                            pand_aandeel       := const(1.0, .);
 
 			container Criteria;
 			container Gebied: FreeData = "True" // noodzakelijk voor Bebouwingscomponent interfact, hoewel gtb niet gebruikt wordt voor WKO.
