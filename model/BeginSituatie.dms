@@ -94,6 +94,7 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 	container Lt30_30 := LegeGebiedsOptie;
 	container Lt30_50 := LegeGebiedsOptie;
 	container Lt30_70 := LegeGebiedsOptie;
+	container TEO     := LegeGebiedsOptie;
 
 	container LtWarmte {
 		unit<uint32> bron := Invoer/RuimtelijkeData/WarmteBronnen/LtWarmte/bron {

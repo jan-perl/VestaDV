@@ -386,10 +386,12 @@ Template LtWarmtenetImpl
 		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((constanten/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
-		attribute<Eur_Yr>			Kji_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>			Kji_ow              (BronCluster)	:=	Ki_ow * NCW/ow28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>			Oji_ow_EIA	        (BronCluster)	:=	Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten opwekking";
 		attribute<Eur>				Ki_wd				(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
 		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kji_wd				(BronCluster)	:=	(Ki_wd - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kji_wd              (BronCluster)	:=	Ki_wd * NCW/id28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Oji_wd_EIA   		(BronCluster)	:=	Oi_wd_EIA * NCW/id28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_ow_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
 		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_admin,										Descr ="administratiekosten opwekking";
 		attribute<Eur_Yr>			Kj_ow_oh			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
@@ -402,7 +404,7 @@ Template LtWarmtenetImpl
 		attribute<Eur_Yr>			Oj_ow_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
 		attribute<Eur_Yr>			Oj_EEA				(BronCluster)	:=	Oj_wd_EEA + Oj_ow_EEA;
 		
-		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	Kji_ow + Kji_wd + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
+		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
 		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
 		
 		attribute<bool>				Afweging			(BronCluster)	:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";
@@ -532,7 +534,7 @@ Template LtWarmtenetImpl
 			
 			container VorigePeriode := ='BeginStatus/'+gebiedsoptie_name;
 			
-			container		Oi_Aansl		:=	for_each_nedv(LT_Component/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', LT_Component/Name), PlanRegio, Eur);
+			container		Oi_Aansl		:=	for_each_nedv(LT_Component/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/nieuw/Oi_Aansl', '@W@', LT_Component/Name), PlanRegio, Eur);
 			container		Oj_Vastrecht	:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Vastrecht', '@W@', LT_Component/Name), PlanRegio, Eur_yr);
 			container		Oj_Verbruik		:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Verbruik' , '@W@', LT_Component/Name), PlanRegio, Eur_yr);
 			container		Om_comfort		:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Om_comfort'  , '@W@', LT_Component/Name), PlanRegio, Eur_yr);
@@ -547,7 +549,7 @@ Template LtWarmtenetImpl
 				attribute<Eur>		Ki_id			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id	')+')';
 				attribute<Eur>		Ki_pt			(PlanRegio)		:=	const(0[EUR], PlanRegio); // geen primair transport bij LT netten
 				
-				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('Oi_Aansl/'+LT_Component/Name)+')';
+				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' +WkoComponent/Name + '/PR/nieuw/Oi_Aansl')+')';
 				
 				attribute<Eur>		Oi_ow_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
 				attribute<Eur>		Oi_wd_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';

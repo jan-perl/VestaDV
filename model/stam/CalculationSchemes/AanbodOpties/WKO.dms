@@ -244,7 +244,7 @@ template WKO
 				attribute<Eur>		Ki_id			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Ki_id	')+')';
 				attribute<Eur>		Ki_pt			(PlanRegio)		:=	const(0[EUR], PlanRegio); // geen primair transport bij WKO
 				
-				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' +WkoComponent/Name + '/PR/Oi_Aansl')+')';
+				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' +WkoComponent/Name + '/PR/nieuw/Oi_Aansl')+')';
 				
 				attribute<Eur>		Oi_ow_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oi_ow_EIA		')+')';
 				attribute<Eur>		Oi_wd_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + WkoComponent/Name + '/PR/Oi_wd_EIA		')+')';
