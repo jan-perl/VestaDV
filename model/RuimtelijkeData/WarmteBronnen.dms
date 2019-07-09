@@ -24,13 +24,13 @@ container WarmteBronnen
 
 		// inlezen bestand voor bekende puntbronnen geschikt voor warmtelevering
 		unit<uint32> bron
-		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190612_MT_puntbronnen.dbf"
+		:	StorageName     = "%sourceDataProjDir%/aanbod/puntbronnen/20190708_MT_puntbronnen.dbf"
 		,	StorageReadOnly = "True"
 		,	DialogType      = "Map"
 		,	DialogData      = "P"
 		,	Source          = "%sourceDataProjDir%/aanbod/puntbronnen/20180724_metadata_puntbronnen.txt"
 		{
-			attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/20190612_MT_puntbronnen.shp", StorageReadOnly = "True";
+			attribute<rdc_meter> P: StorageName = "%sourceDataProjDir%/aanbod/puntbronnen/20190708_MT_puntbronnen.shp", StorageReadOnly = "True";
 			attribute<string>    bron_naam;
 
 			attribute<string>                Type_bron;
@@ -90,8 +90,6 @@ container WarmteBronnen
 			attribute<string>  Label           := bron_naam,                            DialogType = "LabelText";
 			attribute<float64> SymbolWorldSize := sqrt(MWth_max * 100000[1 / MW]), DialogType = "SymbolWorldSize";
 			parameter<int16>   SymbolIndex     := 44s,                             DialogType = "SymbolIndex";
-
-			attribute<string>  targetGMC := gemeente == 'Diemen' ? 'GM0363' :'', IntegrityCheck = "isDefined(rlookup(targetGMC,Geography/RegioIndelingen/gemeente/GM_CODE)) || targetGMC = ''";// TO DO naar BronData 3.5 verplaatsen.
 
 			attribute<Geography/RegioIndelingen/gemeente>  gem_rel_P      := point_in_polygon(P, Geography/RegioIndelingen/gemeente/Geometry);
 			attribute<Geography/RegioIndelingen/gemeente>  target_gem_rel := MakeDefined(rlookup(targetGMC,Geography/RegioIndelingen/gemeente/GM_CODE),gem_rel_P);
@@ -168,19 +166,19 @@ container WarmteBronnen
 
 		container linkset
 		{
-			unit<uint32> src: StorageName = "%SourceDataProjDir%/infra/20190614_CBS_bestaande_warmtenetten_2019.csv"
+			unit<uint32> src: StorageName = "%SourceDataProjDir%/infra/20190708_CBS_bestaande_warmtenetten_2019.csv"
 			,	StorageType     = "gdal.vect"
 			,	StorageReadOnly = "True"
 			,	url             = "%SourceDataProjDir%/infra/20190118_update_bestaande_warmtenetten_FvdM.txt"
 			{
 				attribute<string> BU_code;
 				attribute<string> BU_code_dk; // buurt waarvan afgetakt is (upstream)
-				attribute<string> pntnr;      // bron waarvan direct afgetapt wordt.TODO DOC: Er mag en moet of een geldige BU_code_dk en een lege string als pntnr of andersom
+				attribute<string> bronnaam;
 	
 				attribute<Geography/RegioIndelingen/buurt>  BU_rel    := rlookup(BU_Code,    Geography/RegioIndelingen/buurt/BU_code), IntegrityCheck = "isDefined(BU_rel)";
 				attribute<Geography/RegioIndelingen/buurt>  BU_DK_rel := rlookup(BU_Code_dk, Geography/RegioIndelingen/buurt/BU_code), IntegrityCheck = "isDefined(BU_rel)   || BU_Code_dk == ''";
-				attribute<bron>                             bron_rel  := rlookup(pntnr, bron/bron_naam )                             , 
-					IntegrityCheck = "(isDefined(bron_rel) && BU_Code_dk == '')|| (pntnr == '9999' && isDefined(BU_DK_rel))";
+				attribute<bron>                             bron_rel  := rlookup(bronnaam, bron/bron_naam )                             , 
+					IntegrityCheck = "(isDefined(bron_rel) && BU_Code_dk == '')|| (bronnaam == '' && isDefined(BU_DK_rel))";
 				attribute<bool> BU_selected := Invoer/RuimtelijkeData/StudieGebied/selected_per_buurt[BU_rel];
 				attribute<bool> DK_selected := Invoer/RuimtelijkeData/StudieGebied/selected_per_buurt[BU_DK_rel] || bron/inStudieGebied[bron_rel];
 			}
@@ -190,8 +188,8 @@ container WarmteBronnen
 			,	DialogData = "geometry"
 			{
 				attribute<rdc_meter> first_point := centroid_or_mid(rjoin(src/BU_code,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
-				attribute<rdc_meter> last_point  := pntnr <> '9999'
-					? rjoin(src/pntnr, bron/bron_naam, bron/P)
+				attribute<rdc_meter> last_point  := bronnaam <> ''
+					? rjoin(src/bronnaam, bron/bron_naam, bron/P)
 					: centroid_or_mid(rjoin(src/BU_code_dk,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
 	
 				attribute<rdc_meter> geometry  (arc) := points2sequence(pointset/point, pointset/sequence, pointset/ordinal)
@@ -213,15 +211,15 @@ container WarmteBronnen
 				attribute<string> BU_code    := src/BU_code[nr_OrgEntity];
 				attribute<string> BU_code_dk := src/BU_code_dk[nr_OrgEntity];
 				attribute<bool>   BU_rel_dk  := isDefined(rlookup(BU_code_dk, Invoer/RuimtelijkeData/StudieGebied/buurt/BU_code));
-				attribute<string> pntnr      := src/pntnr[nr_OrgEntity];      // bron waarvan direct afgetapt wordt.TODO DOC: Er mag en moet of een geldige BU_code_dk en een lege string als pntnr of andersom
+				attribute<string> bronnaam   := src/bronnaam[nr_OrgEntity];      // bron waarvan direct afgetapt wordt.TODO DOC: Er mag en moet of een geldige BU_code_dk en een lege string als pntnr of andersom
 			}
 
-			unit<uint32> bron_studiegebied_uit_in := Subset((src/BU_selected <> src/DK_selected) && src/pntnr <> '9999') // Deze set bekijken bij het niet voldoen aan de integrity check op linkset_selected. De set moet leeg zijn.
+			unit<uint32> bron_studiegebied_uit_in := Subset((src/BU_selected <> src/DK_selected) && src/bronnaam <> '') // Deze set bekijken bij het niet voldoen aan de integrity check op linkset_selected. De set moet leeg zijn.
 			{
 				attribute<string> BU_code  := src/BU_code[nr_OrgEntity];
 				attribute<string> gemeente := rjoin(BU_code, Geography/RegioIndelingen/buurt/BU_code, Geography/RegioIndelingen/buurt/GM_naam);
 
-				attribute<string> herkomst_bronnaam                := src/pntnr[nr_OrgEntity];
+				attribute<string> herkomst_bronnaam                := src/bronnaam[nr_OrgEntity];
 				attribute<string> herkomst_bron_toegekendegemeente := RegioIndelingen/Gemeente/Label[RestWarmte/bron/target_gem_rel[src/bron_rel[nr_OrgEntity]]];
 
 				attribute<rdc_meter> van_point  := centroid_or_mid(rjoin(BU_code,  Geography/RegioIndelingen/buurt/BU_code,  Geography/RegioIndelingen/buurt/geometry));
