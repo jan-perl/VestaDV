@@ -224,7 +224,7 @@ Template LtWarmtenetImpl
 	container LastClusters := LastBronIter/SelectedClusters;
 	
 	//modelbronnen als resultaat van samenvoegen kleine bron
-	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+',LastClusters)', DialogType = "Map", DialogData = "Point"
+	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+', LastClusters)', DialogType = "Map", DialogData = "Point"
 	{
 		// features samenvoegen 
 		unit<uint32> Feature := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Feature')+', LastClusters/Feature)'

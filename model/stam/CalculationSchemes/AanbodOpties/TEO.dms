@@ -103,7 +103,9 @@ template TEO
 			Parameter<_yr> 		R_wpColl_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_onderhoud	:= 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
-			}
+		}
+		parameter<Eur>			Ki_ow_vast		    := Ki_TEO_vast + Ki_WKO_vast;
+		parameter<Eur_kW>		Ki_ow_variabel      := Ki_Doublet + Ki_onderstation;
 	}
 	parameter<Celsius> T_sec := constanten/T_sec;
 	

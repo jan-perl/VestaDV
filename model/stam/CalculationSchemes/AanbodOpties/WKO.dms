@@ -85,6 +85,7 @@ template WKO
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
 		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+		parameter<Eur>			Ki_WKO_vast			:= Leercurves/Curve2 * 	   0	[Eur],			Descr = "bron zonder distributiekosten";
 		parameter<Eur_kW>		Ki_Doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "bron zonder distributiekosten";
 		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
 		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
@@ -109,7 +110,10 @@ template WKO
 			Parameter<_yr> 		R_wpColl_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_onderhoud	:= 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
 			Parameter<_yr> 		R_buffer_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
-			}
+		}
+		parameter<Eur>			Ki_ow_vast		    := Ki_WKO_vast;
+		parameter<Eur_kW>		Ki_ow_variabel      := Ki_Doublet + Ki_onderstation;
+//		parameter<Eur_yr>       Kij_vast := 0.0[EUR_yr];
 	}
 	parameter<Celsius> T_sec := constanten/T_sec;
 	
@@ -180,17 +184,35 @@ template WKO
 	}
 
 	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
-	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
-	
-	// decouple the cluster to the individual object level to support reporting of the allocation result
-	unit<uint32> Selected := ='union_unit('+asItemList('Iterations/'+Iteration/Name+'/Selected')+')', DialogType = "Map", DialogData = "Point"
-	{
+//	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
+	container LastIter :=  ='Iterations/'+last(Iteration/Name);
+	container LastClusters := LastIter/SelectedClusters;
 
-		attribute<rdc_meter> point := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+')';
-		attribute<string>    Label := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+')';
-		attribute<Eur>       Ki_ow  := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_ow')+')';
-		attribute<Eur>       Ki_wd  := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+')';
-		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+Iteration/CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+'),.)';
+	// decouple the cluster to the individual object level to support reporting of the allocation result
+	unit<uint32> Selected := ='union_unit('+asItemList('Iterations/'+Iteration/Name+'/Selected')+', LastClusters)', DialogType = "Map", DialogData = "Point"
+	{
+		attribute<rdc_meter> point := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+', LastClusters/point)';
+		attribute<string>    Label := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+', LastClusters/Label)';
+//		attribute<Eur>       Ki_ow := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_ow')+', LastClusters/Ki_ow)';
+		attribute<Eur>       Ki_wd := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+', LastClusters/Ki_wd)';
+		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+Iteration/CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+', LastClusters/Partitioning + sum(Iteration/NrSelectedObjects)),.)';
+		
+		attribute<kW>        P_Warmte := sum(UnitedCandidates/P_Warmte, Partitioning);
+		attribute<kW>        P_Koude  := sum(UnitedCandidates/P_Warmte, Partitioning);
+		attribute<Eur>       Ki_ow := constanten/Ki_ow_variabel * max_elem(P_Warmte, P_Koude) + constanten/Ki_ow_vast;
+		
+		attribute<Eur_yr>    Contributiemarge := sum(UnitedCandidates/Contributiemarge, Partitioning);
+		
+		attribute<Eur_yr>    Oji_netto    := Contributiemarge 
+			- Ki_wd * (NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  ))
+			- Ki_ow * (NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO ));
+		
+		attribute<bool>      Afweging := Oji_netto > 0[Eur_yr];
+	}
+	unit<uint32> RendabelCluster 	:= subset(Selected/Afweging) 
+	{
+		attribute<rdc_meter> point := Selected/Point[nr_OrgEntity];	
+		attribute<.>         Partitioning (UnitedCandidates) := invert(nr_OrgEntity)[Selected/Partitioning];
 	}
 
 	attribute<uint32> NrAllowedObjects          (WkoComponent) := ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
@@ -201,7 +223,7 @@ template WKO
 	container ObjectResults :=
 		for_each_ne(WkoComponent/Name, 
 			'WkoResults('
-				'UnitedCandidates, Selected, CandidateSets/'+WkoComponent/Name+',Classifications/WarmteOptie/V/WKO,'
+				'UnitedCandidates, RendabelCluster, CandidateSets/'+WkoComponent/Name+',Classifications/WarmteOptie/V/WKO,'
 				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
 				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
 			')'
@@ -210,10 +232,10 @@ template WKO
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
 		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<Selected> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
+		attribute<RendabelCluster> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
 		attribute<Eur>      Ki_id        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_id')+')';
-		attribute<Eur>      Ki_ow_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_ow);
-		attribute<Eur>      Ki_wd_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd);
+		attribute<Eur>      Ki_ow_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_ow[RendabelCluster/nr_OrgEntity]);
+		attribute<Eur>      Ki_wd_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd[RendabelCluster/nr_OrgEntity]);
 	}
 
 	container Results := BeginStatus
