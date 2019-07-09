@@ -45,7 +45,7 @@ template GeoThermie
 		attribute<Eur> Ki_ow (PlanRegio) := 
 			(TypeInfo/Ki_kW_min * Schuiven/KostenMin + TypeInfo/Ki_kW_max * Schuiven/KostenMax)
 			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) * 1000[kW / MW]
-			* LeerCurves/Curve2
+			* LeerCurves/MTnet/Curve
 		;
 		attribute<Eur_yr> Kji_ow (PlanRegio) := Ki_ow * NCW/ow28/AnnualisationFactor ;
 
@@ -67,11 +67,11 @@ template GeoThermie
 			);
 		parameter<Eur_GJ> Km_GJ := K_GJ;
 
-		attribute<Eur_yr> Kj_pt_Base       (PlanRegio) := Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet;
+		attribute<Eur_yr> Kj_pt_Base       (PlanRegio) := Leercurves/OenM/Curve * (Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet);
 		attribute<Eur_yr> Kj_pt_adm 	   (PlanRegio) := Kj_pt_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_pt_oh         (PlanRegio) := Kj_pt_Base - Kj_pt_adm;
 
-		attribute<Eur_yr> Kj_ow_Base       (PlanRegio) := Ki_ow * TypeInfo/Rj_Onderhoud;
+		attribute<Eur_yr> Kj_ow_Base       (PlanRegio) := Leercurves/OenM/Curve * (Ki_ow * TypeInfo/Rj_Onderhoud);
 		attribute<Eur_yr> Kj_ow_adm        (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_ow_oh         (PlanRegio) := Kj_ow_Base - Kj_ow_adm;
 

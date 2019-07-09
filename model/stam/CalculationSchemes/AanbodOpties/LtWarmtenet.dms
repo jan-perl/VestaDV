@@ -89,11 +89,11 @@ Template LtWarmtenetImpl
 		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
 		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
 		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
-		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
+		parameter<Float64> 		AEO_ind_K			: [0.0],															Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
 		
-		parameter<Ratio> 		Leidingverlies		: [0.28],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
+		parameter<Ratio> 		Leidingverlies		:= 0.28[Ratio] * Leercurves/Verl/Curve,								Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio> 		Vermogenverlies		: [0.05],															Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio>		Pompenergie			: [0.0072],															Descr = "elektriciteitsverbruik distributiepompen";
 		
 		//aansluitwaardes
 		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
@@ -110,25 +110,25 @@ Template LtWarmtenetImpl
 		parameter<float64>		GTF_util_k	 		:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
 		
 		// investeringskosten technische componenten
-		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR_KW> 		Ki_uitkoppel		:= Leercurves/Curve2 * 	250 	[EUR / KW],		Descr = "Investeringskosten uitkoppeling bron bij bestaande bron";
-		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/Curve2 * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
-		parameter<EUR>    		Ki_Buffer			:= Leercurves/Curve2 * 	1000	[EUR], 			Descr = "Voorlopige nvesteringskosten per gebouw voor aanleg buffervat voor seizoensopslag en dagopslag";
-		parameter<EUR>    		Ki_Buffer_min		:= Leercurves/Curve2 * 	100000	[EUR],			Descr = "Minimale investering voor warmtebuffer bij de bron";
-		parameter<Eur_kW> 		Ki_doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "Investeringskosten realiseren nieuw doublet als nieuwe bron";
+		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/eWPww/Curve  * 	3500	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
+		parameter<EUR_KW> 		Ki_uitkoppel		:= Leercurves/LTnet/Curve  * 	250 	[EUR / KW],		Descr = "Investeringskosten uitkoppeling bron bij bestaande bron";
+		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/LTnet/Curve  * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
+		parameter<EUR>    		Ki_Buffer			:= Leercurves/LTnet/Curve  * 	1000	[EUR], 			Descr = "Voorlopige nvesteringskosten per gebouw voor aanleg buffervat voor seizoensopslag en dagopslag";
+		parameter<EUR>    		Ki_Buffer_min		:= Leercurves/LTnet/Curve  * 	100000	[EUR],			Descr = "Minimale investering voor warmtebuffer bij de bron";
+		parameter<Eur_kW> 		Ki_doublet			:= Leercurves/LTnet/Curve  * 	1133	[Eur_kW], 		Descr = "Investeringskosten realiseren nieuw doublet als nieuwe bron";
 	
-		parameter<Eur_m2> 		Ki_id_ugroot		:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
-		parameter<Eur_m2> 		Ki_id_uklein		:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
-		parameter<Eur>			Ki_eWP_B			:= Leercurves/Curve2 * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/Curve2 * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
+		parameter<Eur_m2> 		Ki_id_ugroot		:= Leercurves/Inpand/Curve * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
+		parameter<Eur_m2> 		Ki_id_uklein		:= Leercurves/Inpand/Curve * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		parameter<Eur>			Ki_eWP_B			:= Leercurves/eWPww/Curve  * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/eWPww/Curve  * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/eWPww/Curve  * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
 		
 		//investeringskosten wijkdistributie
 		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_os_p_max			:=	150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/Curve2 * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/MTnet/Curve * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
 		
 		// begrenzingen aan cluster mogelijkheden.
 		parameter<m>            L_max_bron_connectie:=                      2000    [m],            Descr = "Afzonderlijke aantakkingen aan een bron-cluster mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
@@ -371,14 +371,14 @@ Template LtWarmtenetImpl
 			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
 			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
+			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
 			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
 			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
 			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
 			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
 			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
 			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
+			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
 		}
 		
 		//Aanvullende kosten brongerelateerd

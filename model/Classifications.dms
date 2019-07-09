@@ -568,6 +568,11 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig	
+	unit<uint8> LeerCurves : nrofrows = 17
+	{
+		attribute<string> Name:            [ 'Cmin', 'Bpls', 'Verder', 'mWKK', 'ZonB', 'ZonPV', 'eWPlw', 'eWPww', 'hWP', 'EWV', 'LTAS', 'MTnet', 'Inpand', 'Aansl', 'Verl', 'OenM', 'LTnet' ];
+	}
+
 	unit<uint8> GebouwOptie : nrofrows = 5
 	{
 		attribute<string> Name:            [ 'gas', 'mWKK', 'eWP', 'HWP', 'EWV' ];

@@ -51,14 +51,14 @@ template TEOIter
 			attribute<MW>		P_bronnet		:=	P_sec * constanten/AandeelPrimairVermogen;
 			attribute<Eur_m>	K_min_sec		:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
 			attribute<Eur_m>	K_max_sec		:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
-			attribute<Eur_m>	K_m_sec			:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
+			attribute<Eur_m>	K_m_sec			:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 			attribute<m>		L_hoofdleiding	:=	sqrt(2.0)* sqrt(AreaProxy);
 			attribute<Eur>		K_hoofdleiding	:=	L_hoofdleiding * K_m_sec;
 			attribute<m>		L_zijleiding	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
 			attribute<Eur>		K_zijleiding	:=	L_zijleiding * K_m_sec;
 			attribute<Eur_m>	K_min_brondist	:=	P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
 			attribute<Eur_m>	K_max_brondist	:=	P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
-			attribute<Eur_m>	K_m_brondist	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
+			attribute<Eur_m>	K_m_brondist	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 		
 		
 		attribute<Eur>		Ki_wd_bronleiding	:=	LengthProxy * K_m_brondist;

@@ -63,7 +63,7 @@ template WKO
 		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
 		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
 		
-		parameter<Ratio> 		Leidingverlies		: [0.28],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer", Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Ratio> 		Leidingverlies		:= 0.28[Ratio] * Leercurves/Verl/Curve,			Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer", Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
 
@@ -82,21 +82,21 @@ template WKO
 		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
 		
 		//investeringskosten technische componenten
-		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
-		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
-		parameter<Eur>			Ki_WKO_vast			:= Leercurves/Curve2 * 	   0	[Eur],			Descr = "bron zonder distributiekosten";
-		parameter<Eur_kW>		Ki_Doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "bron zonder distributiekosten";
-		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
-		parameter<Eur_kW>		K_os_p_min			:=	120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Eur_kW>		K_os_p_max			:=	150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Eur_kW>		Ki_onderstation		:=	Leercurves/Curve2 * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
-		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/Curve2 * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
-		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
-		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
-		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
-		parameter<Eur>			Ki_eWP_B			:= Leercurves/Curve2 * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
-		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/Curve2 * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
+		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
+		parameter<EUR> 			Ki_booster 			:= Leercurves/eWPww/Curve * 	3500	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+		parameter<Eur>			Ki_WKO_vast			:= Leercurves/LTnet/Curve * 	   0	[Eur],			Descr = "bron zonder distributiekosten";
+		parameter<Eur_kW>		Ki_Doublet			:= Leercurves/LTnet/Curve * 	1133	[Eur_kW], 		Descr = "bron zonder distributiekosten";
+		parameter<Eur_m2>		Ki_distr			:= Leercurves/MTnet/Curve * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
+		parameter<Eur_kW>		K_os_p_min			:= 120[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		K_os_p_max			:= 150[Eur_kW],								Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<Eur_kW>		Ki_onderstation		:= Leercurves/MTnet/curve * (K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax),	Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/LTnet/Curve * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
+		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/Inpand/Curve * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
+		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/Inpand/Curve * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/eWPww/Curve * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
+		parameter<Eur>			Ki_eWP_B			:= Leercurves/eWPww/Curve * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
+		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/eWPww/Curve * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
 
 		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
 		container OenM  {

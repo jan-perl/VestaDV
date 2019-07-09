@@ -31,7 +31,7 @@ template WijkTempl
 			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
 			* 1000[kW / MW];
 
-		attribute<Eur>    Ki_ow     (PlanRegio) := Ki_ow_nu * LeerCurves/Curve2;                                            attribute<Eur_yr> Kji_ow    (PlanRegio) := Ki_ow     * NCW/ow28/AnnualisationFactor;
+		attribute<Eur>    Ki_ow     (PlanRegio) := Ki_ow_nu * LeerCurves/MTnet/curve;                                            attribute<Eur_yr> Kji_ow    (PlanRegio) := Ki_ow     * NCW/ow28/AnnualisationFactor;
 		attribute<Eur>    Oi_ow_EIA (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfo/TypeInfoList_rel]; attribute<Eur_yr> Oji_ow_EIA(PlanRegio) := Oi_ow_EIA * NCW/ow28/AnnualisationFactor;
 
 		parameter<Eur_GJ> K_GJ    := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
@@ -41,7 +41,7 @@ template WijkTempl
 
 		parameter<Eur_GJ> Km_GJ   := K_GJ;
 
-		attribute<Eur_yr> Kj_ow_Base         (PlanRegio) := Ki_ow * TypeInfo/Rj_Onderhoud;
+		attribute<Eur_yr> Kj_ow_Base         (PlanRegio) := Leercurves/OenM/Curve * (Ki_ow * TypeInfo/Rj_Onderhoud);
 		attribute<Eur_yr> Kj_ow_adm          (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;
 		attribute<Eur_yr> Kj_ow_oh           (PlanRegio) := Kj_ow_Base - Kj_ow_adm;
 		attribute<Eur_yr> Kj_ow_WarmteWaarde (PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;

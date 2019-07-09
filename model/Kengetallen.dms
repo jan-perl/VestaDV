@@ -14,19 +14,17 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 	{
 		parameter<_yr> Rj_WOS                := 0.03 [_yr] / R_Onderhoud;
 		parameter<_yr> Rj_OnderStation       := 0.03 [_yr] / R_Onderhoud;
-		parameter<_yr> Rj_PrimairNet         := 0.01 [_yr] / R_Onderhoud; // Wordt gebruikt bij Restwarmte en Geothermie voor pijpen, excl Precario
-		parameter<_yr> Rj_SecundairNet       := 0.01 [_yr] / R_Onderhoud; // exclusief Precario
-		parameter<_yr> Rj_wd                 := 0.025[_yr] / R_Onderhoud; // exclusief Precario
+		parameter<_yr> Rj_PrimairNet         := 0.01 [_yr] / R_Onderhoud;
+		parameter<_yr> Rj_SecundairNet       := 0.01 [_yr] / R_Onderhoud;
+		parameter<_yr> Rj_wd                 := 0.025[_yr] / R_Onderhoud;
 		parameter<_yr> Rj_id                 := 0.025[_yr]; // geen Admin.
-		parameter<_yr> Rj_Installatie:       [0.00]; // @@@ Moet dit echt nul zijn?
+		parameter<_yr> Rj_Installatie:       [0.00];
 		parameter<_yr> Rj_GebouwVerbetering: [0.00];
-		parameter<_yr> Rj_LokaleOpwekking:   [0.05]; // Werkt op Ki_ZonneBoiler, ZonPV, mWKK, hWP en EWV TODO: check met FO 4.0
+		parameter<_yr> Rj_LokaleOpwekking:   [0.05], Descr = "Werkt op Ki_ZonneBoiler, ZonPV, mWKK, hWP en EWV"; //TODO source naar FO 4.0
 		parameter<_yr> Rj_LokaleEWP:         [0.02], Descr = "onderhoudskosten individuele warmtepompen als percentage van investering", Source = "Validatiesessies startanalyse 2019"; // TODO source naar FO 4.0
-		// N.B.: Vergelijkbare rates zijn gegevens als typeninfo/Rj_Onderhoud, die in GeoThermie, WijkWKK en Restwarmte toegepast worden.
-		// TODO: onderzoeken bij WKO: onderhoudskosten, min-max kosten en leercurvetoepassing, toepassing NMDA tariefswijziging
 
-		parameter<Ratio> R_lv_Admin:         [0.1]; // Fractie van vastrecht dat de leveancier aan administratiekosten besteedt.
-		parameter<Ratio> R_Admin:            [0.5]; // Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking.
+		parameter<Ratio> R_lv_Admin:         [0.1], Descr = "Fractie van vastrecht dat de leveancier aan administratiekosten besteedt", Source = "F.O. 3.0";
+		parameter<Ratio> R_Admin:            [0.5], Descr = "Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking", Source = "F.O. 3.0";
 		parameter<Ratio> R_Onderhoud         := 1.0 - R_Admin;
 	}
 }

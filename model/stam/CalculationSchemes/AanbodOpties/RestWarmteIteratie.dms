@@ -37,14 +37,14 @@ template RestWarmteIteratie
 		                                                                                                        attribute<Eur_yr> Kji_pt    (PlanRegio) := Ki_pt     * NCW/pt28/AnnualisationFactor;
 		attribute<Eur> Oi_pt_EIA (PlanRegio) := Ki_pt * SpecifiekeInstellingen/Beleid/EIA/pt;                   attribute<Eur_yr> Oji_pt_EIA(PlanRegio) := Oi_pt_EIA * NCW/pt28/AnnualisationFactor;
 				
-		attribute<Eur> Ki_ow     (PlanRegio) := Bronnen/Ki_kW[Assignment/Bronnen_rel] * LeerCurves/Curve2 * Assignment/P * value(1000, kW / MW);
+		attribute<Eur> Ki_ow     (PlanRegio) := Bronnen/Ki_kW[Assignment/Bronnen_rel] * LeerCurves/MTnet/Curve * Assignment/P * value(1000, kW / MW);
 			                                                                                                    attribute<Eur_yr> Kji_ow    (PlanRegio) := Ki_ow     * NCW/ow28/AnnualisationFactor; 
 		attribute<Eur> Oi_ow_EIA (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfoList_rel]; attribute<Eur_yr> Oji_ow_EIA(PlanRegio) := Oi_ow_EIA * NCW/ow28/AnnualisationFactor;
 
 		attribute<Eur_yr> Kj_KL_ptow(PlanRegio) := Kji_pt - Oji_pt_EIA + Kji_ow - Oji_ow_EIA;
 
-		attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud;
-		attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin;
+		attribute<Eur_yr> Kj_pt_oh        (PlanRegio) := Leercurves/OenM/Curve * (Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Onderhoud);
+		attribute<Eur_yr> Kj_pt_adm       (PlanRegio) := Leercurves/OenM/Curve * (Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet * Kengetallen/Onderhoud/R_Admin);
 
 		attribute<Eur_yr> Kj_pt           (PlanRegio) := Kj_pt_oh + Kj_pt_adm;
 
