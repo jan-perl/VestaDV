@@ -32,8 +32,8 @@ container Basis: Using = "Units"
 			(Invoer/StudieGebied == 'NL')
 			? 'Geography/RegioIndelingen/Energieregio' 
 			: (#Invoer/RuimtelijkeData/StudieGebied/Gemeente == 1)
-				? 'Geography/RegioIndelingen/Buurt'
-				: 'Geography/RegioIndelingen/Gemeente';
+				? 'Invoer/RuimtelijkeData/StudieGebied/buurt'
+				: 'Invoer/RuimtelijkeData/StudieGebied/gemeente';
 			
 		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep_rel: [ 3 ];
 	}

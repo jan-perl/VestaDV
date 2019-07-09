@@ -21,7 +21,7 @@ template Flow: using = "Classifications"
 	
 	container NaarInkomensGroep
 	{
-		container Inkomen := RegioIndelingen/buurt/Inkomen;
+		container Inkomen := Invoer/RuimtelijkeData/StudieGebied/buurt/Inkomen;
 		container laag    := Components('InkLaag',   PlanRegioInRapportageFactor * Inkomen/p_hh_li / Inkomen/p_checksum);
 		container midden  := Components('InkMidden', PlanRegioInRapportageFactor * Inkomen/p_hh_mi / Inkomen/p_checksum);
 		container hoog    := Components('InkHoog',   PlanRegioInRapportageFactor * Inkomen/p_hh_hi / Inkomen/p_checksum);
@@ -31,7 +31,7 @@ template Flow: using = "Classifications"
 
 	container NaarEigendom
 	{
-		container Eigendom := RegioIndelingen/buurt/Eigendom;
+		container Eigendom := Invoer/RuimtelijkeData/StudieGebied/buurt/Eigendom;
 		container koop     := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_koopw  / Eigendom/p_checksum);
 		container wcorpw   := Components('HK_kw',   PlanRegioInRapportageFactor * Eigendom/p_wcorpw / Eigendom/p_checksum);
 		container ov_hw    := Components('HK_hw',   PlanRegioInRapportageFactor * Eigendom/p_ov_hw  / Eigendom/p_checksum);
