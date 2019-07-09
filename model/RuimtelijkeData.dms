@@ -33,6 +33,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 		unit<uint32> Gemeente := subset(selected_per_gemeente)
 		{
+			attribute<string>    name                                := GM_CODE;
+			parameter<string>    RegioNaam                           := 'Gemeente';
+
 			attribute<rdc_meter> geometry (poly)                     := RegioIndelingen/gemeente/geometry[nr_OrgEntity];
 			attribute<string>    GM_code                             := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
 			attribute<string>    label                               := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
@@ -41,6 +44,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 		unit<uint32> Buurt := subset(selected_per_buurt)
 		{
+			attribute<string>                                  name                := BU_code;
+			parameter<string>                                  RegioNaam           := 'Buurt';
+
 			attribute<rdc_meter>                               geometry (poly)     := RegioIndelingen/buurt/geometry[nr_OrgEntity];
 			attribute<string>                                  BU_code             := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
 			attribute<string>                                  WK_code             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
@@ -56,17 +62,39 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<yr_uint16>                               BioWKK_Start        := RegioIndelingen/buurt/BioWKK_Start[nr_OrgEntity];
 
 			attribute<Studiegebied/gemeente>                   gemeente_rel        := point_in_polygon(Point, Studiegebied/gemeente/geometry);
+			attribute<Geography/RegioIndelingen/buurt>         Buurt_rel           := nr_OrgEntity;
 
-			attribute</Geography/RegioIndelingen/NL>           NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Provincie>    Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Energieregio> Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Wijk>         Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/NL>            NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Provincie>     Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Energieregio>  Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Wijk>          Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
 
 			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 
+			container Inkomen
+			{
+				attribute<Units/Percent> p_hh_li    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li[nr_OrgEntity];
+				attribute<Units/Percent> p_hh_mi    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi[nr_OrgEntity];
+				attribute<Units/Percent> p_hh_hi    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi[nr_OrgEntity];
+				attribute<Units/Percent> p_checksum (..) := Geography/RegioIndelingen/buurt/Inkomen/p_checksum[nr_OrgEntity];
+			}
+
+			container Eigendom
+			{
+				attribute<Units/Percent> p_koopw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_koopw[nr_OrgEntity];
+				attribute<Units/Percent> p_huurw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_huurw[nr_OrgEntity];
+				attribute<Units/Percent> p_wcorpw   (..) := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw[nr_OrgEntity];
+				attribute<Units/Percent> p_ov_hw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw[nr_OrgEntity];
+				attribute<Units/Percent> p_checksum (..) := Geography/RegioIndelingen/buurt/Eigendom/p_checksum [nr_OrgEntity];
+				
+			}
+
+			container Overigen
+			{
+			}
 		}
-		
 	}
+
 	#include <BAG.dms>
 	#include <Nieuwbouw.dms>
 	#include <Sloop.dms>
