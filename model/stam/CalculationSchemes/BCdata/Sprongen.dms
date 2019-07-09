@@ -198,17 +198,17 @@ container Sprongen
 	}
 	container VerbeterKosten_i
 	{
-		attribute<Eur_ModelUnit> S_H_T    (BebouwingsObject) := VerbeterKosten_nu/S_H_T  * LeerCurves/CminFactor;
-		attribute<Eur_ModelUnit> S_H_B    (BebouwingsObject) := VerbeterKosten_nu/S_H_B  * LeerCurves/BplsFactor;
-		attribute<Eur_ModelUnit> S_H_AP   (BebouwingsObject) := VerbeterKosten_nu/S_H_AP * LeerCurves/VerderFactor;
-		attribute<Eur_ModelUnit> S_T_B    (BebouwingsObject) := VerbeterKosten_nu/S_T_B   * LeerCurves/BplsFactor;
-		attribute<Eur_ModelUnit> S_T_AP   (BebouwingsObject) := VerbeterKosten_nu/S_T_AP  * LeerCurves/VerderFactor;
-		attribute<Eur_ModelUnit> S_B_AP   (BebouwingsObject) := VerbeterKosten_nu/S_B_AP  * LeerCurves/VerderFactor;
+		attribute<Eur_ModelUnit> S_H_T    (BebouwingsObject) := VerbeterKosten_nu/S_H_T   * LeerCurves/Cmin/Curve;
+		attribute<Eur_ModelUnit> S_H_B    (BebouwingsObject) := VerbeterKosten_nu/S_H_B   * LeerCurves/Bpls/Curve;
+		attribute<Eur_ModelUnit> S_H_AP   (BebouwingsObject) := VerbeterKosten_nu/S_H_AP  * LeerCurves/Verder/Curve;
+		attribute<Eur_ModelUnit> S_T_B    (BebouwingsObject) := VerbeterKosten_nu/S_T_B   * LeerCurves/Bpls/Curve;
+		attribute<Eur_ModelUnit> S_T_AP   (BebouwingsObject) := VerbeterKosten_nu/S_T_AP  * LeerCurves/Verder/Curve;
+		attribute<Eur_ModelUnit> S_B_AP   (BebouwingsObject) := VerbeterKosten_nu/S_B_AP  * LeerCurves/Verder/Curve;
 
 		// eWP (S_AP_eWP) is vanaf hier incl LTAS (L); S_AP_eWP en L zijn wel nog langs dezelfde leercurve gelegd.
-		attribute<Eur_ModelUnit> LTAS     (BebouwingsObject) := VerbeterKosten_nu/LTAS* Opwekking/Leercurves/eWP  / 100[Percent];
-		attribute<Eur_ModelUnit> eWP      (BebouwingsObject) := VerbeterKosten_nu/eWP * Opwekking/Leercurves/eWP  / 100[Percent];
-		attribute<Eur_ModelUnit> EWV      (BebouwingsObject) := VerbeterKosten_nu/EWV * Opwekking/Leercurves/EWV  / 100[Percent];
+		attribute<Eur_ModelUnit> LTAS     (BebouwingsObject) := VerbeterKosten_nu/LTAS    * Leercurves/LTAS/Curve;
+		attribute<Eur_ModelUnit> eWP      (BebouwingsObject) := VerbeterKosten_nu/eWP     * Leercurves/eWPlw/Curve;
+		attribute<Eur_ModelUnit> EWV      (BebouwingsObject) := VerbeterKosten_nu/EWV     * Leercurves/EWV/Curve;
 
 		attribute<Eur_ModelUnit> S_AP_eWP (BebouwingsObject) := eWP + LTAS;
 		attribute<Eur_ModelUnit> S_H_eWP  (BebouwingsObject) := S_H_AP + S_AP_eWP;
@@ -448,46 +448,15 @@ container Sprongen
 			)
 		,	0[Eur_ModelUnit]
 		);
-
-	container LeerCurves
-	{
-		container Optimistisch 
-		{
-			parameter<Percent> Cmin   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Cmin);
-			parameter<Percent> Bpls   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Bpls);
-			parameter<Percent> Verder := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Optimistisch/Verder);
-		}
-		container Pessimistisch
-		{
-			parameter<Percent> Cmin   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Cmin);
-			parameter<Percent> Bpls   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Bpls);
-			parameter<Percent> Verder := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Schil/Pessimistisch/Verder);
-		}
-
-		parameter<Percent> Cmin         := Optimistisch/Cmin  * (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Cmin  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-		parameter<Percent> Bpls         := Optimistisch/Bpls  * (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Bpls  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-		parameter<Percent> Verder       := Optimistisch/Verder* (1[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/Verder* LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-
-		parameter<Ratio>   CminFactor   := (Cmin   /  100[Percent] * LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif   + (1.0[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif));
-		parameter<Ratio>   BplsFactor   := (Bpls   /  100[Percent] * LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif   + (1.0[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif));
-		parameter<Ratio>   VerderFactor := (Verder /  100[Percent] * LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif   + (1.0[Ratio] - LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif));
-
-		attribute<Percent> IndexSprong(BebouwingsObject) :=
-			(NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelC)
-				? Cmin
-				: (NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelB)
-					? Bpls
-					: Verder;
-	}
 	attribute<Eur_ModelUnit> kosten_sprong_w_nu (BebouwingsObject) := kosten_max * LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif + kosten_min * (1.0 - LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif);
 
 	attribute<Eur_ModelUnit> Ki_eWP_w           (BebouwingsObject) := Sprongen/eWP ? Verbeterkosten_i/S_AP_eWP : 0[Eur_ModelUnit];
 	attribute<Eur_ModelUnit> Ki_EWV_w           (BebouwingsObject) := Sprongen/EWV ? Verbeterkosten_i/S_AP_EWV : 0[Eur_ModelUnit];
 
-	attribute<Eur_ModelUnit> kosten_sprong_w    (BebouwingsObject) := 
-		kosten_sprong_w_nu * (LeerCurves/IndexSprong /  100[Percent] * LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif  + 
-		(1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveGebruikSchuif)
-	);
+	attribute<Ratio>			SprongCurve        (BebouwingsObject)	:=	(NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelC) ?	Leercurves/Cmin/Curve
+																		:	(NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelB) ?	Leercurves/Bpls/Curve
+																		:																	Leercurves/Verder/Curve;
+	attribute<Eur_ModelUnit>	kosten_sprong_w    (BebouwingsObject)	:=	kosten_sprong_w_nu * SprongCurve;
 
 	attribute<Eur_ModelUnit> Ki_gv_w            (BebouwingsObject) := kosten_sprong_w + StartingStateComponent/Sprongen/Ki_gv_w[StartingState_rel]; // Ki_eWP_w en Ki_EWV_w worden in sectie kosten apart opgenomen.
 	

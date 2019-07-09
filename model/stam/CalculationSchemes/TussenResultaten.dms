@@ -69,7 +69,7 @@ template TussenResultaten
 		parameter<Ratio> CurveMin       := 1.0 - CurveMax;
 
 		parameter<Ratio> LerenAan       := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/LeercurveGebruikSchuif;
-		parameter<Ratio> LerE_nuit       := 1.0 - LerenAan;
+		parameter<Ratio> LerenUit       := 1.0 - LerenAan;
 
 		parameter<Ratio> KostenMax      : = SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Kosten/VerbeterMinMaxSchuif;
 		parameter<Ratio> KostenMin      := 1.0 - KostenMax;
@@ -82,25 +82,13 @@ template TussenResultaten
 
 		parameter<Ratio> HuurVerlagingBijGebiedsOptie := SpecifiekeInstellingen/RuimtelijkeVraag/Lokaal/Generiek/Opbrengsten/HuurVerlagingBijGebiedsOptieSchuif;
 	}
-
-	container LeerCurves
-	{
-		attribute <Ratio> DataMin1 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Min;
-		attribute <Ratio> DataMax1 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C1Max;
-		attribute <Ratio> DataMin2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Min;
-		attribute <Ratio> DataMax2 (Classifications/ZichtJaar) := Kengetallen/Leercurves/C2Max;
-
-		parameter<Ratio> Curve1Min := interpolate_linear(ZichtJaar_jaar, Classifications/ZichtJaar/Jaar, DataMin1);
-		parameter<Ratio> Curve1Max := interpolate_linear(ZichtJaar_jaar, Classifications/ZichtJaar/Jaar, DataMax1);
-		parameter<Ratio> Curve2Min := interpolate_linear(ZichtJaar_jaar, Classifications/ZichtJaar/Jaar, DataMin2);
-		parameter<Ratio> Curve2Max := interpolate_linear(ZichtJaar_jaar, Classifications/ZichtJaar/Jaar, DataMax2);
-
-		parameter<Ratio> Base1     := Curve1Min * Schuiven/CurveMin + Curve1Max * Schuiven/CurveMax;
-		parameter<Ratio> Base2     := Curve2Min * Schuiven/CurveMin + Curve2Max * Schuiven/CurveMax;
-
-		parameter<Ratio> Curve1    := Base1 * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "overige onderdelen";
-		parameter<Ratio> Curve2    := Base2 * Schuiven/LerenAan + Schuiven/LerE_nuit, descr = "warmteleidingen en uitkoppeling van warmte";
-	}
+	
+	container LeerCurves :=
+		for_each_ne(Classifications/leercurves/name,
+					'MaakCurve('
+				'Kengetallen/Leercurves/Optimistisch/'+Classifications/leercurves/name+', Kengetallen/Leercurves/Pessimistisch/'+Classifications/leercurves/name+			
+			')'
+		);
 
 	#include<Prijzen.dms>
 
