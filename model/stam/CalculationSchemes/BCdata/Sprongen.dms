@@ -262,18 +262,18 @@ container Sprongen
 		attribute<Eur_yr> S_T_EWV  (BebouwingsObject) := S_AP_EWV;
 		attribute<Eur_yr> S_B_EWV  (BebouwingsObject) := S_AP_EWV;
 	}
-	container OnderhoudAdministratie_j // Onderhoud, nu ook meegewogen in LabelSprong_eg en LabelSprong_m
+	container OnderhoudAdministratie_j
 	{
-		attribute<Eur_yr> S_H_T    (BebouwingsObject) := VerbeterKosten_i/S_H_T  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> S_H_B    (BebouwingsObject) := VerbeterKosten_i/S_H_B  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> S_H_AP   (BebouwingsObject) := VerbeterKosten_i/S_H_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> S_T_B    (BebouwingsObject) := VerbeterKosten_i/S_T_B  * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> S_T_AP   (BebouwingsObject) := VerbeterKosten_i/S_T_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> S_B_AP   (BebouwingsObject) := VerbeterKosten_i/S_B_AP * Kengetallen/Onderhoud/Rj_GebouwVerbetering * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_H_T    (BebouwingsObject) := VerbeterKosten_i/S_H_T  * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_H_B    (BebouwingsObject) := VerbeterKosten_i/S_H_B  * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_H_AP   (BebouwingsObject) := VerbeterKosten_i/S_H_AP * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_T_B    (BebouwingsObject) := VerbeterKosten_i/S_T_B  * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_T_AP   (BebouwingsObject) := VerbeterKosten_i/S_T_AP * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> S_B_AP   (BebouwingsObject) := VerbeterKosten_i/S_B_AP * (Kengetallen/Onderhoud/R_GV_onderhoud + Kengetallen/Onderhoud/R_GV_admin) * RuimtelijkeVraagComponent/nrModelUnits;
 
-		attribute<Eur_yr> LTAS     (BebouwingsObject) := VerbeterKosten_i/LTAS * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * Kengetallen/Onderhoud/Rj_LokaleEWP       * RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_yr> EWV      (BebouwingsObject) := VerbeterKosten_i/EWV  * Kengetallen/Onderhoud/Rj_LokaleOpwekking * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> LTAS     (BebouwingsObject) := VerbeterKosten_i/LTAS * (Kengetallen/Onderhoud/R_LO_onderhoud     + Kengetallen/Onderhoud/R_LO_admin)     * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> eWP      (BebouwingsObject) := VerbeterKosten_i/eWP  * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin) * RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_yr> EWV      (BebouwingsObject) := VerbeterKosten_i/EWV  * (Kengetallen/Onderhoud/R_LO_onderhoud     + Kengetallen/Onderhoud/R_LO_admin)     * RuimtelijkeVraagComponent/nrModelUnits;
 
 		attribute<Eur_yr> S_AP_eWP (BebouwingsObject) := eWP + LTAS;
 		attribute<Eur_yr> S_H_eWP  (BebouwingsObject) := S_H_AP + S_AP_eWP;
@@ -365,8 +365,7 @@ container Sprongen
 				'( (VermedenKosten_eg_excl/@ + ComfortVerbetering_eg_excl/@) * EIA_Opties/R_SplitIncentiveFactor * BTW_Factor'
 				'- GebouwVerbetering_j/@ * S_gv                                   * BTW_Factor_gv'
 				'- LokaleOpwekking_j/@   * S_lo                                   * BTW_Factor'
-				'- OnderhoudAdministratie_j/@ * Kengetallen/Onderhoud/R_Onderhoud * (1.0 - EEA_Opties/S_Onderhoud)* BTW_Factor'
-				'- OnderhoudAdministratie_j/@ * Kengetallen/Onderhoud/R_Admin     * (1.0 - EEA_Opties/S_Admin)    * BTW_Factor'
+				'- OnderhoudAdministratie_j/@ * (1.0 - EEA_Opties/S_OenM) * BTW_Factor'
 				') * float64(KanSpringen/@)'
 				, '@'
 				, Classifications/LabelSprong/code
@@ -506,36 +505,19 @@ container Sprongen
 
 	attribute<Eur_yr> Kj_OnderhoudAdministratie (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 		add(
-			Ki_gv_w  * Kengetallen/Onderhoud/Rj_GebouwVerbetering
-		,	Ki_eWP_w * Kengetallen/Onderhoud/Rj_LokaleEWP 
-		, 	Ki_EWV_w * Kengetallen/Onderhoud/Rj_LokaleOpwekking 
+			Ki_gv_w  * (Kengetallen/Onderhoud/R_GV_onderhoud     + Kengetallen/Onderhoud/R_GV_admin)
+		,	Ki_eWP_w * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin)
+		, 	Ki_EWV_w * (Kengetallen/Onderhoud/R_LO_onderhoud     + Kengetallen/Onderhoud/R_LO_admin)
 		);
 
 	container subsidie
 	{
-		attribute<Eur> EIA30 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
-			add(
-				Ki_gv_w  * EIA_Opties/Rs_GebouwVerbetering
-			,	Ki_EWV_w * EIA_Opties/Rs_LokaleOpwekking
-			);
-
-		attribute<Eur> EIA15 (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
-			add(
-			 	Ki_eWP_w  * EIA_Opties/Rs_LokaleOpwekking
-			);
-
-		attribute<Eur_yr> EEA (BebouwingsObject) := Kj_OnderhoudAdministratie * 
-			add(
-				Kengetallen/Onderhoud/R_Onderhoud * EEA_Opties/S_Onderhoud 
-			,	Kengetallen/Onderhoud/R_Admin     * EEA_Opties/S_Admin
-			)
-		+	RuimtelijkeVraagComponent/nrModelUnits * 
-			add(
-				Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering 
-			,	Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
-			,	Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking 
-			)
-		;
+		attribute<Eur>		EIA30  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_gv_w  * EIA_Opties/Rs_GebouwVerbetering + Ki_EWV_w * EIA_Opties/Rs_LokaleOpwekking);
+		attribute<Eur>		EIA15  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_eWP_w  * EIA_Opties/Rs_LokaleOpwekking);
+		attribute<Eur_yr>	EEA    (BebouwingsObject)	:=	(Kj_OnderhoudAdministratie * EEA_Opties/S_OenM) + RuimtelijkeVraagComponent/nrModelUnits * add(
+																								Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering,
+																								Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking,
+																								Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking);
 	}
 	attribute<Yr> TVT (BebouwingsObject) := Ki_gv_w * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_excl;
 }

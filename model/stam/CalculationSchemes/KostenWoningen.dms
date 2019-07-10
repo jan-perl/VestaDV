@@ -69,7 +69,4 @@ template KostenWoningen
 	attribute<Eur> Ki_ge_pm      (PlanRegio) := sum(Ki_ge_pm_w * NrDeelnemers, BCdata/PlanRegio_rel) * float64(!IsNieuwbouw);
 
 	attribute<Eur_yr> Kj_hv      (PlanRegio) :=  =IsNieuwbouw?'const(0[Eur_yr      ], PlanRegio)':'sum(Kj_hv_o, BCdata/PlanRegio_rel)'; // huurverlaging, alleen gebruikt in flow en als kostenfactor
-
-	attribute<Eur_yr> Kj_wd_base (PlanRegio) := Ki_wd_sec * Kengetallen/Onderhoud/Rj_wd + Onderstation/Ki_wd * Kengetallen/Onderhoud/Rj_Onderstation;
-	attribute<Eur_yr> Kj_id_base (PlanRegio) := Ki_id * Kengetallen/Onderhoud/Rj_id;
 }

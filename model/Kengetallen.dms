@@ -10,21 +10,97 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 	#include <WarmteBronnen.dms>
 	#include <Leercurves.dms>
 	#include <Infra.dms>
-	container Onderhoud: Source = "Fo v7a C.3.1"
-	{
-		parameter<_yr> Rj_WOS                := 0.03 [_yr] / R_Onderhoud;
-		parameter<_yr> Rj_OnderStation       := 0.03 [_yr] / R_Onderhoud;
-		parameter<_yr> Rj_PrimairNet         := 0.01 [_yr] / R_Onderhoud;
-		parameter<_yr> Rj_SecundairNet       := 0.01 [_yr] / R_Onderhoud;
-		parameter<_yr> Rj_wd                 := 0.025[_yr] / R_Onderhoud;
-		parameter<_yr> Rj_id                 := 0.025[_yr]; // geen Admin.
-		parameter<_yr> Rj_Installatie:       [0.00];
-		parameter<_yr> Rj_GebouwVerbetering: [0.00];
-		parameter<_yr> Rj_LokaleOpwekking:   [0.05], Descr = "Werkt op Ki_ZonneBoiler, ZonPV, mWKK, hWP en EWV"; //TODO source naar FO 4.0
-		parameter<_yr> Rj_LokaleEWP:         [0.02], Descr = "onderhoudskosten individuele warmtepompen als percentage van investering", Source = "Validatiesessies startanalyse 2019"; // TODO source naar FO 4.0
 
-		parameter<Ratio> R_lv_Admin:         [0.1], Descr = "Fractie van vastrecht dat de leveancier aan administratiekosten besteedt", Source = "F.O. 3.0";
-		parameter<Ratio> R_Admin:            [0.5], Descr = "Fractie van totale O&M kosten die als administratieve kosten worden beschouwd; werkt op alle O&M behalve LokaleOpwekking", Source = "F.O. 3.0";
-		parameter<Ratio> R_Onderhoud         := 1.0 - R_Admin;
+	container Efficiency: Source = "Validatiesessies startanalyse 2019" //TODO source naar FO 4.0
+	{
+		parameter<Ratio>	Vermogenverlies_LT        :=	0.0500,		Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio>	Leidingverlies_LT         :=	0.2800,		Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
+		parameter<Ratio>	Pompenergie_Wnet          :=	0.0072,		Descr = "elektriciteitsverbruik distributiepompen warmtenetten";
+		parameter<Ratio>	Leidingverlies_WW_aardgas :=	0.0000,		Descr = "extra op te wekken warm water door verlies in leidingen binnen gebouw met aardgas";
+		parameter<Ratio>	Leidingverlies_WW_ewp     :=	0.0000,		Descr = "extra op te wekken warm water door verlies in leidingen binnen gebouw met ewp";
+		parameter<Ratio>	Leidingverlies_RV_aardgas :=	0.0000,		Descr = "extra op te wekken ruimteverwarming door verlies in leidingen binnen gebouw met aardgas";
+		parameter<Ratio>	Leidingverlies_RV_ewp     :=	0.0000,		Descr = "extra op te wekken ruimteverwarming door verlies in leidingen binnen gebouw met ewp";
+		
+		template Efficiency_LT
+		{
+			//parameters
+			parameter<Celsius>	T_ow;
+			parameter<Celsius>	T_sec;
+			//parameters	
+			
+			parameter<Float64> 		AandeelPrimairVermogen :=					0.30,				Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
+			parameter<Float64> 		AandeelHulpVermogen    :=	T_ow == T_sec ? 0.70 : 1.00,		Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
+			parameter<Float64> 		AandeelPrimairVolume   :=					1.00,				Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
+			parameter<Float64> 		AandeelHulpVolume      :=	T_ow == T_sec ? 0.30 : 1.00,		Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
+			
+			//Seasonal Performance Factors
+			parameter<Ratio> 		SPF_coll_W :=
+														T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30 TODO: gelijkstellen F.O. 4.0
+														T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 3.2 : // van 15 naar 50 TODO: gelijkstellen F.O. 4.0
+														T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.0 : // van 15 naar 70
+														T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
+														T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
+														T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.2 : // van 30 naar 70
+																									  1.0,					Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
+			parameter<Ratio> 		SPF_coll_K			: [30], 															Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
+			parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,																Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";
+			parameter<Float64> 		SPF_ind_B_rv  		:= T_sec <= 35[Celsius] ? 4.2 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label B";
+			parameter<Float64> 		SPF_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0,	Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label C, D of E";
+			parameter<Float64> 		SPF_ind_ww  		:= T_sec <= 55[Celsius] ? 2.5 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor tapwaterverwarming";
+			parameter<Ratio> 		SPF_ind_K			: [1],																Descr = "efficientie van een individuele warmtepomp bij koudelevering";
+			
+			// Aandeel eigen opwekking
+			parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
+			parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
+			parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
+			parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
+			parameter<Float64> 		AEO_ind_K			: [0.0],															Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";		
+		}
+	}
+	
+	container Aansluitwaarde: Source = "E- en G- infra notitie" //TODO source naar FO 4.0
+	{
+		parameter<float64>	GTF_woning_w   :=	0.55,			Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
+		parameter<float64>	GTF_woning_k   :=	0.55,			Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
+		parameter<float64>	GTF_util_w     :=	0.95,			Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
+		parameter<float64>	GTF_util_k     :=	0.95,			Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
+		
+		parameter<float64>	ASW_wc_LT      :=	6 [kW_Woning],	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
+		parameter<float64>	ASW_kc_LT      :=	2 [kW_Woning],	Descr = "aansluitwaarde koude eengezinswoning (gevraagde capaciteit)";
+		parameter<float64>	ASW_wa_LT      :=	5 [kW_Woning],	Descr = "aansluitwaarde warmte meergezinswoning (gevraagde capaciteit)";
+		parameter<float64>	ASW_ka_LT      :=	2 [kW_Woning],	Descr = "aansluitwaarde koude meergezinswoning (gevraagde capaciteit)";
+		parameter<float64>	ASW_wu_LT      :=	0.05  [kW_m2],	Descr = "aansluitwaarde warmte utiliteit per m2 (gevraagde capaciteit)";
+		parameter<float64>	ASW_ku_LT      :=	0.06  [kW_m2],	Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
+	}
+	
+	container Onderhoud: Source = "FO 3.0" //TODO source naar FO 4.0
+	{
+		parameter<_yr>	R_WOS_onderhoud    :=	0.030	[_yr],	Descr = "jaarlijkse onderhoudskosten warmteoverdrachtstations in warmtenetten";
+		parameter<_yr>	R_WOS_admin        :=	0.030	[_yr],	Descr = "jaarlijkse administratiekosten warmteoverdrachtstations in warmtenetten";
+		parameter<_yr>	R_OS_onderhoud     :=	0.030	[_yr],	Descr = "jaarlijkse onderhoudskosten onderstations in warmtenetten";
+		parameter<_yr>	R_OS_admin         :=	0.030	[_yr],	Descr = "jaarlijkse administratiekosten onderstations in warmtenetten";
+		parameter<_yr>	R_Sec_onderhoud    :=	0.030	[_yr],	Descr = "jaarlijkse onderhoudskosten secundaire leidingen GLTB in warmtenetten";
+		parameter<_yr>	R_Sec_admin        :=	0.030	[_yr],	Descr = "jaarlijkse administratiekosten secundaire leidingen GLTB in warmtenetten";
+		parameter<_yr>	R_pt_onderhoud     :=	0.030	[_yr],	Descr = "jaarlijkse onderhoudskosten primaire transportleidingen in warmtenetten";
+		parameter<_yr>	R_pt_admin         :=	0.030	[_yr],	Descr = "jaarlijkse administratiekosten primaire transportleidingen in warmtenetten";
+		parameter<_yr>	R_Inst_onderhoud   :=	0.030	[_yr],	Descr = "jaarlijkse onderhoudskosten installaties in warmtenetten";
+		parameter<_yr>	R_Inst_admin       :=	0.030	[_yr],	Descr = "jaarlijkse administratiekosten installaties in warmtenetten";
+		parameter<_yr>	R_GV_onderhoud     :=	0.000	[_yr],	Descr = "jaarlijkse onderhoudskosten gebouwverbetering";
+		parameter<_yr>	R_GV_admin         :=	0.000	[_yr],	Descr = "jaarlijkse administratiekosten gebouwverbetering";	
+		parameter<_yr>	R_LO_onderhoud     :=	0.025	[_yr],	Descr = "jaarlijkse onderhoudskosten Lokale Opwekking excl. warmtepompen";
+		parameter<_yr>	R_LO_admin         :=	0.000	[_yr],	Descr = "jaarlijkse administratiekosten Lokale Opwekking excl. warmtepompen";
+		parameter<_yr>	R_LO_EWP_onderhoud :=	0.020	[_yr],	Descr = "jaarlijkse onderhoudskosten warmtepompen in Lokale Opwekking";
+		parameter<_yr>	R_LO_EWP_admin     :=	0.000	[_yr],	Descr = "jaarlijkse administratiekosten warmtepompen in Lokale Opwekking";
+		parameter<_yr>	R_lv_Admin         :=	0.010	[_yr],	Descr = "Fractie van vastrecht dat de leveancier aan administratiekosten besteedt", Source = "F.O. 3.0";
+		Parameter<_yr>	R_id_onderhoud     :=	0.025	[_yr],	Descr = "jaarlijkse onderhoudskosten inpandige distributie als percentage van de initiele investering";
+		Parameter<_yr>	R_id_admin         :=	0.000	[_yr],	Descr = "jaarlijkse administratiekosten inpandige distributie als percentage van de initiele investering";
+		Parameter<_yr>	R_ow_onderhoud     :=	0.050	[_yr],	Descr = "jaarlijkse onderhoudskosten opwekking aan de bron als percentage van de initiele investering";
+		Parameter<_yr>	R_ow_admin         :=	0.025	[_yr],	Descr = "jaarlijkse administratiekosten opwekking aan de bron als percentage van de initiele investering";
+		Parameter<_yr>	R_wd_onderhoud     :=	0.025	[_yr],	Descr = "jaarlijkse onderhoudskosten wijkdistributie als percentage van de initiele investering";
+		Parameter<_yr>	R_wd_admin         :=	0.025	[_yr],	Descr = "jaarlijkse administratiekosten wijkdistributie als percentage van de initiele investering";
+		Parameter<_yr>	R_wpColl_onderhoud :=	0.035	[_yr],	Descr = "jaarlijkse onderhoudskostencollectieve warmtepomp als percentage van de initiele investering";
+		Parameter<_yr>	R_wpColl_admin     :=	0.025	[_yr],	Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
+		Parameter<_yr>	R_buffer_onderhoud :=	0.025	[_yr],	Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
+		Parameter<_yr>	R_buffer_admin     :=	0.025	[_yr],	Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
 	}
 }

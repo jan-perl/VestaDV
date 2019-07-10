@@ -6,7 +6,7 @@
 
 container Leercurves
 {
-	unit<uint8> ZichtJaar := Classifications/ZichtJaar;	//[Startjaar, 2020, 2030, 2040, 2050] (default)
+	unit<uint8> ZichtJaar := Classifications/ZichtJaar;	//[Startjaar, 2020, 2030, 2040, 2050] (default), wordt geinterpoleerd bij andere zichtjaarinstellingen
 	container Pessimistisch : Descr = "in het meest pessimistische geval is er geen kostendaling" //TODO: bronnen = F.O. 4.0
 	{
 		attribute<units/Percent>	mWKK   (ZichtJaar):		[100, 100, 100, 100, 100],		Descr = "pessimistische kostendaling micro warmte-kracht-koppeling installaties", Source = "Leercurves KA - achtergronddocument subtafel";
