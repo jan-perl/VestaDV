@@ -11,6 +11,45 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 	#include <Leercurves.dms>
 	#include <Infra.dms>
 
+	container Constanten
+	{
+		parameter<m>	L_max_bron_connectie :=	2000 [m],	Descr = "Afzonderlijke aantakkingen aan een bron-cluster LTnetten mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
+	}
+	
+	template Kosten_LT: Source = "Validatiesessies startanalyse 2019" //TODO source naar FO 4.0
+	{
+		//parameters
+		parameter<Ratio>	CurveInpandig;
+		parameter<Ratio>	CurveEWPww;
+		parameter<Ratio>	CurveLTnet;
+		parameter<Ratio>	CurveMTnet;
+		//parameters
+		
+		parameter<Eur_Woning>	Ki_afleverset   :=		CurveInpandig *   2000 [Eur_Woning],	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
+		parameter<Eur_Woning>	Ki_inpandig     :=		CurveInpandig *   2000 [Eur_Woning],	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
+		parameter<Eur_m2>		Ki_id_ugroot    :=		CurveInpandig *      0 [Eur_m2]    ,	Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
+		parameter<Eur_m2>		Ki_id_uklein    :=		CurveInpandig *     20 [Eur_m2]    ,	Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
+		
+		parameter<EUR_KW>		Ki_uitkoppel    :=		CurveLTnet    *    250 [EUR / KW]  ,	Descr = "Investeringskosten uitkoppeling bron bij bestaande bron";
+		parameter<EUR_KW>		Ki_eWP_coll     :=		CurveLTnet    *    680 [EUR / KW]  ,	Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
+		parameter<EUR>			Ki_Buffer       :=		CurveLTnet    *   1000 [EUR]       ,	Descr = "Voorlopige nvesteringskosten per gebouw voor aanleg buffervat voor seizoensopslag en dagopslag";
+		parameter<EUR>			Ki_Buffer_min   :=		CurveLTnet    * 100000 [EUR]       ,	Descr = "Minimale investering voor warmtebuffer bij de bron";
+		parameter<EUR_KW>		Ki_Doublet      :=		CurveLTnet    *   1133 [EUR / KW]  ,	Descr = "investering voor WKO doublet";
+		parameter<Eur_m2>		Ki_distr        :=		CurveLTnet    * Ki_wijkdist        ,	Descr = "Distributiekosten per proxy-m2 obv proxyarea voorbeeldproject in Zutphen";
+		parameter<Eur_m2>		Ki_wijkdist     :=		6000 [Eur_Woning] * 187[NrWoningen] / 15741[m2];
+		
+		parameter<EUR>			Ki_booster      :=		CurveEWPww    *   3500 [EUR]       ,	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur>			Ki_eWP_B        :=		CurveEWPww    *   4500 [Eur]       ,	Descr = "Investeringskosten elektrische warmtepomp bij woningen schillabel B, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur>			Ki_eWP_CDE      :=		CurveEWPww    *   7000 [Eur]       ,	Descr = "Investeringskosten elektrische warmtepomp bij woningen schillabel C, D of E, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
+		parameter<Eur_kW>		Ki_eWP_util     :=		CurveEWPww    *    700 [Eur_kW]    ,	Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
+		
+		//investeringskosten wijkdistributie
+		parameter<Eur_kW>		K_os_p_min      :=		CurveMTnet    *    120 [Eur_kW]    ,	Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_kW>		K_os_p_max      :=		CurveMTnet    *    150 [Eur_kW]    ,	Descr = "Investeringskosten onderstations in wijkdistributie";
+		parameter<Eur_kW>		Ki_onderstation :=		K_os_p_min * Schuiven/KostenMin + K_os_p_max * Schuiven/KostenMax;
+		
+	}
+	
 	container Efficiency: Source = "Validatiesessies startanalyse 2019" //TODO source naar FO 4.0
 	{
 		parameter<Ratio>	Vermogenverlies_LT        :=	0.0500,		Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";

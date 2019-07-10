@@ -83,15 +83,15 @@ template WKOUtilData
 		//investeringskosten inpandige systemen
 		attribute<Eur_m2>	K_wvu				(BebouwingsObject) :=
 			Lu > 7500[m2] 
-				?  constanten/Ki_id_ugroot[Eur_m2] 
+				?  Kostenkentallen/Ki_id_ugroot[Eur_m2] 
 				: Lu < 100[m2]  
-					? constanten/Ki_id_uklein[Eur_m2] 
-					: constanten/Ki_id_uklein[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),				Descr = "kosten inpandige warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
+					? Kostenkentallen/Ki_id_uklein[Eur_m2] 
+					: Kostenkentallen/Ki_id_uklein[Eur_m2] * (7500[m2] - Lu) / (7500[m2] - 100[m2]),				Descr = "kosten inpandige warmtevoorziening utiliteit(warmte en koude) Notitie issue 442";
 		
-		attribute<Eur>		Ki_eWP				(BebouwingsObject)	:=	max_elem(P_Warmte_sec, P_Koude_sec) * constanten/Ki_eWP_util;
+		attribute<Eur>		Ki_eWP				(BebouwingsObject)	:=	max_elem(P_Warmte_sec, P_Koude_sec) * Kostenkentallen/Ki_eWP_util;
 		attribute<Eur>		Ki_id_EigenOpwek	(BebouwingsObject)	:=	
-			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? constanten/Ki_Booster : 0.0[eur]) :
-			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelB ) ? ((T_sec <= 35[Celsius]) ? Ki_eWP : (T_sec <= 55[Celsius]) ? constanten/Ki_booster : 0.0[eur]) :
+			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/Aplus  ) ? ((T_sec <= 55[Celsius]) ? Kostenkentallen/Ki_Booster : 0.0[eur]) :
+			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelB ) ? ((T_sec <= 35[Celsius]) ? Ki_eWP : (T_sec <= 55[Celsius]) ? Kostenkentallen/Ki_booster : 0.0[eur]) :
 			(BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE ) ? ((T_sec <= 55[Celsius]) ? Ki_eWP : 0.0[eur]) 
 			: 1000000.0[eur],																				Descr = "investeringskosten voor eigen opwekkingsinstallatie, afhankelijk van temperatuurniveau en schillabel";
 		attribute<Eur>		Ki_id_LTAS			(BebouwingsObject)	:= (T_sec <= 55[Celsius]) ? (BCdata/Sprongen/VerbeterKosten_i/LTAS * Lu) : 0 [Eur],	Descr = "investeringskosten laag-temperatuur afgiftesysteem, e.g. LT-radiatoren of vloerverwarming";			
@@ -104,7 +104,7 @@ template WKOUtilData
 		attribute<Eur>		Ki_ge				(BebouwingsObject)	:= const(0[Eur], BebouwingsObject),		Descr = "geen gebouweigenaar-kosten bij utiliteit";
 
 		//investeringskosten wijkdistributie gebouwgerelateerd, zonder distributieleidingen
-		attribute<Eur>		Ki_wd_OS			(BebouwingsObject)	:= constanten/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
+		attribute<Eur>		Ki_wd_OS			(BebouwingsObject)	:= Kostenkentallen/Ki_OnderStation [Eur_KW] * P_sec [KW], Descr = "Investeringskosten onderstations";
 		attribute<m_aansl>	L_aansl				(BebouwingsObject)	:= /Invoer/RuimtelijkeData/buislengte/per_buurt/L_aansl_pand[BCdata/PlanRegio_rel];
 		container			LeidingKosten							:=	BuisKostenBC(BebouwingsObject, P_sec * 0.001[ MW / kW]);
 		attribute<Eur_m>	K_aansl_m			(BebouwingsObject)	:=	Leidingkosten/K_m;	

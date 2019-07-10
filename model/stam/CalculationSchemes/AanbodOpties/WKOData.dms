@@ -74,13 +74,13 @@ template WKOData
 	
 	//Investeringskosten wijkdistributie gebouwgerelateerd
 	attribute<Eur>			Ki_wd_gebouw		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_wd,															Descr = "investeringskosten wijkdistributie gebouwgerelateerd";
-	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * constanten/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
+	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * Kostenkentallen/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
 	attribute<Eur>			Ki_wd				(BebouwingsObject)	:=	Ki_wd_gebouw + Ki_wd_eWP;
 	attribute<Eur>			Oi_wd_EIA			(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
 	attribute<Eur_yr>		Kji_wd				(BebouwingsObject)	:=	(Ki_wd - Oi_wd_EIA) * NCW/wd28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten wijkdistributie";
 
 	//Investeringskosten opwekking gebouwgerelateerd
-	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	constanten/Ki_Doublet * P_sec_primair,													descr = "investeringskosten WKO doublet";
+	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Kostenkentallen/Ki_Doublet * P_sec_primair,													descr = "investeringskosten WKO doublet";
 	attribute<Eur>			Oi_ow_EIA			(BebouwingsObject)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/WKO,											Descr = "investeringssubsidie opwekking gebouwgerelateerd";
 	attribute<Eur_yr>		Kji_ow				(BebouwingsObject)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten bronzijde opwekking";
 	
