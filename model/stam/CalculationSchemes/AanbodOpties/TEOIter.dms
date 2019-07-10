@@ -38,8 +38,8 @@ template TEOIter
 		attribute<m>		LengthProxy	:=	min(Candidates/LengthProxy, RelPartitioning);
 
 		//investeringen TEO en WKO
-		attribute<Eur>		Ki_ow_WKO	:=	constanten/Ki_WKO_variabel * max_elem(P_Warmte, P_Koude) + constanten/Ki_WKO_vast;
-		attribute<Eur>		Ki_ow_TEO	:=	constanten/Ki_TEO_variabel * max_elem(P_Warmte, P_Koude) + constanten/Ki_TEO_vast;
+		attribute<Eur>		Ki_ow_WKO	:=	Kostenkentallen/Ki_WKO_variabel * max_elem(P_Warmte, P_Koude) + Kostenkentallen/Ki_WKO_vast;
+		attribute<Eur>		Ki_ow_TEO	:=	Kostenkentallen/Ki_TEO_variabel * max_elem(P_Warmte, P_Koude) + Kostenkentallen/Ki_TEO_vast;
 		attribute<Eur>		Ki_ow		:=	Ki_ow_WKO + Ki_ow_TEO;
 		
 		attribute<KW>		P_sec_KW	:=	max_elem(P_warmte, P_koude);
