@@ -122,7 +122,7 @@ template LtBronIter
 		
 		//TODO: select best order; reverse could be a T-connection
 		attribute<bool>       InCluster    := Near_rel[Near_rel] == id(ClusterSet); // reciprociteit?
-		attribute<bool>       CanCluster   := InCluster && Near_rel > id(ClusterSet) && Near_dist <= constanten/L_max_bron_connectie;
+		attribute<bool>       CanCluster   := InCluster && Near_rel > id(ClusterSet) && Near_dist <= Kengetallen/Constanten/L_max_bron_connectie;
 		attribute<bool>       NotInCluster := Not(InCluster);
 	}
 

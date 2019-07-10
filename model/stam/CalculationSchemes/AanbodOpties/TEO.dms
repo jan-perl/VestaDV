@@ -12,82 +12,45 @@ template TEO
 	container EnergiePrijzen;
 	parameter<units/yr_uint16> ZichtJaar;
 	// end case parameters
-	
-	container BebouwingsComponenten := BeginStatus/Bebouwing;
-	container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, Energieprijzen);
 
-	unit<uint8>  WkoComponent       := Classifications/WkoComponent;
-	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
-	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
+	unit<uint8>			WkoComponent      :=	Classifications/WkoComponent;
+	unit<uint32>		PlanRegio         :=	Invoer/SpecifiekeInstellingen/PlanRegio;
+	unit<uint8>			Prijzen_elec      :=	Prijzen/Elektriciteit/Staffel;
 	
-	parameter<Celsius>	T_ow				:	[20];
-		parameter<Celsius>	T_sec				:	[70];
-		parameter<bool>		CollectieveWP		:=	(T_ow < T_sec);
-		parameter<bool>		KoudeBeschikbaar	:=	false; // geen centraal opgewekte koude sbeschikbaar bij WKO-regeneratie uit TEO
+	parameter<Celsius>	T_ow              :=	20[Celsius]  ,	Descr = "brontemperatuur";
+	parameter<Celsius>	T_sec             :=	70[Celsius]  ,	Descr = "temperatuur in het secundaire net";
+	parameter<bool>		CollectieveWP     :=	T_ow < T_sec ,	Descr = "is er een collectieve warmtepomp nodig ja/nee";
+	parameter<bool>		KoudeBeschikbaar  :=	false        ,	Descr = "wordt er collectief koude geleverd ja/nee";
 
-	container efficiency := Kengetallen/Efficiency/Efficiency_LT(T_ow, T_sec);
+	container		BebouwingsComponenten :=	BeginStatus/Bebouwing;
+	container		KostenBaten           :=	CalculationSchemes/KostenBaten(BebouwingsComponenten, Energieprijzen);
+	container		Efficiency            :=	Kengetallen/Efficiency/Efficiency_LT(T_ow, T_sec);
+	container		Kostenkentallen       :=	Kengetallen/Kosten_LT(Leercurves/Inpand/Curve, Leercurves/eWPww/Curve, Leercurves/LTnet/Curve, Leercurves/MTnet/Curve);
+
+	container BestaandeWoningData :=	WKOWoningData(
+											BebouwingsComponenten/BestaandeWoning, 
+											KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
+											BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
+											KostenBaten/KostenD/Wonen/bw,
+											KoudeBeschikbaar);
+
+	container NieuwbouwWoningData :=	WKOWoningData(
+											BebouwingsComponenten/NieuwbouwWoning, 
+											KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
+											BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
+											KostenBaten/KostenD/Wonen/nw,
+											KoudeBeschikbaar);
+
+	container BestaandeUtilData :=		WKOUtilData(
+											BebouwingsComponenten/BestaandeUtil, 
+											KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
+											KoudeBeschikbaar);
 	
-	container constanten {
-		
-		//investeringskosten technische componenten
-		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/LTnet/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
-		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/LTnet/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/LTnet/Curve * 	3500	[EUR], 			Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
-		parameter<Eur>			Ki_WKO_vast			:= Leercurves/LTnet/Curve * 	100000	[Eur],			Descr = "bron zonder distributiekosten";
-		parameter<Eur_kW>		Ki_WKO_variabel		:= Leercurves/LTnet/Curve * 	220		[Eur_kW], 		Descr = "bron zonder distributiekosten";
-		parameter<Eur>			Ki_TEO_vast			:= Leercurves/LTnet/Curve * 	150000	[Eur],			Descr = "bron oppervlaktewater warmtewisselaar";
-		parameter<Eur_kW>		Ki_TEO_variabel		:= Leercurves/LTnet/Curve * 	115		[Eur_kW], 		Descr = "bron oppervlaktewater warmtewisselaar";
-		parameter<Eur_kW>		Ki_Doublet			:= Ki_WKO_variabel + Ki_TEO_variabel, 			Descr = "bron oppervlaktewater warmtewisselaar";
-		parameter<Eur_m2>		Ki_distr			:= Leercurves/LTnet/Curve * 	6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2] , Descr = "Distributiekosten per proxy-m2 obv proxy-area voorbeeldproject in Zutphen, zie %projdir%/data/adres_Zutphen.ods";
-		parameter<EUR_KW> 		Ki_onderstation		:= Leercurves/LTnet/Curve * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
-		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/LTnet/Curve * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
-		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/LTnet/Curve * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
-		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/LTnet/Curve * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
-		parameter<Eur>			Ki_aansl_util		:= Leercurves/LTnet/Curve * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
-		parameter<Eur_m2> 		Ki_id_ugroot     	:= Leercurves/LTnet/Curve * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
-		parameter<Eur_m2> 		Ki_id_uklein     	:= Leercurves/LTnet/Curve * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
-		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/LTnet/Curve * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
-		parameter<Eur>			Ki_eWP_B			:= Leercurves/LTnet/Curve * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
-		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/LTnet/Curve * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
-
-		
-		parameter<Eur>			Ki_ow_vast		    := Ki_TEO_vast + Ki_WKO_vast;
-		parameter<Eur_kW>		Ki_ow_variabel      := Ki_Doublet + Ki_onderstation;
-	}
+	container NieuwbouwUtilData :=		WKOUtilData(
+											BebouwingsComponenten/NieuwbouwUtil, 
+											KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
+											KoudeBeschikbaar);
 	
-	container BestaandeWoningData :=
-		WKOWoningData(
-			BebouwingsComponenten/BestaandeWoning, 
-			KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
-			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
-			KostenBaten/KostenD/Wonen/bw,
-			KoudeBeschikbaar
-		);
-
-	container NieuwbouwWoningData :=
-		WKOWoningData(
-			BebouwingsComponenten/NieuwbouwWoning, 
-			KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
-			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
-			KostenBaten/KostenD/Wonen/nw,
-			KoudeBeschikbaar
-		);
-
-	container BestaandeUtilData :=
-		WKOUtilData(
-			BebouwingsComponenten/BestaandeUtil, 
-			KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
-			KoudeBeschikbaar
-		);
-	
-	container NieuwbouwUtilData :=
-		WKOUtilData(
-			BebouwingsComponenten/NieuwbouwUtil, 
-			KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
-			KoudeBeschikbaar
-		);
-	
-
 	container CandidateSets := for_each_ne(WkoComponent/Name, 'TEOData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', T_sec)');
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
@@ -150,12 +113,12 @@ template TEO
 		attribute<Eur_m>	K_m_brondist	  := (K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 		attribute<Eur>		Ki_wd_bronleiding := LengthProxy * K_m_brondist;
 		attribute<Eur>		Ki_wd             := Ki_wd_bronleiding + Ki_wd_wijkleiding;
-		attribute<Eur>		Ki_ow_vast        := const(constanten/Ki_ow_vast, .);
+		attribute<Eur>		Ki_ow_vast        := const(KostenKentallen/Ki_ow_vast, .);
 		
 		attribute<Eur_yr>    Oji_netto    := Contributiemarge 
 			- Ki_wd * ((NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) 
 						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_wd_onderhoud + Kengetallen/Onderhoud/R_wd_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  )))
-			- constanten/Ki_ow_vast * ((NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) 
+			- Ki_ow_vast * ((NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) 
 						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_ow_onderhoud + Kengetallen/Onderhoud/R_ow_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO )));
 		
 		attribute<bool> Afweging := Oji_netto > 0[Eur_yr];
