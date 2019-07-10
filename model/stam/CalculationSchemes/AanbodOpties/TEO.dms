@@ -113,13 +113,13 @@ template TEO
 		attribute<Eur_m>	K_m_brondist	  := (K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 		attribute<Eur>		Ki_wd_bronleiding := LengthProxy * K_m_brondist;
 		attribute<Eur>		Ki_wd             := Ki_wd_bronleiding + Ki_wd_wijkleiding;
-		attribute<Eur>		Ki_ow_vast        := const(KostenKentallen/Ki_ow_vast, .);
+		attribute<Eur>		Ki_ow_vast        := const(KostenKentallen/Ki_ow_vast_TEO, .);
 		
 		attribute<Eur_yr>    Oji_netto    := Contributiemarge 
 			- Ki_wd * ((NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) 
 						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_wd_onderhoud + Kengetallen/Onderhoud/R_wd_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  )))
 			- Ki_ow_vast * ((NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) 
-						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_ow_onderhoud + Kengetallen/Onderhoud/R_ow_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO )));
+						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_TEO_onderhoud + Kengetallen/Onderhoud/R_TEO_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO )));
 		
 		attribute<bool> Afweging := Oji_netto > 0[Eur_yr];
 	}

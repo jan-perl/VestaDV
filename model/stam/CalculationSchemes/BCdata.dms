@@ -244,7 +244,7 @@ template BCdata
 	
 			IsNieuwbouw 
 		|| (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010) 
-		|| (EnergieLabel/CurrValue == Classifications/EnergieLabel/V/Aplus);
+		|| (EnergieLabel/CurrValue == Classifications/EnergieLabel/V/LabelB);
 
 	container Opwekking
 	{

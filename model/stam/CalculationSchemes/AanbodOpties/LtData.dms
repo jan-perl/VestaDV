@@ -66,7 +66,7 @@ template LtData
 	
 	//Investeringskosten wijkdistributie gebouwgerelateerd
 	attribute<Eur>			Ki_wd_gebouw		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_wd,															Descr = "investeringskosten wijkdistributie gebouwgerelateerd";
-	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * Kostenkentallen/Ki_eWP_coll : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
+	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * (Kostenkentallen/Ki_eWP_coll + Kostenkentallen/Ki_WOS) : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
 	attribute<Eur>			Ki_wd				(BebouwingsObject)	:=	Ki_wd_gebouw + Ki_wd_eWP;
 	attribute<Eur>			Oi_wd_EIA			(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
 	attribute<Eur_yr>		Kji_wd				(BebouwingsObject)	:=	(Ki_wd - Oi_wd_EIA) * NCW/wd28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten wijkdistributie";
