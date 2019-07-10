@@ -11,7 +11,7 @@
 //                                                                                                           //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-container Referentie
+container Strategie_1
 {
 	#include <%projDir%/model/Units.dms>
 	#include <%projDir%/model/Geography.dms>

@@ -29,11 +29,18 @@ container Resultaten :=
 
 
 
-	container Exports: isHidden = "True"
+	container Exports: using = "geography"
 	{
 		unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
-		unit<uint32> BebouwingsObject    := TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/BebouwingsObject;
+		unit<uint32> BestaandeWoningen   := /Invoer/RuimtelijkeData/Bebouwing/Impl/BestaandeWoning;
+		unit<uint32> BestaandeUtil       := /Invoer/RuimtelijkeData/Bebouwing/Impl/BestaandeUtil;
 		
+		container FolderInfo: isHidden = "True"
+		{
+			parameter<string> RunName      := Expand(., '%configName%');
+			parameter<string> OutputFolder := '%localDataProjDir%/Results/'+ RunName;
+		}	
+
 		container ESDL
 		{
 			// parameter<string> Generate_SY             := /Resultaten/StartJaar/AllocExports/PlanRegioResults/export_ESDL/result;
@@ -41,43 +48,37 @@ container Resultaten :=
 			// parameter<string> Generate_2030           := /Resultaten/R2_2030/AllocExports/PlanRegioResults/export_ESDL/result;
 			// parameter<string> Generate_2040           := /Resultaten/R3_2040/AllocExports/PlanRegioResults/export_ESDL/result;
 			// parameter<string> Generate_2050           := /Resultaten/R4_2050/AllocExports/PlanRegioResults/export_ESDL/result;
-		
-			container PerBuurt
+			
+			parameter<string> Generate_PerPlanRegio           := Export_PerPlanRegio/result;
+			
+			Unit<UInt32>  PerPlanRegio := PlanRegio
 			{
 				attribute<string>     BU_CODE                    (PlanRegio)  := PlanRegio/BU_CODE;
 				attribute<string>     WK_CODE                    (PlanRegio)  := PlanRegio/WK_CODE;
 				attribute<string>     Gemeente                   (PlanRegio)  := PlanRegio/GM_NAAM;
 				attribute<string>     RES                        (PlanRegio)  := PlanRegio/ER_NAAM;
 				attribute<string>     Provincie                  (PlanRegio)  := PlanRegio/PROV_NAAM;
-				attribute<rdc> Aantal_woningen            (BebouwingsObject)  := BebouwingsObject/point;
-				// attribute<NrWoningen> Aantal_woningen            (PlanRegio)  := count(/TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/BebouwingsObject/point, /TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/PlanRegio_rel)[NrWoningen];
-				// attribute<NrUtil>     Aantal_utiliteiten         (PlanRegio);
-				// attribute<NrWoningen> Aantal_woning_equivalenten (PlanRegio);
+				attribute<NrWoningen> Aantal_woningen            (PlanRegio)  := count(BestaandeWoningen/point, /TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/PlanRegio_rel)[NrWoningen];
+				attribute<NrUtil>     Aantal_utiliteiten         (PlanRegio)  := count(BestaandeUtil/point, /TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeUtil/PlanRegio_rel)[NrUtil];
+				attribute<GJ_yr>      Vraag_Aardgas              (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/Metervraag/Aardgas,       /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[GJ_yr];
+				attribute<GJ_yr>      Vraag_MT_Warmte            (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/Metervraag/WarmteMT,      /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[GJ_yr];
+				attribute<GJ_yr>      Vraag_LT_Warmte            (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/Metervraag/WarmteLT,      /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[GJ_yr];
+				attribute<GJ_yr>      Vraag_Elektriciteit        (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/Metervraag/Elektriciteit, /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[GJ_yr];
+				attribute<GJ_yr>      Vraag_Warmte_totaal        (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/Metervraag/Warmtetotaal , /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[GJ_yr];
+				attribute<kg_yr>      CO2_uitstoot               (PlanRegio)  := sum(TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/CO2/Aardgas ,             /TussenResultaten/R2_2030/AllocatieResultaten/BestaandeWoning/PlanRegio_BebouwingsObject_rel)[kg_yr];
+				attribute<Eur_yr>     Maatschappelijke_kosten    (PlanRegio)  := Resultaten/R2_2030/maatschappelijk/Kmi_Totaal;
+			} 
 			
-				//Per Strategie, startsituatie, referentiescenario
-				
-				// attribute<m3_yr>  Vraag_Aardgas;
-				// attribute<m3_yr>  Vraag_Groengas;
-				// attribute<GJ_yr>  Vraag_MT_Warmte;
-				// attribute<GJ_yr>  Vraag_LT_Warmte;
-				// attribute<kW_yr>  Vraag_Elektriciteit;
-				// attribute<kW_yr>  Vraag_Elektriciteit_tbv_Warmte;
-				// attribute<GJ_yr>  Vraag_Warmte_totaal;
-				// attribute<ton_yr> CO2_uitstoot;
-				// attribute<Eur_yr> Maatschappelijke_kosten;
-			}
-		
-		
-		
-		
+			container export_PerPlanRegio := model/CalculationSchemes/Rapportage/WriteTableToCSV(PerPlanRegio, SubItem_PropValues(PerPlanRegio,'name'), FolderInfo/OutputFolder+'/PerPlanRegio_ESDL.csv');
+			
 		}
 	
 	
-		parameter<String> GenerateAllIndicatoren := 'Ready', 
-			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/Generate/All', ';')", IsHidden = "True";
+		// parameter<String> GenerateAllIndicatoren := 'Ready', 
+			// ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/Generate/All', ';')", IsHidden = "True";
 
-		parameter<string> GenerateAllAlloc := 'ready', 
-			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
+		// parameter<string> GenerateAllAlloc := 'ready', 
+			// ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
 	
 		container t510_indicator_results_test
 		{

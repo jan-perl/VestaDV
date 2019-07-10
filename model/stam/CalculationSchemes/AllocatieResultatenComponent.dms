@@ -14,7 +14,7 @@ template AllocatieResultatenComponent
 	parameter<string>                      BebouwingsComponent_name;
 	// end case parameters
 	
-	attribute<Classifications/WarmteOptie> PerPlanRegioWarmteAllocatie (PlanRegio) := modus(WarmteAllocatie, PlanRegio_BebouwingsObject_rel)[Classifications/WarmteOptie], DialogType = "map", DialogData = "PlanRegio/Geometry";
+	attribute<Classifications/WarmteOptie> PerPlanRegioWarmteOptie (PlanRegio) := modus(WarmteAllocatie, PlanRegio_BebouwingsObject_rel)[Classifications/WarmteOptie];
 
 	container                                         RuimtelijkeVraagComponent                           := BCdata/RuimtelijkeVraagComponent;
 	container                                         VraagKentallen                                      := BCdata/VraagKentallen;
