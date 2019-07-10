@@ -128,19 +128,21 @@ template WKO
 	{
 		attribute<rdc_meter> point := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+', LastClusters/point)';
 		attribute<string>    Label := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+', LastClusters/Label)';
-//		attribute<Eur>       Ki_ow := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_ow')+', LastClusters/Ki_ow)';
-		attribute<Eur>       Ki_wd := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+', LastClusters/Ki_wd)';
 		attribute<.>         Partitioning (UnitedCandidates) := ='value(MakeDefined('+asItemList('Iterations/'+Iteration/Name+'/Selected/Partitioning+Iteration/CumulNrPrevSelectedObjects['+string(id(Iteration))+']')+', LastClusters/Partitioning + sum(Iteration/NrSelectedObjects)),.)';
 		
 		attribute<kW>        P_Warmte := sum(UnitedCandidates/P_Warmte, Partitioning);
 		attribute<kW>        P_Koude  := sum(UnitedCandidates/P_Warmte, Partitioning);
-		attribute<Eur>       Ki_ow := constanten/Ki_ow_variabel * max_elem(P_Warmte, P_Koude) + constanten/Ki_ow_vast;
 		
 		attribute<Eur_yr>    Contributiemarge := sum(UnitedCandidates/Contributiemarge, Partitioning);
+
+		attribute<Eur>       Ki_wd := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+', LastClusters/Ki_wd)';
+		attribute<Eur>		 Ki_ow_vast        := const(constanten/Ki_ow_vast, .);
 		
 		attribute<Eur_yr>    Oji_netto    := Contributiemarge 
-			- Ki_wd * (NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  ))
-			- Ki_ow * (NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO ));
+			- Ki_wd * ((NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) 
+						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_wd_onderhoud + Kengetallen/Onderhoud/R_wd_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  )))
+			- constanten/Ki_ow_vast * ((NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) 
+						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_ow_onderhoud + Kengetallen/Onderhoud/R_ow_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO )));
 		
 		attribute<bool>      Afweging := Oji_netto > 0[Eur_yr];
 	}
@@ -169,8 +171,8 @@ template WKO
 		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 		attribute<RendabelCluster> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
 		attribute<Eur>      Ki_id        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_id')+')';
-		attribute<Eur>      Ki_ow_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_ow[RendabelCluster/nr_OrgEntity]);
-		attribute<Eur>      Ki_wd_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd[RendabelCluster/nr_OrgEntity]);
+		attribute<Eur>      Ki_ow_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_ow_vast[RendabelCluster/nr_OrgEntity]);
+		attribute<Eur>      Ki_wd_Part   := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd     [RendabelCluster/nr_OrgEntity]);
 	}
 
 	container Results := BeginStatus
@@ -187,7 +189,8 @@ template WKO
 			container VorigePeriode := BeginStatus/Wko;
 			
 			unit<uint32> Cluster := Selected;
-			container Oi_Aansl		:= for_each_nedv(WkoComponent/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);
+
+			container Oi_Aansl		:= for_each_nedv(WkoComponent/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/nieuw/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);
 			container Oj_Vastrecht	:= for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Vastrecht', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
 			container Oj_Verbruik	:= for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Verbruik', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
 			container Om_comfort	:= for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Totaal/Om_comfort' , '@W@', WkoComponent/Name), PlanRegio, Eur_yr);
