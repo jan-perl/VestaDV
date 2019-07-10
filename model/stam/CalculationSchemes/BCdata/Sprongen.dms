@@ -33,6 +33,15 @@ container Sprongen
 		attribute<units/GJ_yr> S_T_AP (BebouwingsObject) := S_H_AP - S_H_T;
 		attribute<units/GJ_yr> S_B_AP (BebouwingsObject) := S_H_AP - S_H_B;
 	}
+	container ExtraVentilatie
+	{
+		attribute<units/GJ_yr> S_H_T  (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_H_T/ExtraVentilatie  [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+		attribute<units/GJ_yr> S_H_B  (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_H_B/ExtraVentilatie  [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+		attribute<units/GJ_yr> S_H_AP (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_H_AP/ExtraVentilatie [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+		attribute<units/GJ_yr> S_T_B  (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_T_B/ExtraVentilatie  [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+		attribute<units/GJ_yr> S_T_AP (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_T_AP/ExtraVentilatie [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+		attribute<units/GJ_yr> S_B_AP (BebouwingsObject) :=	EnergieVraagModellen/Verbeteringen/S_B_AP/ExtraVentilatie [Model_rel] * RuimtelijkeVraagComponent/nrOppunits * float64(energielabel/LastValue > /Classifications/energielabel/V/LabelB);
+	}
 	container ComfortVerbetering
 	{
 		attribute<units/GJ_yr> S_H_T  (BebouwingsObject) := VermedenGas/S_H_T * EnergieVraagModellen/Verbeteringen/S_H_T/ComfortFactor_stap [Model_rel];
@@ -42,7 +51,6 @@ container Sprongen
 		attribute<units/GJ_yr> S_T_AP (BebouwingsObject) := VermedenGas/S_T_AP* EnergieVraagModellen/Verbeteringen/S_T_AP/ComfortFactor_stap[Model_rel];
 		attribute<units/GJ_yr> S_B_AP (BebouwingsObject) := VermedenGas/S_B_AP *EnergieVraagModellen/Verbeteringen/S_B_AP/ComfortFactor_stap[Model_rel];
 	}
-
 	container VermedenKosten_eg_excl
 	{
 		attribute<Eur_GJ> AardgasPrijs       (BebouwingsObject) := PrijzenAardgas/KGJ_eindgebruik_excl[classify(VermedenGas/RV_vast + VermedenGas/RV_var +VermedenGas/WW, PrijzenAardgas/ClassBreak)];
@@ -158,25 +166,40 @@ container Sprongen
 	}
 	container VerbeterKostenMin_nu
 	{
-		attribute<Eur_ModelUnit> S_H_T  (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_T/kosten_min [Model_rel];
-		attribute<Eur_ModelUnit> S_H_B  (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_B/kosten_min [Model_rel];
-		attribute<Eur_ModelUnit> S_H_AP (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min[Model_rel];
-		attribute<Eur_ModelUnit> S_T_B  (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_T_B/kosten_min [Model_rel];
-		attribute<Eur_ModelUnit> S_T_AP (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min[Model_rel];
-		attribute<Eur_ModelUnit> S_B_AP (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min[Model_rel];
-
-		attribute<Eur_ModelUnit> LTAS   (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_min[Model_rel];
-		attribute<Eur_ModelUnit> eWP    (BebouwingsObject) := const(VraagKentallen/eWP/InvesteringsKosten_min, BebouwingsObject);
-		attribute<Eur_ModelUnit> EWV    (BebouwingsObject) := (10[Percent] / 100[Percent]) * 192[Eur_m2] * EnergieVraagModellen/area/min[Model_rel];
+		attribute<m2>				opp				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrOppunits;
+		attribute<Eur>				S_H_T_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_T/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_T			(BebouwingsObject)	:=	(S_H_T_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_T/kosten_min_vast[Model_rel];
+		attribute<Eur>				S_H_B_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_B/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_B			(BebouwingsObject)	:=	(S_H_B_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_B/kosten_min_vast[Model_rel];
+		attribute<Eur>				S_H_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_AP			(BebouwingsObject)	:=	(S_H_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min_vast[Model_rel];
+		attribute<Eur>				S_T_B_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_T_B/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_T_B			(BebouwingsObject)	:=	(S_T_B_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_T_B/kosten_min_vast[Model_rel];
+		attribute<Eur>				S_T_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_T_AP			(BebouwingsObject)	:=	(S_T_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min_vast[Model_rel];
+		attribute<Eur>				S_B_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_B_AP			(BebouwingsObject)	:=	(S_B_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min_vast[Model_rel];
+	
+		// kosten excl Investeringskosten eWP want deze moeten langs een andere leercurve gelegd worden.
+		attribute<Eur_ModelUnit> LTAS(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_max[Model_rel];
+		attribute<Eur_ModelUnit> eWP (BebouwingsObject) := const(VraagKentallen/eWP/InvesteringsKosten_max, BebouwingsObject);
+		attribute<Eur_ModelUnit> EWV (BebouwingsObject) := (75[Percent] / 100[Percent]) * 352[Eur_m2] * EnergieVraagModellen/area/max[Model_rel];
 	}
 	container VerbeterKostenMax_nu
 	{
-		attribute<Eur_ModelUnit> S_H_T (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_T/kosten_max [Model_rel];
-		attribute<Eur_ModelUnit> S_H_B (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_B/kosten_max [Model_rel];
-		attribute<Eur_ModelUnit> S_H_AP(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max[Model_rel];
-		attribute<Eur_ModelUnit> S_T_B (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_T_B/kosten_max [Model_rel];
-		attribute<Eur_ModelUnit> S_T_AP(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max[Model_rel];
-		attribute<Eur_ModelUnit> S_B_AP(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max[Model_rel];
+		attribute<m2>				opp				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrOppunits;
+		attribute<Eur>				S_H_T_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_T/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_T			(BebouwingsObject)	:=	(S_H_T_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_T/kosten_max_vast[Model_rel];
+		attribute<Eur>				S_H_B_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_B/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_B			(BebouwingsObject)	:=	(S_H_B_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_B/kosten_max_vast[Model_rel];
+		attribute<Eur>				S_H_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_H_AP			(BebouwingsObject)	:=	(S_H_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max_vast[Model_rel];
+		attribute<Eur>				S_T_B_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_T_B/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_T_B			(BebouwingsObject)	:=	(S_T_B_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_T_B/kosten_max_vast[Model_rel];
+		attribute<Eur>				S_T_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_T_AP			(BebouwingsObject)	:=	(S_T_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max_vast[Model_rel];
+		attribute<Eur>				S_B_AP_var		(BebouwingsObject)	:=	EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max_var[Model_rel] * opp;
+		attribute<Eur_ModelUnit>	S_B_AP			(BebouwingsObject)	:=	(S_B_AP_var / RuimtelijkeVraagComponent/nrModelUnits) + EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max_vast[Model_rel];
 
 		// kosten excl Investeringskosten eWP want deze moeten langs een andere leercurve gelegd worden.
 		attribute<Eur_ModelUnit> LTAS(BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_max[Model_rel];
@@ -196,6 +219,43 @@ container Sprongen
 		attribute<Eur_ModelUnit> eWP    (BebouwingsObject) := VerbeterKostenMax_nu/eWP  * Schuiven/KostenMax + VerbeterKostenMin_nu/eWP  * Schuiven/KostenMin;
 		attribute<Eur_ModelUnit> EWV    (BebouwingsObject) := VerbeterKostenMax_nu/EWV  * Schuiven/KostenMax + VerbeterKostenMin_nu/EWV  * Schuiven/KostenMin;
 	}
+	container VentilatieKosten_eg
+	{
+		attribute<Eur_GJ>	ElektriciteitPrijs (BebouwingsObject)	:=	PrijzenElektriciteit/KGJ_eindgebruik_excl[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
+		attribute<Eur_yr>	S_H_T              (BebouwingsObject)	:=	ExtraVentilatie/S_H_T  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_B              (BebouwingsObject)	:=	ExtraVentilatie/S_H_B  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_H_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_T_B              (BebouwingsObject)	:=	ExtraVentilatie/S_T_B  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_T_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_T_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_B_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_B_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_eWP            (BebouwingsObject)	:=	S_H_AP;
+		attribute<Eur_yr>	S_T_eWP            (BebouwingsObject)	:=	S_T_AP;
+		attribute<Eur_yr>	S_B_eWP            (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_AP_eWP           (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_H_EWV            (BebouwingsObject)	:=	S_H_AP;
+		attribute<Eur_yr>	S_T_EWV            (BebouwingsObject)	:=	S_T_AP;
+		attribute<Eur_yr>	S_B_EWV            (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_AP_EWV           (BebouwingsObject)	:=	S_B_AP;
+	}
+	container VentilatieKosten_m
+	{
+		attribute<Eur_GJ>	ElektriciteitPrijs (BebouwingsObject)	:=	PrijzenElektriciteit/KGJ_maatschappelijk[classify(Functioneel/Apparatuur+Functioneel/PompEnergie, PrijzenElektriciteit/ClassBreak)];
+		attribute<Eur_yr>	S_H_T              (BebouwingsObject)	:=	ExtraVentilatie/S_H_T  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_B              (BebouwingsObject)	:=	ExtraVentilatie/S_H_B  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_H_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_T_B              (BebouwingsObject)	:=	ExtraVentilatie/S_T_B  * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_T_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_T_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_B_AP             (BebouwingsObject)	:=	ExtraVentilatie/S_B_AP * ElektriciteitPrijs;
+		attribute<Eur_yr>	S_H_eWP            (BebouwingsObject)	:=	S_H_AP;
+		attribute<Eur_yr>	S_T_eWP            (BebouwingsObject)	:=	S_T_AP;
+		attribute<Eur_yr>	S_B_eWP            (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_AP_eWP           (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_H_EWV            (BebouwingsObject)	:=	S_H_AP;
+		attribute<Eur_yr>	S_T_EWV            (BebouwingsObject)	:=	S_T_AP;
+		attribute<Eur_yr>	S_B_EWV            (BebouwingsObject)	:=	S_B_AP;
+		attribute<Eur_yr>	S_AP_EWV           (BebouwingsObject)	:=	S_B_AP;
+	}
+	
 	container VerbeterKosten_i
 	{
 		attribute<Eur_ModelUnit> S_H_T    (BebouwingsObject) := VerbeterKosten_nu/S_H_T   * LeerCurves/Cmin/Curve;
@@ -338,6 +398,7 @@ container Sprongen
 				'( VermedenKosten_m/@ '
 				'+ ComfortVerbetering_m/@ '
 				'- VerbeterKosten_m/@'
+				'- VentilatieKosten_m/@'
 				'- OnderhoudAdministratie_j/@'
 				') * float64(KanSpringen/@)'
 				, '@'
@@ -365,6 +426,7 @@ container Sprongen
 				'( (VermedenKosten_eg_excl/@ + ComfortVerbetering_eg_excl/@) * EIA_Opties/R_SplitIncentiveFactor * BTW_Factor'
 				'- GebouwVerbetering_j/@ * S_gv                                   * BTW_Factor_gv'
 				'- LokaleOpwekking_j/@   * S_lo                                   * BTW_Factor'
+				'- VentilatieKosten_eg/@                                          * BTW_Factor'
 				'- OnderhoudAdministratie_j/@ * (1.0 - EEA_Opties/S_OenM) * BTW_Factor'
 				') * float64(KanSpringen/@)'
 				, '@'
@@ -410,19 +472,19 @@ container Sprongen
 	attribute<Eur_ModelUnit> kosten_min (BebouwingsObject) := 
 		MakeDefined(
 			merge(LabelSprong, Eur_ModelUnit, 
-				EnergieVraagModellen/Verbeteringen/S_H_T/kosten_min [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_B/kosten_min [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_B/kosten_min [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min[Model_rel],
+				Sprongen/VerbeterKostenMin_nu/S_H_T,
+				Sprongen/VerbeterKostenMin_nu/S_H_B,
+				Sprongen/VerbeterKostenMin_nu/S_H_AP,
+				Sprongen/VerbeterKostenMin_nu/S_T_B,
+				Sprongen/VerbeterKostenMin_nu/S_T_AP,
+				Sprongen/VerbeterKostenMin_nu/S_B_AP,
+				Sprongen/VerbeterKostenMin_nu/S_H_AP,
+				Sprongen/VerbeterKostenMin_nu/S_T_AP,
+				Sprongen/VerbeterKostenMin_nu/S_B_AP,
 				const(0[Eur_ModelUnit], BebouwingsObject),
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_min[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min[Model_rel],
+				Sprongen/VerbeterKostenMin_nu/S_H_AP,
+				Sprongen/VerbeterKostenMin_nu/S_T_AP,
+				Sprongen/VerbeterKostenMin_nu/S_B_AP,
 				const(0[Eur_ModelUnit], BebouwingsObject)
 			)
 		,	0[Eur_ModelUnit]
@@ -430,19 +492,19 @@ container Sprongen
 	attribute<Eur_ModelUnit> kosten_max (BebouwingsObject) := 
 		MakeDefined(
 			merge(LabelSprong, Eur_ModelUnit, 
-				EnergieVraagModellen/Verbeteringen/S_H_T/kosten_max [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_B/kosten_max [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_B/kosten_max [Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max[Model_rel],
+				Sprongen/VerbeterKostenMax_nu/S_H_T,
+				Sprongen/VerbeterKostenMax_nu/S_H_B,
+				Sprongen/VerbeterKostenMax_nu/S_H_AP,
+				Sprongen/VerbeterKostenMax_nu/S_T_B,
+				Sprongen/VerbeterKostenMax_nu/S_T_AP,
+				Sprongen/VerbeterKostenMax_nu/S_B_AP,
+				Sprongen/VerbeterKostenMax_nu/S_H_AP,
+				Sprongen/VerbeterKostenMax_nu/S_T_AP,
+				Sprongen/VerbeterKostenMax_nu/S_B_AP,
 				const(0[Eur_ModelUnit], BebouwingsObject),
-				EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_T_AP/kosten_max[Model_rel],
-				EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_max[Model_rel],
+				Sprongen/VerbeterKostenMax_nu/S_H_AP,
+				Sprongen/VerbeterKostenMax_nu/S_T_AP,
+				Sprongen/VerbeterKostenMax_nu/S_B_AP,
 				const(0[Eur_ModelUnit], BebouwingsObject)
 			)
 		,	0[Eur_ModelUnit]

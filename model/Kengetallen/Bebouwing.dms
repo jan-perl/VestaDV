@@ -8,7 +8,7 @@ container Bebouwing
 {
 	container BestaandeWoning :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			 '20160707_Woningen_BAG.csv'
+			 '20190704_Woningen_BAG.csv'
 			,'WoningType_str'
 			,Classifications/WoningtypeBestaand
 			,Classifications/BouwjaarWoningBestaand
@@ -35,7 +35,7 @@ container Bebouwing
 	}
 	container NieuwbouwWoning :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			 '20160525_Woningen_Nieuwbouw_BAG.csv'
+			 '20190704_Woningen_Nieuwbouw_BAG.csv'
 			,'WoningType_str'
 			,Classifications/WoningtypeNieuwbouw
 			,Classifications/BouwJaar
@@ -64,7 +64,7 @@ container Bebouwing
 	}
 	container BestaandeUtil :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			 '20160706_Utiliteiten_BAG.csv'
+			 '20190704_Utiliteiten_BAG.csv'
 			,'UtiliteitType_str'
 			,Classifications/UtilTypeBestaand
 			,Classifications/BouwjaarUtilBestaand
@@ -93,7 +93,7 @@ container Bebouwing
 	}
 	container NieuwbouwUtil :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160525_Utiliteiten_Nieuwbouw_BAG.csv'
+			'20190704_Utiliteiten_Nieuwbouw_BAG.csv'
 			,'UtiliteitType_str'
 			,Classifications/UtilTypeNieuwbouw
 			,Classifications/BouwJaar
@@ -122,7 +122,7 @@ container Bebouwing
 	}
 	container BestaandeGlTb :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			'20160706_Glastuinbouw_BAG.csv'
+			'20190704_Glastuinbouw_BAG.csv'
 			,'UtiliteitType_str'
 			,Classifications/GlTb
 			,Classifications/bouwjaar
@@ -151,7 +151,7 @@ container Bebouwing
 	}
 	container NieuwbouwGlTb :=
 		model/CalculationSchemes/EnergieKengetallenImport(
-			 '20160525_Glastuinbouw_Nieuwbouw_BAG.csv'
+			 '20190704_Glastuinbouw_Nieuwbouw_BAG.csv'
 			,'UtiliteitType_str'
 			,Classifications/GlTb
 			,Classifications/bouwjaar
@@ -186,34 +186,23 @@ container Bebouwing
 		unit<float64>					Eur_per_eenheid;
 		attribute<GJ_yr_per_Eenheid>	verbruik_prev_vast	(ModelObject); // alleen ruimteverwarming
 		attribute<GJ_yr_m2>				verbruik_prev_var	(ModelObject); // alleen ruimteverwarming
-//		attribute<GJ_yr_per_Eenheid>	comfort_prev		(ModelObject);
 		parameter<string>				VerbeterCode;
 
 		
 		attribute<Ratio>				ReboundFactor_stap	(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/RB_FAC_'+VerbeterCode+'[Ratio], 0.0[Ratio])' : 'const(0 / 0, ModelObject, Ratio)'; // lees reboundfactor uit kentallenbestand
 		attribute<GJ_yr_per_Eenheid>	verbruik_na_vast	(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_vast[GJ_yr_per_Eenheid], Functioneel/Ruimteverwarming_vast)' : 'const(0.0[GJ_yr_per_Eenheid], ModelObject)'; // lees nieuw verbruik uit kentallenbestand
 		attribute<GJ_yr_m2>				verbruik_na_var		(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_var[GJ_yr_m2], Functioneel/Ruimteverwarming_var)' : 'const(0.0[GJ_yr_m2], ModelObject)'; // lees nieuw verbruik uit kentallenbestand
-		attribute<Eur_per_eenheid>		kosten_min			(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MIN[Eur_per_eenheid], 0.0[Eur_per_eenheid])' : 'const(0 / 0, ModelObject, Eur_per_eenheid)'; // lees min_kosten uit kentallenbestand
-		attribute<Eur_per_eenheid>		kosten_max			(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MAX[Eur_per_eenheid], 0.0[Eur_per_eenheid])' : 'const(0 / 0, ModelObject, Eur_per_eenheid)'; // lees max_kosten uit kentallenbestand
-		
-		attribute<Ratio>				efficiency_vast		(ModelObject)	:=	Functioneel/Ruimteverwarming_vast / verbruik_na_vast;
-		attribute<Ratio>				efficiency_var		(ModelObject)	:=	Functioneel/Ruimteverwarming_var / verbruik_na_var;
-		attribute<Ratio>				ComfortFactor_stap	(ModelObject)	:=	1.0 / (1.0 - ReboundFactor_stap) - 1.0;
-		
-//		attribute<GJ_yr_per_Eenheid> energie_verbetering_stap  (ModelObject) := verbruik - verbruik_prev;
-//		attribute<GJ_yr_per_Eenheid> energie_verbetering_tov_h (ModelObject) := Functioneel/Ruimteverwarming - verbruik;
-//		attribute<GJ_yr_per_Eenheid> comfort_verbetering_tov_h (ModelObject) := comfort_prev + comfort_verbetering_stap;
-//		attribute<GJ_yr_per_Eenheid> totale_verbetering_tov_h  (ModelObject) := energie_verbetering_tov_h + comfort_verbetering_tov_h;
-//		attribute<GJ_yr_per_Eenheid> totale_verbetering_stap   (ModelObject) := energie_verbetering_stap / (1.0 - ReboundFactor_stap);
-//		attribute<GJ_yr_per_Eenheid> comfort_verbetering_stap  (ModelObject) := totale_verbetering_stap - energie_verbetering_stap;
+		attribute<Eur_per_eenheid>		kosten_min_vast		(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MIN_vast [Eur_per_eenheid], 0.0[Eur_per_eenheid])' : 'const(0 / 0, ModelObject, Eur_per_eenheid)' ; // lees min_kosten uit kentallenbestand
+		attribute<Eur_m2>				kosten_min_var		(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MIN_var  [Eur_m2],          0.0[Eur_m2])'          : 'const(0 / 0, ModelObject, Eur_m2)'          ; // lees min_kosten uit kentallenbestand
+		attribute<Eur_per_eenheid>		kosten_max_vast		(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MAX_vast [Eur_per_eenheid], 0.0[Eur_per_eenheid])' : 'const(0 / 0, ModelObject, Eur_per_eenheid)' ; // lees max_kosten uit kentallenbestand
+		attribute<Eur_m2>				kosten_max_var		(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_Eur_MAX_var  [Eur_m2],          0.0[Eur_m2])'          : 'const(0 / 0, ModelObject, Eur_m2)'          ; // lees max_kosten uit kentallenbestand
 
+		attribute<Ratio>				efficiency_vast		(ModelObject)	:=	makedefined(Functioneel/Ruimteverwarming_vast / verbruik_na_vast, const(1[Ratio], ModelObject));
+		attribute<Ratio>				efficiency_var		(ModelObject)	:=	makedefined(Functioneel/Ruimteverwarming_var / verbruik_na_var, const(1[Ratio], ModelObject));
+		attribute<Ratio>				ComfortFactor_stap	(ModelObject)	:=	1.0 / (1.0 - ReboundFactor_stap) - 1.0;
+		attribute<GJ_yr_m2>				ExtraVentilatie		(ModelObject)	:=	VerbeterCode == 'B' || 
+																				VerbeterCode == 'C' || 
+																				VerbeterCode == 'D' || 
+																				VerbeterCode == 'E' ? Functioneel/V_Ventilatie : const(0.0[GJ_yr_m2], ModelObject);
 	}
 }
-
-// =================== ReboundFactor
-		// verbetering van 100 kuub-> 85 kuub met een ReboundFactor van x 
-		// geeft een besparing van 15 kuub en 
-		// een comfortverbetering ter waarde van 15 kuub * ( 1/ (1-x) - 1); 
-		// totaal voordeel is dus 15 kuub  / (1-x).
-		// waarvan fractie x de comfortverbetering die gelijk gesteld is aan de Rebound en 
-		// fractie (1-x) de feitelijke besparing is.

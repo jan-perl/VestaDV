@@ -13,7 +13,8 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 
 	container Constanten
 	{
-		parameter<m>	L_max_bron_connectie :=	2000 [m],	Descr = "Afzonderlijke aantakkingen aan een bron-cluster LTnetten mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
+		parameter<m>		L_max_bron_connectie :=	2000   [m],	Descr = "Afzonderlijke aantakkingen aan een bron-cluster LTnetten mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
+		parameter<float64>	KlimaatKoudeFactor   :=	12.863    ,	Descr = "Factor waarmee de koudevraag toeneemt als gevolg van opwarming van het klimaat";
 	}
 	
 	template Kosten_LT: Source = "Validatiesessies startanalyse 2019" //TODO source naar FO 4.0
