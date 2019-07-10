@@ -78,13 +78,18 @@ container Metervraag
 				attribute<GJ_yr>	V_id_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_id_elek;
 				attribute<GJ_yr>	V_wd_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_wd_elek;
 				attribute<GJ_yr>	V_ow_elek	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_ow_elek;
+				attribute<GJ_yr>	totaal    	(PlanRegio)	:=	V_id_elek + V_wd_elek + V_ow_elek;
 			}
 			container Gas
 			{
 				attribute<GJ_yr>	V_id_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_id_gas;
 				attribute<GJ_yr>	V_wd_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_wd_gas;
 				attribute<GJ_yr>	V_ow_gas	(PlanRegio)	:=	StateNaAllocatie/totaal/verbruik/V_ow_gas;
+				attribute<GJ_yr>	totaal	    (PlanRegio)	:=	V_id_gas + V_wd_gas + V_ow_gas;
 			}
 		}
+		
+		attribute<GJ_yr>  Totaal_elek (PlanRegio) := Gebouwen/Elektriciteit/Totaal + Gebiedsopties/Elektriciteit/Totaal;
+		attribute<GJ_yr>  Totaal_gas  (PlanRegio) := Gebouwen/Gas/Totaal + Gebiedsopties/Gas/Totaal;
 	}
 }

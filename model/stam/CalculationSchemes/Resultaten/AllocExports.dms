@@ -46,6 +46,31 @@ container AllocExports: = Units, isHidden = "false"
 		}
 
 		container export := Rapportage/WriteTableToCSV(table, SubItem_PropValues(table,'name'), FolderInfo/OutputFolder+'/PR.csv');
+		
+		Unit<UInt32>  ESDL_table := Invoer/SpecifiekeInstellingen/PlanRegio
+		{
+			attribute<string>        BU_CODE                                := /Invoer/RuimtelijkeData/StudieGebied/buurt/BU_CODE;
+			attribute<string>        GebiedsOptie                           := Classifications/GebiedsOptie/name[StateNaAllocatie/PlanRegioWarmteAllocatie_REMOVE];
+
+			attribute<units/kg_yr>   CO2_gebouwen_AardGas                   := EnergyResults/CO2/gebouwen/AardGas/totaal;
+			attribute<units/kg_yr>   CO2_gebouwen_Elektriciteit             := EnergyResults/CO2/gebouwen/Elektriciteit/totaal;
+			attribute<units/kg_yr>   CO2_gebouwen                           := EnergyResults/CO2/gebouwen/totaal;
+			attribute<units/kg_yr>   CO2                                    := EnergyResults/CO2/totaal;
+
+			attribute<units/kW>      Woning_AansluitCapaciteitWarmte        := PlanRegioKaarten/BestaandeWoning/CapaciteitWarmteDeelnemers;
+			attribute<units/nrAansl> Woning_nrAanslWarmte                   := PlanRegioKaarten/BestaandeWoning/nrAanslWarmteDeelnemers;
+			attribute<float64>       Woning_nrModelUnitsWarmte              := PlanRegioKaarten/BestaandeWoning/nrModelUnitsWarmteDeelnemers;
+			
+			attribute<units/GJ_yr>   Woning_WarmteVerbruik                  := PlanRegioKaarten/BestaandeWoning/Verbruik/alle;
+			attribute<units/GJ_yr>   WarmteVerbruik                         := StateNaAllocatie/KostenBaten/Vj_WarmtePrimairD;
+
+			attribute<units/GJ_yr>   AardgasVerbruik_gebouwen               := EnergyResults/Metervraag/gebouwen/Gas/totaal;
+			attribute<units/GJ_yr>   ElektriciteitVerbruik_gebouwen         := EnergyResults/Metervraag/gebouwen/Elektriciteit/totaal;
+			attribute<units/GJ_yr>   AardgasVerbruik                        := EnergyResults/Metervraag/totaal_gas;
+			attribute<units/GJ_yr>   ElektriciteitVerbruik                  := EnergyResults/Metervraag/totaal_elek;
+		}
+
+		container export_ESDL := Rapportage/WriteTableToCSV(ESDL_table, SubItem_PropValues(ESDL_table,'name'), FolderInfo/OutputFolder+'/PR_ESDL.csv');
 	}
 
 	container BCResults :=

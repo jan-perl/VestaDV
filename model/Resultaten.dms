@@ -31,13 +31,45 @@ container Resultaten :=
 
 	container Exports: isHidden = "True"
 	{
+		unit<uint32> PlanRegio           := Invoer/SpecifiekeInstellingen/PlanRegio;
+		unit<uint32> BebouwingsObject    := TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/BebouwingsObject;
+		
 		container ESDL
 		{
-			parameter<string> Generate_SY             := /Resultaten/StartJaar/AllocExports/PlanRegioResults/export/result;
-			parameter<string> Generate_2020           := /Resultaten/R1_2020/AllocExports/PlanRegioResults/export/result;
-			parameter<string> Generate_2030           := /Resultaten/R2_2030/AllocExports/PlanRegioResults/export/result;
-			parameter<string> Generate_2040           := /Resultaten/R3_2040/AllocExports/PlanRegioResults/export/result;
-			parameter<string> Generate_2050           := /Resultaten/R4_2050/AllocExports/PlanRegioResults/export/result;
+			// parameter<string> Generate_SY             := /Resultaten/StartJaar/AllocExports/PlanRegioResults/export_ESDL/result;
+			// parameter<string> Generate_2020           := /Resultaten/R1_2020/AllocExports/PlanRegioResults/export_ESDL/result;
+			// parameter<string> Generate_2030           := /Resultaten/R2_2030/AllocExports/PlanRegioResults/export_ESDL/result;
+			// parameter<string> Generate_2040           := /Resultaten/R3_2040/AllocExports/PlanRegioResults/export_ESDL/result;
+			// parameter<string> Generate_2050           := /Resultaten/R4_2050/AllocExports/PlanRegioResults/export_ESDL/result;
+		
+			container PerBuurt
+			{
+				attribute<string>     BU_CODE                    (PlanRegio)  := PlanRegio/BU_CODE;
+				attribute<string>     WK_CODE                    (PlanRegio)  := PlanRegio/WK_CODE;
+				attribute<string>     Gemeente                   (PlanRegio)  := PlanRegio/GM_NAAM;
+				attribute<string>     RES                        (PlanRegio)  := PlanRegio/ER_NAAM;
+				attribute<string>     Provincie                  (PlanRegio)  := PlanRegio/PROV_NAAM;
+				attribute<rdc> Aantal_woningen            (BebouwingsObject)  := BebouwingsObject/point;
+				// attribute<NrWoningen> Aantal_woningen            (PlanRegio)  := count(/TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/BebouwingsObject/point, /TussenResultaten/StartJaar/BebouwingsComponenten/BestaandeWoning/PlanRegio_rel)[NrWoningen];
+				// attribute<NrUtil>     Aantal_utiliteiten         (PlanRegio);
+				// attribute<NrWoningen> Aantal_woning_equivalenten (PlanRegio);
+			
+				//Per Strategie, startsituatie, referentiescenario
+				
+				// attribute<m3_yr>  Vraag_Aardgas;
+				// attribute<m3_yr>  Vraag_Groengas;
+				// attribute<GJ_yr>  Vraag_MT_Warmte;
+				// attribute<GJ_yr>  Vraag_LT_Warmte;
+				// attribute<kW_yr>  Vraag_Elektriciteit;
+				// attribute<kW_yr>  Vraag_Elektriciteit_tbv_Warmte;
+				// attribute<GJ_yr>  Vraag_Warmte_totaal;
+				// attribute<ton_yr> CO2_uitstoot;
+				// attribute<Eur_yr> Maatschappelijke_kosten;
+			}
+		
+		
+		
+		
 		}
 	
 	
