@@ -96,8 +96,7 @@ container Basis: Using = "Units"
 					parameter<float64> Rs_LokaleOpwekking   := 0.0;
 					parameter<float64> Rs_GebouwVerbetering := 0.0;
 					parameter<float64> S_Leverancier        := 0.0;
-					parameter<float64> S_Onderhoud          := 0.0;
-					parameter<float64> S_Admin              := 0.0;
+					parameter<float64> S_OenM               := 0.0;
 				}
 			}
 

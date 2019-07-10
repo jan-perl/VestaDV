@@ -48,7 +48,7 @@ template TEOIter
 		
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
 			attribute<MW>		P_sec			:=	P_sec_MW;
-			attribute<MW>		P_bronnet		:=	P_sec * constanten/AandeelPrimairVermogen;
+			attribute<MW>		P_bronnet		:=	P_sec * Efficiency/AandeelPrimairVermogen;
 			attribute<Eur_m>	K_min_sec		:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
 			attribute<Eur_m>	K_max_sec		:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
 			attribute<Eur_m>	K_m_sec			:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/LTnet/Curve;

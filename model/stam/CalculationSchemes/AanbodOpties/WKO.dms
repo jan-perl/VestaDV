@@ -16,71 +16,19 @@ template WKO
 	container BebouwingsComponenten := BeginStatus/Bebouwing;
 	container KostenBaten := CalculationSchemes/KostenBaten(BebouwingsComponenten, Energieprijzen);
 
+	parameter<bool>		KoudeBeschikbaar	:=	true, Descr = "centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.";
+
 	unit<uint8>  WkoComponent       := Classifications/WkoComponent;
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
+	parameter<Celsius>	T_ow				:	[20];
+	parameter<Celsius>	T_sec				:	[50];
+	parameter<bool>		CollectieveWP		:=	(T_ow < T_sec);
+	container efficiency := Kengetallen/Efficiency/Efficiency_LT(T_ow, T_sec);
+	
 	container constanten {
 	
-		
-		parameter<Celsius>	T_ow				:	[20];
-		parameter<Celsius>	T_sec				:	[50];
-		parameter<bool>		CollectieveWP		:=	(T_ow < T_sec);
-		parameter<bool>		KoudeBeschikbaar	:=	true, Descr = "centraal opgewekte koude is beschikbaar (en moet worden afgenomen) bij WKO.";
-		
-		//Aandelen primair en hulp in het secundaire net
-		parameter<Float64> 		AandeelPrimairVermogen 		:=				0.30,					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVermogen 		:=	T_ow == T_sec ? 0.70 : 1.00,		Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:=				1.00,					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:=	T_ow == T_sec ? 0.30 : 1.00,		Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
-		
-		//Seasonal Performance Factors
-		parameter<Ratio> 		SPF_coll_W :=
-													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30 TODO: gelijkstellen F.O. 4.0
-													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 3.5 : // van 15 naar 50 TODO: gelijkstellen F.O. 4.0
-													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.0 : // van 15 naar 70
-													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
-													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
-													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.2 : // van 30 naar 70
-																								  1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
-		
-		
-		//Seasonal Performance Factor
-		parameter<Ratio>   SPF_ind_k := 1.0;
-		parameter<Ratio>   SPF_coll_k := SPF_coll_w - 1.0;
-		
-		
-		parameter<Float64> SPF_ind_A_rv  := SPF_coll_w; // irrelevant, AEO is toch 0
-		parameter<Float64> SPF_ind_B_rv  := SPF_coll_w; // TODO: CHECK, relevant indien T_sec <= 35[Celsius]
-		parameter<Float64> SPF_ind_CE_rv := SPF_coll_w; // TODO: CHECK
-		parameter<Float64> SPF_ind_ww    := SPF_coll_w; // TODO: CHECK
-
-		//Aandeel eigen opwekking
-		
-		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
-		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
-		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
-		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
-		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
-		
-		parameter<Ratio> 		Leidingverlies		:= 0.28[Ratio] * Leercurves/Verl/Curve,			Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer", Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.0072],										Descr = "elektriciteitsverbruik distributiepompen";
-
-		//gelijktijdigheidsfactoren
-		parameter<float64>		GTF_woning_w		:=						0.55, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
-		parameter<float64>		GTF_woning_k		:=						0.55, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
-		parameter<float64>		GTF_util_w			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
-		parameter<float64>		GTF_util_k			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
-		
-		//aansluitwaardes
-		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_kc 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude eengezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_wa 				:= 						5		[kW_Woning], 	Descr = "aansluitwaarde warmte meergezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_ka 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude meergezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_wu 				:= 						0.05	[kW_m2], 		Descr = "aansluitwaarde warmte utiliteit per m2 (gevraagde capaciteit)";
-		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
-		
 		//investeringskosten technische componenten
 		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
 		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Inpand/Curve * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
@@ -98,24 +46,11 @@ template WKO
 		parameter<Eur>			Ki_eWP_B			:= Leercurves/eWPww/Curve * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
 		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/eWPww/Curve * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat , verzwaarde aansluiting, montage en installatie";
 
-		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
-		container OenM  {
-			Parameter<_yr> 		R_id_onderhoud      := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten inpandige distributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_id_admin		    := 						0.000 	[_yr], 			Descr = "jaarlijkse administratiekosten inpandige distributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_ow_onderhoud	    := 						0.050 	[_yr], 			Descr = "jaarlijkse onderhoudskosten opwekking aan de bron als percentage van de initiele investering";
-			Parameter<_yr> 		R_ow_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten opwekking aan de bron als percentage van de initiele investering";
-			Parameter<_yr> 		R_wd_onderhoud	    := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten wijkdistributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_wd_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten wijkdistributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_wpColl_onderhoud	:= 						0.035 	[_yr], 			Descr = "jaarlijkse onderhoudskostencollectieve warmtepomp als percentage van de initiele investering";
-			Parameter<_yr> 		R_wpColl_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
-			Parameter<_yr> 		R_buffer_onderhoud	:= 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
-			Parameter<_yr> 		R_buffer_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
-		}
 		parameter<Eur>			Ki_ow_vast		    := Ki_WKO_vast;
 		parameter<Eur_kW>		Ki_ow_variabel      := Ki_Doublet + Ki_onderstation;
 //		parameter<Eur_yr>       Kij_vast := 0.0[EUR_yr];
 	}
-	parameter<Celsius> T_sec := constanten/T_sec;
+	
 	
 	container BestaandeWoningData :=
 		WKOWoningData(
@@ -123,7 +58,7 @@ template WKO
 			KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
 			KostenBaten/KostenD/Wonen/bw,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
@@ -132,25 +67,25 @@ template WKO
 			KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
 			KostenBaten/KostenD/Wonen/nw,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
 			KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
 			KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 	
 
-	container CandidateSets := for_each_ne(WkoComponent/Name, 'WKOData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', constanten/T_sec)');
+	container CandidateSets := for_each_ne(WkoComponent/Name, 'WKOData('+WkoComponent/Name+'Data, '+Quote(WkoComponent/Name)+', T_sec)');
 
 	unit <uint32> UnitedCandidates := ='union_unit('+AsItemList('CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')'
 	,	DialogType = "Map"

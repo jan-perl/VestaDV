@@ -26,49 +26,49 @@ template WKOUtilData
 //REMOVE	attribute<GJ_yr>  F_Elek    (BebouwingsObject) := V_Warmte + V_Koude;
 	
 	attribute<float64> SPF_ind_rv  (BebouwingsObject) := 
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/SPF_ind_A_rv :
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/SPF_ind_B_rv :
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/SPF_ind_CE_rv : 1.0;
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? Efficiency/SPF_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? Efficiency/SPF_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? Efficiency/SPF_ind_CE_rv : 1.0;
 		
 	attribute<float64> AEO_ind_rv  (BebouwingsObject) := 
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? constanten/AEO_ind_A_rv :
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? constanten/AEO_ind_B_rv :
-		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? constanten/AEO_ind_CE_rv : 1.0;
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? Efficiency/AEO_ind_A_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelB ? Efficiency/AEO_ind_B_rv :
+		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/LabelE ? Efficiency/AEO_ind_CE_rv : 1.0;
 	
 	//volumevraag gebouwzijde
 	attribute<GJ_yr>	V_id_RV			(BebouwingsObject) := V_RV * AEO_ind_rv,						Descr = "Aandeel van de eigen volumevraag naar ruimteverwarming dat in het gebouw wordt opgewekt";
-	attribute<GJ_yr>	V_id_WW			(BebouwingsObject) := V_WW * constanten/AEO_ind_ww,			Descr = "Aandeel van de eigen volumevraag naar warm tapwater dat in het gebouw wordt opgewekt";
-	attribute<GJ_yr>	V_id_Koude		(BebouwingsObject) := V_Koude * constanten/AEO_ind_K,			Descr = "Aandeel van de eigen volumevraag naar koude dat in het gebouw wordt opgewekt";
+	attribute<GJ_yr>	V_id_WW			(BebouwingsObject) := V_WW * Efficiency/AEO_ind_ww,			Descr = "Aandeel van de eigen volumevraag naar warm tapwater dat in het gebouw wordt opgewekt";
+	attribute<GJ_yr>	V_id_Koude		(BebouwingsObject) := V_Koude * Efficiency/AEO_ind_K,			Descr = "Aandeel van de eigen volumevraag naar koude dat in het gebouw wordt opgewekt";
 	attribute<GJ_yr>	V_RV_sec		(BebouwingsObject) := V_RV - V_id_RV,							Descr = "Aandeel van de eigen volumevraag naar ruimteverwarming geleverd uit het secundaire net";
 	attribute<GJ_yr>	V_WW_sec		(BebouwingsObject) := V_WW - V_id_WW,							Descr = "Aandeel van de eigen volumevraag naar warm tapwater geleverd uit het secundaire net";
 	
 	//volumevraag jaarlijks aan het secundaire net (inclusief verrekening leidingverlies)
 	attribute<GJ_yr>	V_Warmte_sec	(BebouwingsObject) := V_RV_sec + V_WW_sec,                             Descr = "Aandeel van de eigen volumevraag naar warmte uit het secundaire net";
 	attribute<GJ_yr>	V_Koude_sec		(BebouwingsObject) := V_Koude - V_id_Koude,                            Descr = "Aandeel van de eigen volumevraag naar koude uit het secundaire net";
-	attribute<GJ_yr>	V_Wsec_netto	(BebouwingsObject) := V_Warmte_sec / (1d - constanten/Leidingverlies), Descr ="Warmte te leveren aan het secundaire net met verrekening leidingverlies";
-	attribute<GJ_yr>	V_Ksec_netto	(BebouwingsObject) := V_Koude_sec  / (1d - constanten/Leidingverlies), Descr ="Koude te leveren aan het secundaire net met verrekening leidingverlies";
+	attribute<GJ_yr>	V_Wsec_netto	(BebouwingsObject) := V_Warmte_sec / (1d - Kengetallen/Efficiency/Leidingverlies_LT * Leercurves/Verl/Curve), Descr ="Warmte te leveren aan het secundaire net met verrekening leidingverlies";
+	attribute<GJ_yr>	V_Ksec_netto	(BebouwingsObject) := V_Koude_sec  / (1d - Kengetallen/Efficiency/Leidingverlies_LT * Leercurves/Verl/Curve), Descr ="Koude te leveren aan het secundaire net met verrekening leidingverlies";
 	attribute<GJ_yr>	V_wd_verlies	(BebouwingsObject) := (V_warmte_sec - V_Wsec_netto) + (V_koude_sec - V_Ksec_netto);
 
 	
 	
 	//Gelijktijdige capaciteitsvraag aan het secundaire net
-	attribute<kW>		P_Warmte_sec	(BebouwingsObject) := constanten/GTF_util_w * constanten/ASW_wu * Lu;
-	attribute<kW>		P_Koude_sec		(BebouwingsObject) := KoudeBeschikbaar ? constanten/GTF_util_k * constanten/ASW_ku * Lu : 0[kW];
-	attribute<kW>		P_Wsec_netto	(BebouwingsObject) := P_Warmte_sec / (1d - constanten/Vermogenverlies),	Descr ="Vermogen warmte te realiseren in het secundaire net met verrekening leidingverlies op vermogen";
-	attribute<kW>		P_Ksec_netto	(BebouwingsObject) := P_Koude_sec / (1d - constanten/Vermogenverlies),		Descr ="Vermogen koude te realiseren in het secundaire net met verrekening leidingverlies op vermogen";
+	attribute<kW>		P_Warmte_sec	(BebouwingsObject) := Kengetallen/Aansluitwaarde/GTF_util_w * Kengetallen/Aansluitwaarde/ASW_wu_LT * Lu;
+	attribute<kW>		P_Koude_sec		(BebouwingsObject) := KoudeBeschikbaar ? Kengetallen/Aansluitwaarde/GTF_util_k * Kengetallen/Aansluitwaarde/ASW_ku_LT * Lu : 0[kW];
+	attribute<kW>		P_Wsec_netto	(BebouwingsObject) := P_Warmte_sec / (1d - Kengetallen/Efficiency/Vermogenverlies_LT),	Descr ="Vermogen warmte te realiseren in het secundaire net met verrekening leidingverlies op vermogen";
+	attribute<kW>		P_Ksec_netto	(BebouwingsObject) := P_Koude_sec / (1d - Kengetallen/Efficiency/Vermogenverlies_LT),		Descr ="Vermogen koude te realiseren in het secundaire net met verrekening leidingverlies op vermogen";
 	attribute<kW>		P_sec			(BebouwingsObject) := max_elem(P_Wsec_netto, P_Ksec_netto),	Descr = "capaciteitsvraag aan secundair net";
 
 	//elektriciteitsverbruik individueel (toegekend aan inpandig distributeur)
 	attribute<GJ_yr>	V_id_RV_Elek	(BebouwingsObject) := V_id_RV / SPF_ind_rv,					Descr = "Elektriciteitsverbruik voor eigen opwekking tbv ruimteverwarming";
-	attribute<GJ_yr>	V_id_WW_Elek	(BebouwingsObject) := V_id_WW / constanten/SPF_ind_ww,			Descr = "Elektriciteitsverbruik voor eigen opwekking tbv warm tapwater";
+	attribute<GJ_yr>	V_id_WW_Elek	(BebouwingsObject) := V_id_WW / Efficiency/SPF_ind_ww,			Descr = "Elektriciteitsverbruik voor eigen opwekking tbv warm tapwater";
 	attribute<GJ_yr>	V_id_W_Elek		(BebouwingsObject) := V_id_RV_Elek + V_id_WW_Elek,				Descr = "Elektriciteitsverbruik voor eigen opwekking tbv zowel ruimteverwarming als warm tapwater";
-	attribute<GJ_yr>	V_id_K_elek		(BebouwingsObject) := V_id_Koude / constanten/SPF_ind_k,		Descr = "Elektriciteitsverbruik voor eigen opwekking tbv koude";
+	attribute<GJ_yr>	V_id_K_elek		(BebouwingsObject) := V_id_Koude / Efficiency/SPF_ind_k,		Descr = "Elektriciteitsverbruik voor eigen opwekking tbv koude";
 	attribute<GJ_yr>	V_id_Elek		(BebouwingsObject) := V_id_W_Elek + V_id_K_elek,				Descr = "Totaal elektriciteitsverbruik door afnemer";
 
 	//elektriciteitsverbruik collectief (toegekend aan wijkdistributeur
-	attribute<GJ_yr>	V_wd_W_Elek		(BebouwingsObject) := V_Wsec_netto / constanten/SPF_coll_w,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor warmteproductie";
-	attribute<GJ_yr>	V_wd_K_Elek		(BebouwingsObject) := V_Ksec_netto / constanten/SPF_coll_k,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor koudeproductie";
-	attribute<GJ_yr>	V_wd_D_Elek		(BebouwingsObject) := (V_Wsec_netto + V_Ksec_netto) * constanten/Pompenergie,		Descr = "Totaal elektriciteitsverbruik voor pompenergie distributienet";
+	attribute<GJ_yr>	V_wd_W_Elek		(BebouwingsObject) := V_Wsec_netto / Efficiency/SPF_coll_w,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor warmteproductie";
+	attribute<GJ_yr>	V_wd_K_Elek		(BebouwingsObject) := V_Ksec_netto / Efficiency/SPF_coll_k,	Descr = "Elektriciteitsverbruik van de collectieve warmtepomp voor koudeproductie";
+	attribute<GJ_yr>	V_wd_D_Elek		(BebouwingsObject) := (V_Wsec_netto + V_Ksec_netto) * Kengetallen/Efficiency/Pompenergie_Wnet,		Descr = "Totaal elektriciteitsverbruik voor pompenergie distributienet";
 	attribute<GJ_yr>	V_wd_Elek		(BebouwingsObject) := V_wd_W_Elek + V_wd_K_Elek + V_wd_D_Elek,	Descr = "Totaal elektriciteitsverbruik door wijkdistributeur";
 
 	//extra berekeningen voor WKO

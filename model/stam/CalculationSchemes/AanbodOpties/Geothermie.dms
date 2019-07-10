@@ -42,47 +42,37 @@ template GeoThermie
 
 	container Kosten
 	{
-		attribute<Eur> Ki_ow (PlanRegio) := 
-			(TypeInfo/Ki_kW_min * Schuiven/KostenMin + TypeInfo/Ki_kW_max * Schuiven/KostenMax)
-			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) * 1000[kW / MW]
-			* LeerCurves/MTnet/Curve
-		;
-		attribute<Eur_yr> Kji_ow (PlanRegio) := Ki_ow * NCW/ow28/AnnualisationFactor ;
+		attribute<Eur>		Ki_ow           (PlanRegio)	:=	(TypeInfo/Ki_kW_min * Schuiven/KostenMin + TypeInfo/Ki_kW_max * Schuiven/KostenMax)
+															* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) * 1000[kW / MW]
+															* LeerCurves/MTnet/Curve;
+		attribute<Eur_yr>	Kji_ow          (PlanRegio)	:=	Ki_ow * NCW/ow28/AnnualisationFactor;
+		attribute<Eur_yr>	Kmi_ow          (PlanRegio)	:=	Ki_ow * NCW/mr28/AnnualisationFactor;
 
-		attribute<Eur> Ki_pt  (PlanRegio) := KostenBaten/KostenD/PrimairNet/LeidingKosten/aK_m * bron/dist;
-		attribute<Eur_yr> Kji_pt (PlanRegio) := Ki_pt * NCW/pt28/AnnualisationFactor ;
-		attribute<Eur> Ki_Totaal   (PlanRegio) := Ki_ow + ki_pt;
+		attribute<Eur>		Ki_pt           (PlanRegio)	:=	KostenBaten/KostenD/PrimairNet/LeidingKosten/aK_m * bron/dist;
+		attribute<Eur_yr>	Kji_pt          (PlanRegio)	:=	Ki_pt * NCW/pt28/AnnualisationFactor;
+		attribute<Eur_yr>	Kmi_pt          (PlanRegio)	:=	Ki_pt * NCW/mr28/AnnualisationFactor;
+		attribute<Eur>		Ki_Totaal       (PlanRegio)	:=	Ki_ow + ki_pt;
 
-		// TODO: gebruik /Invoer/Kengetallen/WarmteBronnen/MetaData/RekenTypes/GeoThermie/Elektriciteit_Factor en EH, en CO2 van elektriciteit
-		parameter<Eur_GJ> K_GJ :=
-			(Jaar < 2020[units/yr_uint16] 
-				? TypeInfo/K_GJ10 
-				: Jaar < 2030[units/yr_uint16] 
-					? TypeInfo/K_GJ20 
-					: Jaar < 2040[units/yr_uint16] 
-						? TypeInfo/K_GJ30 
-						: Jaar < 2050[units/yr_uint16] 
-							? TypeInfo/K_GJ40 
-							: TypeInfo/K_GJ50
-			);
-		parameter<Eur_GJ> Km_GJ := K_GJ;
+		parameter<Eur_GJ>	K_GJ := ( Jaar < 2020[units/yr_uint16] ? TypeInfo/K_GJ10
+									: Jaar < 2030[units/yr_uint16] ? TypeInfo/K_GJ20
+									: Jaar < 2040[units/yr_uint16] ? TypeInfo/K_GJ30
+									: Jaar < 2050[units/yr_uint16] ? TypeInfo/K_GJ40
+																   : TypeInfo/K_GJ50);
+		parameter<Eur_GJ>	Km_GJ := K_GJ;
 
-		attribute<Eur_yr> Kj_pt_Base       (PlanRegio) := Leercurves/OenM/Curve * (Ki_pt * Kengetallen/Onderhoud/Rj_PrimairNet);
-		attribute<Eur_yr> Kj_pt_adm 	   (PlanRegio) := Kj_pt_Base * Kengetallen/Onderhoud/R_Admin;
-		attribute<Eur_yr> Kj_pt_oh         (PlanRegio) := Kj_pt_Base - Kj_pt_adm;
-
-		attribute<Eur_yr> Kj_ow_Base       (PlanRegio) := Leercurves/OenM/Curve * (Ki_ow * TypeInfo/Rj_Onderhoud);
-		attribute<Eur_yr> Kj_ow_adm        (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;
-		attribute<Eur_yr> Kj_ow_oh         (PlanRegio) := Kj_ow_Base - Kj_ow_adm;
-
-		attribute<Eur_yr> Kj_WarmteWaarde  (PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;
-		attribute<Eur_yr> Km_WarmteWaarde  (PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
-
-		attribute<Eur_yr> Kj_Totaal        (PlanRegio) := Kj_pt_Base + Kj_ow_Base + Kj_WarmteWaarde;
-		attribute<Eur_yr> Km_Totaal        (PlanRegio) := Kj_pt_Base + Kj_ow_Base + Km_WarmteWaarde;
-		attribute<Eur_yr> Oj_pt_EEA        (PlanRegio) := Kj_pt_base * SpecifiekeInstellingen/Beleid/EEA/pt;
-		attribute<Eur_yr> Oj_ow_EEA        (PlanRegio) := Kj_ow_base * MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel], 0.0);
-		attribute<Eur_yr> Oj_SDE           (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
+		attribute<Eur_yr>	Kj_pt_adm       (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_pt_admin     * Ki_pt;
+		attribute<Eur_yr>	Kj_pt_oh        (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_pt_onderhoud * Ki_pt;
+		attribute<Eur_yr>	Kj_ow_adm       (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin     * Ki_ow;
+		attribute<Eur_yr>	Kj_ow_oh        (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud * Ki_ow;
+		
+		attribute<Eur_yr>	Kj_Totaal       (PlanRegio)	:=	Kj_pt_adm + Kj_pt_oh + Kj_ow_oh + Kj_ow_oh + Kj_WarmteWaarde;
+		attribute<Eur_yr>	Km_Totaal       (PlanRegio)	:=	Kj_pt_adm + Kj_pt_oh + Kj_ow_oh + Kj_ow_oh + Km_WarmteWaarde;
+		attribute<Eur_yr>	Oj_pt_EEA       (PlanRegio)	:=	SpecifiekeInstellingen/Beleid/EEA/pt * (Kj_pt_adm + Kj_pt_oh);
+		attribute<Eur_yr>	Oj_ow_EEA       (PlanRegio)	:=	MakeDefined(SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel], 0.0) * (Kj_ow_adm + Kj_ow_oh);
+		
+		attribute<Eur_yr>	Kj_WarmteWaarde (PlanRegio)	:=	K_GJ  * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr>	Km_WarmteWaarde (PlanRegio)	:=	Km_GJ * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr>	Oj_SDE          (PlanRegio)	:=	KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	}
 
 	attribute<Eur   > Oi_Totaal            (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage;
