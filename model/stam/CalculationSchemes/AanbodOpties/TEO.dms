@@ -108,8 +108,8 @@ template TEO
 		attribute<MW>		P_bronnet		  := P_sec * Efficiency/AandeelPrimairVermogen;
 		
 		attribute<Eur>      Ki_wd_wijkleiding := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+')';
-		attribute<Eur_m>	K_min_brondist	  := P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-		attribute<Eur_m>	K_max_brondist	  := P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
+		attribute<Eur_m>	K_min_brondist	  := P_bronnet > 0[MW] ? 400[Eur / m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m];
+		attribute<Eur_m>	K_max_brondist	  := P_bronnet > 0[MW] ? 800[Eur / m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m];
 		attribute<Eur_m>	K_m_brondist	  := (K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 		attribute<Eur>		Ki_wd_bronleiding := LengthProxy * K_m_brondist;
 		attribute<Eur>		Ki_wd             := Ki_wd_bronleiding + Ki_wd_wijkleiding;
