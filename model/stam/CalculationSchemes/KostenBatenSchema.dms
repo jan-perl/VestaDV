@@ -75,8 +75,8 @@ template KostenBaten
 		parameter<kW_Woning>	ASW_woning_WW				:=	7[kw_woning],										Descr = "aansluitwaarde woning voor warm water",		Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<kW_Woning>	ASW_woning_RV				:=	4[kw_woning],										Descr = "aansluitwaarde woning voor ruimteverwarming",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<kW_Woning>	ASW_woning					:=	ASW_woning_WW + ASW_woning_RV,						Descr = "aansluitwaarde woning op MT warmtenet";
-		parameter<float64>		GTF_woning_WW				:=	0.50,												Descr = "gelijktijdigheidsfactor warm water",			Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
-		parameter<float64>		GTF_woning_RV				:=	0.10,												Descr = "gelijktijdigheidsfactor ruimteverwarming",		Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<float64>		GTF_woning_WW				:=	0.10,												Descr = "gelijktijdigheidsfactor warm water",			Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
+		parameter<float64>		GTF_woning_RV				:=	0.50,												Descr = "gelijktijdigheidsfactor ruimteverwarming",		Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_os_p_min					:=	120[Eur_kW],										Descr = "minimumkosten van een onderstation per KW",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_os_p_Max					:=	150[Eur_kW],										Descr = "maximumkosten van een onderstation per KW",	Source = "validatiesessies startanalyse 2019"; //TODO: bron = FO 4.0
 		parameter<Eur_kW>		K_OS_p						:=	(K_os_p_min * Schuiven/KostenMin + K_os_p_Max * Schuiven/KostenMax) * LeerCurves/MTnet/curve;
