@@ -153,6 +153,90 @@ container Basis: Using = "Units"
 				parameter<Eur_Aansl> InvesteringsKosten_Min: [2500];
 				parameter<Eur_Aansl> InvesteringsKosten_Max: [4300];
 			}
+			container eWP
+			{
+				container Lucht:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
+				{
+					parameter<Eur_Aansl> Ki_woning_vast_min := 4637 [Eur_Aansl],   Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_max := 5359 [Eur_Aansl],   Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_min  :=  500 [Eur_kw],      Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_max  :=  320 [Eur_kw],      Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					
+					parameter<Eur_aansl> Ki_util_vast_min   := 103378 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
+					parameter<Eur_aansl> Ki_util_vast_max   := 103378 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_min    :=  640   [Eur_kw],	   Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_max    :=  640   [Eur_kw],	   Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					parameter<Ratio>     SPF_won_A          := 5.93;
+					parameter<Ratio>     SPF_won_B          := 4.49;
+					parameter<Ratio>     SPF_won_C          := 3.66;
+					parameter<Ratio>     SPF_util           := 3.66;
+					parameter<Ratio>     SPF_WW             := 2.00;
+					parameter<Ratio>     SPF_K              := 4.00;
+					
+					parameter<Ratio>     fractie_afschrijftermijn_15jaar := 1.0;
+					parameter<Ratio>     fractie_afschrijftermijn_30jaar := 0.0;
+				}
+				
+				container Bodem:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
+				{
+					parameter<Eur_Aansl> Ki_woning_vast_min := 4628 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
+					parameter<Eur_Aansl> Ki_woning_vast_max := 8460 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_min  :=  899 [Eur_kw],    Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_woning_var_max  :=  573 [Eur_kw],    Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					
+					parameter<Eur_aansl> Ki_util_vast_min   := 6000 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
+					parameter<Eur_aansl> Ki_util_vast_max   := 6000 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_min    := 1480   [Eur_kw],  Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
+					parameter<Eur_kw>    Ki_util_var_max    := 1480   [Eur_kw],  Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
+					parameter<Jaar>      afschrijftermijn   := 15[jaar];
+					parameter<Ratio>     SPF_won_A          := 6.35;
+					parameter<Ratio>     SPF_won_B          := 4.68;
+					parameter<Ratio>     SPF_won_C          := 3.76;
+					parameter<Ratio>     SPF_util           := 3.76;
+					parameter<Ratio>     SPF_WW             := 2.00;
+					parameter<Ratio>     SPF_K              := 8.00;
+					
+					parameter<Ratio>     fractie_afschrijftermijn_15jaar := 0.60;
+					parameter<Ratio>     fractie_afschrijftermijn_30jaar := 0.40;
+				}
+				
+				parameter<Ratio> Aandeel_Lucht := 0.5; // TODO: Verwijs hier naar een nog aan te brengen schuifinstelling
+				parameter<Ratio> Aandeel_Bodem := 1.0 - Aandeel_Lucht;
+			
+				container AlleBC {
+					parameter<Ratio> fractie_afschrijftermijn_15jaar := Aandeel_Lucht * Lucht/fractie_afschrijftermijn_15jaar + Aandeel_Bodem * Bodem/fractie_afschrijftermijn_15jaar;
+					parameter<Ratio> fractie_afschrijftermijn_30jaar := Aandeel_Lucht * Lucht/fractie_afschrijftermijn_30jaar + Aandeel_Bodem * Bodem/fractie_afschrijftermijn_30jaar;
+					
+					parameter<Ratio> SPF_K    := Aandeel_Lucht * Lucht/SPF_K    + Aandeel_Bodem * Bodem/SPF_K;
+					parameter<Ratio> SPF_WW   := Aandeel_Lucht * Lucht/SPF_WW   + Aandeel_Bodem * Bodem/SPF_WW;
+				}
+				
+				container Woning := AlleBC
+				{
+					parameter<Ratio>      SPF_RV_A := Aandeel_Lucht * Lucht/SPF_won_A + Aandeel_Bodem * Bodem/SPF_won_A;
+					parameter<Ratio>      SPF_RV_B := Aandeel_Lucht * Lucht/SPF_won_B + Aandeel_Bodem * Bodem/SPF_won_B;
+					parameter<Ratio>      SPF_RV_C := Aandeel_Lucht * Lucht/SPF_won_C + Aandeel_Bodem * Bodem/SPF_won_C;
+				
+					parameter<Eur_Aansl>  Ki_vast_min := Aandeel_Lucht * Lucht/Ki_woning_vast_min + Aandeel_Bodem * Bodem/Ki_woning_vast_min;
+					parameter<Eur_Aansl>  Ki_vast_max := Aandeel_Lucht * Lucht/Ki_woning_vast_max + Aandeel_Bodem * Bodem/Ki_woning_vast_max;
+					parameter<Eur_kw>     Ki_var_min  := Aandeel_Lucht * Lucht/Ki_woning_var_min  + Aandeel_Bodem * Bodem/Ki_woning_var_min;
+					parameter<Eur_kw>     Ki_var_max  := Aandeel_Lucht * Lucht/Ki_woning_var_max  + Aandeel_Bodem * Bodem/Ki_woning_var_max;
+					
+				}
+				container Util   := AlleBC
+				{
+					parameter<Ratio>      SPF_RV_A := Aandeel_Lucht * Lucht/SPF_util + Aandeel_Bodem * Bodem/SPF_util;
+					parameter<Ratio>      SPF_RV_B := SPF_RV_A;
+					parameter<Ratio>      SPF_RV_C := SPF_RV_B;
+					
+					parameter<Eur_aansl>  Ki_vast_min := Aandeel_Lucht * Lucht/Ki_util_vast_min + Aandeel_Bodem * Bodem/Ki_util_vast_min;
+					parameter<Eur_aansl>  Ki_vast_max := Aandeel_Lucht * Lucht/Ki_util_vast_max + Aandeel_Bodem * Bodem/Ki_util_vast_max;
+					parameter<Eur_kw>     Ki_var_min  := Aandeel_Lucht * Lucht/Ki_util_var_min  + Aandeel_Bodem * Bodem/Ki_util_var_min;
+					parameter<Eur_kw>     Ki_var_max  := Aandeel_Lucht * Lucht/Ki_util_var_max  + Aandeel_Bodem * Bodem/Ki_util_var_max;
+					
+				}
+				container GlTb := Util;
+			}
 		}
 
 		// obv Warmtewet maximumprijs.
@@ -176,81 +260,7 @@ container Basis: Using = "Units"
 				attribute<m2_MU > Oppervlak (Classifications/WoningtypeBestaand) := SpecifiekeInstellingen/LokaleOpwekking/BestaandeWoning/ZonneBoiler_Oppervlak;
 			}
 
-			container eWP //TODO: oude waarden verwijderen
-			{
-				parameter<Ratio>	COP				:	[ 3.00 ],	Descr = "Oorspronkelijke COP in versie 3.3", Source = "Functioneel ontwerp 3.0 en uitbreidingen en dataverificaties";
-				parameter<units/Eur_Woning> InvesteringsKosten_min : [ 6500.0];
-				parameter<units/Eur_Woning> InvesteringsKosten_max : [13300.0];
-				
-				container Lucht:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
-				{
-//					parameter<Ratio>  COP_K       :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimtekoeling"; // TODO: Moet hier niet nog wat mee gebeuren
-//					parameter<Ratio>  COP_WW      :=    2.30 [Ratio],	Descr = "COP van luchtwarmtepomp voor tapwaterbereiding";
-//					parameter<Ratio>  COP_RV_A    :=    4.50 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel A+";
-//					parameter<Ratio>  COP_RV_B    :=    4.00 [Ratio],	Descr = "COP van luchtwarmtepomp voor ruimteverwarming bij schillabel B";
-				
-					parameter<Eur_Aansl> Ki_woning_vast_min := 4637 [Eur_Aansl],   Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
-					parameter<Eur_Aansl> Ki_woning_vast_max := 5359 [Eur_Aansl],   Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw>    Ki_woning_var_min  :=  500 [Eur_kw],      Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw>    Ki_woning_var_max  :=  320 [Eur_kw],      Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
-					
-					parameter<Eur_aansl> Ki_util_vast_min   := 103378 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
-					parameter<Eur_aansl> Ki_util_vast_max   := 103378 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw>    Ki_util_var_min    :=  640   [Eur_kw],	   Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw>    Ki_util_var_max    :=  640   [Eur_kw],	   Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
-					parameter<Ratio>     SPF_won_A          := 5.93;
-					parameter<Ratio>     SPF_won_B          := 4.49;
-					parameter<Ratio>     SPF_won_C          := 3.66;
-					parameter<Ratio>     SPF_util           := 3.66;
-					parameter<Ratio>     SPF_WW             := 2.00;
-					parameter<Ratio>     SPF_K              := 4.00;
-					
-					parameter<Jaar>      afschrijftermijn   := 15[jaar];
-				}
-				
-				container Bodem:	Source = "Validatiesessies startanalyse 2019" //TODO: source FO 4.0
-				{
-//					parameter<Ratio>  COP_K       :=    8.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimtekoeling";
-//					parameter<Ratio>  COP_WW      :=    3.25 [Ratio],	Descr = "COP van bodemwarmtepomp voor tapwaterbereiding";
-//					parameter<Ratio>  COP_RV_A    :=    5.00 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel A+";
-//					parameter<Ratio>  COP_RV_B    :=    4.50 [Ratio],	Descr = "COP van bodemwarmtepomp voor ruimteverwarming bij schillabel B";
-					
-					parameter<Eur_Aansl> Ki_woning_vast_min := 4628 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
-					parameter<Eur_Aansl> Ki_woning_vast_max := 8460 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw>    Ki_woning_var_min  :=  899 [Eur_kw],    Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw>    Ki_woning_var_max  :=  573 [Eur_kw],    Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
-					
-					parameter<Eur_aansl> Ki_util_vast_min   := 6000 [Eur_Aansl], Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak"; // TODO: en kleine utiliteiten dan?
-					parameter<Eur_aansl> Ki_util_vast_max   := 6000 [Eur_Aansl], Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw>    Ki_util_var_min    := 1480   [Eur_kw],  Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw>    Ki_util_var_max    := 1480   [Eur_kw],  Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
-					parameter<Jaar>      afschrijftermijn   := 15[jaar];
-					parameter<Ratio>     SPF_won_A          := 6.35;
-					parameter<Ratio>     SPF_won_B          := 4.68;
-					parameter<Ratio>     SPF_won_C          := 3.76;
-					parameter<Ratio>     SPF_util           := 3.76;
-					parameter<Ratio>     SPF_WW             := 2.00;
-					parameter<Ratio>     SPF_K              := 8.00;
-					
-					parameter<Jaar>      afschrijftermijn_40   := 30[jaar];
-					parameter<Jaar>      afschrijftermijn_60   := 15[jaar];
-				}
-				
-				parameter<Ratio> Aandeel_Lucht := 0.5; // TODO: Verwijs hier naar een nog aan te brengen schuifinstelling
-				parameter<Ratio> Aandeel_Bodem := 1.0 - Aandeel_Lucht;
-				
-				// TODO: neem dit in gebruik en laat dit de COP en InvesteringsKosten_min/max vervangen.
-				parameter<Ratio>      COP_K       := Aandeel_Lucht * Lucht/COP_K       + Aandeel_Bodem * Bodem/COP_K;
-				parameter<Ratio>      COP_WW      := Aandeel_Lucht * Lucht/COP_WW      + Aandeel_Bodem * Bodem/COP_WW;
-				parameter<Ratio>      COP_RV_A    := Aandeel_Lucht * Lucht/COP_RV_A    + Aandeel_Bodem * Bodem/COP_RV_A;
-				parameter<Ratio>      COP_RV_B    := Aandeel_Lucht * Lucht/COP_RV_B    + Aandeel_Bodem * Bodem/COP_RV_B;
-			
-				parameter<Eur>        Ki_vast_min := Aandeel_Lucht * Lucht/Ki_vast_min + Aandeel_Bodem * Bodem/Ki_vast_min;
-				parameter<Eur>        Ki_vast_max := Aandeel_Lucht * Lucht/Ki_vast_max + Aandeel_Bodem * Bodem/Ki_vast_max;
-				parameter<Eur_kw>     Ki_var_min  := Aandeel_Lucht * Lucht/Ki_var_min  + Aandeel_Bodem * Bodem/Ki_var_min;
-				parameter<Eur_kw>     Ki_var_max  := Aandeel_Lucht * Lucht/Ki_var_max  + Aandeel_Bodem * Bodem/Ki_var_max;
-				
-			}
+			container eWP := Component/eWP/Woning;
 
 			container Opbrengsten : Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 			{
@@ -276,7 +286,7 @@ container Basis: Using = "Units"
 			{
 				attribute<m2_MU> Oppervlak (Classifications/WoningtypeNieuwbouw) := LokaleOpwekking/NieuwbouwWoning/ZonneBoiler_Oppervlak;
 			}
-
+			
 			container Opbrengsten := BestaandeWoning/Opbrengsten, Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 			{
 				attribute<Eur_Aansl> AansluitTarief_min (Classifications/WoningtypeNieuwbouw): [4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500, 4500];
@@ -309,19 +319,7 @@ container Basis: Using = "Units"
 				attribute<m2_MU > Oppervlak (Classifications/UtilTypeBestaand) := LokaleOpwekking/BestaandeUtil/ZonneBoiler_Oppervlak;
 			}
 
-			container eWP:= BestaandeWoning/eWP  //TODO: oude waarden verwijderen
-			{
-				parameter<units/Eur_m2> InvesteringsKosten_min: [42.0], Source = "FO 3.0 + uitbreidingen en dataverificaties"; //OUD
-				parameter<units/Eur_m2> InvesteringsKosten_max: [42.0], Source = "FO 3.0 + uitbreidingen en dataverificaties"; //OUD
-				
-				container Lucht:= BestaandeWoning/eWP/Lucht //TODO: source toevoegen FO 4.0
-				{
-					parameter<Eur>		Ki_vast_min		:=	   0.00 [Eur],		Descr = "minimale vaste investering luchtwarmtepomp door projectmatige collectieve aanpak";
-					parameter<Eur>		Ki_vast_max		:=	   0.00 [Eur],		Descr = "maximale vaste investering luchtwarmtepomp  door niet-projectmatige niet-collectieve aanpak";
-					parameter<Eur_kw>	Ki_var_min		:=	1193.50 [Eur_kw],	Descr = "minimale variabele investering luchtwarmtepomp  door projectmatige collectieve aanpak";
-					parameter<Eur_kw>	Ki_var_max		:=	1925.00 [Eur_kw],	Descr = "maximale variabele investering luchtwarmtepomp  door niet-projectmatige aanpak";
-				}				
-			}
+			container eWP := Component/eWP/Util;
 
 			container Opbrengsten: Source = "CE-Delft_3440_Vesta_20_DEF.pdf, $5.2, tabel 36"
 			{
@@ -385,14 +383,8 @@ container Basis: Using = "Units"
 			{
 				attribute<m2_MU > Oppervlak (Classifications/GLTB) := LokaleOpwekking/BestaandeGlTb/ZonneBoiler_Oppervlak;
 			}
-
-			container eWP
-			{
-				parameter<Ratio>   COP: [ 4.00 ];
-				//Onbekende kosten aan gebouw
-				parameter<units/Eur_m2> InvesteringsKosten_min : [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
-				parameter<units/Eur_m2> InvesteringsKosten_max : [1000000.0]; // @@@ Kosten gebouwaanpassing op heel hoog gezet
-			}
+			
+			container eWP := Component/eWP/GlTb;
 
 			container opbrengsten : Source= "http://www.mantis.objectvision.nl/view.php?id=841"
 			{
@@ -489,11 +481,16 @@ container Basis: Using = "Units"
 					parameter<string> S_T_AP:   ['Criteria/Never']; // was: Sprong E
 					parameter<string> S_B_AP:   ['Criteria/Never']; // was: Sprong F
 
+					// labelsprongen naar B inclusief eWP aan (incl lt-afgiftesysteem)
+					parameter<string> S_H_BeWP:  ['Criteria/Never']; // naar A+ met eWP
+					parameter<string> S_T_BeWP:  ['Criteria/Never']; // van tussenlabel naar A+ met eWP
+					parameter<string> S_B_BeWP:  ['Criteria/Never']; // van B naar A+ met eWP.
+
 					// labelsprongen naar A+ inclusief eWP aan (incl lt-afgiftesysteem)
-					parameter<string> S_H_eWP:  ['Criteria/Never']; // naar A+ met eWP
-					parameter<string> S_T_eWP:  ['Criteria/Never']; // van tussenlabel naar A+ met eWP
-					parameter<string> S_B_eWP:  ['Criteria/Never']; // van B naar A+ met eWP.
-					parameter<string> S_AP_eWP: ['Criteria/Never'];  // van A+ zonder eWP naar A+ met eWP
+					parameter<string> S_H_AeWP:  ['Criteria/Never']; // naar A+ met eWP
+					parameter<string> S_T_AeWP:  ['Criteria/Never']; // van tussenlabel naar A+ met eWP
+					parameter<string> S_B_AeWP:  ['Criteria/Never']; // van B naar A+ met eWP.
+					parameter<string> S_AP_AeWP: ['Criteria/Never'];  // van A+ zonder eWP naar A+ met eWP
 
 					// labelsprongen naar A+ inclusief EWV
 					parameter<string> S_H_EWV:  ['Criteria/Never']; // naar A+ met EWV

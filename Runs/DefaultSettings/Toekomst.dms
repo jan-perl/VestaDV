@@ -29,11 +29,16 @@ container Toekomst := Basis, using = "Units"
 					parameter<String> S_T_AP:  ['Criteria/never']; // was: Sprong E (een vervolgsprong)
 					parameter<String> S_B_AP:  ['Criteria/never']; // was: Sprong F (een vervolgsprong)
 
+					// labelsprongen naar B inclusief eWP aan (incl lt-afgiftesysteem)
+					parameter<String> S_H_BeWP: ['Criteria/never']; // naar A+ met eWP
+					parameter<String> S_T_BeWP: ['Criteria/never']; // van tussenlabel naar A+ met eWP
+					parameter<String> S_B_BeWP: ['Criteria/never']; // van B naar A+ met eWP.
+					
 					// labelsprongen naar A+ inclusief eWP aan (incl lt-afgiftesysteem)
-					parameter<String> S_H_eWP: ['Criteria/never']; // naar A+ met eWP
-					parameter<String> S_T_eWP: ['Criteria/never']; // van tussenlabel naar A+ met eWP
-					parameter<String> S_B_eWP: ['Criteria/never']; // van B naar A+ met eWP.
-					parameter<String> S_AP_eWP:['Criteria/never'];  // van A+ zonder eWP naar A+ met eWP
+					parameter<String> S_H_AeWP: ['Criteria/never']; // naar A+ met eWP
+					parameter<String> S_T_AeWP: ['Criteria/never']; // van tussenlabel naar A+ met eWP
+					parameter<String> S_B_AeWP: ['Criteria/never']; // van B naar A+ met eWP.
+					parameter<String> S_AP_AeWP:['Criteria/never'];  // van A+ zonder eWP naar A+ met eWP
 
 					// labelsprongen naar A+ inclusief EWV (staat nog uit zolang EWV rentabiliteitsafweging nog niet goed is geimplementeerd
 					parameter<String> S_H_EWV: ['Criteria/never']; // naar A+ met EWV

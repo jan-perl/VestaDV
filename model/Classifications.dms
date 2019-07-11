@@ -467,17 +467,17 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties voor Energielabels
-	unit<uint8> energielabel: nrofrows = 9
+	unit<uint8> energielabel: nrofrows = 10
 	{
-		attribute<string> Name  : ['eWP', 'EWV', 'Aplus', 'LabelB', 'LabelC', 'LabelD', 'LabelE', 'LabelF', 'LabelG'];
-		attribute<string> Label : DialogType = "LabelText",  ['eWP', 'EWV', 'A+', 'B', 'C', 'D', 'E', 'F', 'G'];
+		attribute<string> Name  : ['AeWP', 'EWV', 'Aplus', 'LabelB', 'LabelC', 'LabelD', 'LabelE', 'LabelF', 'LabelG', 'BeWP'];
+		attribute<string> Label : DialogType = "LabelText",  ['AeWP', 'EWV', 'A+', 'B', 'C', 'D', 'E', 'F', 'G', 'BeWP'];
 		
 		attribute<WarmteOptie> WarmteOptie_rel := union_data(., 
 			WarmteOptie/V/eWP, WarmteOptie/V/eWV, 
 			WarmteOptie/V/gas, WarmteOptie/V/gas,
 			WarmteOptie/V/gas, WarmteOptie/V/gas,
 			WarmteOptie/V/gas, WarmteOptie/V/gas,
-			WarmteOptie/V/gas
+			WarmteOptie/V/gas, WarmteOptie/V/eWP
 		);
 		
 		attribute<uint32> Color : DialogType = "BrushColor",
@@ -491,13 +491,14 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,rgb(251,182,001)
 			,rgb(249,097,014)
 			,rgb(249,026,031)
+			,rgb(114,255,255)
 		];
 		attribute<uint32> SymbColor := Color, DialogType = "SymbolColor";
 
 		container V := for_each_nedv(name, 'value('+string(id(.))+', ..)', void, .);
 	}
 
-	unit<uint8> LabelSprong: nrofrows = 14
+	unit<uint8> LabelSprong: nrofrows = 17
 	{
 		attribute<string> Label := code + ': '+Descr, DialogType = "LabelText";
 		attribute<string> Descr:
@@ -509,6 +510,10 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'Van Tussenlabel naar A+',
 			'Van B naar A+',
 
+			'Van Huidig(C..G) Naar B met eWP',
+			'Van Tussenlabel naar B met eWP',
+			'Van B naar B met eWP',
+			
 			'Van Huidig(C..G) Naar A+ met eWP',
 			'Van Tussenlabel naar A+ met eWP',
 			'Van B naar A+ met eWP',
@@ -518,6 +523,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'Van Tussenlabel naar A+ met EWV',
 			'Van B naar A+ met EWV',
 			'Van A+ naar A+ met EWV'
+			
 		];
 
 		attribute<string> code:  DialogType = "LabelText",
@@ -525,7 +531,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'S_H_T', 'S_H_B',  'S_H_AP',
 			'S_T_B', 'S_T_AP', 'S_B_AP',
 
-			'S_H_eWP', 'S_T_eWP', 'S_B_eWP', 'S_AP_eWP',
+			'S_H_BeWP', 'S_T_BeWP', 'S_B_BeWP',
+			'S_H_AeWP', 'S_T_AeWP', 'S_B_AeWP', 'S_AP_AeWP',
 			'S_H_EWV', 'S_T_EWV', 'S_B_EWV', 'S_AP_EWV'
 		];
 
@@ -534,6 +541,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			'S_H_T', 'S_H_B',  'S_H_AP',
 			'S_T_B', 'S_T_AP', 'S_B_AP',
 
+			'S_H_B', 'S_T_B', null, // excl LTAS + eWP
 			'S_H_AP', 'S_T_AP', 'S_B_AP', null, // excl LTAS + eWP
 			'S_H_AP', 'S_T_AP', 'S_B_AP', null  // excl EWV
 		];
@@ -543,7 +551,8 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			 null, null, null,
 			 null, null, null,
 
-			'eWP', 'eWP', 'eWP', 'eWP',
+			'BeWP', 'BeWP', 'BeWP',
+			'AeWP', 'AeWP', 'AeWP', 'AeWP',
 			'EWV', 'EWV', 'EWV', 'EWV'
 		];
 
@@ -551,6 +560,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			false, false, false,
 			 true,  true,  true,
 
+			false, true, true,
 			false, true, true, true,
 			false, true, true, true
 		];
