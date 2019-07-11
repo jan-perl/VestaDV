@@ -178,6 +178,7 @@ container Bebouwing
 			}
 		}
 	}
+	
 	template GebouwTempl
 	{
 		//parameters
@@ -187,7 +188,7 @@ container Bebouwing
 		attribute<GJ_yr_per_Eenheid>	verbruik_prev_vast	(ModelObject); // alleen ruimteverwarming
 		attribute<GJ_yr_m2>				verbruik_prev_var	(ModelObject); // alleen ruimteverwarming
 		parameter<string>				VerbeterCode;
-
+		//end parameters
 		
 		attribute<Ratio>				ReboundFactor_stap	(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/RB_FAC_'+VerbeterCode+'[Ratio], 0.0[Ratio])' : 'const(0 / 0, ModelObject, Ratio)'; // lees reboundfactor uit kentallenbestand
 		attribute<GJ_yr_per_Eenheid>	verbruik_na_vast	(ModelObject)	:=	=(VerbeterCode!='X') ? 'MakeDefined(table/MV'+VerbeterCode+'_EG_vast[GJ_yr_per_Eenheid], Functioneel/Ruimteverwarming_vast)' : 'const(0.0[GJ_yr_per_Eenheid], ModelObject)'; // lees nieuw verbruik uit kentallenbestand

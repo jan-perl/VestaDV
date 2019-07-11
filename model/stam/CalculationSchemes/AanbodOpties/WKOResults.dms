@@ -83,7 +83,7 @@ template WKOResults
 		attribute<Eur_yr>	Oj_id_EEA		(PlanRegio)	:=	sum(WkoData/Oj_id_EEA		* float64(StartThis)	, BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Oj_wd_EEA		(PlanRegio)	:=	sum(WkoData/Oj_wd_EEA		* float64(StartThis)	, BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Oj_ow_EEA		(PlanRegio)	:=	sum(WkoData/Oj_ow_EEA		* float64(StartThis)	, BCdata/PlanRegio_rel);
-		attribute<Eur_yr>	Oj_SDE			(PlanRegio)	:=	sum(WkoData/Oj_SDE			* float64(StartThis)	, BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_SDE			(PlanRegio)	:=	sum(WkoData/Oj_SDE			* float64(hasThis)		, BCdata/PlanRegio_rel);
 		
 		container OenM {
 			attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)	:=	sum(WkoData/Kj_wd_oh		* float64(StartThis)	, BCdata/PlanRegio_rel);

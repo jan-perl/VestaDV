@@ -124,7 +124,7 @@ template LtResults
 		attribute<Eur_yr>	Oj_id_EEA			(PlanRegio)			:=	sum(WkoData/Oj_id_EEA		* float64(StartThis),	BCdata/PlanRegio_rel);
 		attribute<Eur_yr>	Oj_wd_EEA			(PlanRegio)			:=	Oj_wd_EEA_gebied + Oj_wd_EEA_gebouw;
 		attribute<Eur_yr>	Oj_ow_EEA			(PlanRegio)			:=	Oj_ow_EEA_gebied + Oj_ow_EEA_gebouw;
-		attribute<Eur_yr>	Oj_SDE				(PlanRegio)			:=	sum(WkoData/Oj_SDE			* float64(StartThis),	BCdata/PlanRegio_rel);
+		attribute<Eur_yr>	Oj_SDE				(PlanRegio)			:=	sum(WkoData/Oj_SDE			* float64(HasThis),		BCdata/PlanRegio_rel);
 		
 		//geannualiseerde investeringskosten
 		attribute<Eur_yr>	Kji_wd_gebouw		(PlanRegio)			:=	sum(WkoData/Kji_wd			* float64(StartThis),	BCdata/PlanRegio_rel);
@@ -150,17 +150,17 @@ template LtResults
 			
 			attribute<Eur_yr>	Kj_wd_oh			(PlanRegio)		:=	Kj_wd_oh_gebouw + Kj_wd_oh_gebied;
 			attribute<Eur_yr>	Kj_ow_oh			(PlanRegio)		:=	Kj_ow_oh_gebouw + Kj_ow_oh_gebied;
-			attribute<Eur_yr>	Kj_id_oh			(PlanRegio)		:=	sum(WkoData/Kj_id_oh		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_id_oh			(PlanRegio)		:=	sum(WkoData/Kj_id_oh		* float64(StartThis),	BCdata/PlanRegio_rel);
 			
 			//administratiekosten
-			attribute<Eur_yr>	Kj_wd_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_wd_adm		* float64(StartThis),		BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_ow_adm		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_wd_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_wd_adm		* float64(StartThis),	BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_adm_gebouw	(PlanRegio)		:=	sum(WkoData/Kj_ow_adm		* float64(StartThis),	BCdata/PlanRegio_rel);
 			attribute<Eur_yr>	Kj_wd_adm_gebied	(PlanRegio)		:=	sum(BC/Kj_wd_adm_gebied,							BCdata/PlanRegio_rel);
 			attribute<Eur_yr>	Kj_ow_adm_gebied	(PlanRegio)		:=	sum(BC/Kj_ow_adm_gebied,							BCdata/PlanRegio_rel);
 			
 			attribute<Eur_yr>	Kj_wd_adm			(PlanRegio)		:=	Kj_wd_adm_gebouw + Kj_wd_adm_gebied;
 			attribute<Eur_yr>	Kj_ow_adm			(PlanRegio)		:=	Kj_ow_adm_gebouw + Kj_ow_adm_gebied;
-			attribute<Eur_yr>	Kj_id_adm			(PlanRegio)		:=	sum(WkoData/Kj_id_adm		* float64(StartThis),		BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_id_adm			(PlanRegio)		:=	sum(WkoData/Kj_id_adm		* float64(StartThis),	BCdata/PlanRegio_rel);
 		}
 		//verbruik en uitstoot
 		container Nieuw {

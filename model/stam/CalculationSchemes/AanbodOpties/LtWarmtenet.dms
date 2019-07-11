@@ -455,10 +455,10 @@ Template LtWarmtenetImpl
 				
 				container id
 				{
-					attribute<Eur_yr> Kj_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek	')+')';
-					attribute<Eur_yr> Km_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Km_id_elek		')+')';
-					attribute<Eur_yr> Kj_id_elek_EH (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_EH	')+')';
-					attribute<Eur_yr> Kj_id_elek_CO2(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Totaal/Kj_id_elek_CO2	')+')';
+					attribute<Eur_yr> Kj_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/totaal/Kj_id_elek	')+')';
+					attribute<Eur_yr> Km_id_elek    (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/totaal/Km_id_elek		')+')';
+					attribute<Eur_yr> Kj_id_elek_EH (PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/totaal/Kj_id_elek_EH	')+')';
+					attribute<Eur_yr> Kj_id_elek_CO2(PlanRegio) := ='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/totaal/Kj_id_elek_CO2	')+')';
 					
 					attribute<Eur_yr> Kj_id_gas		(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
 					attribute<Eur_yr> Km_id_gas		(PlanRegio) := const(0[Eur_yr], PlanRegio); // geen gasverbruik bij LT netten
