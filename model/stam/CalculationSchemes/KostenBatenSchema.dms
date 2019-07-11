@@ -33,7 +33,7 @@ template KostenBaten
 			,Eur
 			)
 		{
-			attribute<Eur> Oi_Totaal(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
+			attribute<Eur> Oi_Aansluitbijdrage(PlanRegio) := ='add('+AsItemList(Classifications/BebouwingsComponent/Name)+')';
 		}
 		container JaarlijksD
 		{
@@ -331,7 +331,7 @@ template KostenBaten
 		attribute<Eur_yr> Km_Totaal       (PlanRegio) := Kj_Onderhoud + Km_wd_gas + Km_wd_elek + Kj_wd_adm + Kj_lv_adm ;
 	}
 
-	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Totaal;
+	attribute<Eur   > Oi_Aansluitbijdrage (PlanRegio) := Opbrengsten/EenmaligD/Oi_Aansluitbijdrage;
 	attribute<Eur_yr> Oji_wd_KL           (PlanRegio) := Oi_Aansluitbijdrage * NCW/wd28/StartDiscountFactor * NCW/wd28/AnnualisationFactor;
 	attribute<Eur_yr> Kji_ge_KL           (PlanRegio) := Ki_ge_Bruto * NCW/bw28/AnnualisationFactor;
 	attribute<Eur_yr> Kji_id_KL           (PlanRegio) := Ki_id_Bruto * NCW/id28/AnnualisationFactor;

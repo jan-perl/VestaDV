@@ -72,7 +72,6 @@ template RestWarmte
 	attribute<bool> GebruikRestWarmte(PlanRegio) := GebruikOptie;
 //	attribute<bool> NieuwGebruikRestWarmte (PlanRegio) := GebruikRestWarmte && !OldGebruik;
 
-	attribute<Eur   > Oi_Totaal          (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage;
 	attribute<KG_GJ>  CO2_GJb            (PlanRegio) := Bronnen/CO2_GJ[LastIter/NextState/CurrBron];
 	attribute<G_GJ>   NOx_GJb            (PlanRegio) := Bronnen/NOx_GJ[LastIter/NextState/CurrBron];
 	attribute<G_GJ>   SO2_GJb            (PlanRegio) := Bronnen/SO2_GJ[LastIter/NextState/CurrBron];
@@ -223,7 +222,7 @@ template RestWarmte
 
 			container eenmalig
 			{
-				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NieuwGebruik ? KostenBaten/Opbrengsten/EenmaligD/Oi_Totaal : 0[Eur];
+				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NieuwGebruik ? KostenBaten/Oi_Aansluitbijdrage: 0[Eur];
 				
 				attribute<Eur> Ki_ge_ov       (PlanRegio) := NieuwGebruik ? KostenBaten/Ki_ge_ov : 0[Eur];
 				attribute<Eur> Ki_ge_pm       (PlanRegio) := NieuwGebruik ? KostenBaten/Ki_ge_pm : 0[Eur];

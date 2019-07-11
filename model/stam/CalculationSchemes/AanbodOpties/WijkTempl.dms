@@ -51,9 +51,6 @@ template WijkTempl
 		attribute<Eur_yr>	Oj_lv_SDE          (PlanRegio)	:=	KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	}
 
-	attribute<Eur   > Oi_Totaal  (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage ;
-	attribute<Eur   > Ki_Totaal  (PlanRegio) := KostenBaten/Ki_wd_bruto + Kosten/Ki_ow;
-	
 	attribute<Eur_yr> Km_Totaal  (PlanRegio) := KostenBaten/Km_TotaalD + Kosten/Km_ow;
 	attribute<kg_yr>  CO2_Primair(PlanRegio) := KostenBaten/Vj_WarmtePrimairD * Kosten/CO2_GJ;
 	attribute<GJ_yr>  GJe_Totaal (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * TypeInfo/RekenType/Factoren/Elektriciteit;
@@ -201,7 +198,7 @@ template WijkTempl
 
 			container Eenmalig
 			{
-				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NewGebruik ? KostenBaten/Opbrengsten/EenmaligD/Oi_Totaal : 0[Eur];
+				attribute<Eur> Oi_lv_Aansl    (PlanRegio) := NewGebruik ? KostenBaten/Oi_Aansluitbijdrage : 0[Eur];
 				
 				attribute<Eur> Ki_ge_ov       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_ov : 0[Eur];
 				attribute<Eur> Ki_ge_pm       (PlanRegio) := NewGebruik ? KostenBaten/Ki_ge_pm : 0[Eur];
