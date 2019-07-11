@@ -289,13 +289,13 @@ template BCdata
 		attribute<Eur> Ki_Zon_PV            (BebouwingsObject) := Hoeveelheden/Zon_PV      * Inv/Zon_PV      * Leercurves/ZonPV/Curve;
 		attribute<Eur> Ki_mWKK              (BebouwingsObject) := Hoeveelheden/mWKK        * Inv/mWkk        * Leercurves/mWKK/Curve;
 		attribute<Eur> Ki_hWP               (BebouwingsObject) := Hoeveelheden/hWP         * Inv/hWP         * Leercurves/hWP/Curve;
-		attribute<Eur> Ki_eWP               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_eWP_w;
-		attribute<Eur> Ki_EWV               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_EWV_w;
+		attribute<Eur> Ki_eWP               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_eWP;
+		attribute<Eur> Ki_EWV               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_EWV;
 
 		attribute<Eur> Ki_LokaleOpwekking30 (BebouwingsObject) := Ki_ZonneBoiler + Ki_Zon_PV + Ki_EWV;
 		attribute<Eur> Ki_LokaleOpwekking15 (BebouwingsObject) := Ki_mWKK + Ki_hWP + Ki_eWP;
 		
-		attribute<Eur> Ki_GebouwVerbetering (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_gv_w; // cumulatief
+		attribute<Eur> Ki_GebouwVerbetering (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_gv; // cumulatief
 		attribute<Eur_yr> Kj_gv_incentive   (BebouwingsObject) := Sprongen/Incentive_eigenaar_excl + StartingStateComponent/Kosten/Kj_gv_incentive[StartingState_rel];
 
 		attribute<Eur> Ki_LokaleOpwekking   (BebouwingsObject) := Ki_LokaleOpwekking30 + Ki_LokaleOpwekking15;
