@@ -7,23 +7,22 @@
 template WKOUtilData
 {
 	// begin case parameters
-	container BCdata;              // := BebouwingsComponenten/NieuwbouwUtil;
-	parameter<Eur_GJ> WarmtePrijs; // := BeginStatus/KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs;
+	container BCdata;
+	parameter<Eur_GJ> WarmtePrijs;
 	parameter<bool> KoudeBeschikbaar;
 	// end case parameters
 
 	unit<uint32> BebouwingsObject := BCdata/BebouwingsObject;
 
-	attribute<GJ_yr> Lq4bis    (BebouwingsObject) := BCdata/Aandeel/WarmteVraag * BCdata/Functioneel/Koude, Descr = "KoudeVraag";
+	attribute<GJ_yr> Lq4bis    (BebouwingsObject) := KoudeBeschikbaar ? BCdata/Aandeel/WarmteVraag * BCdata/Functioneel/Koude : const(0[GJ_Yr], BebouwingsObject), Descr = "KoudeVraag";
 	attribute<m2>    Lu        (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/NrModelUnits;
 
 	
-	attribute<GJ_yr>  V_RV      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr> V_APP      (BebouwingsObject) := BCdata/Functioneel/Apparatuur,	Descr = "vraag naar elektriciteit voor apparatuur";
-	attribute<GJ_yr>  V_WW      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW, Source = "FO v7a F 54"; // @@@ is Thermische Vraag
-	attribute<GJ_yr>  V_Warmte  (BebouwingsObject) := V_RV + V_WW;
-	attribute<GJ_yr>  V_Koude   (BebouwingsObject) := KoudeBeschikbaar ? Lq4bis : const(0[GJ_Yr], BebouwingsObject);
-//REMOVE	attribute<GJ_yr>  F_Elek    (BebouwingsObject) := V_Warmte + V_Koude;
+	attribute<GJ_yr> V_RV      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_RV;
+	attribute<GJ_yr> V_APP     (BebouwingsObject) := BCdata/Functioneel/Apparatuur,	Descr = "vraag naar elektriciteit voor apparatuur";
+	attribute<GJ_yr> V_WW      (BebouwingsObject) := BCdata/WarmteVraag/deelnemers/Verbruik_WW;
+	attribute<GJ_yr> V_Warmte  (BebouwingsObject) := V_RV + V_WW;
+	attribute<GJ_yr> V_Koude   (BebouwingsObject) := Lq4bis;
 	
 	attribute<float64> SPF_ind_rv  (BebouwingsObject) := 
 		BcData/energielabel/CurrValue <= /Classifications/energielabel/V/Aplus  ? Efficiency/SPF_ind_A_rv :

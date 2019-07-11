@@ -56,14 +56,14 @@ template EnergieKengetallenImport
 		{
 			attribute<GJ_yr_per_eenheid>	RuimteVerwarming_vast	(ModelObject)	:=	value(table/V_RV_vast,	GJ_yr_per_eenheid),	Descr = "vaste functionele warmtevraag, onafhankelijk van oppervlak";
 			attribute<GJ_yr_m2>	RuimteVerwarming_var	(ModelObject)	:=	value(table/V_RV_var,	GJ_yr_m2),	Descr = "variabel deel functionele warmtevraag, afhankelijk van oppervlak";
-			
+			attribute<GJ_yr_m2>	V_Ventilatie			(ModelObject)	:=	value(table/V_Vent,	GJ_yr_m2),	Descr = "variabele extra ventilatievraag bij woningen vanaf schillabel B";
 			attribute<GJ_yr_M2>          Pompenergie_M2        (ModelObject) :=
 				= IsDefined(rlookup('V_P_ELEK', TableColumns/name))
 					? 'MakeDefined(value(table/V_P_ELEK,  Ratio), 0.0[GJ_yr_M2])'
 					: 'const(0.0[GJ_yr_M2], ModelObject)';
 			attribute<GJ_yr_per_eenheid> Pompenergie_min       (ModelObject) := Pompenergie_M2 * area/min;
 			attribute<GJ_yr_per_eenheid> Pompenergie_max       (ModelObject) := Pompenergie_M2 * area/max;
-			attribute<GJ_yr_per_eenheid> Koude                 (ModelObject) := value(table/V_KOU,      GJ_yr_per_eenheid);
+			attribute<GJ_yr_M2> Koude                 (ModelObject) := value(table/V_KOU,      GJ_yr_M2);
 			attribute<GJ_yr_per_eenheid> WarmWater             (ModelObject) := value(table/V_WW,       GJ_yr_per_eenheid);
 			attribute<GJ_yr_per_eenheid> ElektrischeApparatuur (ModelObject) := value(table/V_APP_ELEK, GJ_yr_per_eenheid);
 		}
@@ -95,7 +95,9 @@ template EnergieKengetallenImport
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW_per_eenheid> Warmte        (ModelObject) := value(table/AC_WARM, kW_per_eenheid);
+			attribute<kW_per_eenheid> RV            (ModelObject) := value(table/AC_RV, kW_per_eenheid);
+			attribute<kW_per_eenheid> WW            (ModelObject) := value(table/AC_WW, kW_per_eenheid);
+			attribute<kW_per_eenheid> Warmte        (ModelObject) := RV + WW;
 		}
 		container Energie
 		{

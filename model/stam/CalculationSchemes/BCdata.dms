@@ -72,6 +72,8 @@ template BCdata
 
 		container AansluitCapaciteit
 		{
+			attribute<kW> RV             (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/RV[Model_rel];
+			attribute<kW> WW             (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/WW[Model_rel];
 			attribute<kW> Warmte         (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
 			attribute<kW> Elektriciteit  (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Elektriciteit[Model_rel];
 		}
@@ -80,25 +82,18 @@ template BCdata
 		{
 			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
 
-			attribute<GJ_yr>	WarmWater				(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/WarmWater				[Model_rel] * DragerSpecifiekeOpties/WarmWater;
-			attribute<GJ_yr>	Koude					(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Koude					[Model_rel] * DragerSpecifiekeOpties/Koude; //TODO koudevraag relateren aan graaddagen
-			attribute<GJ_yr>	ElektrischeApparatuur	(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/ElektrischeApparatuur	[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
-			attribute<GJ_yr>	RuimteVerwarming_vast	(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/RuimteVerwarming_vast	[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
-			attribute<GJ_yr>	RuimteVerwarming_var	(..)	:=	nrOppUnits		* EnergieVraagModellen/functioneel/RuimteVerwarming_var		[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
-			attribute<GJ_yr>	PompEnergie_min			(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Pompenergie_min			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
-			attribute<GJ_yr>	PompEnergie_max			(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Pompenergie_max			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<Ratio>	Klimaateffect			(..)	:=	KlimaatFactorMap[gridm100_rel];
+			attribute<GJ_yr_m2>	Koude_m2				(..)	:=	EnergieVraagModellen/functioneel/Koude[Model_rel] * Kengetallen/Constanten/KlimaatKoudeFactor *(float64(1.0) - Klimaateffect);
+			attribute<GJ_yr>	WarmWater				(..)	:=	nrModelUnits * EnergieVraagModellen/functioneel/WarmWater				[Model_rel] * DragerSpecifiekeOpties/WarmWater;
+			attribute<GJ_yr>	Koude					(..)	:=	nrOppUnits   * EnergieVraagModellen/functioneel/Koude					[Model_rel] * DragerSpecifiekeOpties/Koude; //TODO koudevraag relateren aan graaddagen
+			attribute<GJ_yr>	ElektrischeApparatuur	(..)	:=	nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur	[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
+			attribute<GJ_yr>	RuimteVerwarming_vast	(..)	:=	nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming_vast	[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * Klimaateffect;
+			attribute<GJ_yr>	RuimteVerwarming_var	(..)	:=	nrOppUnits   * EnergieVraagModellen/functioneel/RuimteVerwarming_var	[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * Klimaateffect;
+			attribute<GJ_yr>	PompEnergie_min			(..)	:=	nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr>	PompEnergie_max			(..)	:=	nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
 			attribute<GJ_yr>	RuimteVerwarming		(..)	:=	RuimteVerwarming_vast + RuimteVerwarming_var;
-
+			attribute<GJ_yr>	Ventilatie				(..)	:=	nrOppUnits   * EnergieVraagModellen/functioneel/V_Ventilatie			[Model_rel];
 		}
-	}
-
-	container EnergieLabel
-	{
-		attribute<Classifications/EnergieLabel> LastValue    (BebouwingsObject) := MakeDefined(StartingStateComponent/EnergieLabel/CurrValue[StartingState_rel], EnergieVraagModellen/Efficiency/EnergieLabel[Model_rel]);
-		attribute<Classifications/EnergieLabel> CurrValue    (BebouwingsObject) := Sprongen/NaarEnergieLabel;
-		attribute<bool>                         WasChanged   (BebouwingsObject) := StartingStateComponent/EnergieLabel/IsChanged[StartingState_rel];
-		attribute<bool>                         IsChangedNow (BebouwingsObject) := LastValue != CurrValue;
-		attribute<bool>                         IsChanged    (BebouwingsObject) := WasChanged || IsChangedNow;
 	}
 
 	container Criteria := BebouwingsObject/Criteria // inherit, TODO: opruimen na aanpassing runs
@@ -161,11 +156,21 @@ template BCdata
 		attribute<GJ_yr>	RuimteVerwarming		(BebouwingsObject)	:=	RuimteVerwarming_vast + RuimteVerwarming_var;
 		attribute<GJ_yr>	Koude					(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/Koude;
 		attribute<GJ_yr>	WarmWater				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/WarmWater;
-		attribute<GJ_yr>	Apparatuur				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/ElektrischeApparatuur;
 		attribute<GJ_yr>	PompEnergie				(BebouwingsObject)	:=	Schuiven/OpbrMin * RuimtelijkeVraagComponent/Functioneel/PompEnergie_min + Schuiven/OpbrMax * RuimtelijkeVraagComponent/Functioneel/PompEnergie_max;  // niet afhankelijk van gebouwisolatie ?
+		attribute<GJ_yr>	Ventilatie				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/Ventilatie;
+		attribute<GJ_yr>	Apparatuur				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/ElektrischeApparatuur;
 	}
 
 	container Kentallen_eWP := VraagKentallen/eWP;
+	container EnergieLabel
+	{
+		attribute<Classifications/EnergieLabel> LastValue    (BebouwingsObject) := MakeDefined(StartingStateComponent/EnergieLabel/CurrValue[StartingState_rel], EnergieVraagModellen/Efficiency/EnergieLabel[Model_rel]);
+		attribute<Classifications/EnergieLabel> CurrValue    (BebouwingsObject) := Sprongen/NaarEnergieLabel;
+		attribute<bool>                         WasChanged   (BebouwingsObject) := StartingStateComponent/EnergieLabel/IsChanged[StartingState_rel];
+		attribute<bool>                         IsChangedNow (BebouwingsObject) := LastValue != CurrValue;
+		attribute<bool>                         IsChanged    (BebouwingsObject) := WasChanged || IsChangedNow;
+	}
+	
 	container Efficiency
 	{
 		container Gebouw
@@ -247,7 +252,7 @@ template BCdata
 	
 			IsNieuwbouw 
 		|| (RuimtelijkeVraagComponent/BouwJaar >= Classifications/BouwJaar/V/n2010) 
-		|| (EnergieLabel/CurrValue == Classifications/EnergieLabel/V/Aplus);
+		|| (EnergieLabel/CurrValue == Classifications/EnergieLabel/V/LabelB);
 		
 	#include<Sprongen.dms>
 
@@ -350,12 +355,14 @@ template BCdata
 		}
 		container Apparatuur
 		{
-			attribute<GJ_yr> Zon_PV        (BebouwingsObject) := Opwekking/Zon_PV;
-			attribute<GJ_yr> Elektriciteit (BebouwingsObject) := Functioneel/Apparatuur / Efficiency/Apparatuur/Elektriciteit - Zon_PV;
+			attribute<GJ_yr>	Zon_PV        (BebouwingsObject)	:=	Opwekking/Zon_PV;
+			attribute<GJ_yr>	Elektriciteit (BebouwingsObject)	:=	Functioneel/Apparatuur / Efficiency/Apparatuur/Elektriciteit - Zon_PV;
+			attribute<GJ_yr>	Ventilatie    (BebouwingsObject)	:=	Functioneel/Ventilatie;
 		}
 	}
 	container Aandeel
 	{
+		attribute<float64>  Ventilatie           (BebouwingsObject) := float64(Energielabel/Currvalue <= /Classifications/energielabel/V/LabelB);
 		attribute<Ratio>    Electric             (BebouwingsObject) := Opwekking/eWP + Opwekking/EWV;
 		attribute<Ratio>    Electric_mWKK        (BebouwingsObject) := Electric + Opwekking/mWKK;
 		attribute<Ratio>    IndividueleOpwekking (BebouwingsObject) := Electric_mWKK + Opwekking/hWP, IntegrityCheck = "this <= 1.0";
