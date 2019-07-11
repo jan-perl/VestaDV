@@ -39,6 +39,8 @@ template WKOData
 		: 'const(true, BebouwingsObject)';	
 	attribute <bool> LtVerwarmingGeschikt (BebouwingsObject) := BCdata/LtVerwarmingGeschikt;
 	attribute <bool> Geschikt     (BebouwingsObject) := =(UseContour ? 'InContour && ' : '')+ 'LtVerwarmingGeschikt';
+	parameter<classifications/gebruiksgrootteklasse> ow_gebruiksgrootteklasse_rel := last(ID(Prijzen_elec));
+		
 
 	//Vraag objectgerelateerd in capaciteit en volume
 	attribute<KW>			P_sec				(BebouwingsObject)	:=	WkoDataComponent/P_sec,																	Descr = "gevraagde capaciteit aan het secundaire net";
@@ -54,6 +56,7 @@ template WKOData
 	
 	attribute<GJ_Yr>		V_id_elek			(BebouwingsObject)	:=	WkoDataComponent/V_id_Elek,																Descr = "jaarlijkse elektriciteitsvraag gebouwinstallatie";
 	attribute<GJ_Yr>		V_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/V_wd_Elek,																Descr = "jaarlijkse elektriciteitsvraag collectieve warmtepomp";
+	attribute<GJ_Yr>		V_ow_elek			(BebouwingsObject)	:=	Kengetallen/Efficiency/V_elek_WKO * V_Warmte_primair;
 	attribute<GJ_yr>		V_wd_verlies		(BebouwingsObject)	:=	WkoDataComponent/V_wd_verlies;
 	//Uitstoot en verbruik
 	attribute<GJ_yr>		GJe					(BebouwingsObject)	:=	V_id_elek + V_wd_elek,																	Descr = "elektriciteitsverbruik van gebiedsoptie";
@@ -75,10 +78,14 @@ template WKOData
 	//Investeringskosten wijkdistributie gebouwgerelateerd
 	attribute<Eur>			Ki_wd_gebouw		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Ki_wd,															Descr = "investeringskosten wijkdistributie gebouwgerelateerd";
 	attribute<Eur>			Ki_wd_eWP			(BebouwingsObject)	:=	CollectieveWP ? P_sec_hulp * (Kostenkentallen/Ki_eWP_coll + Kostenkentallen/Ki_WOS) : 0 [Eur],							Descr = "investeringskosten voor het installeren van de collectieve elektrische warmtepomp";
+	attribute<Eur>			Oi_wd_EIA_gebouw	(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
+	attribute<Eur>			Oi_wd_EIA_eWP		(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
+	attribute<Eur>			Oi_wd_EIA			(BebouwingsObject)	:=	Oi_wd_EIA_gebouw + Oi_wd_EIA_eWP,														Descr = "investeringssubsidie inpandige distributie";	
 	attribute<Eur>			Ki_wd				(BebouwingsObject)	:=	Ki_wd_gebouw + Ki_wd_eWP;
-	attribute<Eur>			Oi_wd_EIA			(BebouwingsObject)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,											Descr = "investeringssubsidie inpandige distributie";	
-	attribute<Eur_yr>		Kji_wd				(BebouwingsObject)	:=	(Ki_wd - Oi_wd_EIA) * NCW/wd28/AnnualisationFactor,										Descr = "geannualiseerde investeringskosten wijkdistributie";
-
+	attribute<Eur_yr>		Kji_wd_gebouw		(BebouwingsObject)	:=	(Ki_wd_eWP - Oi_wd_EIA_eWP) * NCW/wd13/AnnualisationFactor,								Descr = "geannualiseerde investeringskosten wijkdistributie";
+	attribute<Eur_yr>		Kji_wd_eWP			(BebouwingsObject)	:=	(Ki_wd_gebouw - Oi_wd_EIA_gebouw) * NCW/wd28/AnnualisationFactor,						Descr = "geannualiseerde investeringskosten wijkdistributie";
+	attribute<Eur_yr>		Kji_wd				(BebouwingsObject)	:=	Kji_wd_gebouw + Kji_wd_eWP,																Descr = "geannualiseerde investeringskosten wijkdistributie";
+	
 	//Investeringskosten opwekking gebouwgerelateerd
 	attribute<Eur>			Ki_ow				(BebouwingsObject)	:=	Kostenkentallen/Ki_WKO_var * Kostenkentallen/R_Regeneratie * P_sec_primair,				Descr = "investeringskosten WKO doublet";
 	attribute<Eur>			Oi_ow_EIA			(BebouwingsObject)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/WKO,											Descr = "investeringssubsidie opwekking gebouwgerelateerd";
@@ -94,6 +101,11 @@ template WKOData
 	attribute<Eur_yr>		Kj_wd_elek_CO2		(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_wd_elek_CO2,													Descr = "eindgebruikerskosten elektriciteit collectief: component CO2 heffing";
 	attribute<Eur_yr>		Kj_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Kj_wd_elek,														Descr = "eindgebruikerskosten elektriciteit collectief, totaal exclusief btw";
 	attribute<Eur_yr>		Km_wd_elek			(BebouwingsObject)	:=	WkoDataComponent/Kosten/Km_wd_elek,														Descr = "maatschappelijke kosten elektriciteit collectief";
+
+	attribute<Eur_yr>		Kj_ow_elek			(BebouwingsObject)	:=	V_ow_Elek * Prijzen_elec/KGJ_eindgebruik_excl[ow_gebruiksgrootteklasse_rel],			Descr = "jaarlijkse elektriciteitskosten bron eindgebruiker";
+	attribute<Eur_yr>		Km_ow_elek			(BebouwingsObject)	:=	V_ow_Elek * Prijzen_elec/KGJ_maatschappelijk [ow_gebruiksgrootteklasse_rel],			Descr = "jaarlijkse elektriciteitskosten bron maatschappelijk";
+	attribute<Eur_yr>		Kj_ow_elek_EH		(BebouwingsObject)	:=	V_ow_Elek * Prijzen_elec/KGJ_EnergieHeffing[ow_gebruiksgrootteklasse_rel],				Descr = "energieheffing over elektriciteitsverbruik bron";
+	attribute<Eur_yr>		Kj_ow_elek_CO2		(BebouwingsObject)	:=	V_ow_Elek * Prijzen_elec/KGJ_CO2Heffing[ow_gebruiksgrootteklasse_rel],					Descr = "co2heffing over elektriciteitsverbruik bron";
 
 	//Onderhoud en administratie
 	attribute<Eur_yr>		Kj_wd_oh_ewp		(BebouwingsObject)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wpColl_onderhoud * Ki_wd_eWP,			Descr = "jaarlijkse onderhoudskosten collectieve warmtepomp";

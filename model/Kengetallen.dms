@@ -121,6 +121,8 @@ container Kengetallen: Using = "Units;Geography", FreeData = "False"
 	
 	container Efficiency: Source = "Validatiesessies startanalyse 2019" //TODO source naar FO 4.0
 	{
+		parameter<Gje_Gjth>	V_elek_WKO                :=	0.0250,		Descr = "elektriciteitsgebruuik in WKO installatie";
+		parameter<Gje_Gjth>	V_elek_TEO                :=	0.0170,		Descr = "elektriciteitsgebruuik in TEO installatie";
 		parameter<Ratio>	W_zonder_bijstook         :=	0.8000,		Descr = "Percentage grootschalige warmte dat niet wordt bijgestookt", Source = "N1: FO v7a F 35";
 		parameter<Ratio>	Vermogenverlies_LT        :=	0.0500,		Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
 		parameter<Ratio>	Vermogenverlies_MT        :=	0.0500,		Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";

@@ -375,7 +375,7 @@ template KostenBaten
 	attribute<Eur_yr> Oji_wd              (PlanRegio) := Oji_wd_KL + Opbrengsten/JaarlijksD/Oj_Totaal;
 	attribute<Eur_yr> Oji_NettoD          (PlanRegio) := Opbrengsten/JaarlijksD/Oj_Totaal - Kji_Netto;
 	attribute<Eur_yr> Km_totaalD          (PlanRegio) := KostenD/Km_Totaal;
-	attribute<MW>     CapaciteitsVraagD   (PlanRegio) := KostenD/PrimairNet/P_transport * 1000 [mw / kw];
+	attribute<MW>     CapaciteitsVraagD   (PlanRegio) := KostenD/PrimairNet/P_transport * 0.001 [mw / kw];
 	attribute<GJ_yr>  Vj_WarmtePrimairD   (PlanRegio) := KostenD/Vj_WarmtePrimair;
 	attribute<KG_yr>  CO2_BijstookD       (PlanRegio) := Prijzen/AardGas/CO2_GJ * KostenD/Bijstook/Vj_Bijstook;
 }
