@@ -26,7 +26,7 @@ template KostenWoningen
 	parameter<Eur_Aansl> Oi_vermeden_gasketel := Kostenkentallen/Ki_HR_ketel_W * NCW/bw15/AnnualisationFactor * NCW/bw30/DurationFactor;
 
 	// eenmalige kosten, zie FO tabellen 5..7
-	attribute<Eur_Aansl> Ki_id_fa (WoonObject) := IsMeergezins ? Schuiven/VerketelingMin * 1800[Eur_Aansl] + Schuiven/VerketelingMax * 5300[Eur_Aansl] :  0[Eur_Aansl]; // inpandige leidingen gestapelde woningen
+	attribute<Eur_Aansl> Ki_id_fa (WoonObject) := IsMeergezins ? Schuiven/VerketelingMin * Kostenkentallen/Ki_id_metBlok + Schuiven/VerketelingMax * Kostenkentallen/Ki_id_geenBlok :  0[Eur_Aansl]; // inpandige leidingen gestapelde woningen
 	parameter<Eur_Aansl> Ki_id_va              := 0[Eur_Aansl] * float64(!IsNieuwbouw); // extra inpandige leidingen nieuwbouw
 
 	// kosten voor projectmanagement en door huurder ervaren en door eigenaar vergoedde ongerief
