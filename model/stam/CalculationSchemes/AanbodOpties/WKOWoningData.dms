@@ -96,7 +96,7 @@ template WKOWoningData
 			
 		//Investeringskosten vergoedingen gebouweigenaar
 		attribute<Eur>			Ki_ge_pm			(BebouwingsObject)	:= KostenBase/Ki_ge_pm_o,							Descr = "Investeringskosten vergoeding projectmanagement aan gebouweigenaar";
-		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= KostenBase/Ki_ge_ov_o,							Descr = "Investeringskosten vergoeding ongerief aan gebouweigenaar";
+		attribute<Eur>			Ki_ge_ov			(BebouwingsObject)	:= IsNieuwbouw ? 0.0[Eur] : KostenBase/Ki_ge_ov_o,	Descr = "Investeringskosten vergoeding ongerief aan gebouweigenaar";
 		attribute<Eur>			Oi_ge_pm_EIA		(BebouwingsObject)	:= IsNieuwbouw ? Ki_ge_pm * SpecifiekeInstellingen/Beleid/Eia/E_nw/Rs_ProjectManagement
 																			: Ki_ge_pm * SpecifiekeInstellingen/Beleid/Eia/E_bw/Rs_ProjectManagement,	Descr = "investeringssubsidie vergoeding projectmanagement aan gebouweigenaar";
 		attribute<Eur>			Oi_ge_ov_EIA		(BebouwingsObject)	:= IsNieuwbouw ? Ki_ge_ov * SpecifiekeInstellingen/Beleid/Eia/E_nw/Rs_OngeriefsVergoeding
