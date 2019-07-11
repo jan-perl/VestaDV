@@ -1,34 +1,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                      //
-//                                  (C) VESTA 2018                                      //
-//        Het doel van het model is om beleidsinformatie te genereren met betrekking    //
-//        tot de energievoorziening van de gebouwde omgeving.                           //
-//                                                                                      //
+//                                  (C) VESTA 2019                                      //
 //                         Planbureau voor de Leefomgeving                              //
-//                                    JUNI 2018                                         //
-//////////////////////////////////////////////////////////////////////////////////////////
-//                                                                                      //
-//     * In het geval van externe publicatie van onderzoeksresultaten waarbij gebruik   //
-//       is gemaakt van de verstrekte gegevens dient de gebruiker deze resultaten aan   //
-//       het PBL mede te delen middels de toezending van 2 exemplaren van de betref-    //
-//       fende publicatie aan het hoofd van het team ROL van het PBL.                   //
-//                                                                                      //
-//     * In elke publicatie waarin de gegevens van het PBL in enige vorm zijn opgenomen,//
-//       zal de gebruiker de vermelding opnemen: "Bron: Planbureau voor de Leefomgeving"//
-//       Indien het een bewerking van de gegevens betreft, dient te worden opgenomen:   //
-//       "Gebaseerd op Planbureau voor de Leefomgeving gegevens".                       //
-//                                                                                      //
-//     * Het PBL is onder geen enkele voorwaarde aansprakelijk tegenover gebruiker voor //
-//       enige schade, mede begrepen winstderving, verlies van gegevens, schade         //
-//       tengevolge van fouten of onjuistheden in gegevens, schade tengevolge van fouten//
-//       of onvolkomenheden in de documentatie of andere incidentele of gevolgschade    //
-//       welke voortvloeit uit of in verband staat met gebruik of het niet kunnen ge-   //
-//       bruiken van gegevens.                                                          //
-//                                                                                      //
-//     * Het PBL staat niet in voor de juistheid van de resultaten die worden verkregen //
-//       door combinatie van diverse, op zichzelf staande PBL-gegevens onderling,       //
-//       of met die uit andere bronnen.                                                 //
+//                                    JULI 2019                                         //
 //                                                                                      //
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,6 +19,7 @@ Template LtWarmtenetImpl
 	parameter<units/Celsius> T_sec;
 	// end case parameters
 	
+	parameter<bool> KoudeBeschikbaar := false, Descr = "Wordt binnen dit type gebiedsoptie ook centraal koude aangeboden, ja/nee";
 	parameter<bool> CollectieveWP := (T_ow < T_sec);
 	
 	parameter<string> GebiedsOptie_name := 'LT'+string(T_ow)+'_'+string(T_sec);
@@ -57,108 +32,9 @@ Template LtWarmtenetImpl
 	unit<uint32> PlanRegio          := Invoer/SpecifiekeInstellingen/PlanRegio;
 	unit<uint8>  Prijzen_elec       := Prijzen/Elektriciteit/Staffel;
 
-	container constanten {
-	
-		parameter<bool> KoudeBeschikbaar := false, Descr = "Wordt binnen dit type gebiedsoptie ook centraal koude aangeboden, ja/nee"; // TO DO: brontype-afhankelijk maken
-		
-		//Aandelen primair en hulp in het secundaire net
-		parameter<Float64> 		AandeelPrimairVermogen 		:= 				0.30, 					Descr = "Aandeel van het gevraagde vermogen dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVermogen 		:= 				1.00, 					Descr = "Aandeel van het gevraagde vermogen dat door de hulpvoorziening wordt geleverd";
-		parameter<Float64> 		AandeelPrimairVolume   		:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de primaire bron wordt geleverd";
-		parameter<Float64> 		AandeelHulpVolume 			:= 				1.00, 					Descr = "Aandeel van het gevraagde volume dat door de hulpvoorziening wordt geleverd";
-		
-		//Seasonal Performance Factors
-		parameter<Ratio> 		SPF_coll_W :=
-													T_ow <= 20[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 15 naar 30
-													T_ow <= 20[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 15 naar 50
-													T_ow <= 20[Celsius] && T_sec <= 75[Celsius] ? 3.5 : // van 15 naar 70
-													T_ow <= 35[Celsius] && T_sec <= 35[Celsius] ? 7.9 : // van 30 naar 30
-													T_ow <= 35[Celsius] && T_sec <= 55[Celsius] ? 4.2 : // van 30 naar 50
-													T_ow <= 35[Celsius] && T_sec <= 75[Celsius] ? 3.8 : // van 30 naar 70
-																										1.0,			Descr = "efficientie van de collectieve warmtepomp bij warmtelevering";
-		parameter<Ratio> 		SPF_coll_K			: [30], 															Descr = "efficientie van de collectieve warmtepomp bij koudelevering";
-		parameter<Float64> 		SPF_ind_A_rv  		:= 1.0,																Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label A+";
-		parameter<Float64> 		SPF_ind_B_rv  		:= T_sec <= 35[Celsius] ? 4.2 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label B";
-		parameter<Float64> 		SPF_ind_CE_rv 		:= T_sec <= 35[Celsius] ? 3.2 :  T_sec <= 55[Celsius] ? 4.2 : 1.0,	Descr = "efficientie van de individuele warmtepomp voor ruimteverwarming, label C, D of E";
-		parameter<Float64> 		SPF_ind_ww  		:= T_sec <= 55[Celsius] ? 2.5 : 1.0,								Descr = "efficientie van de individuele warmtepomp voor tapwaterverwarming";
-		parameter<Ratio> 		SPF_ind_K			: [3],																Descr = "efficientie van een individuele warmtepomp bij koudelevering"; // TODO, Check.
-		
-		
-		// Aandeel eigen opwekking
-		parameter<Float64> 		AEO_ind_A_rv		:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label A+";
-		parameter<Float64> 		AEO_ind_B_rv		:= T_sec <= 35[Celsius] ? 0.9 : T_sec <= 55[Celsius] ? 0.6 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label B";
-		parameter<Float64> 		AEO_ind_CE_rv		:= T_sec <= 35[Celsius] ? 1.0 : T_sec <= 55[Celsius] ? 0.9 : 0.0,	Descr = "Aandeel eigen opwekking, ruimteverwarming, label C, D of E";
-		parameter<Float64> 		AEO_ind_ww			:= T_sec <= 35[Celsius] ? 0.6 : T_sec <= 55[Celsius] ? 0.3 : 0.0,	Descr = "Aandeel eigen opwekking, warm tapwater";
-		parameter<Float64> 		AEO_ind_K			: [0.0],										Descr = "Aandeel eigen opwekking koude, relevant indien koude geleverd kan worden, 100% individuele opwekking indien niet geleverd en wel gevraagd zoals bij utiliteiten";
-		
-		parameter<Ratio> 		Leidingverlies		: [0.15],										Descr = "aandeel op volume dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio> 		Vermogenverlies		: [0.05],										Descr = "aandeel op capaciteit dat verloren gaat tussen bron en afnemer";
-		parameter<Ratio>		Pompenergie			: [0.009],										Descr = "elektriciteitsverbruik distributiepompen";
-		
-		//aansluitwaardes
-		parameter<float64> 		ASW_wc 				:= 						6		[kW_Woning], 	Descr = "aansluitwaarde warmte eengezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_kc 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude eengezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_wa 				:= 						5		[kW_Woning], 	Descr = "aansluitwaarde warmte meergezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_ka 				:= 						2		[kW_Woning], 	Descr = "aansluitwaarde koude meergezinswoning (gevraagde capaciteit)";
-		parameter<float64> 		ASW_wu 				:= 						0.05	[kW_m2], 		Descr = "aansluitwaarde warmte utiliteit per m2 (gevraagde capaciteit)";
-		parameter<float64> 		ASW_ku 				:= 						0.06	[kW_m2], 		Descr = "aansluitwaarde koude utiliteit per m2 (gevraagde capaciteit)";
-		
-		//gelijktijdigheidsfactoren
-		parameter<float64>		GTF_woning_w		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte woningen";
-		parameter<float64>		GTF_woning_k		:=						0.50, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude woningen";
-		parameter<float64>		GTF_util_w 			:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag warmte utiliteit";
-		parameter<float64>		GTF_util_k	 		:=						0.95, 					Descr = "Gelijktijdigheidsfactor capaciteitsvraag koude utiliteit";
-		
-		// investeringskosten technische componenten
-		parameter<Eur_Woning> 	Ki_inpandig 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten extra inpandige buizen (alleen bij meergezinswoningen)";
-		parameter<EUR> 			Ki_booster 			:= Leercurves/Curve2 * 	3500	[EUR],      	Descr = "Investeringskosten booster-warmtepomp voor warm tapwater, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur_Woning> 	Ki_afleverset 		:= Leercurves/Curve2 * 	2000	[Eur_Woning], 	Descr = "Investeringskosten afleverset (warmtewisselaar + meter)";
-		parameter<EUR_KW> 		Ki_uitkoppel		:= Leercurves/Curve2 * 	250 	[EUR / KW],		Descr = "Investeringskosten uitkoppeling bron bij bestaande bron";
-		parameter<EUR_KW> 		Ki_eWP_coll			:= Leercurves/Curve2 * 	680 	[EUR / KW],		Descr = "Investeringskosten warmtepomp collectief als hulpvoorziening";
-		parameter<EUR>    		Ki_Buffer			:= Leercurves/Curve2 * 	1000	[EUR], 			Descr = "Voorlopige nvesteringskosten per gebouw voor aanleg buffervat voor seizoensopslag en dagopslag";
-		parameter<EUR>    		Ki_Buffer_min		:= Leercurves/Curve2 * 	100000	[EUR],			Descr = "Minimale investering voor warmtebuffer bij de bron";
-		parameter<Eur_kW> 		Ki_doublet			:= Leercurves/Curve2 * 	1133	[Eur_kW], 		Descr = "Investeringskosten realiseren nieuw doublet als nieuwe bron";
-	
-		parameter<Eur_m2> 		Ki_id_ugroot		:= Leercurves/Curve2 * 	0		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit groter dan 7500 m2";
-		parameter<Eur_m2> 		Ki_id_uklein		:= Leercurves/Curve2 * 	20		[Eur_m2],		Descr = "Investeringskosten extra inpandige buizen bij utiliteit kleiner dan 100 m2";
-		parameter<Eur>			Ki_eWP_B			:= Leercurves/Curve2 * 	4500	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label B, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur>			Ki_eWP_CDE			:= Leercurves/Curve2 * 	7000	[Eur],			Descr = "Investeringskosten elektrische warmtepomp bij woningen label C, D of E, inclusief buffervat en verzwaarde elektriciteitsaansluiting en installatie en montagekosten";
-		parameter<Eur_kW>		Ki_eWP_util			:= Leercurves/Curve2 * 	700		[Eur_kW],		Descr = "Investeringskosten elektrische warmtepomp bij utiliteit";
-		
-		//investeringskosten wijkdistributie
-		parameter<Eur_Woning>	Ki_aansl_meergezins	:= Leercurves/Curve2 * 	(5558 	[Eur_Woning] * Schuiven/VerketelingMin) + (2073 [Eur_Woning] * Schuiven/VerketelingMax), Descr = "Investeringskosten aansluitleiding bij meergezinswoningen";
-		parameter<Eur_Woning>	Ki_aansl_grondgeb	:= Leercurves/Curve2 * 	10000	[Eur_Woning],	Descr = "Investeringskosten aansluitleiding bij grondgebonden woning";
-		parameter<Eur>			Ki_aansl_util		:= Leercurves/Curve2 * 	10000	[Eur],			Descr = "Investeringskosten aansluitleiding bij utiliteitsbouw";
-		parameter<Eur_m2>		Ki_distr			:= Leercurves/Curve2 * 	(6000	[Eur_Woning] * 187[NrWoningen] / 15741[m2]), Descr = "Investeringskosten distributieleidingen per vierkante meter vraaggebied";
-		parameter<Eur_m >		Ki_brondist			:= Leercurves/Curve2 * 	0		[Eur_m],		Descr = "Investeringskosten distributieleidingen om bronnen te verbinden";
-		parameter<EUR_KW>		Ki_onderstation		:= Leercurves/Curve2 * 	120 	[EUR / KW],		Descr = "Investeringskosten onderstations in wijkdistributie";
-		
-		// begrenzingen aan cluster mogelijkheden.
-		parameter<m>            L_max_bron_connectie:=                      2000    [m],            Descr = "Afzonderlijke aantakkingen aan een bron-cluster mogen niet langer dan dit zijn. Bij een T aansluiting op al gekozen telt alleen de lengte van de nieuwe poot.";
+	container Efficiency := Kengetallen/Efficiency/Efficiency_LT(T_ow, T_sec);
+	container Kostenkentallen := Kengetallen/Kosten_LT(Leercurves/Inpand/Curve, Leercurves/eWPww/Curve, Leercurves/LTnet/Curve, Leercurves/MTnet/Curve);
 
-		//meerkosten warmteproductie per bron (voor nu constant per bron)
-		//parameter<Eur_GJ>		K_GJ_bron			:=						0.000	[EUR_GJ],		Descr = "meerkosten voor warmteproductie in de primaire bron, in latere versies afhankelijk van brontype";
-
-		// percentage van de initiele investerings welke jaarlijks aan onderhoud en administratiekosten wordt gerekend
-		container OenM  {
-			Parameter<_yr> 		R_id_onderhoud      := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten inpandige distributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_id_admin		    := 						0.000 	[_yr], 			Descr = "jaarlijkse administratiekosten inpandige distributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_ow_onderhoud	    := 						0.050 	[_yr], 			Descr = "jaarlijkse onderhoudskosten opwekking aan de bron als percentage van de initiele investering";
-			Parameter<_yr> 		R_ow_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten opwekking aan de bron als percentage van de initiele investering";
-			Parameter<_yr> 		R_wd_onderhoud	    := 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten wijkdistributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_wd_admin		    := 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten wijkdistributie als percentage van de initiele investering";
-			Parameter<_yr> 		R_wpColl_onderhoud	:= 						0.035 	[_yr], 			Descr = "jaarlijkse onderhoudskostencollectieve warmtepomp als percentage van de initiele investering";
-			Parameter<_yr> 		R_wpColl_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten collectieve warmtepomp als percentage van de initiele investering";
-			Parameter<_yr> 		R_buffer_onderhoud	:= 						0.025 	[_yr], 			Descr = "jaarlijkse onderhoudskosten seizoensbuffer als percentage van de initiele investering";
-			Parameter<_yr> 		R_buffer_admin		:= 						0.025 	[_yr], 			Descr = "jaarlijkse administratiekosten seizoensbuffer als percentage van de initiele investering";
-			}
-	}
-
-	// TOOD: BronWarmtePrijs wordt nu (14/04/2019) niet gebruikt. Weghalen of gebruiken ?
-// 	parameter<EUR_GJ> BronWarmtePrijs :=  // @@@ we moeten hier iets aannemen om de bron-cluster opbrengsten ergens op te baseren.
-// 			BebouwingsComponenten/NieuwbouwWoning/Warmtewet/WarmtePrijs * 0.80 
-// 		+   BebouwingsComponenten/NieuwbouwUtil/Warmtewet/WarmtePrijs * 0.20;
-	
 	unit<uint32> BronSrc := BeginStatus/LtWarmte/bron;
 	unit<uint32> BronSelectie := subset(BronSrc/P_ow_max > 0.0 && BronSrc/T_bron >= T_ow && not(BronSrc/Toegewezen) && pointrow(BronSrc/Point) > 0d && pointcol(BronSrc/Point) > 0d)
 		,	DialogType = "Map", DialogData = "Point"
@@ -227,7 +103,7 @@ Template LtWarmtenetImpl
 	container LastClusters := LastBronIter/SelectedClusters;
 	
 	//modelbronnen als resultaat van samenvoegen kleine bron
-	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+',LastClusters)', DialogType = "Map", DialogData = "Point"
+	unit<uint32> BronCluster := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected')+', LastClusters)', DialogType = "Map", DialogData = "Point"
 	{
 		// features samenvoegen 
 		unit<uint32> Feature := ='union_unit('+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Feature')+', LastClusters/Feature)'
@@ -273,7 +149,7 @@ Template LtWarmtenetImpl
 			KostenBaten/PlanRegioKaarten/BestaandeWoning/WarmtePrijs, 
 			BebouwingsComponenten/BestaandeWoning/BebouwingsTypeDomein,
 			KostenBaten/KostenD/Wonen/bw,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 
 	container NieuwbouwWoningData :=
@@ -282,21 +158,21 @@ Template LtWarmtenetImpl
 			KostenBaten/PlanRegioKaarten/NieuwbouwWoning/WarmtePrijs, 
 			BebouwingsComponenten/NieuwbouwWoning/BebouwingsTypeDomein,
 			KostenBaten/KostenD/Wonen/nw,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 
 	container BestaandeUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/BestaandeUtil, 
 			KostenBaten/PlanRegioKaarten/BestaandeUtil/WarmtePrijs,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 	
 	container NieuwbouwUtilData :=
 		WKOUtilData(
 			BebouwingsComponenten/NieuwbouwUtil, 
 			KostenBaten/PlanRegioKaarten/NieuwbouwUtil/WarmtePrijs,
-			constanten/KoudeBeschikbaar
+			KoudeBeschikbaar
 		);
 	
 	parameter<string> geschiktExpr := 'BcData/energielabel/CurrValue <= Classifications/energielabel/V/LabelE';
@@ -372,32 +248,34 @@ Template LtWarmtenetImpl
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
 			attribute<MW>		P_sec			(BronCluster)	:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
 			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
-			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 215.5[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 379.3[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
-			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/curve2;
+			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
 			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
 			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
 			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
 			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
-			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 215.5[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4828 : 0[Eur_m];
-			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 379.3[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.4739 : 0[Eur_m];
-			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/curve2;		
+			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
 		}
 		
 		//Aanvullende kosten brongerelateerd
 		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/LengthProxy * secundairnet/K_m_brondist,					Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
-		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((constanten/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
+		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((Kostenkentallen/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
 		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
 		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
-		attribute<Eur_Yr>			Kji_ow				(BronCluster)	:=	(Ki_ow - Oi_ow_EIA) * NCW/ow28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>			Kji_ow              (BronCluster)	:=	Ki_ow * NCW/ow28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>			Oji_ow_EIA	        (BronCluster)	:=	Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten opwekking";
 		attribute<Eur>				Ki_wd				(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
 		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kji_wd				(BronCluster)	:=	(Ki_wd - Oi_wd_EIA) * NCW/id28/AnnualisationFactor,						Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kji_wd              (BronCluster)	:=	Ki_wd * NCW/id28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Oji_wd_EIA   		(BronCluster)	:=	Oi_wd_EIA * NCW/id28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_ow_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
-		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_admin,										Descr ="administratiekosten opwekking";
-		attribute<Eur_Yr>			Kj_ow_oh			(BronCluster)	:=	Ki_ow * constanten/OenM/R_ow_onderhoud,									Descr ="onderhoudskosten opwekking";
-		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Ki_wd * constanten/OenM/R_wd_admin,										Descr ="administratiekosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_wd_oh			(BronCluster)	:=	Ki_wd * constanten/OenM/R_wd_onderhoud,									Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin * Ki_ow,		Descr ="administratiekosten opwekking";
+		attribute<Eur_Yr>			Kj_ow_oh			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud  * Ki_ow,	Descr ="onderhoudskosten opwekking";
+		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_wd_oh			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>			Kj_onderhoud		(BronCluster)	:=	Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
 		attribute<Eur_Yr>			Kj_admin			(BronCluster)	:=	Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
 		
@@ -405,7 +283,7 @@ Template LtWarmtenetImpl
 		attribute<Eur_Yr>			Oj_ow_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
 		attribute<Eur_Yr>			Oj_EEA				(BronCluster)	:=	Oj_wd_EEA + Oj_ow_EEA;
 		
-		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	Kji_ow + Kji_wd + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
+		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
 		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
 		
 		attribute<bool>				Afweging			(BronCluster)	:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";
@@ -535,7 +413,7 @@ Template LtWarmtenetImpl
 			
 			container VorigePeriode := ='BeginStatus/'+gebiedsoptie_name;
 			
-			container		Oi_Aansl		:=	for_each_nedv(LT_Component/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/Oi_Aansl', '@W@', LT_Component/Name), PlanRegio, Eur);
+			container		Oi_Aansl		:=	for_each_nedv(LT_Component/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/nieuw/Oi_Aansl', '@W@', LT_Component/Name), PlanRegio, Eur);
 			container		Oj_Vastrecht	:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Vastrecht', '@W@', LT_Component/Name), PlanRegio, Eur_yr);
 			container		Oj_Verbruik		:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Verbruik' , '@W@', LT_Component/Name), PlanRegio, Eur_yr);
 			container		Om_comfort		:=	for_each_nedv(LT_Component/Name, replace('ObjectResults/@W@/PR/Totaal/Om_comfort'  , '@W@', LT_Component/Name), PlanRegio, Eur_yr);
@@ -550,7 +428,7 @@ Template LtWarmtenetImpl
 				attribute<Eur>		Ki_id			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id	')+')';
 				attribute<Eur>		Ki_pt			(PlanRegio)		:=	const(0[EUR], PlanRegio); // geen primair transport bij LT netten
 				
-				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('Oi_Aansl/'+LT_Component/Name)+')';
+				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' +WkoComponent/Name + '/PR/nieuw/Oi_Aansl')+')';
 				
 				attribute<Eur>		Oi_ow_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
 				attribute<Eur>		Oi_wd_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';

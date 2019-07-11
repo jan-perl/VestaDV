@@ -34,6 +34,7 @@ template LegeBebouwingsComponent
 		attribute<bool>                               KanBesparen        := const(false, .);
 		attribute<float64>                            AandeelWarmteVraag := const(0.0, .);
 		attribute<float64>                            pand_aandeel       := const(1.0, .);
+		attribute<m2>                                 nrOppUnits_i       := const(0.0[m2], .);
 		attribute<string>                             Label              := code;
 
 		container Criteria;

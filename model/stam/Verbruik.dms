@@ -90,7 +90,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 					PRR, 'E'
 
 			,	'B1_HR', 'a@BN@3_@BC@_RV',
-					'+Allocatie/@BC@/MeterVraag/Aardgas_RV * (BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AardGas / BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
+					'+Allocatie/@BC@/MeterVraag/Aardgas_RV * (BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AardGas * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/Aardgas_leidingverliesfactor)', 
 					PRR, ''
 	
 			,	'B1_HR', 'a@BN@5_@BC@_WW',

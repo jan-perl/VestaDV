@@ -180,13 +180,13 @@ container Jaarlijks: Using = "Units;Geography", KeepData = "True", isHidden = "T
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 			,	'LokaleOpwekking', 'Onderhoud', '@BC@/Eigenaar', 
-					'(BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BC@/kosten/Ki_eWP) * Kengetallen/Onderhoud/Rj_LokaleOpwekking
-					+ BebouwingsComponenten/@BC@/kosten/Ki_eWP * Kengetallen/Onderhoud/Rj_LokaleEWP',
+					'(BebouwingsComponenten/@BC@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BC@/kosten/Ki_eWP) * (Kengetallen/Onderhoud/R_LO_onderhoud + Kengetallen/Onderhoud/R_LO_admin)
+					+ BebouwingsComponenten/@BC@/kosten/Ki_eWP * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin)',
 					PRR
 
 			,	'LokaleOpwekking_OA', 'BTW', '@BTW@/Eigenaar', 
-					'((BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BTW@/kosten/Ki_eWP) * Kengetallen/Onderhoud/Rj_LokaleOpwekking
-					+ BebouwingsComponenten/@BTW@/kosten/Ki_eWP * Kengetallen/Onderhoud/Rj_LokaleEWP) * '+VAT_F,
+					'((BebouwingsComponenten/@BTW@/kosten/Ki_LokaleOpwekking - BebouwingsComponenten/@BTW@/kosten/Ki_eWP) * (Kengetallen/Onderhoud/R_LO_onderhoud + Kengetallen/Onderhoud/R_LO_admin)
+					+ BebouwingsComponenten/@BTW@/kosten/Ki_eWP * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin)) * '+VAT_F,
 					'BebouwingsComponenten/@BTW@/PlanRegio_rel'
 
 		// ===== Gebouwverbeteringen

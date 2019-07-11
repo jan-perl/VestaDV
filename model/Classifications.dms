@@ -568,12 +568,17 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 	}
 
 // =========  Classificaties overig	
+	unit<uint8> LeerCurves : nrofrows = 17
+	{
+		attribute<string> Name:            [ 'Cmin', 'Bpls', 'Verder', 'mWKK', 'ZonB', 'ZonPV', 'eWPlw', 'eWPww', 'hWP', 'EWV', 'LTAS', 'MTnet', 'Inpand', 'Aansl', 'Verl', 'OenM', 'LTnet' ];
+	}
+
 	unit<uint8> GebouwOptie : nrofrows = 5
 	{
 		attribute<string> Name:            [ 'gas', 'mWKK', 'eWP', 'HWP', 'EWV' ];
 		attribute<bool>   kanGebiedsOptie: [ true,   false,  false, false, false ];
 	}
-	unit<uint8> GebiedsOptie : nrofrows = 11 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
+	unit<uint8> GebiedsOptie : nrofrows = 12 // volgorde niet hier instellen maar in SpecifiekeInstellingen/Voorkeuren/BaseLine/WarmteOpties
 	{
 		attribute<string> Name:
 		[
@@ -588,7 +593,7 @@ container Classifications: Using = "Units", KeepData = "True", IsHidden = "True"
 			,'Lt30_30' // Geen collectieve WP.
 			,'Lt30_50'
 			,'Lt30_70'
-		];
+			,'TEO'];
 		attribute<WarmteOptie> WarmteOptie_rel := rlookup(name, WarmteOptie/name);
 
 		attribute<string> code             := string(id(.));

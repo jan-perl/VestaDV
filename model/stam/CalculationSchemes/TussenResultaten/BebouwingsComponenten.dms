@@ -37,10 +37,10 @@ container BebouwingsComponenten :=
 			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
 			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraag/deelnemers/nrAansluitingen;
 			attribute<Eur>     AansluitBijdrageA  (BebouwingsObject) := AansluitTarief    * WarmteVraag/alle/nrAansluitingen;
-//
+
 			parameter<float64> VastRechtTarief := 
 				(VraagKentallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
-				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax);
 
 			attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 			attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
@@ -58,7 +58,7 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief     (BebouwingsObject) := 
 				float64(StartJaar/AllocatieResultaten/heeft_gas[Planregio_rel]) * 
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax),
 				Source = "FO v7a F 6 en 12";
 
 			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_nw_g;
@@ -68,7 +68,7 @@ container BebouwingsComponenten :=
 
 			parameter<float64> VastRechtTarief := 
 				(VraagKentallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin + 
-				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax);
 				
 			attribute<Eur_yr> VastRechtBijdrageG (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 			attribute<Eur_yr> VastRechtBijdrageE (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
@@ -86,7 +86,7 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief     (BebouwingsObject) :=
 				float64(StartJaar/AllocatieResultaten/heeft_gas[Planregio_rel]) *
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax),
 				Source = "FO v7a F 6 en 12";
 
 			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief    * WarmteVraag/deelnemers/AansluitCapaciteit;
@@ -116,7 +116,7 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief (BebouwingsObject) := 
 				float64(StartJaar/AllocatieResultaten/heeft_gas[Planregio_rel]) * 
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1,
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax),
 				Source = "FO v7a F 6 en 12";
 			
 			attribute<Eur>     AansluitBijdrageD  (BebouwingsObject) := AansluitTarief * WarmteVraag/deelnemers/AansluitCapaciteit;
@@ -146,7 +146,7 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief     (BebouwingsObject) := 
 				float64(StartJaar/AllocatieResultaten/heeft_gas[Planregio_rel]) * 
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax);
 			
 			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
 			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
@@ -155,7 +155,7 @@ container BebouwingsComponenten :=
 //
 			parameter<float64> VastRechtTarief := 
 				(VraagKentallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
-				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax);
 
 			attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 			attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;
@@ -173,7 +173,7 @@ container BebouwingsComponenten :=
 		{
 			attribute<float64> AansluitTarief     (BebouwingsObject) := 
 				float64(StartJaar/AllocatieResultaten/heeft_gas[Planregio_rel]) * 
-				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				(VraagKentallen/Opbrengsten/AansluitTarief_min[BebouwingsType] * Schuiven/OpbrMin + VraagKentallen/Opbrengsten/AansluitTarief_max[BebouwingsType] * Schuiven/OpbrMax);
 			
 			attribute<Eur>     AansluitBijdrageG  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_g;
 			attribute<Eur>     AansluitBijdrageE  (BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/AansluitTarief_bw_e;
@@ -182,7 +182,7 @@ container BebouwingsComponenten :=
 //
 			parameter<float64> VastRechtTarief := 
 				(VraagKentallen/Opbrengsten/VastRechtTarief_Min * Schuiven/OpbrMin+ 
-				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax) * LeerCurves/Curve1;
+				VraagKentallen/Opbrengsten/VastRechtTarief_Max * Schuiven/OpbrMax);
 
 			attribute<Eur_yr> VastRechtBijdrageG(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_g;
 			attribute<Eur_yr> VastRechtBijdrageE(BebouwingsObject) := RuimtelijkeVraagComponent/nrAansluitingen * Kengetallen/Infra/Jaarlijks_w_e;

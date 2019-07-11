@@ -27,8 +27,14 @@ container Basis: Using = "Units"
 
 	container Rapportage
 	{
-		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
-//		unit<uint32> Regio := Geography/RegioIndelingen/Energieregio; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
+//		unit<uint32> Regio := Geography/RegioIndelingen/NL; // @USERINPUT 'NL', 'Provincie', 'Gemeente', 'Wijk'  Moet NL zijn voor alle blok PlanRegioNaam configuraties
+		unit<uint32> Regio := =
+			(Invoer/StudieGebied == 'NL')
+			? 'Geography/RegioIndelingen/Energieregio' 
+			: (#Invoer/RuimtelijkeData/StudieGebied/Gemeente == 1)
+				? 'Invoer/RuimtelijkeData/StudieGebied/buurt'
+				: 'Invoer/RuimtelijkeData/StudieGebied/gemeente';
+			
 		parameter<Classifications/WoningBestaandRapGroep> WoningBestaandRapGroep_rel: [ 3 ];
 	}
 
@@ -90,8 +96,7 @@ container Basis: Using = "Units"
 					parameter<float64> Rs_LokaleOpwekking   := 0.0;
 					parameter<float64> Rs_GebouwVerbetering := 0.0;
 					parameter<float64> S_Leverancier        := 0.0;
-					parameter<float64> S_Onderhoud          := 0.0;
-					parameter<float64> S_Admin              := 0.0;
+					parameter<float64> S_OenM               := 0.0;
 				}
 			}
 
@@ -422,6 +427,10 @@ container Basis: Using = "Units"
 		container BioWKK     := VraagKentallen;
 		container WijkWKK    := VraagKentallen;
 		container WKO        := VraagKentallen
+		{
+			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
+		}
+		container TEO        := VraagKentallen
 		{
 			parameter<Bool> BuitenContour: [false]; // zet op true als mWKK mbv WKO wordt geimplementeerd zodat ook buiten de WKO Contour geplaatst mag worden.
 		}

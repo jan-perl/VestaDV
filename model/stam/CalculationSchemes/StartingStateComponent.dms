@@ -55,22 +55,38 @@ template StartingStateComponent
 		container Gebouw
 		{
 			attribute<units/Ratio> StartWaarde    (BebouwingsObject) := EnergieVraagModellen/Efficiency/Gebouw[ Model_rel];
-			attribute<units/Ratio> VerbeterFactor (BebouwingsObject) :=
+			attribute<units/Ratio> VerbeterFactor_vast (BebouwingsObject) :=
 			
-				EnergieLabel/CurrSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency [Model_rel] :
-				EnergieLabel/CurrSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency [Model_rel] :
-				EnergieLabel/CurrSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] :
-				EnergieLabel/CurrSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency [Model_rel] :
-				EnergieLabel/CurrSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] :
-				EnergieLabel/CurrSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] :
-				EnergieLabel/CurrSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
-				EnergieLabel/CurrSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
-				EnergieLabel/CurrSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
-				EnergieLabel/CurrSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
-				EnergieLabel/CurrSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
-				EnergieLabel/CurrSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
+				EnergieLabel/CurrSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_vast [Model_rel] :
+				EnergieLabel/CurrSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_vast [Model_rel] :
+				EnergieLabel/CurrSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] :
+				EnergieLabel/CurrSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency_vast [Model_rel] :
+				EnergieLabel/CurrSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] :
+				EnergieLabel/CurrSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] :
+				EnergieLabel/CurrSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] : // gebouw als bij 2
+				EnergieLabel/CurrSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] : // gebouw als bij 4
+				EnergieLabel/CurrSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] : // gebouw als bij 5
+				EnergieLabel/CurrSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] : // gebouw als bij 2
+				EnergieLabel/CurrSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] : // gebouw als bij 4
+				EnergieLabel/CurrSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] : // gebouw als bij 5
 				1.0[Ratio];
-			attribute<units/Ratio> ResultaatWaarde (BebouwingsObject) := max_elem(StartWaarde, VerbeterFactor);
+			attribute<units/Ratio> VerbeterFactor_var (BebouwingsObject) :=
+			
+				EnergieLabel/CurrSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_var [Model_rel] :
+				EnergieLabel/CurrSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_var [Model_rel] :
+				EnergieLabel/CurrSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] :
+				EnergieLabel/CurrSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency_var [Model_rel] :
+				EnergieLabel/CurrSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] :
+				EnergieLabel/CurrSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] :
+				EnergieLabel/CurrSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] : // gebouw als bij 2
+				EnergieLabel/CurrSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] : // gebouw als bij 4
+				EnergieLabel/CurrSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] : // gebouw als bij 5
+				EnergieLabel/CurrSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] : // gebouw als bij 2
+				EnergieLabel/CurrSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] : // gebouw als bij 4
+				EnergieLabel/CurrSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] : // gebouw als bij 5
+				1.0[Ratio];
+			attribute<units/Ratio> ResultaatWaarde_vast (BebouwingsObject) := max_elem(StartWaarde, VerbeterFactor_vast);
+			attribute<units/Ratio> ResultaatWaarde_var (BebouwingsObject) := max_elem(StartWaarde, VerbeterFactor_var);
 		}
 	}
 

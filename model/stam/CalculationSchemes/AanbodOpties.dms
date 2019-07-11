@@ -18,9 +18,11 @@ container AanbodOpties
 	#include <WijkTempl.dms>
 	#include <LtWarmtenet.dms>
 	#include <LtData.dms>
+	#include <TEOData.dms>
 	#include <LtBronIter.dms>
 	#include <ltResults.dms>
-
+	#include <TEO.dms>
+	
 	Template WijkWKK
 	{
 		// begin case parameters

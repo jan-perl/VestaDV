@@ -33,6 +33,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 		unit<uint32> Gemeente := subset(selected_per_gemeente)
 		{
+			attribute<string>    name                                := GM_CODE;
+			parameter<string>    RegioNaam                           := 'Gemeente';
+
 			attribute<rdc_meter> geometry (poly)                     := RegioIndelingen/gemeente/geometry[nr_OrgEntity];
 			attribute<string>    GM_code                             := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
 			attribute<string>    label                               := RegioIndelingen/gemeente/GM_CODE[nr_OrgEntity];
@@ -41,6 +44,9 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 		unit<uint32> Buurt := subset(selected_per_buurt)
 		{
+			attribute<string>                                  name                := BU_code;
+			parameter<string>                                  RegioNaam           := 'Buurt';
+
 			attribute<rdc_meter>                               geometry (poly)     := RegioIndelingen/buurt/geometry[nr_OrgEntity];
 			attribute<string>                                  BU_code             := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
 			attribute<string>                                  WK_code             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
@@ -56,17 +62,39 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<yr_uint16>                               BioWKK_Start        := RegioIndelingen/buurt/BioWKK_Start[nr_OrgEntity];
 
 			attribute<Studiegebied/gemeente>                   gemeente_rel        := point_in_polygon(Point, Studiegebied/gemeente/geometry);
+			attribute<Geography/RegioIndelingen/buurt>         Buurt_rel           := nr_OrgEntity;
 
-			attribute</Geography/RegioIndelingen/NL>           NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Provincie>    Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Energieregio> Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
-			attribute</Geography/RegioIndelingen/Wijk>         Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/NL>            NL_rel              := RegioIndelingen/buurt/NL_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Provincie>     Provincie_rel       := RegioIndelingen/buurt/Provincie_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Energieregio>  Energieregio_rel    := RegioIndelingen/buurt/Energieregio_rel[nr_OrgEntity];
+			attribute<Geography/RegioIndelingen/Wijk>          Wijk_rel            := RegioIndelingen/buurt/Wijk_rel[nr_OrgEntity];
 
 			attribute<.> per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 
+			container Inkomen
+			{
+				attribute<Units/Percent> p_hh_li    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_li[nr_OrgEntity];
+				attribute<Units/Percent> p_hh_mi    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_mi[nr_OrgEntity];
+				attribute<Units/Percent> p_hh_hi    (..) := Geography/RegioIndelingen/buurt/Inkomen/p_hh_hi[nr_OrgEntity];
+				attribute<Units/Percent> p_checksum (..) := Geography/RegioIndelingen/buurt/Inkomen/p_checksum[nr_OrgEntity];
+			}
+
+			container Eigendom
+			{
+				attribute<Units/Percent> p_koopw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_koopw[nr_OrgEntity];
+				attribute<Units/Percent> p_huurw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_huurw[nr_OrgEntity];
+				attribute<Units/Percent> p_wcorpw   (..) := Geography/RegioIndelingen/buurt/Eigendom/p_wcorpw[nr_OrgEntity];
+				attribute<Units/Percent> p_ov_hw    (..) := Geography/RegioIndelingen/buurt/Eigendom/p_ov_hw[nr_OrgEntity];
+				attribute<Units/Percent> p_checksum (..) := Geography/RegioIndelingen/buurt/Eigendom/p_checksum [nr_OrgEntity];
+				
+			}
+
+			container Overigen
+			{
+			}
 		}
-		
 	}
+
 	#include <BAG.dms>
 	#include <Nieuwbouw.dms>
 	#include <Sloop.dms>
@@ -133,13 +161,30 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 	}
 
 	#include <WarmteBronnen.dms>
-
+	
+	container buislengte {
+		unit<uint32> buislengte_input
+		:	StorageName     = "%SourceDataProjDir%/infra/20190702_buislengte.csv"
+		,	StorageType     = "gdal.vect"
+		,	StorageReadOnly = "True";
+		
+		unit<uint32> per_buurt := Studiegebied/buurt, using = "buislengte_input"
+		,	DialogType = "map"
+		,	DialogData = "geometry"
+		{
+			attribute<Geography/rdc_meter>	geometry	(poly)	:=	Studiegebied/buurt/Geometry;
+			attribute<string>				BU_CODE				:=	Studiegebied/buurt/BU_CODE;
+			attribute<m>					L_aansl				:=	max_elem(rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Aansluit_lengte_m)[m], nrPanden * 1[m_aansl]),	Descr = "invoer lengte aansluitleidingen per buurt";
+			attribute<m>					L_dist				:=	max_elem(rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Hoofdleiding_lengte_m)[m], 1000[m]),				Descr = "invoer lengte distributieleidingen per buurt";
+			attribute<nrAansl>				nrPanden			:=	rjoin(BU_CODE, buislengte_input/BU_CODE, buislengte_input/Panden)[nrAansl],											Descr = "invoer aantal panden per buurt";
+			attribute<m_aansl>				L_aansl_pand		:=	max_elem(L_aansl / nrPanden, 1[m_aansl]),																			Descr = "invoer gemiddelde lengte aansluitleidingen per pand";
+		}
+	}
 	container infra {
 		unit<uint32> netwerk_input
 		:	StorageName     = "%SourceDataProjDir%/infra/20190618_E_G_infra.csv"
 		,	StorageType     = "gdal.vect"
-		,	StorageReadOnly = "True"
-		{}
+		,	StorageReadOnly = "True";
 		
 		container kentallen	:	Source	=	"doc/Notitie wijzigingen Vesta MAIS model E en G infrastructuur"
 		{
@@ -157,12 +202,12 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			//kentallen dimensionering net obv piekvraag
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_zonderWP			:=	2.4[kW_Woning],		Descr = "kengetal aansluitwaarde woningen zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_Woning>	kental_aansluitwaarde_woning_metWP				:=	7.0[kW_Woning],		Descr = "kengetal aansluitwaarde woningen met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_zonderWP	:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_woning_metWP		:=	0.55[Ratio],		Descr = "kengetal gelijktijdigheidsfactor woningen met warmtepomp",		Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_zonderWP				:=	0.024[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit zonder warmtepomp",			Source = "doc/notitie aanpassingen E en G infra";
 			parameter<kW_m2>		kental_aansluitwaarde_util_metWP				:=	0.070[kW_m2],		Descr = "kengetal aansluitwaarde utiliteit met warmtepomp",				Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
-			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.5[Ratio],			Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_zonderWP	:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit zonder warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
+			parameter<ratio>		kental_gelijktijdigheidsfactor_util_metWP		:=	0.95[Ratio],		Descr = "kengetal gelijktijdigheidsfactor utiliteit met warmtepomp",	Source = "doc/notitie aanpassingen E en G infra";
 			
 			//voorlopig GLTB gelijkgesteld aan utiliteit
 			parameter<kW_m2>		kental_aansluitwaarde_gltb_zonderWP				:=	kental_aansluitwaarde_util_zonderWP;

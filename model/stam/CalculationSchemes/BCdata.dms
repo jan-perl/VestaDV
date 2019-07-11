@@ -34,9 +34,9 @@ template BCdata
 	}
 
 	unit<uint8> PrijzenElektriciteit := Prijzen/Elektriciteit/Staffel;
-
+	
 	container union := =IsNieuwbouw ? 'CalculationSchemes/BebouwingsOperaties/union(StartingStateComponent/BebouwingsObject, BebouwingsObjectZonderNieuwbouw)' : '..';
-
+	
 	unit<uint32> BebouwingsObject := =IsNieuwbouw ? 'union/result' : 'BebouwingsObjectZonderNieuwbouw';
 	unit<uint32>  PrevObject           := StartingStateComponent/BebouwingsObject;
 	unit<uint8>   BebouwingsTypeDomein := BebouwingsObject/BebouwingsTypeDomein;
@@ -65,6 +65,7 @@ template BCdata
 		attribute<Ratio>      ResterendFactor := ResterendFactorBase * float64(IsDefined(PlanRegio_rel));
 		attribute<nrAansl>    nrAansluitingen := ResterendFactor * nrAansluitingen_i;
 		attribute<nrWoningen> nrWoonunits     := ResterendFactor * nrWoonUnits_i;
+		attribute<m2>         nrOppunits      := ResterendFactor * NrOppUnits_i;
 		attribute<ModelUnit>  nrModelUnits    := ResterendFactor * NrJoinedUnits * EnergieVraagModellen/nrMUperJU[Model_rel];
 		
 		attribute<nrWoningen>   nrWoonUnits_per_PlanRegio (Invoer/SpecifiekeInstellingen/PlanRegio)     := sum(nrWoonunits, planregio_rel)[nrWoningen];
@@ -79,12 +80,15 @@ template BCdata
 		{
 			container DragerSpecifiekeOpties := SpecifiekeInstellingen/RuimtelijkeVraag/Drager;
 
-			attribute<GJ_yr> WarmWater             (..) := nrModelUnits * EnergieVraagModellen/functioneel/WarmWater            [Model_rel] * DragerSpecifiekeOpties/WarmWater;
-			attribute<GJ_yr> Koude                 (..) := nrModelUnits * EnergieVraagModellen/functioneel/Koude                [Model_rel] * DragerSpecifiekeOpties/Koude;
-			attribute<GJ_yr> ElektrischeApparatuur (..) := nrModelUnits * EnergieVraagModellen/functioneel/ElektrischeApparatuur[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
-			attribute<GJ_yr> RuimteVerwarming      (..) := nrModelUnits * EnergieVraagModellen/functioneel/RuimteVerwarming     [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
-			attribute<GJ_yr> PompEnergie_min       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_min      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
-			attribute<GJ_yr> PompEnergie_max       (..) := nrModelUnits * EnergieVraagModellen/functioneel/Pompenergie_max      [Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr>	WarmWater				(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/WarmWater				[Model_rel] * DragerSpecifiekeOpties/WarmWater;
+			attribute<GJ_yr>	Koude					(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Koude					[Model_rel] * DragerSpecifiekeOpties/Koude; //TODO koudevraag relateren aan graaddagen
+			attribute<GJ_yr>	ElektrischeApparatuur	(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/ElektrischeApparatuur	[Model_rel] * DragerSpecifiekeOpties/ElektrischeApparatuur;
+			attribute<GJ_yr>	RuimteVerwarming_vast	(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/RuimteVerwarming_vast	[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
+			attribute<GJ_yr>	RuimteVerwarming_var	(..)	:=	nrOppUnits		* EnergieVraagModellen/functioneel/RuimteVerwarming_var		[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming * KlimaatFactorMap[gridm100_rel];
+			attribute<GJ_yr>	PompEnergie_min			(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Pompenergie_min			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr>	PompEnergie_max			(..)	:=	nrModelUnits	* EnergieVraagModellen/functioneel/Pompenergie_max			[Model_rel] * DragerSpecifiekeOpties/RuimteVerwarming;
+			attribute<GJ_yr>	RuimteVerwarming		(..)	:=	RuimteVerwarming_vast + RuimteVerwarming_var;
+
 		}
 	}
 
@@ -152,11 +156,13 @@ template BCdata
 
 	container Functioneel
 	{
-		attribute<GJ_yr> RuimteVerwarming (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/RuimteVerwarming;
-		attribute<GJ_yr> Koude            (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/Koude;
-		attribute<GJ_yr> WarmWater        (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/WarmWater;
-		attribute<GJ_yr> Apparatuur       (BebouwingsObject) := RuimtelijkeVraagComponent/Functioneel/ElektrischeApparatuur;
-		attribute<GJ_yr> PompEnergie      (BebouwingsObject) := Schuiven/OpbrMin * RuimtelijkeVraagComponent/Functioneel/PompEnergie_min + Schuiven/OpbrMax * RuimtelijkeVraagComponent/Functioneel/PompEnergie_max;  // niet afhankelijk van gebouwisolatie ?
+		attribute<GJ_yr>	RuimteVerwarming_vast	(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/RuimteVerwarming_vast;
+		attribute<GJ_yr>	RuimteVerwarming_var	(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/RuimteVerwarming_var;
+		attribute<GJ_yr>	RuimteVerwarming		(BebouwingsObject)	:=	RuimteVerwarming_vast + RuimteVerwarming_var;
+		attribute<GJ_yr>	Koude					(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/Koude;
+		attribute<GJ_yr>	WarmWater				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/WarmWater;
+		attribute<GJ_yr>	Apparatuur				(BebouwingsObject)	:=	RuimtelijkeVraagComponent/Functioneel/ElektrischeApparatuur;
+		attribute<GJ_yr>	PompEnergie				(BebouwingsObject)	:=	Schuiven/OpbrMin * RuimtelijkeVraagComponent/Functioneel/PompEnergie_min + Schuiven/OpbrMax * RuimtelijkeVraagComponent/Functioneel/PompEnergie_max;  // niet afhankelijk van gebouwisolatie ?
 	}
 
 	#include<Sprongen.dms>
@@ -165,25 +171,41 @@ template BCdata
 	{
 		container Gebouw
 		{
-			attribute<units/Ratio> LaatsteWaarde  (BebouwingsObject) :=
-				MakeDefined(StartingStateComponent/Efficiency/Gebouw/ResultaatWaarde[StartingState_rel], EnergieVraagModellen/Efficiency/Gebouw[Model_rel]);
+			attribute<units/Ratio> LaatsteWaarde_vast  (BebouwingsObject) :=
+				MakeDefined(StartingStateComponent/Efficiency/Gebouw/ResultaatWaarde_vast[StartingState_rel], EnergieVraagModellen/Efficiency/Gebouw[Model_rel]);
+			attribute<units/Ratio> LaatsteWaarde_var  (BebouwingsObject) :=
+				MakeDefined(StartingStateComponent/Efficiency/Gebouw/ResultaatWaarde_var[StartingState_rel], EnergieVraagModellen/Efficiency/Gebouw[Model_rel]);
 
-			attribute<units/Ratio> VerbeterFactor (BebouwingsObject) :=
-					Sprongen/LabelSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency [Model_rel] :
-					Sprongen/LabelSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency [Model_rel] :
-					Sprongen/LabelSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] :
-					Sprongen/LabelSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency [Model_rel] :
-					Sprongen/LabelSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] :
-					Sprongen/LabelSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] :
-					Sprongen/LabelSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
-					Sprongen/LabelSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
-					Sprongen/LabelSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
-					Sprongen/LabelSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency[Model_rel] : // gebouw als bij 2
-					Sprongen/LabelSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency[Model_rel] : // gebouw als bij 4
-					Sprongen/LabelSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency[Model_rel] : // gebouw als bij 5
+			attribute<units/Ratio> VerbeterFactor_vast (BebouwingsObject) :=
+					Sprongen/LabelSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_vast [Model_rel] :
+					Sprongen/LabelSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_vast [Model_rel] :
+					Sprongen/LabelSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] :
+					Sprongen/LabelSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency_vast [Model_rel] :
+					Sprongen/LabelSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] :
+					Sprongen/LabelSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] :
+					Sprongen/LabelSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] : // gebouw als bij 5
+					Sprongen/LabelSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_vast[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_vast[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_vast[Model_rel] : // gebouw als bij 5
 					1.0[Ratio];
-
-			attribute<units/Ratio> ResultaatWaarde (BebouwingsObject) := max_elem(VerbeterFactor, LaatsteWaarde);
+			attribute<units/Ratio> VerbeterFactor_var (BebouwingsObject) :=
+					Sprongen/LabelSprong ==  0[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_T/efficiency_var [Model_rel] :
+					Sprongen/LabelSprong ==  1[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_B/efficiency_var [Model_rel] :
+					Sprongen/LabelSprong ==  2[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] :
+					Sprongen/LabelSprong ==  3[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_B/efficiency_var [Model_rel] :
+					Sprongen/LabelSprong ==  4[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] :
+					Sprongen/LabelSprong ==  5[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] :
+					Sprongen/LabelSprong ==  6[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong ==  7[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong ==  8[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] : // gebouw als bij 5
+					Sprongen/LabelSprong == 10[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_H_AP/efficiency_var[Model_rel] : // gebouw als bij 2
+					Sprongen/LabelSprong == 11[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_T_AP/efficiency_var[Model_rel] : // gebouw als bij 4
+					Sprongen/LabelSprong == 12[Classifications/LabelSprong] ? EnergieVraagModellen/Verbeteringen/S_B_AP/efficiency_var[Model_rel] : // gebouw als bij 5
+					1.0[Ratio];
+			attribute<units/Ratio> ResultaatWaarde_vast (BebouwingsObject) := max_elem(VerbeterFactor_vast, LaatsteWaarde_vast);
+			attribute<units/Ratio> ResultaatWaarde_var (BebouwingsObject) := max_elem(VerbeterFactor_var, LaatsteWaarde_var);
 		}
 		container RuimteVerwarming
 		{
@@ -226,38 +248,38 @@ template BCdata
 		attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Hoeveelheden/ZonneBoiler * VraagKentallen/ZonneBoiler/Opbrengst;
 		attribute<GJ_yr> Zon_PV      (BebouwingsObject) := Hoeveelheden/Zon_PV      * VraagKentallen/Zon_PV/Opbrengst;
 
-		container LeerCurves
-		{
-			container Optimistisch
-			{
-				parameter<Percent> ZonB  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonB);
-				parameter<Percent> ZonPV := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonPV);
-				parameter<Percent> eWPlw := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPlw);
-				parameter<Percent> eWPww := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPww);
-				parameter<Percent> EWV   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/EWV);
-				parameter<Percent> mWKK  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/mWKK);
-				parameter<Percent> hWP   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/hWP);
-			}
-			container Pessimistisch
-			{
-				parameter<Percent> ZonB  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonB);
-				parameter<Percent> ZonPV := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonPV);
-				parameter<Percent> eWPlw := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPlw);
-				parameter<Percent> eWPww := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPww);
-				parameter<Percent> EWV   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/EWV);
-				parameter<Percent> mWKK  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/mWKK);
-				parameter<Percent> hWP   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/hWP);
-			}
+// 		container LeerCurves
+// 		{
+// 			container Optimistisch
+// 			{
+// 				parameter<Percent> ZonB  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonB);
+// 				parameter<Percent> ZonPV := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/ZonPV);
+// 				parameter<Percent> eWPlw := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPlw);
+// 				parameter<Percent> eWPww := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/eWPww);
+// 				parameter<Percent> EWV   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/EWV);
+// 				parameter<Percent> mWKK  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/mWKK);
+// 				parameter<Percent> hWP   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Optimistisch/hWP);
+// 			}
+// 			container Pessimistisch
+// 			{
+// 				parameter<Percent> ZonB  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonB);
+// 				parameter<Percent> ZonPV := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/ZonPV);
+// 				parameter<Percent> eWPlw := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPlw);
+// 				parameter<Percent> eWPww := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/eWPww);
+// 				parameter<Percent> EWV   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/EWV);
+// 				parameter<Percent> mWKK  := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/mWKK);
+// 				parameter<Percent> hWP   := interpolate_linear(ZichtJaar_jaar, Kengetallen/Leercurves/ZichtJaar/Jaar, Kengetallen/Leercurves/Installatie/Pessimistisch/hWP);
+// 			}
 
-			parameter<Percent> ZonB  := Optimistisch/ZonB  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonB  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> ZonPV := Optimistisch/ZonPV * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonPV * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> eWPlw := Optimistisch/eWPlw * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPlw * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> eWPww := Optimistisch/eWPww * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPww * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> eWP   := eWPlw;
-			parameter<Percent> hWP   := Optimistisch/hWP   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/hWP   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> EWV   := Optimistisch/EWV   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/EWV   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-			parameter<Percent> mWKK  := Optimistisch/mWKK  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/mWKK  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
-		}
+// 			parameter<Percent> ZonB  := Optimistisch/ZonB  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonB  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> ZonPV := Optimistisch/ZonPV * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/ZonPV * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> eWPlw := Optimistisch/eWPlw * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPlw * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> eWPww := Optimistisch/eWPww * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/eWPww * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> eWP   := eWPlw;
+// 			parameter<Percent> hWP   := Optimistisch/hWP   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/hWP   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> EWV   := Optimistisch/EWV   * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/EWV   * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 			parameter<Percent> mWKK  := Optimistisch/mWKK  * (1.0 - LocatieSpecifiekeOpties/Kosten/LeercurveMinMaxSchuif) + Pessimistisch/mWKK  * LocatieSpecifiekeOpties/Kosten/LeerCurveMinMaxSchuif;
+// 		}
 
 		attribute<Ratio> eWP  (BebouwingsObject) := value(Sprongen/eWP, Ratio);
 		attribute<Ratio> EWV  (BebouwingsObject) := value(Sprongen/EWV, Ratio);
@@ -268,6 +290,7 @@ template BCdata
 	attribute<Classifications/WarmteOptie> WarmteAllocatie(BebouwingsObject) := Classifications/WarmteOptie/isGebiedsOptie[WarmteAllocatie_Org]
 		? WarmteAllocatie_Org
 		: Classifications/EnergieLabel/WarmteOptie_rel[EnergieLabel/CurrValue];
+	attribute<string>	WarmteOptie		(BebouwingsObject)	:=	Classifications/WarmteOptie/name[WarmteAllocatie];
 	
 	container Kosten
 	{
@@ -279,10 +302,10 @@ template BCdata
 			parameter<Eur_Aansl> hWP  := VraagKentallen/hWP/InvesteringsKosten_Min  * Schuiven/KostenMin + VraagKentallen/hWP/InvesteringsKosten_Max  * Schuiven/KostenMax;
 		}
 	
-		attribute<Eur> Ki_ZonneBoiler       (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Inv/ZonneBoiler * Opwekking/LeerCurves/ZonB  / 100[Percent];
-		attribute<Eur> Ki_Zon_PV            (BebouwingsObject) := Hoeveelheden/Zon_PV      * Inv/Zon_PV      * Opwekking/LeerCurves/ZonPV / 100[Percent];
-		attribute<Eur> Ki_mWKK              (BebouwingsObject) := Hoeveelheden/mWKK        * Inv/mWkk        * Opwekking/Leercurves/mWKK  / 100[Percent];
-		attribute<Eur> Ki_hWP               (BebouwingsObject) := Hoeveelheden/hWP         * Inv/hWP         * Opwekking/Leercurves/hWP   / 100[Percent];
+		attribute<Eur> Ki_ZonneBoiler       (BebouwingsObject) := Hoeveelheden/ZonneBoiler * Inv/ZonneBoiler * Leercurves/ZonB/Curve;
+		attribute<Eur> Ki_Zon_PV            (BebouwingsObject) := Hoeveelheden/Zon_PV      * Inv/Zon_PV      * Leercurves/ZonPV/Curve;
+		attribute<Eur> Ki_mWKK              (BebouwingsObject) := Hoeveelheden/mWKK        * Inv/mWkk        * Leercurves/mWKK/Curve;
+		attribute<Eur> Ki_hWP               (BebouwingsObject) := Hoeveelheden/hWP         * Inv/hWP         * Leercurves/hWP/Curve;
 		attribute<Eur> Ki_eWP               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_eWP_w;
 		attribute<Eur> Ki_EWV               (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * Sprongen/Ki_EWV_w;
 
@@ -300,13 +323,29 @@ template BCdata
 	{
 		container RuimteVerwarming
 		{
-			parameter<float64>	Aardgas_leidingverliesfactor	:=	1.05,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
-			parameter<float64>	eWP_leidingverliesfactor		:=	1.05,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	Aardgas_leidingverliesfactor	:=	Kengetallen/Efficiency/Leidingverlies_RV_aardgas,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	eWP_leidingverliesfactor		:=	Kengetallen/Efficiency/Leidingverlies_RV_ewp,		Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			
+			container vast
+			{
+				attribute<GJ_yr>	AardGas (BebouwingsObject) :=	Functioneel/RuimteVerwarming_vast / Efficiency/Gebouw/ResultaatWaarde_vast;
+				attribute<GJ_yr>	Warmte  (BebouwingsObject) :=	Functioneel/RuimteVerwarming_vast / Efficiency/Gebouw/ResultaatWaarde_vast;
+				attribute<GJ_yr>	eWP     (BebouwingsObject) :=	Functioneel/RuimteVerwarming_vast / Efficiency/Gebouw/ResultaatWaarde_vast;
+				attribute<GJ_yr>	EWV     (BebouwingsObject) :=	Functioneel/RuimteVerwarming_vast / Efficiency/Gebouw/ResultaatWaarde_vast;
+			}
 
-			attribute<GJ_yr> AardGas (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/AardGas) * Aardgas_leidingverliesfactor;
-			attribute<GJ_yr> Warmte  (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/Warmte );
-			attribute<GJ_yr> eWP     (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/eWP) * eWP_leidingverliesfactor;
-			attribute<GJ_yr> EWV     (BebouwingsObject) := Functioneel/RuimteVerwarming / ( Efficiency/Gebouw/ResultaatWaarde * Efficiency/RuimteVerwarming/EWV);
+			container var
+			{
+				attribute<GJ_yr>	AardGas (BebouwingsObject) :=	Functioneel/RuimteVerwarming_var  / Efficiency/Gebouw/ResultaatWaarde_var;
+				attribute<GJ_yr>	Warmte  (BebouwingsObject) :=	Functioneel/RuimteVerwarming_var  / Efficiency/Gebouw/ResultaatWaarde_var;
+				attribute<GJ_yr>	eWP     (BebouwingsObject) :=	Functioneel/RuimteVerwarming_var  / Efficiency/Gebouw/ResultaatWaarde_var;
+				attribute<GJ_yr>	EWV     (BebouwingsObject) :=	Functioneel/RuimteVerwarming_var  / Efficiency/Gebouw/ResultaatWaarde_var;
+			}
+
+			attribute<GJ_yr>	AardGas		(BebouwingsObject)	:=	(vast/AardGas + var/AardGas) / (Efficiency/RuimteVerwarming/AardGas * Aardgas_leidingverliesfactor);
+			attribute<GJ_yr>	Warmte		(BebouwingsObject)	:=	(vast/Warmte  + var/Warmte ) / Efficiency/RuimteVerwarming/Warmte;
+			attribute<GJ_yr>	eWP			(BebouwingsObject)	:=	(vast/eWP     + var/eWP    ) / (Efficiency/RuimteVerwarming/eWP * eWP_leidingverliesfactor);
+			attribute<GJ_yr>	EWV			(BebouwingsObject)	:=	(vast/EWV     + var/EWV    ) / Efficiency/RuimteVerwarming/EWV;
 		}
 		container Koude
 		{
@@ -314,12 +353,12 @@ template BCdata
 		}
 		container WarmWater
 		{
-			parameter<float64>	Aardgas_leidingverliesfactor	:=	1.10,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
-			parameter<float64>	eWP_leidingverliesfactor		:=	1.10,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	Aardgas_leidingverliesfactor	:=	Kengetallen/Efficiency/Leidingverlies_WW_aardgas,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	eWP_leidingverliesfactor		:=	Kengetallen/Efficiency/Leidingverlies_WW_ewp,		Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
 			
-			attribute<GJ_yr> AardGas     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/AardGas) * Aardgas_leidingverliesfactor;
+			attribute<GJ_yr> AardGas     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/AardGas) / Aardgas_leidingverliesfactor;
 			attribute<GJ_yr> Warmte      (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Warmte );
-			attribute<GJ_yr> eWP         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP    ) * eWP_leidingverliesfactor;
+			attribute<GJ_yr> eWP         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/eWP    ) / eWP_leidingverliesfactor;
 			attribute<GJ_yr> EWV         (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/EWV    );
 			attribute<GJ_yr> ZonneBoiler (BebouwingsObject) := Opwekking/Zonneboiler;
 		}

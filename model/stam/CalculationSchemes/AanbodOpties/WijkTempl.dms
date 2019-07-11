@@ -31,7 +31,7 @@ template WijkTempl
 			* max_elem(KostenBaten/CapaciteitsVraagD, TypeInfo/MWth_min) 
 			* 1000[kW / MW];
 
-		attribute<Eur>    Ki_ow     (PlanRegio) := Ki_ow_nu * LeerCurves/Curve2;                                            attribute<Eur_yr> Kji_ow    (PlanRegio) := Ki_ow     * NCW/ow28/AnnualisationFactor;
+		attribute<Eur>    Ki_ow     (PlanRegio) := Ki_ow_nu * LeerCurves/MTnet/curve;                                            attribute<Eur_yr> Kji_ow    (PlanRegio) := Ki_ow     * NCW/ow28/AnnualisationFactor;
 		attribute<Eur>    Oi_ow_EIA (PlanRegio) := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/ow[TypeInfo/TypeInfoList_rel]; attribute<Eur_yr> Oji_ow_EIA(PlanRegio) := Oi_ow_EIA * NCW/ow28/AnnualisationFactor;
 
 		parameter<Eur_GJ> K_GJ    := ='TypeInfo/K_GJ'+string(Jaar-2000w); 
@@ -41,16 +41,14 @@ template WijkTempl
 
 		parameter<Eur_GJ> Km_GJ   := K_GJ;
 
-		attribute<Eur_yr> Kj_ow_Base         (PlanRegio) := Ki_ow * TypeInfo/Rj_Onderhoud;
-		attribute<Eur_yr> Kj_ow_adm          (PlanRegio) := Kj_ow_Base * Kengetallen/Onderhoud/R_Admin;
-		attribute<Eur_yr> Kj_ow_oh           (PlanRegio) := Kj_ow_Base - Kj_ow_adm;
-		attribute<Eur_yr> Kj_ow_WarmteWaarde (PlanRegio) := K_GJ  * KostenBaten/Vj_WarmtePrimairD;
-		attribute<Eur_yr> Km_ow_WarmteWaarde (PlanRegio) := Km_GJ * KostenBaten/Vj_WarmtePrimairD;
-
-		attribute<Eur_yr> Kj_ow           (PlanRegio) := Kj_ow_Base + Kj_ow_WarmteWaarde;
-		attribute<Eur_yr> Oj_ow_EEA       (PlanRegio) := Kj_ow * SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel];
-		attribute<Eur_yr> Km_ow           (PlanRegio) := Kj_ow_Base + Km_ow_WarmteWaarde; // Let op: de warmtewaarde is momemteel incl belasting etc.
-		attribute<Eur_yr> Oj_lv_SDE       (PlanRegio) := KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
+		attribute<Eur_yr>	Kj_ow_adm          (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin     * Ki_ow;
+		attribute<Eur_yr>	Kj_ow_oh           (PlanRegio)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud * Ki_ow;
+		attribute<Eur_yr>	Kj_ow_WarmteWaarde (PlanRegio)	:=	K_GJ  * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr>	Km_ow_WarmteWaarde (PlanRegio)	:=	Km_GJ * KostenBaten/Vj_WarmtePrimairD;
+		attribute<Eur_yr>	Kj_ow              (PlanRegio)	:=	Kj_ow_adm + Kj_ow_oh + Kj_ow_WarmteWaarde;
+		attribute<Eur_yr>	Oj_ow_EEA          (PlanRegio)	:=	Kj_ow * SpecifiekeInstellingen/Beleid/EEA/ow[TypeInfo/TypeInfoList_rel];
+		attribute<Eur_yr>	Km_ow              (PlanRegio)	:=	Kj_ow_adm + Kj_ow_oh + Km_ow_WarmteWaarde;
+		attribute<Eur_yr>	Oj_lv_SDE          (PlanRegio)	:=	KostenBaten/Vj_WarmtePrimairD * SpecifiekeInstellingen/Beleid/EEA/SDE[TypeInfo/TypeInfoList_rel];
 	}
 
 	attribute<Eur   > Oi_Totaal  (PlanRegio) := KostenBaten/Oi_Aansluitbijdrage ;
@@ -136,10 +134,10 @@ template WijkTempl
 					attribute<Eur_yr> Kj_wd_gas_CO2   (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/Bijstook/Kj_wd_gas_CO2: 0[Eur_yr];
 					attribute<Eur_yr> Km_wd_gas       (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/Bijstook/Km_wd_gas    : 0[Eur_yr];
 					
-					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := const(0[EUR_yr], PlanRegio);
-					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := const(0[EUR_yr], PlanRegio);
+					attribute<Eur_yr> Kj_wd_elek      (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek		: 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_elek_EH   (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek_eh	: 0[Eur_yr];
+					attribute<Eur_yr> Kj_wd_elek_CO2  (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Kj_wd_elek_co2	: 0[Eur_yr];
+					attribute<Eur_yr> Km_wd_elek      (PlanRegio) := GebruikOptie ? KostenBaten/KostenD/SecundairNet/Km_wd_elek		: 0[Eur_yr];
 					
 					attribute<Eur_yr> Kj_wd_oh        (PlanRegio) := (NewGebruik ? KostenBaten/KostenD/Kj_wd_oh        : 0[Eur_yr]) + VorigePeriode/jaarlijks/wd/Kj_wd_oh;
 					attribute<Eur_yr> Kj_wd_adm       (PlanRegio) := (NewGebruik ? KostenBaten/KostenD/Kj_wd_adm       : 0[Eur_yr]) + VorigePeriode/jaarlijks/wd/Kj_wd_adm;
@@ -229,7 +227,7 @@ template WijkTempl
 				attribute<Gj_yr>	V_ow_gas		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/AardGas * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
-				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	const(0[Gj_yr], PlanRegio);
+				attribute<Gj_yr>	V_wd_elek		(PlanRegio)		:=	KostenBaten/KostenD/SecundairNet/V_wd_elek;
 				attribute<Gj_yr>	V_ow_elek		(PlanRegio)		:=	Float64(NewGebruik) * TypeInfo/RekenType/Factoren/Elektriciteit * KostenBaten/Vj_WarmtePrimairD;
 				
 				attribute<Gj_yr>	V_id_verlies	(PlanRegio)		:=	const(0[Gj_yr], PlanRegio); // niet specifiek benoemd, alles in WD, TODO: specifiek maken
