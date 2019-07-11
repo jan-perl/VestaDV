@@ -95,7 +95,9 @@ template EnergieKengetallenImport
 		}
 		container AansluitCapaciteit
 		{
-			attribute<kW_per_eenheid> Warmte        (ModelObject) := value(table/AC_WARM, kW_per_eenheid);
+			attribute<kW_per_eenheid> RV            (ModelObject) := value(table/AC_RV, kW_per_eenheid);
+			attribute<kW_per_eenheid> WW            (ModelObject) := value(table/AC_WW, kW_per_eenheid);
+			attribute<kW_per_eenheid> Warmte        (ModelObject) := RV + WW;
 		}
 		container Energie
 		{

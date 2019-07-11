@@ -72,6 +72,8 @@ template BCdata
 
 		container AansluitCapaciteit
 		{
+			attribute<kW> RV             (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/RV[Model_rel];
+			attribute<kW> WW             (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/WW[Model_rel];
 			attribute<kW> Warmte         (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Warmte[Model_rel];
 			attribute<kW> Elektriciteit  (..) := NrModelUnits * EnergieVraagModellen/AansluitCapaciteit/Elektriciteit[Model_rel];
 		}
