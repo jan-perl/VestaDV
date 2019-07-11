@@ -109,8 +109,8 @@ container BeginSituatie : Using = "Units;geography;model;invoer"
 				
 				unit<uint32> Feature : nrofrows = 0
 				{
-					attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .)); // TODO: vervang door [ ]  met GeoDMS 7.199, issue 1233
-					attribute<..> Cluster_rel := const(0, .); // TODO: vervang door [ ]  met GeoDMS 7.199, issue 1233
+					attribute<rdc_meter> Geometry(arc) := points2sequence(const(point(0d, 0d, rdc_meter), .), const(0[.], .)); // TODO: vervang door [ ]  met GeoDMS 7.200, issue 1233
+					attribute<..> Cluster_rel := const(0, .); // TODO: vervang door [ ]  met GeoDMS 7.200, issue 1233
 					
 				}
 			}

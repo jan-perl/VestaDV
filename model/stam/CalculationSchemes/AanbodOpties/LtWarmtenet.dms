@@ -423,12 +423,13 @@ Template LtWarmtenetImpl
 			{
 				attribute<Eur>		Ki_ge_pm		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_pm	')+')';
 				attribute<Eur>		Ki_ge_ov		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ge_ov	')+')';		
+				attribute<Eur>		Bi_ge_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/nieuw/Oi_Aansl')+')';
+				
 				attribute<Eur>		Ki_ow			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_ow	')+')', Descr = "investering opwekker, gebouwzijde en brongerelateerd";
 				attribute<Eur>		Ki_wd			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_wd	')+')', Descr = "investering wijkdistributeur, gebouwzijde en brongerelateerd";
 				attribute<Eur>		Ki_id			(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Ki_id	')+')';
 				attribute<Eur>		Ki_pt			(PlanRegio)		:=	const(0[EUR], PlanRegio); // geen primair transport bij LT netten
 				
-				attribute<Eur>		Oi_lv_aansl		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' +WkoComponent/Name + '/PR/nieuw/Oi_Aansl')+')';
 				
 				attribute<Eur>		Oi_ow_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_ow_EIA		')+')';
 				attribute<Eur>		Oi_wd_EIA		(PlanRegio)		:=	='add('+AsItemList('ObjectResults/' + LT_Component/Name + '/PR/Oi_wd_EIA		')+')';
