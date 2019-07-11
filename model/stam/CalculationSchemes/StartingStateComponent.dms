@@ -92,7 +92,7 @@ template StartingStateComponent
 
 	container Sprongen
 	{
-		attribute<float64> Ki_gv_w (BebouwingsObject) := const(0[Eur / EnergieVraagModellen/ModelUnit], BebouwingsObject);
+		attribute<float64> Ki_gv (BebouwingsObject) := const(0[Eur / EnergieVraagModellen/ModelUnit], BebouwingsObject);
 	}
 
 	container Kosten

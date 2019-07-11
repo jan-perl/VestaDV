@@ -202,8 +202,8 @@ container Sprongen
 		attribute<Eur_ModelUnit> S_B_AP (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/S_H_AP/kosten_min_var[Model_rel] * var_f + EnergieVraagModellen/Verbeteringen/S_B_AP/kosten_min_vast[Model_rel];
 
 		attribute<Eur_ModelUnit> LTAS   (BebouwingsObject) := EnergieVraagModellen/Verbeteringen/LTAS/kosten_min[Model_rel];
-		attribute<Eur_ModelUnit> AeWP   (BebouwingsObject) := (Kentallen_eWP/Ki_vast_min * RuimtelijkeVraagComponent/nrAansluitingen + Kentallen_eWP/Ki_var_min * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte) / RuimtelijkeVraagComponent/nrModelUnits;
-		attribute<Eur_ModelUnit> BeWP   (BebouwingsObject) := (Kentallen_eWP/Ki_vast_min * RuimtelijkeVraagComponent/nrAansluitingen + Kentallen_eWP/Ki_var_min * RuimtelijkeVraagComponent/AansluitCapaciteit/Warmte) / RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_ModelUnit> AeWP   (BebouwingsObject) := (Kentallen_eWP/Ki_vast_min * RuimtelijkeVraagComponent/nrAansluitingen + Kentallen_eWP/Ki_var_min * RuimtelijkeVraagComponent/AansluitCapaciteit/eWP) / RuimtelijkeVraagComponent/nrModelUnits;
+		attribute<Eur_ModelUnit> BeWP   (BebouwingsObject) := (Kentallen_eWP/Ki_vast_min * RuimtelijkeVraagComponent/nrAansluitingen + Kentallen_eWP/Ki_var_min * RuimtelijkeVraagComponent/AansluitCapaciteit/eWP) / RuimtelijkeVraagComponent/nrModelUnits;
 		attribute<Eur_ModelUnit> EWV    (BebouwingsObject) := (10[Percent] / 100[Percent]) * 192[Eur_m2] * EnergieVraagModellen/area/min[Model_rel];
 	}
 	container VerbeterKostenMax_nu
@@ -567,20 +567,19 @@ container Sprongen
 			)
 		,	0[Eur_ModelUnit]
 		);
-	attribute<Eur_ModelUnit> kosten_sprong_w_nu (BebouwingsObject) := kosten_max * LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif + kosten_min * (1.0 - LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif);
+	attribute<Eur_ModelUnit> kosten_sprong_nu(BebouwingsObject) := kosten_max * LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif + kosten_min * (1.0 - LocatieSpecifiekeOpties/Kosten/VerbeterMinMaxSchuif);
 
-	// TODO: Check gebruik suffix _w. n.b.: Deze Sprongen worden voor alle BebouwingsComponenten geinstantieerd.
-	attribute<Eur_ModelUnit> Ki_AeWP_w          (BebouwingsObject) := Sprongen/AeWP ? Verbeterkosten_i/S_AP_AeWP : 0[Eur_ModelUnit];
-	attribute<Eur_ModelUnit> Ki_BeWP_w          (BebouwingsObject) := Sprongen/BeWP ? Verbeterkosten_i/S_B_BeWP  : 0[Eur_ModelUnit];
-	attribute<Eur_ModelUnit> Ki_eWP_w           (BebouwingsObject) := Ki_AeWP_w + Ki_BeWP_w;
-	attribute<Eur_ModelUnit> Ki_EWV_w           (BebouwingsObject) := Sprongen/EWV  ? Verbeterkosten_i/S_AP_EWV  : 0[Eur_ModelUnit];
+	attribute<Eur_ModelUnit> Ki_AeWP         (BebouwingsObject) := Sprongen/AeWP ? Verbeterkosten_i/S_AP_AeWP : 0[Eur_ModelUnit];
+	attribute<Eur_ModelUnit> Ki_BeWP         (BebouwingsObject) := Sprongen/BeWP ? Verbeterkosten_i/S_B_BeWP  : 0[Eur_ModelUnit];
+	attribute<Eur_ModelUnit> Ki_eWP          (BebouwingsObject) := Ki_AeWP + Ki_BeWP;
+	attribute<Eur_ModelUnit> Ki_EWV          (BebouwingsObject) := Sprongen/EWV  ? Verbeterkosten_i/S_AP_EWV  : 0[Eur_ModelUnit];
 
-	attribute<Ratio>         SprongCurve        (BebouwingsObject) :=	(NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelC) ?	Leercurves/Cmin/Curve
+	attribute<Ratio>         SprongCurve     (BebouwingsObject) := (NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelC) ?	Leercurves/Cmin/Curve
 																		:	(NaarEnergieLabel >= Classifications/EnergieLabel/V/LabelB) ?	Leercurves/Bpls/Curve
 																		:																	Leercurves/Verder/Curve;
-	attribute<Eur_ModelUnit> kosten_sprong_w    (BebouwingsObject) :=	kosten_sprong_w_nu * SprongCurve;
+	attribute<Eur_ModelUnit> kosten_sprong   (BebouwingsObject) := kosten_sprong_nu * SprongCurve;
 
-	attribute<Eur_ModelUnit> Ki_gv_w            (BebouwingsObject) := kosten_sprong_w + StartingStateComponent/Sprongen/Ki_gv_w[StartingState_rel]; // Ki_eWP_w en Ki_EWV_w worden in sectie kosten apart opgenomen.
+	attribute<Eur_ModelUnit> Ki_gv           (BebouwingsObject) := kosten_sprong + StartingStateComponent/Sprongen/Ki_gv[StartingState_rel]; // Ki_eWP en Ki_EWV worden in sectie kosten apart opgenomen.
 	
 	attribute<Eur_yr> Vermeden_excl (BebouwingsObject) :=
 		MakeDefined(
@@ -634,19 +633,19 @@ container Sprongen
 
 	attribute<Eur_yr> Kj_OnderhoudAdministratie (BebouwingsObject) := RuimtelijkeVraagComponent/nrModelUnits * 
 		add(
-			Ki_gv_w  * (Kengetallen/Onderhoud/R_GV_onderhoud     + Kengetallen/Onderhoud/R_GV_admin)
-		,	Ki_eWP_w * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin)
-		, 	Ki_EWV_w * (Kengetallen/Onderhoud/R_LO_onderhoud     + Kengetallen/Onderhoud/R_LO_admin)
+			Ki_gv  * (Kengetallen/Onderhoud/R_GV_onderhoud     + Kengetallen/Onderhoud/R_GV_admin)
+		,	Ki_eWP * (Kengetallen/Onderhoud/R_LO_EWP_onderhoud + Kengetallen/Onderhoud/R_LO_EWP_admin)
+		, 	Ki_EWV * (Kengetallen/Onderhoud/R_LO_onderhoud     + Kengetallen/Onderhoud/R_LO_admin)
 		);
 
 	container subsidie
 	{
-		attribute<Eur>		EIA30  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_gv_w  * EIA_Opties/Rs_GebouwVerbetering + Ki_EWV_w * EIA_Opties/Rs_LokaleOpwekking);
-		attribute<Eur>		EIA15  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_eWP_w  * EIA_Opties/Rs_LokaleOpwekking);
+		attribute<Eur>		EIA30  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_gv  * EIA_Opties/Rs_GebouwVerbetering + Ki_EWV * EIA_Opties/Rs_LokaleOpwekking);
+		attribute<Eur>		EIA15  (BebouwingsObject)	:=	RuimtelijkeVraagComponent/nrModelUnits * (Ki_eWP  * EIA_Opties/Rs_LokaleOpwekking);
 		attribute<Eur_yr>	EEA    (BebouwingsObject)	:=	(Kj_OnderhoudAdministratie * EEA_Opties/S_OenM) + RuimtelijkeVraagComponent/nrModelUnits * add(
-																								Ki_gv_w  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering,
-																								Ki_EWV_w * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking,
-																								Ki_eWP_w * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking);
+																								Ki_gv  * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_GebouwVerbetering,
+																								Ki_EWV * NcwRefs/_30/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking,
+																								Ki_eWP * NcwRefs/_15/AnnualisationFactor * EEA_Opties/Rs_LokaleOpwekking);
 	}
-	attribute<Yr> TVT (BebouwingsObject) := Ki_gv_w * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_excl;
+	attribute<Yr> TVT (BebouwingsObject) := Ki_gv * RuimtelijkeVraagComponent/nrModelUnits / Vermeden_excl;
 }
