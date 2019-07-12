@@ -65,8 +65,8 @@ container Infra: using = "units", Source = "MEMO Benno Schippers, 08-05-2016" //
 	parameter<m>			L_e                  :=		 L_e_LS + L_e_HS_MS    ,	Descr = "totale lengte electiciteitnetwerk";
 
 	// schalingsfactoren
-	parameter<float64>		SF_g                 :=		(1.0 - Winstmarge_g) * O_net_g / K_g,	Descr = "schalingsfactor gas";
-	parameter<float64>		SF_e                 :=		(1.0 - Winstmarge_e) * O_net_e / K_e,	Descr = "schalingsfactor electiciteit";
+	parameter<float64>		SF_g                 :=		(1.0 - Winstmarge_g) * (O_net_g * 1000000 [eur / meur]) / K_g[Eur_yr],	Descr = "schalingsfactor gas";
+	parameter<float64>		SF_e                 :=		(1.0 - Winstmarge_e) * (O_net_g * 1000000 [eur / meur]) / K_e[Eur_yr],	Descr = "schalingsfactor electiciteit";
 	parameter<Eur_yr_m>		Kj_g_m               :=		SF_g *Kj_g[Eur_yr] / L_g;
 	parameter<Eur_yr_m>		Kj_e_m               :=		SF_e *Kj_e[Eur_yr] / L_e;
 	parameter<Eur_yr_m>		Ko_g_m               :=		SF_g *Ko_g[Eur_yr] / L_g;

@@ -108,6 +108,12 @@ template TussenResultaten
 		container DV := SpecifiekeInstellingen/DiscontoVoet;
 		container IN := SpecifiekeInstellingen/investering;
 
+		container ow13 := NettoContanteWaarde(DV/ow, IN/BeginOpbrengstJaar, 15[Yr]);
+		container id13 := NettoContanteWaarde(DV/id, IN/BeginOpbrengstJaar, 15[Yr]);
+		container wd13 := NettoContanteWaarde(DV/wd, IN/BeginOpbrengstJaar, 15[Yr]);
+		container pt13 := NettoContanteWaarde(DV/pt, IN/BeginOpbrengstJaar, 15[Yr]);
+		container mr13 := NettoContanteWaarde(DV/mr, IN/BeginOpbrengstJaar, 15[Yr]);
+		
 		container ow28 := NettoContanteWaarde(DV/ow, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 		container id28 := NettoContanteWaarde(DV/id, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
 		container wd28 := NettoContanteWaarde(DV/wd, IN/BeginOpbrengstJaar, IN/EindOpbrengstJaar);
