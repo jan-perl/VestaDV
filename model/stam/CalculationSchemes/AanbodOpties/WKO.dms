@@ -117,7 +117,7 @@ template WKO
 	}
 	
 	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'WkoResults', Classifications/WarmteOptie/V/WKO, Gebied);
-	unit<uint32> AllObjects := Toedeling/results;
+	unit<uint32> AllObjects := Toedeling/result;
 	
 /*	REMOVE AFTER COPY
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'

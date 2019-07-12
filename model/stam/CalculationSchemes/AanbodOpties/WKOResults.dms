@@ -15,6 +15,8 @@ template WKOResults
 	parameter<uint32> NrPrevAllowedObjects;
 	parameter<uint32> NrPrevAllObjects;
 	// end case parameters
+	
+	unit<uint32> AllObjects := .../result;
 
 	container WkoDataComponent          := WkoData/WkoDataComponent;
 	parameter<string> ComponentNaam     := WkoData/ComponentNaam;
@@ -59,11 +61,17 @@ template WKOResults
 
 	container BC
 	{
-		attribute<Eur> Ki_ow     (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
-		attribute<Eur> Kj_ow_adm (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
-		attribute<Eur> Kj_ow_oh  (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		attribute<AllObjects> AllObjects_rel(BebouwingsObject) := value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects);
+		attribute<Eur>    Ki_ow_gebied    (BebouwingsObject) := AllObjects/Ki_ow_gebied    [AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_ow_adm_gebied(BebouwingsObject) := AllObjects/Ki_ow_adm_gebied[AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_ow_oh_gebied (BebouwingsObject) := AllObjects/Ki_ow_gebied    [AllObjects_rel] * float64(StartThis);
 		
-		attribute<Eur> Ki_wd (BebouwingsObject) := AllObjects/Ki_wd_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>    Ki_wd_gebied    (BebouwingsObject) := AllObjects/Ki_wd_gebied[AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_wd_adm_gebied(BebouwingsObject) := AllObjects/Ki_wd_adm_gebied[AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_wd_oh_gebied (BebouwingsObject) := AllObjects/Ki_wd_gebied    [AllObjects_rel] * float64(StartThis);
+		
+		attribute<Eur>   Ki_ow(BebouwingsObject) := Ki_ow_gebied + WkoData/Ki_ow * float64(StartThis); 
+		attribute<Eur>   Ki_wd(BebouwingsObject) := Ki_wd_gebied + WkoData/Ki_wd * float64(StartThis); 
 	}
 
 	container PR

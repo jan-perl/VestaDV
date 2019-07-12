@@ -316,7 +316,7 @@ Template LtWarmtenetImpl
 	}
 */	
 	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'LtResults', WarmteOptie_rel, RendabelCluster, Gebied);
-	unit<uint32> AllObjects := Toedeling/results;
+	unit<uint32> AllObjects := Toedeling/result;
 	
 /*	
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'

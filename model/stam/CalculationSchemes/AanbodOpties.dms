@@ -205,7 +205,8 @@ container AanbodOpties
 		container ObjectResults :=
 			for_each_ne(BC/Name, 
 				ResultsTemplName+'('
-					'UnitedCandidates, RendabelCluster, CandidateSets/'+BC/Name+', WarmteOptie_rel,'
+					'UnitedCandidates, RendabelCluster, CandidateSets/'+BC/Name+', '
+					'WarmteOptie_rel,'
 					'CumulNrPrevAllowedObjects['+string(id(BC))+'[BC]],'
 					'CumulNrPrevAllObjects['+string(id(BC))+'[BC]]'
 				')'

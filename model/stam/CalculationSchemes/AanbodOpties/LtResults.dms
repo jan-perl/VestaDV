@@ -15,6 +15,8 @@ template LtResults
 	parameter<uint32> NrPrevAllowedObjects;
 	parameter<uint32> NrPrevAllObjects;
 	// end case parameters
+	
+	unit<uint32> AllObjects := .../result;
 
 	container WkoDataComponent          := WkoData/WkoDataComponent;
 	parameter<string> ComponentNaam     := WkoData/ComponentNaam;
