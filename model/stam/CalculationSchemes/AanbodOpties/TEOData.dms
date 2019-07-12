@@ -173,9 +173,9 @@ template TEOData
 	attribute<Eur_yr>		Oj_EEA				(BebouwingsObject)	:=	Oj_wd_EEA + Oj_id_EEA + Oj_ow_EEA;
 	
 	//Netto contributiemarge
-	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE + Oj_EEA,										Descr = "totale jaarlijkse opbrengsten";
+	attribute<Eur_yr>		Oj_totaal			(BebouwingsObject)	:=	Oji_aansl + Oj_verbruik + Oj_vastrecht + Oj_SDE + Oj_EEA,								Descr = "totale jaarlijkse opbrengsten";
 	attribute<Eur_yr>		Kji_totaal			(BebouwingsObject)	:=	Kji_id + Kji_wd + Kji_ow + Kji_ge,														Descr = "totale jaarlijkse kapitaallasten";
-	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_id_elek + Kj_wd_elek + Kj_oh + Kj_adm,												Descr = "totale jaarlijkse kapitaallasten";
+	attribute<Eur_yr>		Kj_totaal			(BebouwingsObject)	:=	Kj_id_elek + Kj_wd_elek + Kj_ow_elek + Kj_oh + Kj_adm,									Descr = "totale jaarlijkse kapitaallasten";
 	
 	attribute<Eur_yr>		Contributiemarge	(BebouwingsObject)	:=	Oj_totaal - Kji_totaal - Kj_totaal,														Descr = "Netto contributiemarge per object";																																		
 	
