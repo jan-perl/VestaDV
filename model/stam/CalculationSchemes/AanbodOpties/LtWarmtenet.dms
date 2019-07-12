@@ -226,68 +226,70 @@ Template LtWarmtenetImpl
 		attribute<KW>				P_sec_primair			:= UnitedCandidates/P_sec_primair		[nr_OrgEntity];
 		attribute<KW>				P_sec_hulp				:= UnitedCandidates/P_sec_hulp			[nr_OrgEntity];
 		attribute<Eur>				Ki_buffer_gebouw		:= UnitedCandidates/Ki_buffer_gebouw	[nr_OrgEntity];
-	}
+	}	
 	
 	//bepaling brongerelateerde kosten
-	container Gebied {
+	unit<uint32> Gebied := BronCluster
+	{
 		//Omvang gebied vraag-cluster
-		attribute<m2>				AreaProxy			(BronCluster)	:=	max_elem((BronCluster/LengthProxy * distance_threshold), (PI() * distance_threshold^2d)) ,		Descr = "indicatie van oppervlakte afnamegebied";
+		attribute<m2>				AreaProxy			:=	max_elem((BronCluster/LengthProxy * distance_threshold), (PI() * distance_threshold^2d)) ,		Descr = "indicatie van oppervlakte afnamegebied";
 		
 		//Omvang gebied bron-cluster en vraag-cluster gecombineerd
-		
 		//Optelling van attributen van gebouwen in vraaggebied
-		attribute<Eur_Yr>			Contributiemarge	(BronCluster)	:=	sum(Selected/Contributiemarge,	Selected/BronCluster_rel),				Descr = "totale contributiemarge van gebouwen in vraaggebied";
-		attribute<GJ_Yr>			V_Warmte_primair	(BronCluster)	:=	sum(Selected/V_Warmte_primair,	Selected/BronCluster_rel),				Descr = "totale warmtevraag aan de primaire bron van gebouwen in vraaggebied";
-		attribute<GJ_Yr>			V_Koude_primair		(BronCluster)	:=	sum(Selected/V_Koude_primair,	Selected/BronCluster_rel),				Descr = "totale koudevraag aan de primaire bron van gebouwen in vraaggebied";
-		attribute<KW>				P_sec_primair		(BronCluster)	:=	sum(Selected/P_sec_primair,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de primaire bron van gebouwen in vraaggebied";
-		attribute<KW>				P_sec_hulp			(BronCluster)	:=	sum(Selected/P_sec_hulp,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de hulpvoorziening van gebouwen in vraaggebied";
-		attribute<Eur>				Ki_Buffer_gebouw	(BronCluster)	:=	sum(Selected/Ki_Buffer_gebouw,	Selected/BronCluster_rel),				Descr = "voorlopige kosten voor de warmtebuffer per gebouw";
+		attribute<Eur_Yr>			Contributiemarge	:=	sum(Selected/Contributiemarge,	Selected/BronCluster_rel),				Descr = "totale contributiemarge van gebouwen in vraaggebied";
+		attribute<GJ_Yr>			V_Warmte_primair	:=	sum(Selected/V_Warmte_primair,	Selected/BronCluster_rel),				Descr = "totale warmtevraag aan de primaire bron van gebouwen in vraaggebied";
+		attribute<GJ_Yr>			V_Koude_primair		:=	sum(Selected/V_Koude_primair,	Selected/BronCluster_rel),				Descr = "totale koudevraag aan de primaire bron van gebouwen in vraaggebied";
+		attribute<KW>				P_sec_primair		:=	sum(Selected/P_sec_primair,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de primaire bron van gebouwen in vraaggebied";
+		attribute<KW>				P_sec_hulp			:=	sum(Selected/P_sec_hulp,		Selected/BronCluster_rel),				Descr = "totale capaciteitsvraag aan de hulpvoorziening van gebouwen in vraaggebied";
+		attribute<Eur>				Ki_Buffer_gebouw	:=	sum(Selected/Ki_Buffer_gebouw,	Selected/BronCluster_rel),				Descr = "voorlopige kosten voor de warmtebuffer per gebouw";
 		
 		container secundairnet
 		{
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
-			attribute<MW>		P_sec			(BronCluster)	:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
-			attribute<MW>		P_bronnet		(BronCluster)	:=	P_sec_primair/ 1000[kW / MW];
-			attribute<Eur_m>	K_min_sec		(BronCluster)	:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_max_sec		(BronCluster)	:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_sec			(BronCluster)	:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
-			attribute<m>		L_hoofdleiding	(BronCluster)	:=	sqrt(2.0)* sqrt(AreaProxy);
-			attribute<Eur>		K_hoofdleiding	(BronCluster)	:=	L_hoofdleiding * K_m_sec;
-			attribute<m>		L_zijleiding	(BronCluster)	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
-			attribute<Eur>		K_zijleiding	(BronCluster)	:=	L_zijleiding * K_m_sec;
-			attribute<Eur_m>	K_min_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_max_brondist	(BronCluster)	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_brondist	(BronCluster)	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
+			attribute<MW>		P_sec			:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
+			attribute<MW>		P_bronnet		:=	P_sec_primair/ 1000[kW / MW];
+			attribute<Eur_m>	K_min_sec		:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_sec		:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_sec			:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
+			attribute<m>		L_hoofdleiding	:=	sqrt(2.0)* sqrt(AreaProxy);
+			attribute<Eur>		K_hoofdleiding	:=	L_hoofdleiding * K_m_sec;
+			attribute<m>		L_zijleiding	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
+			attribute<Eur>		K_zijleiding	:=	L_zijleiding * K_m_sec;
+			attribute<Eur_m>	K_min_brondist	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_brondist	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_brondist	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
 		}
 		
 		//Aanvullende kosten brongerelateerd
-		attribute<Eur>				Ki_ow_brondist		(BronCluster)	:=	BronCluster/LengthProxy * secundairnet/K_m_brondist,					Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
-		attribute<Eur>				Ki_ow_buffer		(BronCluster)	:=	max_elem((Kostenkentallen/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
-		attribute<Eur>				Ki_ow				(BronCluster)	:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
-		attribute<Eur>				Oi_ow_EIA			(BronCluster)	:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
-		attribute<Eur_Yr>			Kji_ow              (BronCluster)	:=	Ki_ow * NCW/ow28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten opwekking";
-		attribute<Eur_Yr>			Oji_ow_EIA	        (BronCluster)	:=	Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten opwekking";
-		attribute<Eur>				Ki_wd				(BronCluster)	:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
-		attribute<Eur>				Oi_wd_EIA			(BronCluster)	:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kji_wd              (BronCluster)	:=	Ki_wd * NCW/id28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Oji_wd_EIA   		(BronCluster)	:=	Oi_wd_EIA * NCW/id28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_ow_productie		(BronCluster)	:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
-		attribute<Eur_Yr>			Kj_ow_adm			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin * Ki_ow,		Descr ="administratiekosten opwekking";
-		attribute<Eur_Yr>			Kj_ow_oh			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud  * Ki_ow,	Descr ="onderhoudskosten opwekking";
-		attribute<Eur_Yr>			Kj_wd_adm			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_wd_oh			(BronCluster)	:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>			Kj_onderhoud		(BronCluster)	:=	Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
-		attribute<Eur_Yr>			Kj_admin			(BronCluster)	:=	Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
+		attribute<Eur>				Ki_ow_brondist		:=	BronCluster/LengthProxy * secundairnet/K_m_brondist,					Descr ="investeringskosten distributieleidingen om bronnen met elkaar te verbinden";
+		attribute<Eur>				Ki_ow_buffer		:=	max_elem((Kostenkentallen/Ki_buffer_min - Ki_buffer_gebouw) , 0.0 [Eur]),	Descr ="ondergrenscontrole investeringskosten buffervat bij primaire bron";
+		attribute<Eur>				Ki_ow				:=	Ki_ow_brondist + Ki_ow_buffer,											Descr ="investeringskosten opwekking";
+		attribute<Eur>				Oi_ow_EIA			:=	Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
+		attribute<Eur_Yr>			Kji_ow              :=	Ki_ow * NCW/ow28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>			Oji_ow_EIA	        :=	Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur>				Ki_wd				:=	secundairnet/K_hoofdleiding + secundairnet/K_zijleiding,				Descr ="investeringskosten distributieleidingen wijkdistributie";
+		attribute<Eur>				Oi_wd_EIA			:=	Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kji_wd              :=	Ki_wd * NCW/id28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Oji_wd_EIA   		:=	Oi_wd_EIA * NCW/id28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_ow_productie		:=	V_Warmte_primair * BronCluster/K_GJ,									Descr ="bronspecifieke productiekosten per jaar";
+		attribute<Eur_Yr>			Kj_ow_adm			:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin * Ki_ow,		Descr ="administratiekosten opwekking";
+		attribute<Eur_Yr>			Kj_ow_oh			:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud  * Ki_ow,	Descr ="onderhoudskosten opwekking";
+		attribute<Eur_Yr>			Kj_wd_adm			:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_wd_oh			:=	Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>			Kj_onderhoud		:=	Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
+		attribute<Eur_Yr>			Kj_admin			:=	Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
 		
-		attribute<Eur_Yr>			Oj_wd_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
-		attribute<Eur_Yr>			Oj_ow_EEA			(BronCluster)	:=	SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
-		attribute<Eur_Yr>			Oj_EEA				(BronCluster)	:=	Oj_wd_EEA + Oj_ow_EEA;
+		attribute<Eur_Yr>			Oj_wd_EEA			:=	SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
+		attribute<Eur_Yr>			Oj_ow_EEA			:=	SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
+		attribute<Eur_Yr>			Oj_EEA				:=	Oj_wd_EEA + Oj_ow_EEA;
 		
-		attribute<Eur_Yr>			Kj_brongerelateerd	(BronCluster)	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
-		attribute<Eur_Yr>			Rentabiliteit		(BronCluster)	:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
+		attribute<Eur_Yr>			Kj_brongerelateerd	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
+		attribute<Eur_Yr>			Rentabiliteit		:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
 		
-		attribute<bool>				Afweging			(BronCluster)	:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";
+		attribute<bool>				Afweging			:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";
 	}
+	
+/*	REMOVE AFTER COPY
 	unit<uint32> RendabelCluster 	:= subset(gebied/Afweging) {
 		attribute<BronCluster> BronCluster_rel := nr_OrgEntity;
 		attribute<RendabelCluster> RendabelCluster_per_BronCluster(BronCluster) := invert(BronCluster_rel);
@@ -312,12 +314,11 @@ Template LtWarmtenetImpl
 			attribute<..>        MST_rel := Feature/MST_rel[nr_OrgEntity];
 		}
 	}
+*/	
+	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'LtResults', WarmteOptie_rel, RendabelCluster, Gebied);
+	unit<uint32> AllObjects := Toedeling/results;
 	
-	attribute<uint32> NrAllowedObjects          (WkoComponent)	:= ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/AllowedObjects')+')';
-	attribute<uint32> NrAllObjects              (WkoComponent)	:= ='union_data(WkoComponent, '+AsItemList('#CandidateSets/'+WkoComponent/Name+'/BebouwingsObject')+')';
-	attribute<uint32> CumulNrPrevAllowedObjects (WkoComponent)	:= cumulate(NrAllowedObjects)-NrAllowedObjects;
-	attribute<uint32> CumulNrPrevAllObjects     (WkoComponent)	:= cumulate(NrAllObjects)-NrAllObjects;
-
+/*	
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
 		attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
@@ -325,7 +326,6 @@ Template LtWarmtenetImpl
 		attribute<BronCluster>	Cluster_rel				:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
 		attribute<Eur_yr>		Kj_totaal				:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
 		
-		// TODO: scalesum hoeft alleen berekend te worden voor objecten in rendabele clusters en niet alle clusters.
 		attribute<Eur>			Ki_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);
 		attribute<Eur>			Ki_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_wd);
 		attribute<Eur_yr>		Kji_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kji_ow);
@@ -340,17 +340,8 @@ Template LtWarmtenetImpl
 		attribute<Eur_yr>		Oj_wd_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_wd_EEA);
 		attribute<Eur_yr>		Oj_ow_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_ow_EEA);
 	}
-
+*/
 	
-	container ObjectResults :=
-		for_each_ne(WkoComponent/Name, 
-			'LtResults('
-				'UnitedCandidates, RendabelCluster, CandidateSets/'+WkoComponent/Name+',Classifications/WarmteOptie/V/'+GebiedsOptie_name+',' 
-				'CumulNrPrevAllowedObjects['+string(id(WkoComponent))+'[WkoComponent]],'
-				'CumulNrPrevAllObjects['+string(id(WkoComponent))+'[WkoComponent]]'
-			')'
-		);
-
 	
 	container Results := BeginStatus
 	{

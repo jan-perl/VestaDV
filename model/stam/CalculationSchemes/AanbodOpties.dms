@@ -182,6 +182,59 @@ container AanbodOpties
 		
 	}
 	
+	template GebiedToedelen {
+		unit<uint8> BC;
+		container CandidateSets;
+		unit<uint32> UnitedCandidates;
+		parameter<string> ResultsTemplName;
+		parameter<Classifications/WarmteOptie> WarmteOptie_rel;		
+		unit<uint32> Gebied;
+		
+		unit<uint32> RendabelCluster 	:= subset(Gebied/Afweging), DialogData = "Map", DialogType = "Point"
+		{
+			attribute<Gebied>    Gebied_rel := nr_OrgEntity;
+			attribute<rdc_meter> point := Gebied/Point[nr_OrgEntity];	
+			attribute<.>         Partitioning (UnitedCandidates) := invert(nr_OrgEntity)[Gebied/Partitioning];
+		}
+
+		attribute<uint32> NrAllowedObjects          (BC) := ='union_data(BC, '+AsItemList('#CandidateSets/'+BC/Name+'/AllowedObjects')+')';
+		attribute<uint32> NrAllObjects              (BC) := ='union_data(BC, '+AsItemList('#CandidateSets/'+BC/Name+'/BebouwingsObject')+')';
+		attribute<uint32> CumulNrPrevAllowedObjects (BC) := cumulate(NrAllowedObjects)-NrAllowedObjects;
+		attribute<uint32> CumulNrPrevAllObjects     (BC) := cumulate(NrAllObjects)-NrAllObjects;
+
+		container ObjectResults :=
+			for_each_ne(BC/Name, 
+				ResultsTemplName+'('
+					'UnitedCandidates, RendabelCluster, CandidateSets/'+BC/Name+', WarmteOptie_rel,'
+					'CumulNrPrevAllowedObjects['+string(id(BC))+'[BC]],'
+					'CumulNrPrevAllObjects['+string(id(BC))+'[BC]]'
+				')'
+			);
+			
+		unit<uint32> result := ='union_unit('+AsItemList('ObjectResults/'+BC/Name+'/BebouwingsObject')+')'
+		{
+			attribute<RendabelCluster>	RendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
+//			attribute<BronCluster>	Cluster_rel				:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
+			
+			attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + BC/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
+			attribute<Eur_yr>		Kj_totaal				:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/WkoData/Kj_totaal')+')';
+			
+			attribute<Eur>			Ki_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Ki_ow          [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur>			Ki_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Ki_wd          [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kji_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kji_ow         [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kji_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kji_wd         [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kj_wd_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kj_wd_oh       [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kj_wd_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kj_wd_adm      [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kj_ow_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kj_ow_oh       [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kj_ow_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kj_ow_adm      [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Kj_ow_productie			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Kj_ow_productie[RendabelCluster/nr_OrgEntity]);
+			attribute<Eur>			Oi_wd_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Oi_wd_EIA      [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur>			Oi_ow_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Oi_ow_EIA      [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Oj_wd_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Oj_wd_EEA      [RendabelCluster/nr_OrgEntity]);
+			attribute<Eur_yr>		Oj_ow_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), RendabelCluster_rel, Gebied/Oj_ow_EEA      [RendabelCluster/nr_OrgEntity]);
+		}
+	}
+	
 	template GebiedsAllocatieResultaat_cumuleren {
 		container Cumulator;
 		container Increment;

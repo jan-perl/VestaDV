@@ -59,7 +59,10 @@ template WKOResults
 
 	container BC
 	{
-		attribute<Eur> Ki_ow (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		attribute<Eur> Ki_ow     (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		attribute<Eur> Kj_ow_adm (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		attribute<Eur> Kj_ow_oh  (BebouwingsObject) := AllObjects/Ki_ow_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis); // lookup item niet expliciet configureren ivm het niet kunnen vinden van AllObject als values unit, truc met copy is ook mogelijk
+		
 		attribute<Eur> Ki_wd (BebouwingsObject) := AllObjects/Ki_wd_Part[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
 	}
 
@@ -88,11 +91,15 @@ template WKOResults
 		container OenM {
 			attribute<Eur_yr>	Kj_wd_oh		(PlanRegio)	:=	sum(WkoData/Kj_wd_oh		* float64(StartThis)	, BCdata/PlanRegio_rel);
 			attribute<Eur_yr>	Kj_id_oh		(PlanRegio)	:=	sum(WkoData/Kj_id_oh		* float64(StartThis)	, BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)	:=	sum(WkoData/Kj_ow_oh		* float64(StartThis)	, BCdata/PlanRegio_rel);
+			attribute<Eur_yr>	Kj_ow_oh		(PlanRegio)	:=	sum(WkoData/Kj_ow_oh		* float64(StartThis)	, BCdata/PlanRegio_rel) 
+				+ kengetallen/Ki_ow_vast_TEO * Kengetallen/Admin/R_TEO_oh
+				+ kengetallen/Ki_ow_vast_WKO * Kengetallen/Admin/R_WKO_oh;
 			
 			attribute<Eur_yr>	Kj_wd_adm		(PlanRegio)	:=	sum(WkoData/Kj_wd_adm		* float64(StartThis)	, BCdata/PlanRegio_rel);
 			attribute<Eur_yr>	Kj_id_adm		(PlanRegio)	:=	sum(WkoData/Kj_id_adm		* float64(StartThis)	, BCdata/PlanRegio_rel);
-			attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)	:=	sum(WkoData/Kj_ow_adm		* float64(StartThis)	, BCdata/PlanRegio_rel);				
+			attribute<Eur_yr>	Kj_ow_adm		(PlanRegio)	:=	sum(WkoData/Kj_ow_adm		* float64(StartThis)	, BCdata/PlanRegio_rel)				
+				+ Selected/Ki_ow_vast_TEO[x] * Kengetallen/Admin/R_TEO_adm
+				+ Selected/Ki_ow_vast_WKO[x] * Kengetallen/Admin/R_WKO_adm;
 		}
 		container Nieuw {
 			attribute<Eur>    Oi_Aansl   (PlanRegio) :=	sum(WkoData/Oi_Aansl     * float64(StartThis), BCdata/PlanRegio_rel);
