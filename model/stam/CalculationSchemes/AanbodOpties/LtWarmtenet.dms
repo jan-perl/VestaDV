@@ -231,9 +231,11 @@ Template LtWarmtenetImpl
 	//bepaling brongerelateerde kosten
 	unit<uint32> Gebied := BronCluster
 	{
+		attribute<.> Partitioning (UnitedCandidates) := selected/BronCluster_rel[invert(Selected/nr_OrgEntity)];
+		
 		//Omvang gebied vraag-cluster
 		attribute<m2>				AreaProxy			:=	max_elem((BronCluster/LengthProxy * distance_threshold), (PI() * distance_threshold^2d)) ,		Descr = "indicatie van oppervlakte afnamegebied";
-		
+	
 		//Omvang gebied bron-cluster en vraag-cluster gecombineerd
 		//Optelling van attributen van gebouwen in vraaggebied
 		attribute<Eur_Yr>			Contributiemarge	:=	sum(Selected/Contributiemarge,	Selected/BronCluster_rel),				Descr = "totale contributiemarge van gebouwen in vraaggebied";
@@ -246,18 +248,18 @@ Template LtWarmtenetImpl
 		container secundairnet
 		{
 			// formule buiskosten conform functioneel ontwerp LT netten tabel 8
-			attribute<MW>		P_sec			:=	max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
-			attribute<MW>		P_bronnet		:=	P_sec_primair/ 1000[kW / MW];
-			attribute<Eur_m>	K_min_sec		:=	P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_max_sec		:=	P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_sec			:=	(K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
-			attribute<m>		L_hoofdleiding	:=	sqrt(2.0)* sqrt(AreaProxy);
-			attribute<Eur>		K_hoofdleiding	:=	L_hoofdleiding * K_m_sec;
-			attribute<m>		L_zijleiding	:=	0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
-			attribute<Eur>		K_zijleiding	:=	L_zijleiding * K_m_sec;
-			attribute<Eur_m>	K_min_brondist	:=	P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_max_brondist	:=	P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
-			attribute<Eur_m>	K_m_brondist	:=	(K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
+			attribute<MW>		P_sec         (..) := max_elem(P_sec_hulp, P_sec_primair)/ 1000[kW / MW];
+			attribute<MW>		P_bronnet     (..) := P_sec_primair/ 1000[kW / MW];
+			attribute<Eur_m>	K_min_sec     (..) := P_sec > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_sec     (..) := P_sec > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_sec * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_sec       (..) := (K_min_sec * Schuiven/KostenMin + K_max_sec * Schuiven/KostenMax) * Leercurves/MTnet/Curve;
+			attribute<m>		L_hoofdleiding(..) := sqrt(2.0)* sqrt(AreaProxy);
+			attribute<Eur>		K_hoofdleiding(..) := L_hoofdleiding * K_m_sec;
+			attribute<m>		L_zijleiding  (..) := 0.25 * 0.5 * sqrt(2.0) * sqrt(AreaProxy);
+			attribute<Eur>		K_zijleiding  (..) := L_zijleiding * K_m_sec;
+			attribute<Eur_m>	K_min_brondist(..) := P_bronnet > 0[MW] ? 400[Eur_m] + 210[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.5 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_max_brondist(..) := P_bronnet > 0[MW] ? 800[Eur_m] + 200[Eur / m] * (P_bronnet * 1.0[1 / MW])^ 0.6 : 0[Eur_m], Source = "validatiesessies startanalyse 2019"; // TODO: bron = FO 4.0
+			attribute<Eur_m>	K_m_brondist  (..) := (K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;		
 		}
 		
 		//Aanvullende kosten brongerelateerd
@@ -315,10 +317,10 @@ Template LtWarmtenetImpl
 		}
 	}
 */	
-	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'LtResults', WarmteOptie_rel, RendabelCluster, Gebied);
+	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'LtResults', WarmteOptie_rel, Gebied);
 	unit<uint32> AllObjects := Toedeling/result;
 	
-/*	
+/*	TODO REMOVE
 	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
 	{
 		attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
@@ -348,14 +350,14 @@ Template LtWarmtenetImpl
 		container Bebouwing :=
 			for_each_ne(Classifications/BebouwingsComponent/Name
 				, Classifications/BebouwingsComponent/KanWKO 
-					? 'ObjectResults/'+Classifications/BebouwingsComponent/Name+'/Result' 
+					? 'Toedeling/ObjectResults/'+Classifications/BebouwingsComponent/Name+'/Result' 
 					: 'BeginStatus/Bebouwing/'+Classifications/BebouwingsComponent/Name
 			);
 			
 		container LtWarmte := BeginStatus/LtWarmte
 		{
 			unit<uint32> bron := BeginStatus/LtWarmte/bron {
-				attribute<bool> NuToegewezen := IsDefined(RendabelCluster/per_bronSrc);
+				attribute<bool> NuToegewezen := IsDefined(Gebied/Afweging)[Gebied/per_bron];
 				attribute<bool> Toegewezen := BeginStatus/LtWarmte/bron/Toegewezen || NuToegewezen;
 				
 				unit<uint32> PrevClusterSet := BeginStatus/LtWarmte/bron/CumulativeClusterSet;

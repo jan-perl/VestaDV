@@ -159,7 +159,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_70, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 70[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_70 := LtWarmtenet;
 		}

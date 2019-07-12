@@ -111,21 +111,23 @@ template TEO
 		attribute<Eur_m>	K_m_brondist	  := (K_min_brondist * Schuiven/KostenMin + K_max_brondist * Schuiven/KostenMax) * Leercurves/LTnet/Curve;
 		attribute<Eur>		Ki_wd_bronleiding := LengthProxy * K_m_brondist;
 		
-		attribute<Eur>		Ki_ow_vast_TEO    := const(KostenKentallen/Ki_TEO_vast, .);
-		attribute<Eur>		Ki_ow_vast_WKO    := const(KostenKentallen/Ki_WKO_vast, .);
+		parameter<Eur>		Ki_ow_TEO         := KostenKentallen/Ki_TEO_vast;
+		parameter<Eur>		Ki_ow_WKO         := KostenKentallen/Ki_WKO_vast;
+		parameter<Eur_yr>	Kj_ow_oh_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_onderhoud * Ki_ow_TEO,				Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_oh_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_onderhoud * Ki_ow_WKO,				Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
 		
 		attribute<Eur>		Ki_wd             := Ki_wd_bronleiding + Ki_wd_wijkleiding;  // gebiedsgerelateerde kosten
 		attribute<Eur>		Oi_wd_EIA		  := Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>	Kji_wd            := Ki_wd * NCW/id28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>	Oji_wd_EIA  	  := Oi_wd_EIA * NCW/id28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kji_wd            := Ki_wd * NCW/id28/AnnualisationFactor,                                  Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Oji_wd_EIA  	  := Oi_wd_EIA * NCW/id28/AnnualisationFactor,                              Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		
-		attribute<Eur>		Ki_ow             := Ki_ow_vast_TEO + Ki_ow_vast_WKO; // gebiedsgerelateerde kosten
+		attribute<Eur>		Ki_ow             := const(Ki_ow_TEO + Ki_ow_WKO, .); // gebiedsgerelateerde kosten
 		attribute<Eur>		Oi_ow_EIA		  := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
-		attribute<Eur_Yr>	Kji_ow            := Ki_ow * NCW/ow28/AnnualisationFactor,                                   Descr ="jaarlijkse kapitaallasten opwekking";
-		attribute<Eur_Yr>	Oji_ow_EIA	      := Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                               Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>	Kji_ow            := Ki_ow * NCW/ow28/AnnualisationFactor,                                  Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>	Oji_ow_EIA	      := Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                              Descr ="jaarlijkse kapitaallasten opwekking";
 		attribute<Eur_Yr>	Kj_ow_productie	  := const(0[Eur_Yr], .);
-		attribute<Eur_Yr>	Kj_ow_adm		  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_admin * Ki_ow,		Descr ="administratiekosten opwekking";
-		attribute<Eur_Yr>	Kj_ow_oh		  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_ow_onderhoud  * Ki_ow,	Descr ="onderhoudskosten opwekking";
+		attribute<Eur_Yr>	Kj_ow_adm		  := const(Kj_ow_adm_TEO + Kj_ow_adm_WKO, .),											Descr ="administratiekosten opwekking";
+		attribute<Eur_Yr>	Kj_ow_oh		  := const(Kj_ow_oh_TEO + Kj_ow_oh_WKO, .),	 										Descr ="onderhoudskosten opwekking";
 		attribute<Eur_Yr>	Kj_wd_adm         := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>	Kj_wd_oh          := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>	Kj_onderhoud      := Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
