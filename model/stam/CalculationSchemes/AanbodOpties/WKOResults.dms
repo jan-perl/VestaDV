@@ -66,16 +66,16 @@ template WKOResults
 		attribute<Eur>    Oi_wd_EIA  (BebouwingsObject) := GebiedToedelen_resultaat/Oi_wd_EIA [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Kji_wd     (BebouwingsObject) := GebiedToedelen_resultaat/Kji_wd    [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Oji_wd_EIA (BebouwingsObject) := GebiedToedelen_resultaat/Oji_wd_EIA[AllObjects_rel] * float64(StartThis);
-		attribute<Eur_yr> Kj_wd_adm  (BebouwingsObject) := GebiedToedelen_resultaat/Ki_wd_adm [AllObjects_rel] * float64(StartThis);
-		attribute<Eur_yr> Kj_wd_oh   (BebouwingsObject) := GebiedToedelen_resultaat/Ki_wd     [AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_wd_adm  (BebouwingsObject) := GebiedToedelen_resultaat/Kj_wd_adm [AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_wd_oh   (BebouwingsObject) := GebiedToedelen_resultaat/Kj_wd_oh  [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Oj_wd_EEA  (BebouwingsObject) := GebiedToedelen_resultaat/Oj_wd_EEA [AllObjects_rel] * float64(StartThis);
 		
 		attribute<Eur>    Ki_ow      (BebouwingsObject) := GebiedToedelen_resultaat/Ki_ow     [AllObjects_rel] * float64(StartThis);
 		attribute<Eur>    Oi_ow_EIA  (BebouwingsObject) := GebiedToedelen_resultaat/Oi_ow_EIA [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Kji_ow     (BebouwingsObject) := GebiedToedelen_resultaat/Kji_ow    [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Oji_ow_EIA (BebouwingsObject) := GebiedToedelen_resultaat/Oji_ow_EIA[AllObjects_rel] * float64(StartThis);
-		attribute<Eur_yr> Kj_ow_adm  (BebouwingsObject) := GebiedToedelen_resultaat/Ki_ow_adm [AllObjects_rel] * float64(StartThis);
-		attribute<Eur_yr> Kj_ow_oh   (BebouwingsObject) := GebiedToedelen_resultaat/Ki_ow     [AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_ow_adm  (BebouwingsObject) := GebiedToedelen_resultaat/Kj_ow_adm [AllObjects_rel] * float64(StartThis);
+		attribute<Eur_yr> Kj_ow_oh   (BebouwingsObject) := GebiedToedelen_resultaat/Kj_ow_oh  [AllObjects_rel] * float64(StartThis);
 		attribute<Eur_yr> Oj_ow_EEA  (BebouwingsObject) := GebiedToedelen_resultaat/Oj_ow_EEA [AllObjects_rel] * float64(StartThis);
 		
 		

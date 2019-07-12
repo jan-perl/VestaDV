@@ -230,6 +230,8 @@ container AanbodOpties
 			attribute<Eur_yr>		Kj_ow_productie	:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_ow_productie[RendabelCluster/Gebied_rel]);
 			attribute<Eur>			Oi_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_wd_EIA      [RendabelCluster/Gebied_rel]);
 			attribute<Eur>			Oi_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_ow_EIA      [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Oji_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_wd_EIA     [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Oji_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_ow_EIA     [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Oj_wd_EEA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oj_wd_EEA      [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Oj_ow_EEA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oj_ow_EEA      [RendabelCluster/Gebied_rel]);
 		}
