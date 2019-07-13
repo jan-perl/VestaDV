@@ -219,20 +219,21 @@ container AanbodOpties
 			attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + BC/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 			attribute<Float64>		ToerekeningsFactor := ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/WkoData/ToerekeningsFactor')+')';
 			
-			attribute<Eur>			Ki_ow           := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Ki_ow          [RendabelCluster/Gebied_rel]);
 			attribute<Eur>			Ki_wd           := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Ki_wd          [RendabelCluster/Gebied_rel]);
-			attribute<Eur_yr>		Kji_ow          := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kji_ow         [RendabelCluster/Gebied_rel]);
+			attribute<Eur>			Oi_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_wd_EIA      [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kji_wd          := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kji_wd         [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Oji_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_wd_EIA     [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kj_wd_oh		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_wd_oh       [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kj_wd_adm		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_wd_adm      [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Oj_wd_EEA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oj_wd_EEA      [RendabelCluster/Gebied_rel]);
+			
+			attribute<Eur>			Ki_ow           := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Ki_ow          [RendabelCluster/Gebied_rel]);
+			attribute<Eur>			Oi_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_ow_EIA      [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Kji_ow          := scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kji_ow         [RendabelCluster/Gebied_rel]);
+			attribute<Eur_yr>		Oji_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_ow_EIA     [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kj_ow_oh		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_ow_oh       [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kj_ow_adm		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_ow_adm      [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Kj_ow_productie	:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Kj_ow_productie[RendabelCluster/Gebied_rel]);
-			attribute<Eur>			Oi_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_wd_EIA      [RendabelCluster/Gebied_rel]);
-			attribute<Eur>			Oi_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oi_ow_EIA      [RendabelCluster/Gebied_rel]);
-			attribute<Eur_yr>		Oji_wd_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_wd_EIA     [RendabelCluster/Gebied_rel]);
-			attribute<Eur_yr>		Oji_ow_EIA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oji_ow_EIA     [RendabelCluster/Gebied_rel]);
-			attribute<Eur_yr>		Oj_wd_EEA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oj_wd_EEA      [RendabelCluster/Gebied_rel]);
 			attribute<Eur_yr>		Oj_ow_EEA		:= scalesum(ToerekeningsFactor, RendabelCluster_rel, Gebied/Oj_ow_EEA      [RendabelCluster/Gebied_rel]);
 		}
 	}

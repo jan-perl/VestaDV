@@ -113,13 +113,18 @@ template TEO
 		
 		parameter<Eur>		Ki_ow_TEO         := KostenKentallen/Ki_TEO_vast;
 		parameter<Eur>		Ki_ow_WKO         := KostenKentallen/Ki_WKO_vast;
-		parameter<Eur_yr>	Kj_ow_oh_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_onderhoud * Ki_ow_TEO,				Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
-		parameter<Eur_yr>	Kj_ow_oh_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_onderhoud * Ki_ow_WKO,				Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_adm_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_admin     * Ki_ow_TEO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_adm_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_admin     * Ki_ow_WKO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_oh_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_onderhoud * Ki_ow_TEO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_oh_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_onderhoud * Ki_ow_WKO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
 		
 		attribute<Eur>		Ki_wd             := Ki_wd_bronleiding + Ki_wd_wijkleiding;  // gebiedsgerelateerde kosten
 		attribute<Eur>		Oi_wd_EIA		  := Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>	Kji_wd            := Ki_wd * NCW/id28/AnnualisationFactor,                                  Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
 		attribute<Eur_Yr>	Oji_wd_EIA  	  := Oi_wd_EIA * NCW/id28/AnnualisationFactor,                              Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kj_wd_adm         := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kj_wd_oh          := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Oj_wd_EEA         := SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
 		
 		attribute<Eur>		Ki_ow             := const(Ki_ow_TEO + Ki_ow_WKO, .); // gebiedsgerelateerde kosten
 		attribute<Eur>		Oi_ow_EIA		  := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
@@ -128,16 +133,14 @@ template TEO
 		attribute<Eur_Yr>	Kj_ow_productie	  := const(0[Eur_Yr], .);
 		attribute<Eur_Yr>	Kj_ow_adm		  := const(Kj_ow_adm_TEO + Kj_ow_adm_WKO, .),											Descr ="administratiekosten opwekking";
 		attribute<Eur_Yr>	Kj_ow_oh		  := const(Kj_ow_oh_TEO + Kj_ow_oh_WKO, .),	 										Descr ="onderhoudskosten opwekking";
-		attribute<Eur_Yr>	Kj_wd_adm         := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
-		attribute<Eur_Yr>	Kj_wd_oh          := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+
 		attribute<Eur_Yr>	Kj_onderhoud      := Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
 		attribute<Eur_Yr>	Kj_admin          := Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
-		attribute<Eur_Yr>	Oj_wd_EEA         := SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
 		attribute<Eur_Yr>	Oj_ow_EEA         := SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
 		attribute<Eur_Yr>	Oj_EEA            := Oj_wd_EEA + Oj_ow_EEA;
 		
 		//Afweging
-		attribute<Eur_yr>    Contributiemarge := sum(UnitedCandidates/Contributiemarge, Partitioning);
+		attribute<Eur_yr>   Contributiemarge    := sum(UnitedCandidates/Contributiemarge, Partitioning);
 		attribute<Eur_Yr>	Kj_brongerelateerd	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
 		attribute<Eur_Yr>	Rentabiliteit		:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
 		attribute<bool>		Afweging			:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";		

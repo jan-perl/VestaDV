@@ -118,44 +118,7 @@ template WKO
 	
 	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'WkoResults', Classifications/WarmteOptie/V/WKO, Gebied);
 	unit<uint32> AllObjects := Toedeling/result;
-	
-/*	REMOVE AFTER COPY
-	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
-	{
-		attribute<string>   Label       := ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-		attribute<RendabelCluster> Cluster_rel := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_rel')+')';
-		attribute<Eur>      Ki_id        := ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Ki_id')+')';
 		
-		attribute<Eur>      Ki_ow     := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_ow_vast[RendabelCluster/nr_OrgEntity]);
-		attribute<Eur_yr>   Kj_ow_oh  := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Kj_ow_oh  [RendabelCluster/nr_OrgEntity]);
-		attribute<Eur_yr>   Kj_ow_adm := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Kj_adm_ow [RendabelCluster/nr_OrgEntity]);
-		attribute<Eur>      Ki_wd     := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd_vast[RendabelCluster/nr_OrgEntity]);
-		attribute<Eur_yr>   Kj_wd_oh  := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd_vast[RendabelCluster/nr_OrgEntity]);
-		attribute<Eur_yr>   Kj_wd_adm := scalesum(max_elem(Ki_id, 1[Eur]), Cluster_rel, Selected/Ki_wd_vast[RendabelCluster/nr_OrgEntity]);
-	}
-	
-	unit<uint32> AllObjects := ='union_unit('+AsItemList('ObjectResults/'+WkoComponent/Name+'/BebouwingsObject')+')'
-	{
-		attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + WkoComponent/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
-xxx		attribute<RendabelCluster>	RendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/Cluster_relNow')+')';
-		attribute<BronCluster>	Cluster_rel				:= RendabelCluster/nr_OrgEntity[RendabelCluster_rel];
-		attribute<Eur_yr>		Kj_totaal				:= ='union_data(., ' + AsItemList('ObjectResults/'+WkoComponent/Name+'/WkoData/Kj_totaal')+')';
-		
-		attribute<Eur>			Ki_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_ow);
-		attribute<Eur>			Ki_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Ki_wd);
-		attribute<Eur_yr>		Kji_ow_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kji_ow);
-		attribute<Eur_yr>		Kji_wd_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kji_wd);
-		attribute<Eur_yr>		Kj_wd_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_oh);
-		attribute<Eur_yr>		Kj_wd_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_wd_adm);
-		attribute<Eur_yr>		Kj_ow_oh_gebied			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_oh);
-		attribute<Eur_yr>		Kj_ow_adm_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_adm);
-		attribute<Eur_yr>		Kj_ow_productie			:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Kj_ow_productie);
-		attribute<Eur>			Oi_wd_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_wd_EIA);
-		attribute<Eur>			Oi_ow_EIA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oi_ow_EIA);
-		attribute<Eur_yr>		Oj_wd_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_wd_EEA);
-		attribute<Eur_yr>		Oj_ow_EEA_gebied		:= scalesum(max_elem(Kj_totaal, 1.0[Eur_yr]), Cluster_rel, Gebied/Oj_ow_EEA);
-	}
-*/
 	container Results := BeginStatus
 	{
 		container Bebouwing :=
