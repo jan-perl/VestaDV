@@ -52,7 +52,7 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 		attribute<string> TS_2050  := union_data(.,  '0.0',  '0.0');
 	}
 	
-	unit<uint32> mutatieSchema: nrofrows = 55
+	unit<uint32> mutatieSchema: nrofrows = 59
 	{
 		parameter<uint32> nrAttr := 5, isHidden = "True";
 		unit<uint32> Elements := Range(uint32, 0, nrAttr * #.), isHidden = "True"
@@ -122,21 +122,38 @@ container Verbruik: Using = "Units;Geography", KeepData = "True"
 					'BebouwingsComponenten/@BC@/DragerOpties/WarmWater/ZonneBoiler',  // WW
 					PRR, ''
 					
-			,	'C4_eWP', 'a@BN@2_Elektra_@BC@',
-					'-(Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/Warmte/eWP)', 
+			,	'C4_AeWP', 'a@BN@2_Elektra_@BC@',
+					'-(Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/Warmte/AeWP)', 
 					PRR, 'E'
 
-			,	'C4_eWP', 'a@BN@3_@BC@_RV',
-					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP',  // RV
+			,	'C4_AeWP', 'a@BN@3_@BC@_RV',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/AeWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AeWP',  // RV
 					PRR, ''
 					
-			,	'C4_eWP', 'a@BN@5_@BC@_WW',
-					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP',  // WW
+			,	'C4_AeWP', 'a@BN@5_@BC@_WW',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AeWP',  // WW
 					PRR, ''
 					
-			,	'C4_eWP', 'h10_OmgevingsWarmteWinst',
-					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/eWP * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP)'  // RV
-					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/eWP)', // WW
+			,	'C4_AeWP', 'h10_OmgevingsWarmteWinst',
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/AeWP * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AeWP)'  // RV
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/AeWP)', // WW
+					PRR, ''
+
+			,	'C4_BeWP', 'a@BN@2_Elektra_@BC@',
+					'-(Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/Warmte/BeWP)', 
+					PRR, 'E'
+
+			,	'C4_BeWP', 'a@BN@3_@BC@_RV',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/BeWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/BeWP',  // RV
+					PRR, ''
+					
+			,	'C4_BeWP', 'a@BN@5_@BC@_WW',
+					'Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP * BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/BeWP',  // WW
+					PRR, ''
+					
+			,	'C4_BeWP', 'h10_OmgevingsWarmteWinst',
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/RuimteVerwarming/BeWP * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/BeWP)'  // RV
+					'+ Allocatie/@BC@/Aandelen/eWP  * BebouwingsComponenten/@BC@/DragerOpties/WarmWater/eWP        * (1.0 - BebouwingsComponenten/@BC@/Efficiency/RuimteVerwarming/BeWP)', // WW
 					PRR, ''
 
 			,	'C5_hWP', 'a@BN@2_Elektra_@BC@',
