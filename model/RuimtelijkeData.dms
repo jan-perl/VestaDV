@@ -49,9 +49,13 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 
 			attribute<rdc_meter>                               geometry (poly)     := RegioIndelingen/buurt/geometry[nr_OrgEntity];
 			attribute<string>                                  BU_code             := RegioIndelingen/buurt/BU_CODE[nr_OrgEntity];
-			attribute<string>                                  WK_code             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
-			attribute<string>                                  GM_code             := RegioIndelingen/buurt/GM_CODE[nr_OrgEntity];
+			attribute<string>                                  BU_NAAM             := RegioIndelingen/buurt/BU_NAAM[nr_OrgEntity];
+			attribute<string>                                  WK_CODE             := RegioIndelingen/buurt/WK_CODE[nr_OrgEntity];
+			attribute<string>                                  WK_NAAM             := RegioIndelingen/buurt/WK_NAAM[nr_OrgEntity];
+			attribute<string>                                  GM_CODE             := RegioIndelingen/buurt/GM_CODE[nr_OrgEntity];
+			attribute<string>                                  GM_NAAM             := RegioIndelingen/buurt/GM_NAAM[nr_OrgEntity];
 			attribute<string>                                  ER_NAAM             := RegioIndelingen/buurt/ER_NAAM[nr_OrgEntity];
+			attribute<string>                                  PROV_NAAM           := RegioIndelingen/buurt/PROV_NAAM[nr_OrgEntity];
 
 			attribute<uint32>                                  code                := RegioIndelingen/buurt/code[nr_OrgEntity];
 

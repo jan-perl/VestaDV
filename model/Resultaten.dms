@@ -36,7 +36,10 @@ container Resultaten :=
 
 		parameter<string> GenerateAllAlloc := 'ready', 
 			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/AllocExports/GenerateAll', ';')", IsHidden = "True";
-	
+
+		parameter<string> GenerateDataDumpExports := 'ready', 
+			ExplicitSuppliers = "=AsList(Classifications/rekenstap/Name+'/DataDumpExports/GenerateAll', ';')", IsHidden = "True";
+
 		container t510_indicator_results_test
 		{
 			parameter<string> result := 

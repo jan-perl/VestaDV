@@ -162,4 +162,5 @@ container CalculationSchemes: Using = "Units;Geography"
 	#include <AanbodOpties.dms>
 	#include <Rapportage.dms>
 	#include <AllocExportsBebouwingsComponent.dms>
+	#include <DataDumpExportsBebouwingsComponent.dms>
 }
