@@ -37,7 +37,7 @@ template LtResults
 	// TODO: rename WKO->ClusterOptie
 	
 	attribute<UnitedCandidates> UnitedCandidates_rel (BebouwingsObject) := AllowedObjects/UnitedCandidates_rel[invert(AllowedObjects/nr_OrgEntity)];
-	attribute<Cluster> Cluster_RelNow (BebouwingsObject) := Gebied/per_UnitedCandidates[UnitedCandidates_rel];
+	attribute<Cluster> Cluster_RelNow (BebouwingsObject) := invert(RendabelCluster/Gebied_rel)[Gebied/per_UnitedCandidates[UnitedCandidates_rel]];
 	attribute<bool>    HadWarmte      (BebouwingsObject) := not(Classifications/WarmteOptie/kanGebiedsOptie[BeginStatusComponent/WarmteAllocatie]);
 	
 	attribute<bool>    StartThis      (BebouwingsObject) := IsDefined(Cluster_RelNow), IntegrityCheck = "not(and(HadWarmte, IsDefined(Cluster_RelNow)))";

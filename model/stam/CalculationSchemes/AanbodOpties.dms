@@ -214,8 +214,15 @@ container AanbodOpties
 			
 		unit<uint32> result := ='union_unit('+AsItemList('ObjectResults/'+BC/Name+'/BebouwingsObject')+')' // aka: GebiedToedelen_resultaat
 		{
+/*		
 			attribute<Gebied>	Gebied_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
+			attribute<RendabelCluster>	RendabelCluster_per_gebied(Gebied)	:= invert(RendabelCluster/Gebied_rel); // TEST
 			attribute<RendabelCluster>	RendabelCluster_rel	:= invert(RendabelCluster/Gebied_rel)[Gebied_rel];
+			attribute<RendabelCluster>	RendabelCluster_relT	:= RendabelCluster_per_gebied[Gebied_rel];
+			
+			attribute<RendabelCluster>	TestRendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
+*/			
+			attribute<RendabelCluster>	RendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
 			
 			attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + BC/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 			attribute<Float64>		ToerekeningsFactor := ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/WkoData/ToerekeningsFactor')+')';
