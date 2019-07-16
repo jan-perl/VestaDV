@@ -87,9 +87,9 @@ container Resultaten :=
 			{
 				attribute<string>  name_bj                          := Classifications/BouwjaarUtilBestaand/label[nr_1];
 				attribute<string>  name_gd                          := Classifications/UtilTypeBestaand/label[nr_2];
-				attribute<.>       combine_bj_gd_rel(vbo_utiliteit) := combine_data(., vbo_utiliteit_studiegebied/BouwjaarUtilBestaand_rel, vbo_utiliteit_studiegebied/gebruiksdoel);
+				attribute<.>       combine_bj_gd_rel(vbo_utiliteit) := combine_data(., Invoer/RuimtelijkeData/BAG/vbo_utiliteit_studiegebied/BouwjaarUtilBestaand_rel,  Invoer/RuimtelijkeData/BAG/vbo_utiliteit_studiegebied/gebruiksdoel);
 				attribute<uint32>  count(.)                         := pcount(combine_bj_gd_rel);
-				attribute<float64> sum(.)                           := sum(vbo_utiliteit_studiegebied/Oppervlakte,combine_bj_gd_rel);
+				attribute<float64> sum(.)                           := sum(Invoer/RuimtelijkeData/BAG/vbo_utiliteit_studiegebied/Oppervlakte,combine_bj_gd_rel);
 			}
 		}
 	}
