@@ -42,7 +42,7 @@ container RuimtelijkeData: Using = "Units;Geography;model", FreeData = "False"
 			attribute<.>         per_m100 (Geography/rdc_grids/m100) := poly2grid(geometry, Geography/rdc_grids/m100);
 		}
 
-		unit<uint32> Buurt := subset(selected_per_buurt)
+		unit<uint32> Buurt := subset(selected_per_buurt), DialogType = "Map", DialogData = "geometry"
 		{
 			attribute<string>                                  name                := BU_code;
 			parameter<string>                                  RegioNaam           := 'Buurt';
