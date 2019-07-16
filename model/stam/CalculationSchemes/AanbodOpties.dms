@@ -83,7 +83,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_30, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 30[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_30 := LtWarmtenet;
 		}
@@ -99,7 +99,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_50, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 50[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_50 := LtWarmtenet;
 		}
@@ -114,7 +114,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt15_70, AanbodKentallen, EnergiePrijzen, Jaar, 15[Celsius], 70[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt15_70 := LtWarmtenet;
 		}
@@ -129,7 +129,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_30, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 30[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_30 := LtWarmtenet;
 		}
@@ -144,7 +144,7 @@ container AanbodOpties
 		// end case parameters
 		
 		container impl := LtWarmtenetImpl(BeginStatus, BeginStatus/Lt30_50, AanbodKentallen, EnergiePrijzen, Jaar, 30[Celsius], 50[Celsius]);
-		container ObjectResults := impl/ObjectResults;
+		container ObjectResults := impl/Toedeling/ObjectResults;
 		container Results := Impl/Results {
 			container Lt30_50 := LtWarmtenet;
 		}
@@ -214,7 +214,8 @@ container AanbodOpties
 			
 		unit<uint32> result := ='union_unit('+AsItemList('ObjectResults/'+BC/Name+'/BebouwingsObject')+')' // aka: GebiedToedelen_resultaat
 		{
-			attribute<RendabelCluster>	RendabelCluster_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
+			attribute<Gebied>	Gebied_rel	:= ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/Cluster_relNow')+')';
+			attribute<RendabelCluster>	RendabelCluster_rel	:= invert(RendabelCluster/Gebied_rel)[Gebied_rel];
 			
 			attribute<string>		Label					:= ='union_data(., ' + asItemList('BebouwingsComponenten/' + BC/Name + '/BebouwingsObject/Label') + ')', DialogType = "LabelText";
 			attribute<Float64>		ToerekeningsFactor := ='union_data(., ' + AsItemList('ObjectResults/'+BC/Name+'/WkoData/ToerekeningsFactor')+')';

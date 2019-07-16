@@ -86,12 +86,11 @@ template WKO
 	}
 
 	container Iterations := for_each_ne(Iteration/Name, 'WKOIter(' + Iteration/Prev + ', UnitedCandidates)');
-//	container IterationTest := WKOIter(UnitedCandidates,UnitedCandidates);
 	container LastIter :=  ='Iterations/'+last(Iteration/Name);
 	container LastClusters := LastIter/SelectedClusters;
 
 	// decouple the cluster to the individual object level to support reporting of the allocation result
-	unit<uint32> Selected := ='union_unit('+asItemList('Iterations/'+Iteration/Name+'/Selected')+', LastClusters)', DialogType = "Map", DialogData = "Point"
+	unit<uint32> Gebied := ='union_unit('+asItemList('Iterations/'+Iteration/Name+'/Selected')+', LastClusters)', DialogType = "Map", DialogData = "Point"
 	{
 		attribute<rdc_meter> point := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/point')+', LastClusters/point)';
 		attribute<string>    Label := ='union_data(., '+asItemList('Iterations/'+Iteration/Name+'/Selected/Label')+', LastClusters/Label)';
@@ -100,23 +99,43 @@ template WKO
 		attribute<kW>        P_Warmte := sum(UnitedCandidates/P_Warmte, Partitioning);
 		attribute<kW>        P_Koude  := sum(UnitedCandidates/P_Warmte, Partitioning);
 		
-		attribute<Eur_yr>    Contributiemarge := sum(UnitedCandidates/Contributiemarge, Partitioning);
+		parameter<Eur>		Ki_ow_TEO         := 0[Eur]; // *** WKO Specific
+		parameter<Eur>		Ki_ow_WKO         := KostenKentallen/Ki_WKO_vast * KostenKentallen/R_regeneratie; // *** WKO Specific
+		parameter<Eur_yr>	Kj_ow_adm_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_admin     * Ki_ow_TEO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_adm_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_admin     * Ki_ow_WKO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_oh_TEO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_TEO_onderhoud * Ki_ow_TEO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		parameter<Eur_yr>	Kj_ow_oh_WKO	  := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_WKO_onderhoud * Ki_ow_WKO, Descr = "jaarlijkse onderhoudskosten uitkoppeling primaire bron";
+		
+		attribute<Eur>		Ki_wd             := const(0[Eur], .);  // gebiedsgerelateerde kosten
+		attribute<Eur>		Oi_wd_EIA		  := Ki_wd * SpecifiekeInstellingen/Beleid/EIA/wd,							Descr ="investeringssubsidie distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kji_wd            := Ki_wd * NCW/id28/AnnualisationFactor,                                  Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Oji_wd_EIA  	  := Oi_wd_EIA * NCW/id28/AnnualisationFactor,                              Descr ="jaarlijkse kapitaallasten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kj_wd_adm         := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_admin * Ki_wd,		Descr ="administratiekosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Kj_wd_oh          := Leercurves/OenM/Curve * Kengetallen/Onderhoud/R_wd_onderhoud * Ki_wd,	Descr ="onderhoudskosten distributieleidingen wijkdistributie";
+		attribute<Eur_Yr>	Oj_wd_EEA         := SpecifiekeInstellingen/Beleid/EEA/wd * (Kj_wd_adm + Kj_wd_oh);
+		
+		attribute<Eur>		Ki_ow             := const(Ki_ow_TEO + Ki_ow_WKO, .); // gebiedsgerelateerde kosten
+		attribute<Eur>		Oi_ow_EIA		  := Ki_ow * SpecifiekeInstellingen/Beleid/EIA/LT,							Descr ="investeringssubsidie opwekking";
+		attribute<Eur_Yr>	Kji_ow            := Ki_ow * NCW/ow28/AnnualisationFactor,                                  Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>	Oji_ow_EIA	      := Oi_ow_EIA * NCW/ow28/AnnualisationFactor,                              Descr ="jaarlijkse kapitaallasten opwekking";
+		attribute<Eur_Yr>	Kj_ow_productie	  := const(0[Eur_Yr], .);
+		attribute<Eur_Yr>	Kj_ow_adm		  := const(Kj_ow_adm_TEO + Kj_ow_adm_WKO, .),											Descr ="administratiekosten opwekking";
+		attribute<Eur_Yr>	Kj_ow_oh		  := const(Kj_ow_oh_TEO + Kj_ow_oh_WKO, .),	 										Descr ="onderhoudskosten opwekking";
 
-		attribute<Eur>       Ki_wd := ='union_data(., '+AsItemList('Iterations/'+Iteration/Name+'/Selected/Ki_wd')+', LastClusters/Ki_wd)';
-		attribute<Eur>		 Ki_ow_vast_TEO    := const(0[Eur], .);
-		attribute<Eur>		 Ki_ow_vast_WKO    := const(KostenKentallen/Ki_WKO_vast * KostenKentallen/R_regeneratie, .);
-		attribute<Eur>		 Ki_ow_vast        := Ki_ow_vast_TEO + Ki_ow_vast_WKO;
+		attribute<Eur_Yr>	Kj_onderhoud      := Kj_ow_oh + Kj_wd_oh,													Descr ="onderhoudskosten brongerelateerd";
+		attribute<Eur_Yr>	Kj_admin          := Kj_ow_adm + Kj_wd_adm,													Descr ="administratiekosten brongerelateerd";
+		attribute<Eur_Yr>	Oj_ow_EEA         := SpecifiekeInstellingen/Beleid/EEA/lt * (Kj_ow_adm + Kj_ow_oh);
+		attribute<Eur_Yr>	Oj_EEA            := Oj_wd_EEA + Oj_ow_EEA;
 		
-		attribute<Eur_yr>    Oji_netto    := Contributiemarge 
-			- Ki_wd * ((NCW/wd28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/wd  ) 
-						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_wd_onderhoud + Kengetallen/Onderhoud/R_wd_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/wd  )))
-			- Ki_ow_vast * ((NCW/ow28/AnnualisationFactor * (1.0 - SpecifiekeInstellingen/Beleid/EIA/WKO ) 
-						+ Leercurves/OenM/Curve * (Kengetallen/Onderhoud/R_WKO_onderhoud + Kengetallen/Onderhoud/R_WKO_admin) * (1.0 - SpecifiekeInstellingen/Beleid/EEA/WKO )));
-		
-		attribute<bool>      Afweging := Oji_netto > 0[Eur_yr];
+		//Afweging
+		attribute<Eur_yr>   Contributiemarge    := sum(UnitedCandidates/Contributiemarge, Partitioning);
+		attribute<Eur_Yr>	Kj_brongerelateerd	:=	(Kji_ow - Oji_ow_EIA) + (Kji_wd - Oji_ow_EIA) + Kj_onderhoud + Kj_admin + Kj_ow_productie,			Descr ="totale jaarlijkse kosten brongerelateerd";
+		attribute<Eur_Yr>	Rentabiliteit		:=	Contributiemarge + Oj_EEA - Kj_brongerelateerd,							Descr ="rentabiliteit van aanleg gebiedsoptie";
+		attribute<bool>		Afweging			:=	Rentabiliteit > 0 [Eur_yr],												Descr ="besluit tot allocatie op basis van rentabiliteit";		
 	}
 	
 	container Toedeling := GebiedToedelen(WkoComponent, CandidateSets, UnitedCandidates, 'WkoResults', Classifications/WarmteOptie/V/WKO, Gebied);
+	container    ObjectResults := Toedeling/ObjectResults;
 	unit<uint32> AllObjects := Toedeling/result;
 		
 	container Results := BeginStatus
@@ -132,7 +151,7 @@ template WKO
 		{
 			container VorigePeriode := BeginStatus/Wko;
 			
-			unit<uint32> Cluster := Selected;
+			unit<uint32> Cluster := Gebied;
 
 			container Oi_Aansl		:= for_each_nedv(WkoComponent/Name, replace('VorigePeriode/Oi_Aansl/@W@ + ObjectResults/@W@/PR/nieuw/Oi_Aansl', '@W@', WkoComponent/Name), PlanRegio, Eur);
 			container Oj_Vastrecht	:= for_each_nedv(WkoComponent/Name, replace('ObjectResults/@W@/PR/Totaal/Oj_Vastrecht', '@W@', WkoComponent/Name), PlanRegio, Eur_yr);

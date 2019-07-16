@@ -67,21 +67,21 @@ template LtResults
 	container BC
 	{
 		//gebiedgerelateerde kosten voor opwekker
-		attribute<Eur>		Ki_ow_gebied		(BebouwingsObject)	:=	AllObjects/Ki_ow_gebied			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kji_ow_gebied		(BebouwingsObject)	:=	AllObjects/Kji_ow_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_ow_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_ow_oh_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_ow_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_ow_adm_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_ow_productie		(BebouwingsObject)	:=	AllObjects/Kj_ow_productie		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur>		Oi_ow_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_ow_EIA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Oj_ow_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Ki_ow_gebied		(BebouwingsObject)	:=	AllObjects/Ki_ow    [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kji_ow_gebied		(BebouwingsObject)	:=	AllObjects/Kji_ow   [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_ow_oh [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_ow_adm[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_ow_productie		(BebouwingsObject)	:=	AllObjects/Kj_ow_productie[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Oi_ow_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_ow_EIA[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Oj_ow_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
 		
 		//gebiedgerelateerde kosten voor wijkdistributeur
-		attribute<Eur>		Ki_wd_gebied		(BebouwingsObject)	:=	AllObjects/Ki_wd_gebied			[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kji_wd_gebied		(BebouwingsObject)	:=	AllObjects/Kji_wd_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_wd_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_wd_oh_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Kj_wd_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_wd_adm_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur>		Oi_wd_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_wd_EIA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
-		attribute<Eur_yr>	Oj_wd_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA_gebied		[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Ki_wd_gebied		(BebouwingsObject)	:=	AllObjects/Ki_wd    [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kji_wd_gebied		(BebouwingsObject)	:=	AllObjects/Kji_wd   [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_wd_oh_gebied		(BebouwingsObject)	:=	AllObjects/Kj_wd_oh [value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Kj_wd_adm_gebied	(BebouwingsObject)	:=	AllObjects/Kj_wd_adm[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur>		Oi_wd_EIA_gebied	(BebouwingsObject)	:=	AllObjects/Oi_wd_EIA[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
+		attribute<Eur_yr>	Oj_wd_EEA_gebied	(BebouwingsObject)	:=	AllObjects/Oj_wd_EEA[value(id(BebouwingsObject) + NrPrevAllObjects, AllObjects)] * float64(StartThis);
 	}
 
 	container PR

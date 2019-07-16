@@ -41,6 +41,7 @@ Template LtWarmtenetImpl
 	{
 	
 		attribute<BronSrc> BronSrc_rel := nr_OrgEntity;
+		attribute<.>  per_bron(BronSrc) := invert(BronSrc_rel);
 		
 		attribute<rdc_meter> Point := BronSrc/Point[BronSrc_rel];
 		attribute<string>    Label := BronSrc/Label[BronSrc_rel];
@@ -67,7 +68,7 @@ Template LtWarmtenetImpl
 		
 		attribute<string>    Label       := AsItemList(BronSelectie/Label, BronSelectie_rel), DialogType = "LabelText";
 
-		attribute<.>         per_bron    := id(.);
+		attribute<.>         per_bron(BronSrc)  := BronSelectie_rel[BronSelectie/per_bron];
 
 		attribute<kW>        P_Warmte_primair   := sum(BronSelectie/P_Warmte_primair, BronSelectie_rel);
 		attribute<kW>        P_Warmte_secundair := sum(BronSelectie/P_Warmte_secundair, BronSelectie_rel);
@@ -98,7 +99,7 @@ Template LtWarmtenetImpl
 		attribute<.> CumulNrPrevSelectedObjects := cumulate(NrSelectedObjects) - NrSelectedObjects;
 	}
 
-	container BronIterations := for_each_ne(BronIteration/Name, 'LtBronIter(' + BronIteration/PrevBron + ', bron)');
+	container BronIterations := for_each_ne(BronIteration/Name, 'LtBronIter(' + BronIteration/PrevBron + ', bronSrc)');
 	container LastBronIter :=  ='BronIterations/'+last(BronIteration/Name);
 	container LastClusters := LastBronIter/SelectedClusters;
 	
@@ -117,7 +118,7 @@ Template LtWarmtenetImpl
 
 		attribute<string>    Label  := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Label')+', LastClusters/Label)';
 		attribute<rdc_meter> Point  := ='union_data(., '+asItemList('BronIterations/'+BronIteration/Name+'/Selected/Point')+', LastClusters/Point)';
-		attribute<.>         per_bron(bron) := ='value(MakeDefined('
+		attribute<.>         per_bron(BronSrc) := ='value(MakeDefined('
 			+asItemList('BronIterations/'+BronIteration/Name+'/Selected/per_bron + BronIteration/CumulNrPrevSelectedObjects['+ string(ID(BronIteration))+']')+', LastClusters/per_bron + sum(BronIteration/NrSelectedObjects)), .)';
 		
 		//resultaten bronclustering, eigenschappen per broncluster
