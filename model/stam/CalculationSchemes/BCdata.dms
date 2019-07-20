@@ -337,8 +337,8 @@ template BCdata
 		}
 		container WarmWater
 		{
-			parameter<float64>	Aardgas_leidingverliesfactor	:=	Kengetallen/Efficiency/Leidingverlies_WW_aardgas,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
-			parameter<float64>	eWP_leidingverliesfactor		:=	Kengetallen/Efficiency/Leidingverlies_WW_ewp,		Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	Aardgas_leidingverliesfactor	:=	1.0 - Kengetallen/Efficiency/Leidingverlies_WW_aardgas,	Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
+			parameter<float64>	eWP_leidingverliesfactor		:=	1.0 - Kengetallen/Efficiency/Leidingverlies_WW_ewp,		Descr = "extra op te wekken warmte door verlies in leidingen binnen gebouw", Source = "Validatiesessies startanalyse 2019"; //TODO source naar FO 4.0
 			
 			attribute<GJ_yr> AardGas     (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/AardGas) / Aardgas_leidingverliesfactor;
 			attribute<GJ_yr> Warmte      (BebouwingsObject) := ((Functioneel/WarmWater - Opwekking/Zonneboiler) / Efficiency/WarmWater/Warmte );
