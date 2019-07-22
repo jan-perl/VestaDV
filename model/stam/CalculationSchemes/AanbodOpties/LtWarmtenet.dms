@@ -358,26 +358,26 @@ Template LtWarmtenetImpl
 		container LtWarmte := BeginStatus/LtWarmte
 		{
 			unit<uint32> bron := BeginStatus/LtWarmte/bron {
-				attribute<bool> NuToegewezen := IsDefined(Gebied/Afweging)[Gebied/per_bron];
+				attribute<bool> NuToegewezen := IsDefined(Gebied/Afweging[uint32])[Gebied/per_bron];
 				attribute<bool> Toegewezen := BeginStatus/LtWarmte/bron/Toegewezen || NuToegewezen;
 				
 				unit<uint32> PrevClusterSet := BeginStatus/LtWarmte/bron/CumulativeClusterSet;
-				unit<uint32> CumulativeClusterSet := union_unit(PrevClusterSet, RendabelCluster)
+				unit<uint32> CumulativeClusterSet := union_unit(PrevClusterSet, Toedeling/RendabelCluster)
 				, DialogType = "Map", DialogData = "Point"
 				{
-					attribute<.> per_bron(..) := MakeDefined(RendabelCluster/per_bronSrc, PrevClusterSet/per_bron);
+					attribute<.> per_bron(..) := MakeDefined(Toedeling/RendabelCluster/per_bronSrc, PrevClusterSet/per_bron);///TussenResultaten/R1_2020/GebiedsAllocatie/Lt30_70/impl/BronCluster/per_bron
 					
 					attribute<rdc_meter> Point := mean(center_bound(Feature/Geometry), Feature/Cluster_rel);
 										
-					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevClusterSet/WarmteOptie_rel, const(impl/WarmteOptie_rel, RendabelCluster));
-					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevClusterSet/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster));
-					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevClusterSet/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), RendabelCluster));
+					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevClusterSet/WarmteOptie_rel, const(impl/WarmteOptie_rel, Toedeling/RendabelCluster));
+					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevClusterSet/Rekenstap_rel,   const(......../zichtjaar_rel, Toedeling/RendabelCluster));
+					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevClusterSet/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), Toedeling/RendabelCluster));
 					
-					unit<uint32> Feature := union_unit(PrevClusterSet/Feature, RendabelCluster/Feature)
+					unit<uint32> Feature := union_unit(PrevClusterSet/Feature, Toedeling/RendabelCluster/Feature)
 					, DialogType = "Map", DialogData = "Geometry"
 					{
-						attribute<rdc_meter> Geometry(arc) := union_data(., PrevClusterSet/Feature/Geometry, RendabelCluster/Feature/Geometry);
-						attribute<..> Cluster_rel := value(union_data(., PrevClusterSet/Feature/Cluster_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
+						attribute<rdc_meter> Geometry(arc) := union_data(., PrevClusterSet/Feature/Geometry, Toedeling/RendabelCluster/Feature/Geometry);
+						attribute<..> Cluster_rel := value(union_data(., PrevClusterSet/Feature/Cluster_rel, Toedeling/RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
 											
 						attribute<Classifications/WarmteOptie> WarmteOptie_rel := CumulativeClusterSet/WarmteOptie_rel[Cluster_rel];
 						attribute<Classifications/Rekenstap  > Rekenstap_rel   := CumulativeClusterSet/Rekenstap_rel  [Cluster_rel];
@@ -386,16 +386,16 @@ Template LtWarmtenetImpl
 				}
 				
 				unit<uint32> PrevNetwork := BeginStatus/LtWarmte/bron/CumulativeNetwork;
-				unit<uint32> CumulativeNetwork := union_unit(PrevNetwork, RendabelCluster/Network)
+				unit<uint32> CumulativeNetwork := union_unit(PrevNetwork, Toedeling/RendabelCluster/Network)
 				, DialogType = "Map", DialogData = "Geometry"
 				{
-					attribute<rdc_meter> Geometry(arc) := union_data(., PrevNetwork/Geometry, RendabelCluster/Network/UnionData);
+					attribute<rdc_meter> Geometry(arc) := union_data(., PrevNetwork/Geometry, Toedeling/RendabelCluster/Network/UnionData);
 					
 //					attribute<..> Cluster_rel := value(union_data(., PrevNetwork/Feature/MST_rel, RendabelCluster/Feature/MST_rel + #PrevClusterSet/Feature), ..);
 										
-					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevNetwork/WarmteOptie_rel, const(impl/WarmteOptie_rel, RendabelCluster/Network));
-					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevNetwork/Rekenstap_rel,   const(......../zichtjaar_rel, RendabelCluster/Network));
-					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevNetwork/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), RendabelCluster/Network));
+					attribute<Classifications/WarmteOptie> WarmteOptie_rel := union_data(., PrevNetwork/WarmteOptie_rel, const(impl/WarmteOptie_rel, Toedeling/RendabelCluster/Network));
+					attribute<Classifications/Rekenstap  > Rekenstap_rel   := union_data(., PrevNetwork/Rekenstap_rel,   const(......../zichtjaar_rel, Toedeling/RendabelCluster/Network));
+					attribute<Classifications/Zichtjaar  > ZichtJaar_rel   := union_data(., PrevNetwork/ZichtJaar_rel,   const(rlookup(RekenstapName, classifications/RekenStap/name), Toedeling/RendabelCluster/Network));
 				}
 			}
 		}
