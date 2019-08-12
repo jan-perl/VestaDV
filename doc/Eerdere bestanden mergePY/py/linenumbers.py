@@ -50,11 +50,13 @@ for obj in filelist:
         if (obj.upper() == "STARTJAAR"):
             lfound_startyear = True
         # Check whether it is a year of the form J<year>
-        elif (obj[0:1].upper() == "J"):
+        elif (obj[0:3].upper() == "R1_" or obj[0:3].upper() == "R2_" or obj[0:3].upper() == "R3_" or obj[0:3].upper() == "R4_"):
             try:
-                year = int(str(obj)[1:])
+                year = int(str(obj)[3:])
                 # Yes this obj we want.
                 years.append(year)
+                print("boehh")
+                print(year)
             except ValueError:
                 # No year, so directory is skipped.
                 print(obj + " is not a year. Directory is skipped")
@@ -68,8 +70,10 @@ years.sort()
 
 # Make the directory list of output years.
 dirlist=["StartJaar"]
+teller = 0
 for year in years:
-    dirlist.append("J"+str(year))
+    teller = teller + 1
+    dirlist.append("R" + str(teller) + "_"+str(year))
 
 # Sort the filenames
 sortlist.sort()

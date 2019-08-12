@@ -2,5 +2,5 @@
 #      third = True: file must exist, False: file may not be there.
 #      Fourth the number of lines in the output
 sortlist = [\
-[1,"NL\All_Stock\Matrix.csv",True,44]\
+[1,"NL\All_Eenmalig\Matrix.csv",True,23]\
 ]
