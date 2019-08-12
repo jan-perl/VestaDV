@@ -55,7 +55,6 @@ for obj in filelist:
                 year = int(str(obj)[3:])
                 # Yes this obj we want.
                 years.append(year)
-                print("boehh")
                 print(year)
             except ValueError:
                 # No year, so directory is skipped.
