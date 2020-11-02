@@ -1,0 +1,14 @@
+heads/VestaLeidraadOktober2019DHE
+On branch VestaLeidraadOktober2019DHE
+Your branch is ahead of 'origin/VestaLeidraadOktober2019' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   CombineerRuns/Vergelijking.dms
+	modified:   Runs/S1a_AllElectric_lucht.dms
+	modified:   git.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

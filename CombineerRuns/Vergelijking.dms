@@ -20,8 +20,8 @@ container Vergelijking
 
 	container Invoer
 	{
-//		parameter<string> StudieGebied: ['NL'];
-		parameter<string> StudieGebied: ['GM0321'];
+		parameter<string> StudieGebied: ['NL'];
+//		parameter<string> StudieGebied: ['GM0321'];
 		#include <%projDir%/model/RuimtelijkeData.dms>
 		#include <%projDir%/model/Kengetallen.dms>
 
