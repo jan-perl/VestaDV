@@ -14,7 +14,7 @@
 container SharedInvoer
 {
 	// Gemeentes als selectie: 'NL' or a set of municipality codes, 
-		parameter<string> StudieGebied: ['NL'];
+//		parameter<string> StudieGebied: ['NL'];
 //		parameter<string> StudieGebied: ['GM1507'];
 //		parameter<string> StudieGebied: ['GM0402'];  // Hilversum
 //		parameter<string> StudieGebied: ['GM0344'];  // Utrecht
@@ -24,7 +24,7 @@ container SharedInvoer
 //		parameter<string> StudieGebied: ['GM0599'];  // Rotterdam
 //		parameter<string> StudieGebied: ['GM0034'];  // Almere
 //		parameter<string> StudieGebied: ['GM0050'];  // Zeewolde
-//		parameter<string> StudieGebied: ['GM0321'];  // Houten
+		parameter<string> StudieGebied: ['GM0321'];  // Houten
 
 //		parameter<string> StudieGebied: ['GM0503'];
 
@@ -46,7 +46,9 @@ container SharedInvoer
 	parameter<bool> IncludeGA := false;
 	
 	parameter<units/m3> MaxVolume_H2 := 1500000000[units/m3]; //Invoer maximale beschikbaarheid H2 in m3 aardgasequivalent
-	parameter<units/m3> MaxVolume_GG := 1500000000[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
+//	parameter<units/m3> MaxVolume_GG := 1500000000[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
+//	parameter<units/m3> MaxVolume_GG := 539259[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
+	parameter<units/m3> MaxVolume_GG := 4000000[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
 	
 
 }

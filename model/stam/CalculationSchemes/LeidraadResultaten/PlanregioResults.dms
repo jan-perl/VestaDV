@@ -418,7 +418,8 @@ container PlanregioResults
 			attribute<Eur>     Ki_ElektrischKoken  := =substr(Variantcode, 0,2) == 's4' ? 'const(0.0[Eur], .)' : 'K_Koken * Statisch/Table/I09_aantal_woningen';
 			attribute<Eur_yr>  Kmi_ElektrischKoken := Ki_ElektrischKoken * /TussenResultaten/StartJaar/NCW/mr15/AnnualisationFactor;
 			
-			parameter<ratio>   AandeelWP_NL        := sum(Aansluitingen/Table/A02_Aansl_eWP) / sum(Statisch/Table/I09_aantal_woningen + Statisch/Table/I10_aantal_utiliteit);
+//			parameter<ratio>   AandeelWP_NL        := 0.948813778 [ratio];
+			parameter<ratio>   AandeelWP_NL        := ( StudieGebied == 'NL' )?  sum(Aansluitingen/Table/A02_Aansl_eWP) / sum(Statisch/Table/I09_aantal_woningen + Statisch/Table/I10_aantal_utiliteit) : 0.948813778 [ratio];
 			parameter<Eur_kWh> OpslagWPverbruik    := 0.005[Eur_kWh] * AandeelWP_NL;
 			parameter<Eur_GJ>  OpslagWP_GJ         := OpslagWPverbruik / 0.0036[GJ / kWh];
 			attribute<Eur_yr>  Kj_OpslagWP         := Hoofdindicatoren/extensief/H11_Input_elektriciteit * OpslagWP_GJ;
