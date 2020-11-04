@@ -22,7 +22,7 @@ container EnergiePrijzen
 
 		attribute<Eur_GJ> EnergieHeffing   (table) := ='(table/'+code+'_PC_BEL_EL[Eur_per_eenheid] + table/'+code+'_PC_SDE[Eur_per_eenheid]) * OmrekenFactor * InflationFactor';
 
-        parameter<bool> MaatschappelijkEnergie: [false], Descr = "vervang maatst";
+        parameter<bool> MaatschappelijkEnergie: [true], Descr = "vervang maatst";
 		attribute<Eur_GJ> Maatschappelijk  (table) := MaatschappelijkEnergie ? CommodityPrice + CO2Heffing + netwerk : CommodityPrice + CO2Heffing + netwerk +EnergieHeffing;
 		attribute<Eur_GJ> eindgebruik_excl (table) := MaatschappelijkEnergie ? Maatschappelijk + EnergieHeffing : Maatschappelijk;
 	}
@@ -63,7 +63,7 @@ container EnergiePrijzen
 				attribute<Eur_GJ> CO2Heffing       (table) := const(0[Eur_GJ], table);
 				attribute<Eur_GJ> EnergieHeffing   (table) := const(0[Eur_GJ], table);
 
-                parameter<bool> MaatschappelijkEnergie: [false], Descr = "vervang maatst";
+                parameter<bool> MaatschappelijkEnergie: [true], Descr = "vervang maatst";
 				attribute<Eur_GJ> Maatschappelijk  (table) := MaatschappelijkEnergie ? CommodityPrice + CO2Heffing + netwerk : CommodityPrice + CO2Heffing + netwerk +EnergieHeffing;
 				attribute<Eur_GJ> eindgebruik_excl (table) := MaatschappelijkEnergie ? Maatschappelijk + EnergieHeffing : Maatschappelijk;
 			}
