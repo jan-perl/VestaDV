@@ -22,8 +22,9 @@ container EnergiePrijzen
 
 		attribute<Eur_GJ> EnergieHeffing   (table) := ='(table/'+code+'_PC_BEL_EL[Eur_per_eenheid] + table/'+code+'_PC_SDE[Eur_per_eenheid]) * OmrekenFactor * InflationFactor';
 
-		attribute<Eur_GJ> Maatschappelijk  (table) := CommodityPrice + CO2Heffing + netwerk;
-		attribute<Eur_GJ> eindgebruik_excl (table) := Maatschappelijk + EnergieHeffing;
+        parameter<bool> MaatschappelijkEnergie: [false], Descr = "vervang maatst";
+		attribute<Eur_GJ> Maatschappelijk  (table) := MaatschappelijkEnergie ? CommodityPrice + CO2Heffing + netwerk : CommodityPrice + CO2Heffing + netwerk +EnergieHeffing;
+		attribute<Eur_GJ> eindgebruik_excl (table) := MaatschappelijkEnergie ? Maatschappelijk + EnergieHeffing : Maatschappelijk;
 	}
 
 	template ImportElekGas
@@ -62,8 +63,9 @@ container EnergiePrijzen
 				attribute<Eur_GJ> CO2Heffing       (table) := const(0[Eur_GJ], table);
 				attribute<Eur_GJ> EnergieHeffing   (table) := const(0[Eur_GJ], table);
 
-				attribute<Eur_GJ> Maatschappelijk  (table) := CommodityPrice + CO2Heffing + netwerk;
-				attribute<Eur_GJ> eindgebruik_excl (table) := Maatschappelijk + EnergieHeffing;
+                parameter<bool> MaatschappelijkEnergie: [false], Descr = "vervang maatst";
+				attribute<Eur_GJ> Maatschappelijk  (table) := MaatschappelijkEnergie ? CommodityPrice + CO2Heffing + netwerk : CommodityPrice + CO2Heffing + netwerk +EnergieHeffing;
+				attribute<Eur_GJ> eindgebruik_excl (table) := MaatschappelijkEnergie ? Maatschappelijk + EnergieHeffing : Maatschappelijk;
 			}
 
 			container KleinGebruik        := GebruiksSectie(table, 'KG');
