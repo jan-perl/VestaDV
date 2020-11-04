@@ -48,7 +48,7 @@ container SharedInvoer
 	parameter<units/m3> MaxVolume_H2 := 1500000000[units/m3]; //Invoer maximale beschikbaarheid H2 in m3 aardgasequivalent
 //	parameter<units/m3> MaxVolume_GG := 1500000000[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
 //	parameter<units/m3> MaxVolume_GG := 539259[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
-	parameter<units/m3> MaxVolume_GG := 4000000[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
+	parameter<units/m3> MaxVolume_GG := 5392590[units/m3]; //Invoer maximale beschikbaarheid GG in m3 aardgasequivalent
 	
 
 }
