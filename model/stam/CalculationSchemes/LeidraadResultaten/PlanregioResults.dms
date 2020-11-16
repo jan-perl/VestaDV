@@ -434,8 +434,8 @@ container PlanregioResults
 			// s3 bepaald voor s3e 0.763566471, voos s1 voor s1a: 0.948813778
 			parameter<AandeelWP_NL_def>    AandeelWP_NL_def_rel     := rlookup(Variantcode, AandeelWP_NL_def/Variant);
 			parameter<ratio>               AandeelWP_NL_def_var    :=       AandeelWP_NL_def/AandeelWP_NL_var[AandeelWP_NL_def_rel];
-			parameter<ratio>   AandeelWP_NL_fix    := (AandeelWP_NL1 >0.5) ? ( ( substr(Variantcode, 0,2) == 's3'  )? AandeelWP_NL_def_var: (0.948813778 [ratio])):(0[ratio]);
-			//parameter<ratio>   AandeelWP_NL_fix    := (AandeelWP_NL1 >0.5) ? ( ( substr(Variantcode, 0,2) == 's3'  )? (0.763566471 [ratio]): (0.948813778 [ratio])):(0[ratio]);
+			parameter<ratio>   AandeelWP_NL_fix    := (AandeelWP_NL1 >0.2) ? ( ( substr(Variantcode, 0,2) == 's3'  )? AandeelWP_NL_def_var: (0.948813778 [ratio])):(0[ratio]);
+			//parameter<ratio>   AandeelWP_NL_fix    := (AandeelWP_NL1 >0.2) ? ( ( substr(Variantcode, 0,2) == 's3'  )? (0.763566471 [ratio]): (0.948813778 [ratio])):(0[ratio]);
 			parameter<ratio>   AandeelWP_NL        := (StudieGebied == 'NL' )?  AandeelWP_NL1  : AandeelWP_NL_fix;
 			parameter<Eur_kWh> OpslagWPverbruik    := 0.005[Eur_kWh] * AandeelWP_NL;
 			parameter<Eur_GJ>  OpslagWP_GJ         := OpslagWPverbruik / 0.0036[GJ / kWh];
