@@ -20,11 +20,11 @@
 	</Expr>
 </Config>
 <Environment>
-	<Processor>Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+	<Processor>Intel64 Family 6 Model 78 Stepping 3, GenuineIntel
 	</Processor>
-	<User>jan.hoogenraad
+	<User>jhh
 	</User>
-	<ComputerName>SPOORGLOREN-PC
+	<ComputerName>HIS20
 	</ComputerName>
 </Environment>
 <Git>
@@ -34,13 +34,17 @@
 		<BR/>
 		Changes not staged for commit:<BR/>
 		  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)<BR/>
-		  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)<BR/>
+		  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)<BR/>
+		<BR/>
 			modified:   Resultaten/S1aOFb.xml<BR/>
+			modified:   Runs/SharedInvoer.dms<BR/>
 			modified:   Runs/batch_leidraad_runs_rerun.bat<BR/>
-			modified:   model/stam/CalculationSchemes/EnergiePrijzen.dms<BR/>
+			modified:   Runs/path/set.bat<BR/>
+			modified:   model/stam/CalculationSchemes/LeidraadResultaten/PlanregioResults.dms<BR/>
 		<BR/>
 		Untracked files:<BR/>
 		  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)<BR/>
+		<BR/>
 			Resultaten/S1aOFb.csv.tmp<BR/>
 			git.txt<BR/>
 		<BR/>
